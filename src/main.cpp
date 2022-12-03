@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vlc/vlc.h>
 #include <condition_variable>
+#include <list>
 
 std::condition_variable conditionVariable;
 
@@ -24,6 +25,8 @@ void callback (const struct libvlc_event_t *p_event, void *p_data) {
 
 int main() {
 
+	std::list<std::string> playlist;
+
 	std::unique_lock<std::mutex> lock(mutex);
 
 	int vlc_result = 0;
@@ -33,23 +36,33 @@ int main() {
     libvlc_media_t *m;
     libvlc_event_manager_t *evm;
 
+    playlist.emplace_back("chirp.mp3");
+    playlist.emplace_back("11-taniec-krotki-silent.mp3");
+
     /* Load the VLC engine */
     inst = libvlc_new (0, NULL);
 
-    // create a new item
-    m = libvlc_media_new_path(inst, "chirp.mp3");
-
     // create a media play playing environment
-    mp = libvlc_media_player_new_from_media(m);
+    mp = libvlc_media_player_new(inst); //libvlc_media_player_new_from_media(m);
 
     evm = libvlc_media_player_event_manager(mp);
 
     vlc_result = libvlc_event_attach(evm, libvlc_MediaPlayerStopped, callback, 0);
 
-    // play the media_player
-    libvlc_media_player_play(mp);
+    for (std::string file : playlist) {
+        // create a new item
+        m = libvlc_media_new_path(inst, file.c_str());
 
-    conditionVariable.wait_for(lock, std::chrono::seconds(33));
+        libvlc_media_player_set_media(mp, m);
+
+        // play the media_player
+        libvlc_media_player_play(mp);
+
+        conditionVariable.wait_for(lock, std::chrono::seconds(33));
+
+        libvlc_media_release(m);
+    }
+
 
     //sleep(11);
 
