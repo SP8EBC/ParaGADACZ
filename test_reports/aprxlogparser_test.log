@@ -1,0 +1,7 @@
+Running 1 test case...
+Entering test module "AprxLogParser_test"
+../src/AprxLogParser_test.cpp(32): Entering test case "one"
+../src/AprxLogParser_test.cpp(42): info: check result has passed
+../src/AprxLogParser_test.cpp(43): info: check result.value() == expected has passed
+../src/AprxLogParser_test.cpp(32): Leaving test case "one"; testing time: 53560755us
+Leaving test module "AprxLogParser_test"; testing time: 53560815us

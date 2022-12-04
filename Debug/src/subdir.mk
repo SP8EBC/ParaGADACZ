@@ -4,13 +4,22 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/main.cpp 
+../src/AprsPacket.cpp \
+../src/AprsWXData.cpp \
+../src/AprxLogParser.cpp \
+../src/AprxLogParser_test.cpp 
 
 OBJS += \
-./src/main.o 
+./src/AprsPacket.o \
+./src/AprsWXData.o \
+./src/AprxLogParser.o \
+./src/AprxLogParser_test.o 
 
 CPP_DEPS += \
-./src/main.d 
+./src/AprsPacket.d \
+./src/AprsWXData.d \
+./src/AprxLogParser.d \
+./src/AprxLogParser_test.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
