@@ -17,8 +17,6 @@ AprsWXData::AprsWXData() {
 	ssid = 0;
 	call = "";
 
-	dataSource = WXDataSource::UNKNOWN;
-
     wind_speed = 0.0;
     wind_gusts = 0.0;
     wind_direction = 0;
@@ -46,7 +44,7 @@ AprsWXData::AprsWXData() {
 AprsWXData::~AprsWXData() {
 }
 
-int AprsWXData::ParseData(AprsPacket input, AprsWXData* output) {
+int AprsWXData::ParseData(AprsPacket& input, AprsWXData* output) {
 
     int i = 0;
     int conv_temp;
@@ -243,7 +241,6 @@ AprsWXData::AprsWXData(const AprsWXData& in) {
 
 	this->DebugOutput = in.DebugOutput;
 
-	this->dataSource = WXDataSource::UNKNOWN;
 	this->ssid = 0;
 	this->call = "";
 

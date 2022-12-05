@@ -23,11 +23,15 @@ class AprxLogParser {
 
 	std::string fileName;
 
+	const std::string APRSIS;
+
 public:
 
 	void openFile();
 
-	std::optional<std::string> getNextLine(std::string call, uint8_t ssid);
+	void rewindFile();
+
+	std::optional<std::string> getNextLine(std::string call, uint8_t ssid, bool wxOnly);
 
 	AprsWXData getLastPacketForStation(std::string call, uint8_t ssid);
 

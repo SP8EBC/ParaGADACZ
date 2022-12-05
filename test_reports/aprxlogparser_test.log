@@ -1,7 +1,21 @@
-Running 1 test case...
+Running 10 test cases...
 Entering test module "AprxLogParser_test"
-../src/AprxLogParser_test.cpp(32): Entering test case "one"
+../src/AprxLogParser_test.cpp(32): Entering test case "with_ssid"
 ../src/AprxLogParser_test.cpp(42): info: check result has passed
 ../src/AprxLogParser_test.cpp(43): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(32): Leaving test case "one"; testing time: 53560755us
-Leaving test module "AprxLogParser_test"; testing time: 53560815us
+../src/AprxLogParser_test.cpp(32): Leaving test case "with_ssid"; testing time: 327us
+../src/AprxLogParser_test.cpp(47): Entering test case "find_double_wx_frames"
+../src/AprxLogParser_test.cpp(60): info: check result has passed
+../src/AprxLogParser_test.cpp(61): info: check result.value() == first_expected has passed
+../src/AprxLogParser_test.cpp(64): info: check result2 has passed
+../src/AprxLogParser_test.cpp(65): info: check result2.value() == second_expected has passed
+../src/AprxLogParser_test.cpp(47): Leaving test case "find_double_wx_frames"; testing time: 328us
+../src/AprxLogParser_test.cpp(69): Entering test case "cieszyn_find_first_no_wx_only"
+../src/AprxLogParser_test.cpp(79): info: check result has passed
+../src/AprxLogParser_test.cpp(80): info: check result.value() == expected has passed
+../src/AprxLogParser_test.cpp(69): Leaving test case "cieszyn_find_first_no_wx_only"; testing time: 409us
+../src/AprxLogParser_test.cpp(83): Entering test case "cieszyn_find_first_wx_only"
+../src/AprxLogParser_test.cpp(93): info: check result has passed
+../src/AprxLogParser_test.cpp(94): info: check result.value() == expected has passed
+../src/AprxLogParser_test.cpp(83): Leaving test case "cieszyn_find_first_wx_only"; testing time: 479us
+../src/AprxLogParser_test.cpp(97): Entering test case "cieszyn_convert_to_wxdata"

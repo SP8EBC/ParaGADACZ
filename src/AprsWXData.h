@@ -20,8 +20,6 @@ enum class WXDataSource {
 class AprsWXData
 {
     public:
-		WXDataSource dataSource;
-
 		std::string call;
 		unsigned ssid;
 
@@ -62,9 +60,7 @@ class AprsWXData
         AprsWXData& operator-(AprsWXData&);
 
         ~AprsWXData();
-//		void PrintData(void) const;
-//		void ZeroCorrection(queue <AprsWXData> & qMeteo);
-//		float QnhQfeCorrection(float qnh, float alti);
+
 		void NarrowPrecisionOfWindspeed();
 		void NarrowPrecisionOfTemperature();
 
@@ -80,7 +76,7 @@ class AprsWXData
 			source.useWind = false;
 		}
 
-		static int ParseData(AprsPacket input, AprsWXData* output);
+		static int ParseData(AprsPacket& input, AprsWXData* output);
         static int CopyConvert(char sign, std::string& input, int& output, int& counter);
 		static int CopyConvert(unsigned num, std::string& input, int& output, int& counter);
 		static short DirectionCorrection(AprsWXData& packet, short direction, short correction);
