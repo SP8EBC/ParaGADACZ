@@ -98,14 +98,38 @@ BOOST_AUTO_TEST_CASE (cieszyn_convert_to_wxdata)
 {
 	const std::string expected = "2022-12-03 14:29:22.996 SR9NSK    R SR9NCI>AKLPRZ,SR9GM-2*,WIDE2*:!4944.22N/01838.20E_045/005g007t036r...p...P...b00000";
 
+	BOOST_TEST_MESSAGE("2022-12-03 14:29:22.996 SR9NSK    R SR9NCI>AKLPRZ,SR9GM-2*,WIDE2*:!4944.22N/01838.20E_045/005g007t036r...p...P...b00000");
+
+
 	AprxLogParser parser("aprs-rf-2.log");
 
 	parser.openFile();
+	parser.rewindFile();
 
 	const AprsWXData result = parser.getLastPacketForStation("SR9NCI", 0);
 
 	BOOST_CHECK(result.valid);
+	BOOST_CHECK_EQUAL(result.call, "SR9NCI");
 	BOOST_CHECK(result.wind_direction == 45);
+}
+
+// 2022-12-03 14:27:29.321 SR9NSK    R SP9UVG-13>APMI06,SR9GM-2*,SP9DLM*,WIDE2*:@031427z5010.48N/01913.46E_000/007g007t030r000p000P...h91b10213 WX Myslowice
+BOOST_AUTO_TEST_CASE (myslowice_convert_to_wxdata)
+{
+	AprxLogParser parser("aprs-rf-2.log");
+
+	BOOST_TEST_MESSAGE("2022-12-03 14:27:29.321 SR9NSK    R SP9UVG-13>APMI06,SR9GM-2*,SP9DLM*,WIDE2*:@031427z5010.48N/01913.46E_000/007g007t030r000p000P...h91b10213 WX Myslowice");
+
+	parser.openFile();
+	parser.rewindFile();
+
+	const AprsWXData result = parser.getLastPacketForStation("SP9UVG", 13);
+
+	BOOST_CHECK(result.valid);
+	BOOST_CHECK_EQUAL(result.call, "SP9UVG");
+	BOOST_CHECK_EQUAL(result.ssid, 13);
+	BOOST_CHECK(result.wind_direction == 0);
+	BOOST_CHECK_CLOSE(result.temperature, -1.1, 5);
 }
 
 

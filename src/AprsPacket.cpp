@@ -17,7 +17,8 @@ using namespace std;
 AprsPacket::AprsPacket() {
     this->SrcSSID = 0;
     this->DstSSID = 0;
-    memset(this->Data,0x00,sizeof(this->Data));
+    this->Data = 0;
+    //memset(this->Data,0x00,sizeof(this->Data));
 
     this->ToISOriginator.Call = "UNINITIALIZED";
     this->protocol = 0;
@@ -191,54 +192,11 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 	pathElements.erase(pathElements.begin());
 
 	// splitting
-	for (std::string e : pathElements) {
+	for (size_t i = 0; i < pathElements.size() - 1; i++) {
 
-		// try...catch block to catch lexical_cast exceptions
+		std::string e = pathElements.at(i);
+
 		try {
-
-			// when the originator is already parsed it means that all subseqent elements
-			// in the vector will comes from frame payload
-			if (cTarget->ToISOriginator.Call != "UNINITIALIZED") {
-
-				// checking if the payload is in initialized state
-				if (payload == "")
-					payload = e;
-				else {
-					// if not and there is any content stored in 'payload' object
-					payload += ("," + e);
-				}
-
-				continue;
-			}
-			// the one before last element in the path consist the callsign of a station which
-			// sent this packet from RF to APRS-IS
-			if (parseOrginator) {
-
-				// copying the callsign and the ssid to appropriate fields inside an output object
-				AprsPacket::SeparateCallSsid(e, cTarget->ToISOriginator.Call, cTarget->ToISOriginator.SSID, true);
-
-				parseOrginator = false;
-
-				continue;
-			}
-
-			// this will be a 'qXX' construct which takes some information about the way this packet entered the IS
-			// more details about q constructs here: http://www.aprs-is.net/q.aspx
-			if (boost::regex_match(e, qc)) {
-
-				// the q-construct never has any ssid
-				uint8_t dummy;
-
-				// copying the callsign and the ssid to appropriate fields inside an output object
-				AprsPacket::SeparateCallSsid(e, cTarget->qOrigin, dummy, true);
-
-				// setting this flag to true to tell a routine that next element in this loop
-				// will consist a callsign of the station which sent this packet to the IS
-				parseOrginator = true;
-
-				continue;
-			}
-
 			// object to store path element
 			PathElement pelem;
 
@@ -257,21 +215,23 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 
 	}
 
-	// if there is any additional part of frame, any remainder after separating source callsign
-	// by '>' just append this to payload.
-	if (sepratedBySource.size() > 2) {
-		for (auto it = sepratedBySource.begin() + 2; it != sepratedBySource.end(); it++) {
-			payload.append(">");
-
-			payload.append(*it);
-		}
-	}
+//	// if there is any additional part of frame, any remainder after separating source callsign
+//	// by '>' just append this to payload.
+//	if (sepratedBySource.size() > 2) {
+//		for (auto it = sepratedBySource.begin() + 2; it != sepratedBySource.end(); it++) {
+//			payload.append(">");
+//
+//			payload.append(*it);
+//		}
+//	}
 
 	// copying the payload to the output object. There is no need to check the lenght of
 	// payload due to 'buff_len > 1000' check done just at the begining of this method
-	std::copy(payload.begin(), payload.end(), cTarget->Data);
+	cTarget->DataAsStr = std::move(pathElements.at(pathElements.size() - 1));
 
-	cTarget->DataAsStr = std::string(cTarget->Data);
+	//cTarget->DataAsStr = std::string(cTarget->Data);
+
+	cTarget->Data = cTarget->DataAsStr.c_str();
 
 	boost::trim(cTarget->DataAsStr);
 
@@ -289,7 +249,8 @@ void AprsPacket::clear() {
     this->Path.clear();
     this->qOrigin = "";
 
-    memset(this->Data,0x00,sizeof(this->Data));
+    this->Data = 0;
+    //memset(this->Data,0x00,sizeof(this->Data));
 
     this->ToISOriginator.Call = "UNINITIALIZED";
 
