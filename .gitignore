@@ -32,3 +32,4 @@ ParaGADACZ
 *.exe
 *.out
 *.app
+/Debug/
