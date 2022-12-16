@@ -12,6 +12,12 @@
 #include <vlc/vlc.h>
 #include <condition_variable>
 #include <list>
+#include <memory>
+
+// api
+#include "ApiConfiguration.h"
+#include "ApiClient.h"
+#include "ListOfAllStationsApi.h"
 
 std::condition_variable conditionVariable;
 
@@ -25,6 +31,14 @@ void callback (const struct libvlc_event_t *p_event, void *p_data) {
 
 int main() {
 
+	std::shared_ptr<org::openapitools::client::api::ApiClient> apiClient = std::make_shared<org::openapitools::client::api::ApiClient>();
+	org::openapitools::client::api::ApiConfiguration apiConfiguration;
+	apiConfiguration.setBaseUrl("http://pogoda.cc:8080/meteo_backend_web/");
+
+	apiClient->setConfiguration(std::shared_ptr<org::openapitools::client::api::ApiConfiguration>(&apiConfiguration));
+
+	org::openapitools::client::api::ListOfAllStationsApi listofAllStation(apiClient);
+
 	std::list<std::string> playlist;
 
 	std::unique_lock<std::mutex> lock(mutex);
@@ -35,6 +49,8 @@ int main() {
     libvlc_media_player_t *mp;
     libvlc_media_t *m;
     libvlc_event_manager_t *evm;
+
+    auto type = listofAllStation.listOfAllStationsGet().get();
 
     playlist.emplace_back("chirp.mp3");
     playlist.emplace_back("11-taniec-krotki-silent.mp3");

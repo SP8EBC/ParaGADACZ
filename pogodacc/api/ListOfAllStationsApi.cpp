@@ -130,6 +130,8 @@ pplx::task<std::vector<std::shared_ptr<StationDefinitionModel>>> ListOfAllStatio
             }
         }
 
+        auto status = localVarResponse._get_impl()->status_code();
+
         return localVarResponse.extract_string();
     })
     .then([=](utility::string_t localVarResponse)
@@ -139,7 +141,15 @@ pplx::task<std::vector<std::shared_ptr<StationDefinitionModel>>> ListOfAllStatio
         if(localVarResponseHttpContentType == utility::conversions::to_string_t("application/json"))
         {
             web::json::value localVarJson = web::json::value::parse(localVarResponse);
-            for( auto& localVarItem : localVarJson.as_array() )
+            auto key = utility::conversions::to_string_t("stations");
+            //
+            web::json::object element = localVarJson.as_object();
+
+            auto first = element.begin()->second;
+
+            auto isarray = first.is_array();
+
+            for( auto& localVarItem : first.as_array() )
             {
                 std::shared_ptr<StationDefinitionModel> localVarItemObj;
                 ModelBase::fromJson(localVarItem, localVarItemObj);
