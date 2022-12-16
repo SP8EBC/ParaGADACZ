@@ -18,6 +18,7 @@
 #include "ApiConfiguration.h"
 #include "ApiClient.h"
 #include "ListOfAllStationsApi.h"
+#include "StationApi.h"
 
 std::condition_variable conditionVariable;
 
@@ -38,6 +39,7 @@ int main() {
 	apiClient->setConfiguration(std::shared_ptr<org::openapitools::client::api::ApiConfiguration>(&apiConfiguration));
 
 	org::openapitools::client::api::ListOfAllStationsApi listofAllStation(apiClient);
+	org::openapitools::client::api::StationApi stationApi (apiClient);
 
 	std::list<std::string> playlist;
 
@@ -51,6 +53,7 @@ int main() {
     libvlc_event_manager_t *evm;
 
     auto type = listofAllStation.listOfAllStationsGet().get();
+    auto skrzyczne_summary = stationApi.stationStationNameSummaryGet("skrzyczne").get();
 
     playlist.emplace_back("chirp.mp3");
     playlist.emplace_back("11-taniec-krotki-silent.mp3");
