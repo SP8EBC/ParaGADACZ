@@ -1,0 +1,326 @@
+openapi: 3.0.3
+info:
+  title: Meteoblue Package API - day & 3h
+  description: This yaml contains a description of basic_day and basic_3h from Package API provided by Meteoblue
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: API documentation in Meteoblue docs 
+  url: https://docs.meteoblue.com/en/weather-apis/packages-api/introduction
+servers:
+  - url: http://my.meteoblue.com/packages/
+paths:
+  /basic-day_basic-3h:
+    get:
+      parameters:
+        - name: lon 
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+        - name: timeformat
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - utc_timestamp
+        - name: apikey
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: sig
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ...
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    $ref: '#/components/schemas/metadata'
+                  units:
+                    $ref: '#/components/schemas/units'                    
+                  data_3h:
+                    $ref: '#/components/schemas/data_3h'
+                  data_day:
+                    $ref: '#/components/schemas/data_day'
+components:
+  schemas:
+    data_3h:
+      description: Forecast data
+      properties:
+        rainspot:
+          type: array
+          items:
+            type: string
+        time:
+          type: array
+          items:
+            type: integer
+            format: int64
+        pictocode:
+          type: array
+          items:
+            type: integer
+            format: int32
+        precipitation:
+          type: array
+          items:
+            type: number
+            format: float
+        snowfraction: 
+          type: array
+          items:
+            type: number
+            format: float
+        precipitation_probability:
+          type: array
+          items:
+            type: integer
+            format: int32
+        temperature:
+          type: array
+          items: 
+            type: number
+            format: float
+        felttemperature:
+          type: array
+          items:
+            type: number
+            format: float
+        windspeed:
+          type: array
+          items:
+            type: number
+            format: float
+        winddirection:
+          type: array
+          items:
+            type: integer
+        relativehumidity:
+          type: array
+          items:
+            type: integer
+        sealevelpressure:
+          type: array
+          items:
+            type: number
+            format: float
+        convective_precipitation:
+          type: array
+          items:
+            type: integer
+        isdaylight:
+          type: array
+          items: 
+            type: integer
+        uvindex:
+          type: array
+          items:
+            type: integer
+    units:
+      description: Measurement units
+      properties:
+        time:
+          type: string
+        precipitation_probability:
+          type: string
+        pressure:
+          type: string
+        relativehumidity:
+          type: string
+        co:
+          type: string
+        precipitation:
+          type: string
+        temperature:
+          type: string
+        windspeed:
+          type: string
+        winddirection:
+          type: string
+        predictability:
+          type: string
+    metadata:
+      description: ...
+      properties:
+        name:
+          type: string
+        latitude:
+          type: number
+          format: float
+        longitude:
+          type: number
+          format: float
+        height:
+          type: integer
+          format: int32
+        timezone_abbrevation:
+          type: string
+        utc_timeoffset:
+          type: number
+          format: float
+        modelrun_utc:
+          type: integer
+        modelrun_updatetime_utc:
+          type: integer
+    data_day:
+      description: ....
+      properties:
+        time:
+          type: array
+          items:
+            type: integer
+        pictocode:
+          type: array
+          items:
+            type: integer
+        uvindex:
+          type: array
+          items:
+            type: integer
+        temperature_max:
+          type: array
+          items:
+            type: number
+            format: float
+        temperature_min:
+          type: array
+          items:
+            type: number
+            format: float
+        temperature_mean:
+          type: array
+          items:
+            type: number
+            format: float
+        felttemperature_max:
+          type: array
+          items: 
+            type: number
+            format: float
+        felttemperature_min:
+          type: array
+          items:
+            type: number
+            format: float
+        winddirection:
+          type: array
+          items:
+            type: integer
+            format: int32
+        precipitation_probability:
+          type: array
+          items:
+            type: integer
+            format: int32
+        rainspot:
+          type: array
+          items:
+            type: string
+        predictability_class:
+          type: array
+          items:
+            type: integer
+            format: int32
+        predictability:
+          type: array
+          items:
+            type: integer
+            format: int32
+        precipitation:
+          type: array
+          items:
+            type: number
+            format: float
+        snowfraction:
+          type: array
+          items: 
+            type: number
+            format: float
+        sealevelpressure_max:
+          type: array
+          items:
+            type: integer
+            format: int32
+        sealevelpressure_min:
+          type: array
+          items:
+            type: integer
+            format: int32        
+        sealevelpressure_mean:
+          type: array
+          items:
+            type: integer
+            format: int32
+        windspeed_max:
+          type: array
+          items: 
+            type: number
+            format: float
+        windspeed_mean:
+          type: array
+          items: 
+            type: number
+            format: float
+        windspeed_min:
+          type: array
+          items: 
+            type: number
+            format: float
+        relativehumidity_max:
+          type: array
+          items:
+            type: integer
+            format: int32
+        relativehumidity_min:
+          type: array
+          items:
+            type: integer
+            format: int32
+        relativehumidity_mean:
+          type: array
+          items:
+            type: integer
+            format: int32
+        convective_precipitation:
+          type: array
+          items: 
+            type: number
+            format: float
+        precipitation_hours:
+          type: array
+          items: 
+            type: number
+            format: float
+        humiditygreater90_hours:
+          type: array
+          items: 
+            type: number
+            format: float
+        indexto3hvalues_start:
+          type: array
+          items:
+            type: integer
+            format: int32
+        indexto3hvalues_end:
+          type: array
+          items:
+            type: integer
+            format: int32
