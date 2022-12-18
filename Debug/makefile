@@ -12,6 +12,8 @@ RM := rm -rf
 -include pogodacc/model/subdir.mk
 -include pogodacc/api/subdir.mk
 -include pogodacc/subdir.mk
+-include meteoblue/model/subdir.mk
+-include meteoblue/api/subdir.mk
 -include subdir.mk
 -include objects.mk
 

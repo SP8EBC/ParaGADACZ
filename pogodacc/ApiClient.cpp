@@ -181,11 +181,25 @@ pplx::task<web::http::http_response> ApiClient::callApi(
         }
     }
 
+    bool sigparam = false;
+
     web::http::uri_builder builder(path);
     for (const auto& kvp : queryParams)
     {
+    	if (kvp.first == "sig") {
+       		sigparam = true;
+    		continue;
+    	}
         builder.append_query(kvp.first, kvp.second);
     }
+
+    if (sigparam)
+    {
+    	auto signature = queryParams.find("sig");
+        builder.append_query(signature->first, signature->second);
+
+    }
+
     request.set_request_uri(builder.to_uri());
     request.set_method(method);
     if ( !request.headers().has( web::http::header_names::user_agent ) )

@@ -20,6 +20,10 @@
 #include "ListOfAllStationsApi.h"
 #include "StationApi.h"
 
+// meteoblue api
+#include "ForecastApi.h"
+#include "secret.h"
+
 std::condition_variable conditionVariable;
 
 std::mutex mutex;
@@ -35,8 +39,9 @@ int main() {
 	std::shared_ptr<org::openapitools::client::api::ApiClient> apiClient = std::make_shared<org::openapitools::client::api::ApiClient>();
 	org::openapitools::client::api::ApiConfiguration apiConfiguration;
 	apiConfiguration.setBaseUrl("http://pogoda.cc:8080/meteo_backend_web/");
+	auto apiConfigurationPtr = std::shared_ptr<org::openapitools::client::api::ApiConfiguration>(&apiConfiguration);
 
-	apiClient->setConfiguration(std::shared_ptr<org::openapitools::client::api::ApiConfiguration>(&apiConfiguration));
+	apiClient->setConfiguration(apiConfigurationPtr);
 
 	org::openapitools::client::api::ListOfAllStationsApi listofAllStation(apiClient);
 	org::openapitools::client::api::StationApi stationApi (apiClient);
@@ -54,6 +59,12 @@ int main() {
 
     auto type = listofAllStation.listOfAllStationsGet().get();
     auto skrzyczne_summary = stationApi.stationStationNameSummaryGet("skrzyczne").get();
+
+	apiConfiguration.setBaseUrl("http://my.meteoblue.com/packages/");
+	apiClient->setConfiguration(apiConfigurationPtr);
+
+	org::openapitools::client::api::ForecastApi forecastApi(apiClient);
+	auto forecast = forecastApi.basicDayBasic3hGet(19.03, 49.68, "timestamp_utc", METEOBLUE_API_KEY, boost::optional<std::string>()).get();
 
     playlist.emplace_back("chirp.mp3");
     playlist.emplace_back("11-taniec-krotki-silent.mp3");
