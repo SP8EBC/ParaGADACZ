@@ -137,7 +137,7 @@ bool Data_3h::fromJson(const web::json::value& val)
         const web::json::value& fieldValue = val.at(utility::conversions::to_string_t("time"));
         if(!fieldValue.is_null())
         {
-            std::vector<int64_t> refVal_time;
+            std::vector<int32_t> refVal_time;
             ok &= ModelBase::fromJson(fieldValue, refVal_time);
             setTime(refVal_time);
         }
@@ -361,7 +361,7 @@ bool Data_3h::fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const 
     }
     if(multipart->hasContent(utility::conversions::to_string_t("time")))
     {
-        std::vector<int64_t> refVal_time;
+        std::vector<int32_t> refVal_time;
         ok &= ModelBase::fromHttpContent(multipart->getContent(utility::conversions::to_string_t("time")), refVal_time );
         setTime(refVal_time);
     }
@@ -466,12 +466,12 @@ void Data_3h::unsetRainspot()
 {
     m_RainspotIsSet = false;
 }
-std::vector<int64_t>& Data_3h::getTime()
+std::vector<int32_t>& Data_3h::getTime()
 {
     return m_Time;
 }
 
-void Data_3h::setTime(std::vector<int64_t> value)
+void Data_3h::setTime(std::vector<int32_t> value)
 {
     m_Time = value;
     m_TimeIsSet = true;

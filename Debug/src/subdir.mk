@@ -7,18 +7,24 @@ CPP_SRCS += \
 ../src/AprsPacket.cpp \
 ../src/AprsWXData.cpp \
 ../src/AprxLogParser.cpp \
+../src/ForecastFinder.cpp \
+../src/ForecastFinder_test.cpp \
 ../src/main.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
 ./src/AprsWXData.o \
 ./src/AprxLogParser.o \
+./src/ForecastFinder.o \
+./src/ForecastFinder_test.o \
 ./src/main.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
 ./src/AprsWXData.d \
 ./src/AprxLogParser.d \
+./src/ForecastFinder.d \
+./src/ForecastFinder_test.d \
 ./src/main.d 
 
 

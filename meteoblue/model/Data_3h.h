@@ -66,11 +66,11 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::vector<int64_t>& getTime();
+    std::vector<int32_t>& getTime();
     bool timeIsSet() const;
     void unsetTime();
 
-    void setTime(std::vector<int64_t> value);
+    void setTime(std::vector<int32_t> value);
 
     /// <summary>
     /// 
@@ -193,7 +193,7 @@ public:
 protected:
     std::vector<utility::string_t> m_Rainspot;
     bool m_RainspotIsSet;
-    std::vector<int64_t> m_Time;
+    std::vector<int32_t> m_Time;
     bool m_TimeIsSet;
     std::vector<int32_t> m_Pictocode;
     bool m_PictocodeIsSet;

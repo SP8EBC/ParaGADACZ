@@ -24,6 +24,8 @@
 #include "ForecastApi.h"
 #include "secret.h"
 
+#include "ForecastFinder.h"
+
 std::condition_variable conditionVariable;
 
 std::mutex mutex;
@@ -65,6 +67,8 @@ int main() {
 
 	org::openapitools::client::api::ForecastApi forecastApi(apiClient);
 	auto forecast = forecastApi.basicDayBasic3hGet(19.03, 49.68, "timestamp_utc", METEOBLUE_API_KEY, boost::optional<std::string>()).get();
+
+	std::tuple<int64_t, float> temperature = ForecastFinder::getTemperatureMeteoblue(forecast, 180);
 
     playlist.emplace_back("chirp.mp3");
     playlist.emplace_back("11-taniec-krotki-silent.mp3");
