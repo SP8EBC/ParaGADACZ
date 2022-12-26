@@ -32,6 +32,7 @@
 									<listOptionValue builtIn="false" value="../pogodacc"/>
 									<listOptionValue builtIn="false" value="../pogodacc/model"/>
 									<listOptionValue builtIn="false" value="/usr/include/curl"/>
+									<listOptionValue builtIn="false" value="/usr/include/spdlog"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1536394112" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -49,6 +50,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.libs.62683817" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="config++"/>
+									<listOptionValue builtIn="false" value="fmt"/>
 									<listOptionValue builtIn="false" value="crypto"/>
 									<listOptionValue builtIn="false" value="pthread"/>
 									<listOptionValue builtIn="false" value="cpprest"/>
@@ -106,6 +108,7 @@
 									<listOptionValue builtIn="false" value="../pogodacc"/>
 									<listOptionValue builtIn="false" value="../pogodacc/model"/>
 									<listOptionValue builtIn="false" value="/usr/include/curl"/>
+									<listOptionValue builtIn="false" value="/usr/include/spdlog"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.2117052010" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -123,6 +126,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.libs.1938612358" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="config++"/>
+									<listOptionValue builtIn="false" value="fmt"/>
 									<listOptionValue builtIn="false" value="crypto"/>
 									<listOptionValue builtIn="false" value="pthread"/>
 									<listOptionValue builtIn="false" value="cpprest"/>
