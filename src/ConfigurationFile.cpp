@@ -32,7 +32,7 @@ ConfigurationFile& ConfigurationFile::operator=(
 }
 
 bool ConfigurationFile::parse() {
-	spdlog::info("parsing configuration file: {1}", this->fn);
+	spdlog::info("parsing configuration file: {}", this->fn);
 
 	bool out = true;
 
@@ -55,7 +55,7 @@ bool ConfigurationFile::parse() {
 	// get maximum data age
 	if (!root.lookupValue("MaximumDataAge", this->maximumDataAge )) {
 		this->maximumDataAge = 60;	// default value -> 60 minutes
-		spdlog::warn("MaximumDataAge didn't find in configuration file! Set to default 60 minutes");
+		SPDLOG_WARN("MaximumDataAge didn't find in configuration file! Set to default 60 minutes");
 	}
 
 	// get 'Intro' configuration section
@@ -67,7 +67,7 @@ bool ConfigurationFile::parse() {
 		intro.lookupValue("SayRegionalPressure", this->intro.sayRegionalPressure);
 	}
 	catch (...) {
-		spdlog::warn("Intro section didn't find in configuration file! Set to defaults");
+		SPDLOG_WARN("'Intro' section didn't find in configuration file! Set to defaults");
 
 		// set defaults values in case of exception
 		this->intro.ident = "";
@@ -75,7 +75,9 @@ bool ConfigurationFile::parse() {
 		this->intro.sayRegionalPressure = false;
 	}
 
+	//
 	// get 'RecordedSpecialAnnouncementPre'
+	//
 	try {
 		// get prerecorded special announcement (after ident/intro but before weather)
 		libconfig::Setting &prerecordedBefore = root["RecordedSpecialAnnouncementPre"];
@@ -84,7 +86,7 @@ bool ConfigurationFile::parse() {
 		size_t size = prerecordedBefore.getLength();
 
 		if (size > 0) {
-			for (int i = 0; i < size; i++) {
+			for (size_t i = 0; i < size; i++) {
 				std::string s = root["RecordedSpecialAnnouncementPre"][i];
 
 				// add all files
@@ -92,13 +94,15 @@ bool ConfigurationFile::parse() {
 			}
 		}
 
-		spdlog::info("{1} recorded special pre-announcement has been parsed", size);
+		SPDLOG_INFO("{} recorded special pre-announcement has been parsed", size);
 	}
 	catch (...) {
 		; // this section is not mandatory, so do nothing if it doesn't exist
 	}
 
+	//
 	// get 'TextSpecialAnnouncementPre'
+	//
 	try {
 		// get prerecorded special announcement (after ident/intro but before weather)
 		libconfig::Setting &prerecordedBefore = root["TextSpecialAnnouncementPre"];
@@ -115,13 +119,15 @@ bool ConfigurationFile::parse() {
 			}
 		}
 
-		spdlog::info("{1} text special pre=anouncement has been parsed", size);
+		SPDLOG_INFO("{} text special pre=anouncement has been parsed", size);
 	}
 	catch (...) {
 		; // this section is not mandatory, so do nothing if it doesn't exist
 	}
 
-	// current weather configuration - definition of weather stations to get data from
+	//
+	// 'CurrentWeather' configuration - definition of weather stations to get data from
+	//
 	try {
 		libconfig::Setting & currentWeather = root["CurrentWeather"];
 
@@ -144,15 +150,103 @@ bool ConfigurationFile::parse() {
 				currentWeather[i].lookupValue("SayPressure", c.sayPressure);
 				currentWeather[i].lookupValue("SayTemperature", c.sayTemperature);
 
+				this->current.push_back(c);
 			}
 		}
 		else {
+			SPDLOG_ERROR("'CurrentWeather' section didn't find in the configuration file");
 			// this section is mandatory. return fail if it is empty
 			out = false;
 		}
 	}
 	catch (...) {
+		SPDLOG_ERROR("'CurrentWeather' section didn't find in the configuration file");
+
 		out = false;
+	}
+
+	//
+	// Meteoblue forecast configuration 'ForecastMeteoblue'
+	//
+	try{
+		libconfig::Setting & forecastMeteblue = root["ForecastMeteoblue"];
+
+		// time from now, for which forecasts should be get
+		forecastMeteblue.lookupValue("FutureTime", this->forecast.futureTime);
+
+		// get all locations forecast should be retrieved for
+		libconfig::Setting & forecastPoints = root["Locations"];
+
+		// iterate through all points
+		for (int i = 0; i < forecastPoints.getLength(); i++) {
+			ConfigurationFile_ForecastMeteoblue_Locations l;
+
+			forecastPoints[i].lookupValue("Latitude", l.latitude);
+			forecastPoints[i].lookupValue("Longitude", l.longitude);
+			forecastPoints[i].lookupValue("NameIdent", l.nameIdent);
+			forecastPoints[i].lookupValue("SayWind", l.sayWind);
+			forecastPoints[i].lookupValue("SayTemperature", l.sayTemperature);
+			forecastPoints[i].lookupValue("SayPrecipation", l.sayPrecipation);
+
+			// add this to program configuration
+			this->forecast.locations.push_back(l);
+
+		}
+	}
+	catch (...) {
+		SPDLOG_ERROR("'ForecastMeteoblue' section didn't find in the configuration file");
+
+		out = false;
+	}
+
+	//
+	// get 'RecordedSpecialAnnouncementPost'
+	//
+	try {
+		// get prerecorded special announcement (Post -> at the end but before sign-off/outro)
+		libconfig::Setting &prerecordedBefore = root["RecordedSpecialAnnouncementPost"];
+
+		// number of files to play
+		size_t size = prerecordedBefore.getLength();
+
+		if (size > 0) {
+			for (size_t i = 0; i < size; i++) {
+				std::string s = root["RecordedSpecialAnnouncementPost"][i];
+
+				// add all files
+				recordedSpecialAnnouncementPost.push_back(s);
+			}
+		}
+
+		SPDLOG_INFO("{1} recorded special pre-announcement has been parsed", size);
+	}
+	catch (...) {
+		; // this section is not mandatory, so do nothing if it doesn't exist
+	}
+
+	//
+	// get 'TextSpecialAnnouncementPost'
+	//
+	try {
+		// get prerecorded special announcement (Post -> at the end but before sign-off/outro)
+		libconfig::Setting &prerecordedBefore = root["TextSpecialAnnouncementPost"];
+
+		// number of files to play
+		size_t size = prerecordedBefore.getLength();
+
+		if (size > 0) {
+			for (size_t i = 0; i < size; i++) {
+				std::string s = root["TextSpecialAnnouncementPost"][i];
+
+				// add all files
+				textSpecialAnnouncementPost.push_back(s);
+			}
+		}
+
+		SPDLOG_INFO("{1} text special pre=anouncement has been parsed", size);
+	}
+	catch (...) {
+		; // this section is not mandatory, so do nothing if it doesn't exist
 	}
 
 	return out;

@@ -68,7 +68,7 @@ struct ConfigurationFile_ForecastMeteoblue_Locations {
 };
 
 struct ConfigurationFile_ForecastMeteoblue {
-	uint16_t futureTime;			//!< number of minutes from now to get forecast for
+	uint32_t futureTime;			//!< number of minutes from now to get forecast for
 	std::vector<ConfigurationFile_ForecastMeteoblue_Locations> locations;	//!< forecast loca
 };
 
@@ -100,7 +100,7 @@ class ConfigurationFile {
 
 	ConfigurationFile_Intro intro;
 
-	ConfigurationFile_CurrentWeather current;
+	std::vector<ConfigurationFile_CurrentWeather> current;
 
 	ConfigurationFile_ForecastMeteoblue forecast;
 

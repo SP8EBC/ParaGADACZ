@@ -1,0 +1,3 @@
+Running 1 test case...
+Entering test module "ConfigurationFile_test"
+../src/ConfigurationFile_test.cpp(36): Entering test case "simple_parse"

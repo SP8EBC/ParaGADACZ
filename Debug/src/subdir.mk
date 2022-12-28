@@ -10,8 +10,7 @@ CPP_SRCS += \
 ../src/ConfigurationFile.cpp \
 ../src/ConfigurationFile_test.cpp \
 ../src/ForecastFinder.cpp \
-../src/ForecastFinder_test.cpp \
-../src/main.cpp 
+../src/ForecastFinder_test.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
@@ -20,8 +19,7 @@ OBJS += \
 ./src/ConfigurationFile.o \
 ./src/ConfigurationFile_test.o \
 ./src/ForecastFinder.o \
-./src/ForecastFinder_test.o \
-./src/main.o 
+./src/ForecastFinder_test.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
@@ -30,8 +28,7 @@ CPP_DEPS += \
 ./src/ConfigurationFile.d \
 ./src/ConfigurationFile_test.d \
 ./src/ForecastFinder.d \
-./src/ForecastFinder_test.d \
-./src/main.d 
+./src/ForecastFinder_test.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
