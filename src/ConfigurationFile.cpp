@@ -32,7 +32,7 @@ ConfigurationFile& ConfigurationFile::operator=(
 }
 
 bool ConfigurationFile::parse() {
-	spdlog::info("parsing configuration file: {}", this->fn);
+	SPDLOG_INFO("parsing configuration file: {}", this->fn);
 
 	bool out = true;
 
@@ -48,6 +48,11 @@ bool ConfigurationFile::parse() {
 	}
 
 	// get audio base path
+	if (!root.lookupValue("LogOutput", this->logOutput)) {
+		this->logOutput = "";
+	}
+
+	// get log output
 	if (!root.lookupValue("AudioBasePath", this->audioBasePath)) {
 		this->audioBasePath = "";
 	}
@@ -149,6 +154,7 @@ bool ConfigurationFile::parse() {
 				currentWeather[i].lookupValue("SayHumidity", c.sayHumidy);
 				currentWeather[i].lookupValue("SayPressure", c.sayPressure);
 				currentWeather[i].lookupValue("SayTemperature", c.sayTemperature);
+				currentWeather[i].lookupValue("RegionalPressure", c.regionalPressure);
 
 				this->current.push_back(c);
 			}
@@ -159,8 +165,13 @@ bool ConfigurationFile::parse() {
 			out = false;
 		}
 	}
-	catch (...) {
-		SPDLOG_ERROR("'CurrentWeather' section didn't find in the configuration file");
+	catch (libconfig::SettingNotFoundException & e) {
+		SPDLOG_ERROR("SettingNotFoundException during parsing 'CurrentWeather', e.getPath = {}", e.getPath());
+
+		out = false;
+	}
+	catch (libconfig::ParseException & e) {
+		SPDLOG_ERROR("ParseException during parsing 'CurrentWeather', e.getLine = {}, e.getError = {}", e.getLine(), e.getError());
 
 		out = false;
 	}
@@ -175,7 +186,7 @@ bool ConfigurationFile::parse() {
 		forecastMeteblue.lookupValue("FutureTime", this->forecast.futureTime);
 
 		// get all locations forecast should be retrieved for
-		libconfig::Setting & forecastPoints = root["Locations"];
+		libconfig::Setting & forecastPoints = forecastMeteblue["Locations"];
 
 		// iterate through all points
 		for (int i = 0; i < forecastPoints.getLength(); i++) {
@@ -193,8 +204,13 @@ bool ConfigurationFile::parse() {
 
 		}
 	}
-	catch (...) {
-		SPDLOG_ERROR("'ForecastMeteoblue' section didn't find in the configuration file");
+	catch (libconfig::SettingNotFoundException & e) {
+		SPDLOG_ERROR("SettingNotFoundException during parsing 'ForecastMeteoblue', e.getPath = {}", e.getPath());
+
+		out = false;
+	}
+	catch (libconfig::ParseException & e) {
+		SPDLOG_ERROR("ParseException during parsing 'ForecastMeteoblue', e.getLine = {}, e.getError = {}", e.getLine(), e.getError());
 
 		out = false;
 	}

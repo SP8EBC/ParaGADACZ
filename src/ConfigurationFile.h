@@ -130,6 +130,50 @@ public:
 	ConfigurationFile(ConfigurationFile &&other);
 	ConfigurationFile& operator=(const ConfigurationFile &other);
 	ConfigurationFile& operator=(ConfigurationFile &&other);
+
+	const std::string& getAudioBasePath() const {
+		return audioBasePath;
+	}
+
+	const std::vector<ConfigurationFile_CurrentWeather>& getCurrent() const {
+		return current;
+	}
+
+	bool isDebug() const {
+		return debug;
+	}
+
+	const ConfigurationFile_ForecastMeteoblue& getForecast() const {
+		return forecast;
+	}
+
+	const ConfigurationFile_Intro& getIntro() const {
+		return intro;
+	}
+
+	const std::string& getLogOutput() const {
+		return logOutput;
+	}
+
+	int getMaximumDataAge() const {
+		return maximumDataAge;
+	}
+
+	const std::vector<std::string>& getRecordedSpecialAnnouncementPost() const {
+		return recordedSpecialAnnouncementPost;
+	}
+
+	const std::vector<std::string>& getRecordedSpecialAnnouncementPre() const {
+		return recordedSpecialAnnouncementPre;
+	}
+
+	const std::vector<std::string>& getTextSpecialAnnouncementPost() const {
+		return textSpecialAnnouncementPost;
+	}
+
+	const std::vector<std::string>& getTextSpecialAnnouncementPre() const {
+		return textSpecialAnnouncementPre;
+	}
 };
 
 #endif /* CONFIGURATIONFILE_H_ */
