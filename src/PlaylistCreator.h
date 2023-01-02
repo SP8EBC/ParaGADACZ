@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 
 /**
  * Enumeration representing different measurement units.
@@ -34,6 +35,9 @@ enum PlaylistCreator_ConstanElement {
 };
 
 class PlaylistCreator {
+
+	std::string locale;
+
 public:
 
 	/**
@@ -44,41 +48,75 @@ public:
 	 *		hundret.mp3
 	 *		twenty.mp3
 	 *		three.mp3
+	 *
+	 *	\param integer Number to convert to audio files
+	 *	\return Vector of paths to audio files representing number
 	 */
-	std::vector<std::string>& getAudioListFromNumber(int integer);
+	virtual std::vector<std::string> getAudioListFromNumber(int integer) = 0;
 
 	/**
 	 * Returns a list of audio files representing given floating point number.
+	 * Method always reduce precision to one digit after decimal point
 	 * As an example, number -1.45 will return in English:
 	 * 		minus.mp3
 	 * 		one.mp3
 	 * 		decimal.mp3
-	 * 		fourty.mp3
-	 * 		five.mp3
+	 * 		four.mp3
+	 *
+	 * \param decimal Number to convert to audio files
+	 * \return Vector of paths to audio files representing number
+	 *
 	 */
-	std::vector<std::string>& getAudioListFromNumber(float decimal);
+	virtual std::vector<std::string> getAudioListFromNumber(float decimal) = 0;
 
 	/**
 	 * Returns single path to audio file
+	 *
+	 * \param unit Measurement unit to get audio file for
+	 * \return Path to audio file
 	 */
-	std::string& getAudioFromUnit(PlaylistCreator_Unit unit);
+	virtual std::string getAudioFromUnit(PlaylistCreator_Unit unit) = 0;
 
 	/**
 	 * Returns a list of audio samples for current time
+	 * \return Vector of paths to audio files representing current time (hours and minutes)
 	 */
-	std::vector<std::string>& getAudioForCurrentTime(void);
-
-	std::string& getConstantElement();
+	virtual std::vector<std::string> getAudioForCurrentTime(void) = 0;
 
 	/**
-	 * \param locale chose a locale which should be used to create audio playlist
+	 * Returns a file for given constant announcement element, or empty optional if
+	 * it cannot be found.
+	 * \return Optional path to file representing constant element of an announcement, or
+	 * 		   empty if no file could be found
 	 */
-	PlaylistCreator(std::string locale);
-	virtual ~PlaylistCreator();
-	PlaylistCreator(const PlaylistCreator &other);
-	PlaylistCreator(PlaylistCreator &&other);
-	PlaylistCreator& operator=(const PlaylistCreator &other);
-	PlaylistCreator& operator=(PlaylistCreator &&other);
+	virtual std::optional<std::string> getConstantElement(PlaylistCreator_ConstanElement element) = 0;
+
+	/**
+	 * Returns a list of audio samples for forecast announcement like
+	 * "Forecast for next 3 hours". If audio cannot be generated (wrong time step)
+	 * empty optional is returned
+	 */
+	virtual std::optional<std::vector<std::string>> getAudioForForecastAnouncement(int minutes) = 0;
+
+	/**
+	 * Returns an audio file with given station name or forecast name. If the station is unknown
+	 * enpty optional is returned
+	 *
+	 * \param name weather station or forecast point name
+	 */
+	virtual std::optional<std::string> getAudioForStationName(std::string name) = 0;
+
+	/**
+	 *
+	 */
+//	PlaylistCreator();
+	virtual ~PlaylistCreator() {
+
+	}
+//	PlaylistCreator(const PlaylistCreator &other);
+//	PlaylistCreator(PlaylistCreator &&other);
+//	PlaylistCreator& operator=(const PlaylistCreator &other);
+//	PlaylistCreator& operator=(PlaylistCreator &&other);
 };
 
 #endif /* PLAYLISTCREATOR_H_ */

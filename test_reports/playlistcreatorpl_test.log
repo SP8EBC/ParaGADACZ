@@ -1,0 +1,50 @@
+Running 7 test cases...
+Entering test module "PlaylistCreatorPL_test"
+../src/PlaylistCreatorPL_test.cpp(38): Entering test case "decimal_123_4"
+../src/PlaylistCreatorPL_test.cpp(47): info: check 5 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(48): info: check "sto.mp3" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(49): info: check "dwadziescia.mp3" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(50): info: check "trzy.mp3" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(51): info: check "kropka.mp3" == out.at(3) has passed
+../src/PlaylistCreatorPL_test.cpp(52): info: check "cztery.mp3" == out.at(4) has passed
+../src/PlaylistCreatorPL_test.cpp(38): Leaving test case "decimal_123_4"; testing time: 320us
+../src/PlaylistCreatorPL_test.cpp(56): Entering test case "decimal_1123_4"
+../src/PlaylistCreatorPL_test.cpp(65): info: check 6 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(66): info: check "tysiac.mp3" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(67): info: check "sto.mp3" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(68): info: check "dwadziescia.mp3" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(69): info: check "trzy.mp3" == out.at(3) has passed
+../src/PlaylistCreatorPL_test.cpp(70): info: check "kropka.mp3" == out.at(4) has passed
+../src/PlaylistCreatorPL_test.cpp(71): info: check "cztery.mp3" == out.at(5) has passed
+../src/PlaylistCreatorPL_test.cpp(56): Leaving test case "decimal_1123_4"; testing time: 237us
+../src/PlaylistCreatorPL_test.cpp(75): Entering test case "decimal_1103_4"
+../src/PlaylistCreatorPL_test.cpp(84): info: check 5 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(85): info: check "tysiac.mp3" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(86): info: check "sto.mp3" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(87): info: check "trzy.mp3" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(88): info: check "kropka.mp3" == out.at(3) has passed
+../src/PlaylistCreatorPL_test.cpp(89): info: check "cztery.mp3" == out.at(4) has passed
+../src/PlaylistCreatorPL_test.cpp(75): Leaving test case "decimal_1103_4"; testing time: 229us
+../src/PlaylistCreatorPL_test.cpp(93): Entering test case "decimal_1013_4"
+../src/PlaylistCreatorPL_test.cpp(102): info: check 4 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(103): info: check "tysiac.mp3" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(104): info: check "trzynascie.mp3" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(105): info: check "kropka.mp3" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(106): info: check "cztery.mp3" == out.at(3) has passed
+../src/PlaylistCreatorPL_test.cpp(93): Leaving test case "decimal_1013_4"; testing time: 230us
+../src/PlaylistCreatorPL_test.cpp(110): Entering test case "decimal_1013"
+../src/PlaylistCreatorPL_test.cpp(119): info: check 2 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(120): info: check "tysiac.mp3" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(121): info: check "trzynascie.mp3" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(110): Leaving test case "decimal_1013"; testing time: 212us
+../src/PlaylistCreatorPL_test.cpp(125): Entering test case "decimal_999"
+../src/PlaylistCreatorPL_test.cpp(134): info: check 3 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(135): info: check "dziewiecset.mp3" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(136): info: check "dziewiecdziesiat.mp3" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(137): info: check "dziewiec.mp3" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(125): Leaving test case "decimal_999"; testing time: 214us
+../src/PlaylistCreatorPL_test.cpp(141): Entering test case "decimal_11"
+../src/PlaylistCreatorPL_test.cpp(150): info: check 1 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(151): info: check "jedenascie.mp3" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(141): Leaving test case "decimal_11"; testing time: 263us
+Leaving test module "PlaylistCreatorPL_test"; testing time: 1830us
