@@ -30,12 +30,14 @@ public:
 	 * Returns a list of audio samples for current time
 	 * \return Vector of paths to audio files representing current time (hours and minutes)
 	 */
-	virtual std::vector<
-			std::__cxx11::basic_string<char, std::char_traits<char>,
-					std::allocator<char> >,
-			std::allocator<
+	virtual std::tuple<
+			std::vector<
 					std::__cxx11::basic_string<char, std::char_traits<char>,
-							std::allocator<char> > > > getAudioForCurrentTime();
+							std::allocator<char> >,
+					std::allocator<
+							std::__cxx11::basic_string<char,
+									std::char_traits<char>, std::allocator<char> > > >,
+			boost::posix_time::ptime> getAudioForCurrentTime() ;
 
 	/**
 	 * Returns a list of audio samples for forecast announcement like
@@ -121,7 +123,6 @@ public:
 			std::__cxx11::basic_string<char, std::char_traits<char>,
 					std::allocator<char> > > getConstantElement(
 			PlaylistCreator_ConstanElement element);
-
 };
 
 #endif /* PLAYLISTCREATORPL_H_ */

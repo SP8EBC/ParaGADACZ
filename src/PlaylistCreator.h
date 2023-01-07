@@ -11,6 +11,9 @@
 #include <vector>
 #include <string>
 #include <optional>
+#include <tuple>
+
+#include "boost/date_time/posix_time/posix_time.hpp" //include all types plus i/o
 
 /**
  * Enumeration representing different measurement units.
@@ -81,7 +84,7 @@ public:
 	 * Returns a list of audio samples for current time
 	 * \return Vector of paths to audio files representing current time (hours and minutes)
 	 */
-	virtual std::vector<std::string> getAudioForCurrentTime(void) = 0;
+	virtual std::tuple<std::vector<std::string>, boost::posix_time::ptime> getAudioForCurrentTime(void) = 0;
 
 	/**
 	 * Returns a file for given constant announcement element, or empty optional if

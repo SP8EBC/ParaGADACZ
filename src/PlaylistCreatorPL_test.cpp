@@ -153,3 +153,129 @@ BOOST_AUTO_TEST_CASE(decimal_11) {
 
 }
 
+BOOST_AUTO_TEST_CASE(integer_11) {
+	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
+	spdlog::set_level(spdlog::level::debug);
+
+	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>();
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)11);
+
+	BOOST_CHECK_EQUAL(1, out.size());
+	BOOST_CHECK_EQUAL(NUMBER_11, out.at(0));
+}
+
+BOOST_AUTO_TEST_CASE(integer_999) {
+
+	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
+	spdlog::set_level(spdlog::level::debug);
+
+	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>();
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)999);
+
+	BOOST_CHECK_EQUAL(3, out.size());
+	BOOST_CHECK_EQUAL(NUMBER_900, out.at(0));
+	BOOST_CHECK_EQUAL(NUMBER_90, out.at(1));
+	BOOST_CHECK_EQUAL(NUMBER_9, out.at(2));
+
+}
+
+BOOST_AUTO_TEST_CASE(current_time) {
+	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
+	spdlog::set_level(spdlog::level::debug);
+
+	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>();
+
+	auto out = c->getAudioForCurrentTime();
+
+	// results of this test may very depends on current time of day
+	std::vector<std::string> playlist = std::get<0>(out);
+	boost::posix_time::ptime time = std::get<1>(out);
+
+	// hours and minutes
+	const int hours = time.time_of_day().hours();
+	const int minutes = time.time_of_day().minutes();
+
+	BOOST_TEST_MESSAGE("playlist content");
+
+	for (std::string elem : playlist) {
+		BOOST_TEST_MESSAGE(elem);
+	}
+
+	// const
+	BOOST_CHECK_EQUAL(*(playlist.begin()), TIME);
+	BOOST_CHECK_EQUAL(*(playlist.end() - 1), UTC);
+
+	int i = 1;
+
+	// then check parts which depends on current time
+	switch (hours) {
+		case 0: BOOST_CHECK_EQUAL(NUMBER_0, playlist.at(i++)); break;
+		case 1: BOOST_CHECK_EQUAL(ONE_CLOCK, playlist.at(i++)); break;
+		case 2: BOOST_CHECK_EQUAL(TWO_CLOCK, playlist.at(i++)); break;
+		case 3: BOOST_CHECK_EQUAL(THREE_CLOCK, playlist.at(i++)); break;
+		case 4: BOOST_CHECK_EQUAL(FOUR_CLOCK, playlist.at(i++)); break;
+		case 5: BOOST_CHECK_EQUAL(FIVE_CLOCK, playlist.at(i++)); break;
+		case 6: BOOST_CHECK_EQUAL(SIX_CLOCK, playlist.at(i++)); break;
+		case 7: BOOST_CHECK_EQUAL(SEVEN_CLOCK, playlist.at(i++)); break;
+		case 8: BOOST_CHECK_EQUAL(EIGHT_CLOCK, playlist.at(i++)); break;
+		case 9: BOOST_CHECK_EQUAL(NINE_CLOCK, playlist.at(i++)); break;
+		case 10: BOOST_CHECK_EQUAL(TEN_CLOCK, playlist.at(i++)); break;
+		case 11: BOOST_CHECK_EQUAL(ELEVEN_CLOCK, playlist.at(i++)); break;
+		case 12: BOOST_CHECK_EQUAL(TWELVE_CLOCK, playlist.at(i++)); break;
+		case 13: BOOST_CHECK_EQUAL(THIRTEEN_CLOCK, playlist.at(i++)); break;
+		case 14: BOOST_CHECK_EQUAL(FOURTEEN_CLOCK, playlist.at(i++)); break;
+		case 15: BOOST_CHECK_EQUAL(FIFVETEEN_CLOCK, playlist.at(i++)); break;
+		case 16: BOOST_CHECK_EQUAL(SIXTEEN_CLOCK, playlist.at(i++)); break;
+		case 17: BOOST_CHECK_EQUAL(SEVENTEEN_CLOCK, playlist.at(i++)); break;
+		case 18: BOOST_CHECK_EQUAL(EIGHTEEN_CLOCK, playlist.at(i++)); break;
+		case 19: BOOST_CHECK_EQUAL(NINETEEN_CLOCK, playlist.at(i++)); break;
+		case 20: BOOST_CHECK_EQUAL(TWENTY_CLOCK, playlist.at(i++)); break;
+		case 21: BOOST_CHECK_EQUAL(TWENTY_CLOCK, playlist.at(i++)); BOOST_CHECK_EQUAL(ONE_CLOCK, playlist.at(i++)); break;
+		case 22: BOOST_CHECK_EQUAL(TWENTY_CLOCK, playlist.at(i++)); BOOST_CHECK_EQUAL(TWO_CLOCK, playlist.at(i++)); break;
+		case 23: BOOST_CHECK_EQUAL(TWENTY_CLOCK, playlist.at(i++)); BOOST_CHECK_EQUAL(THREE_CLOCK, playlist.at(i++)); break;
+	}
+
+	if (minutes > 19 || minutes < 10) {
+
+		// minutes - first digit
+		switch (minutes - (minutes % 10)) {
+			//case 0: BOOST_CHECK_EQUAL(NUMBER_0, *(playlist.end() - 2)); break;
+	//		case 10: BOOST_CHECK_EQUAL(NUMBER_1, *(playlist.end() - 2)); break;
+			case 20: BOOST_CHECK_EQUAL(NUMBER_20, playlist.at(i++)); break;
+			case 30: BOOST_CHECK_EQUAL(NUMBER_30, playlist.at(i++)); break;
+			case 40: BOOST_CHECK_EQUAL(NUMBER_40, playlist.at(i++)); break;
+			case 50: BOOST_CHECK_EQUAL(NUMBER_50, playlist.at(i++)); break;
+		}
+
+		// minutes - second digit
+		switch (minutes % 10) {
+			//case 0: BOOST_CHECK_EQUAL(NUMBER_0, *(playlist.end() - 2)); break;
+			case 1: BOOST_CHECK_EQUAL(NUMBER_1, playlist.at(i++)); break;
+			case 2: BOOST_CHECK_EQUAL(NUMBER_2, playlist.at(i++)); break;
+			case 3: BOOST_CHECK_EQUAL(NUMBER_3, playlist.at(i++)); break;
+			case 4: BOOST_CHECK_EQUAL(NUMBER_4, playlist.at(i++)); break;
+			case 5: BOOST_CHECK_EQUAL(NUMBER_5, playlist.at(i++)); break;
+			case 6: BOOST_CHECK_EQUAL(NUMBER_6, playlist.at(i++)); break;
+			case 7: BOOST_CHECK_EQUAL(NUMBER_7, playlist.at(i++)); break;
+			case 8: BOOST_CHECK_EQUAL(NUMBER_8, playlist.at(i++)); break;
+			case 9: BOOST_CHECK_EQUAL(NUMBER_9, playlist.at(i++)); break;
+		}
+	}
+	else {
+		switch (minutes ) {
+			case 10: BOOST_CHECK_EQUAL(NUMBER_10, playlist.at(i++)); break;
+			case 11: BOOST_CHECK_EQUAL(NUMBER_11, playlist.at(i++)); break;
+			case 12: BOOST_CHECK_EQUAL(NUMBER_12, playlist.at(i++)); break;
+			case 13: BOOST_CHECK_EQUAL(NUMBER_13, playlist.at(i++)); break;
+			case 14: BOOST_CHECK_EQUAL(NUMBER_14, playlist.at(i++)); break;
+			case 15: BOOST_CHECK_EQUAL(NUMBER_15, playlist.at(i++)); break;
+			case 16: BOOST_CHECK_EQUAL(NUMBER_16, playlist.at(i++)); break;
+			case 17: BOOST_CHECK_EQUAL(NUMBER_17, playlist.at(i++)); break;
+			case 18: BOOST_CHECK_EQUAL(NUMBER_18, playlist.at(i++)); break;
+			case 19: BOOST_CHECK_EQUAL(NUMBER_19, playlist.at(i++)); break;
+		}
+	}
+}
+
