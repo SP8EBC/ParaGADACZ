@@ -9,8 +9,8 @@ CPP_SRCS += \
 ../src/AprxLogParser.cpp \
 ../src/ConfigurationFile.cpp \
 ../src/ForecastFinder.cpp \
-../src/PlaylistCreatorPL.cpp \
-../src/PlaylistCreatorPL_test.cpp 
+../src/PlaylistSamplerPL.cpp \
+../src/main.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
@@ -18,8 +18,8 @@ OBJS += \
 ./src/AprxLogParser.o \
 ./src/ConfigurationFile.o \
 ./src/ForecastFinder.o \
-./src/PlaylistCreatorPL.o \
-./src/PlaylistCreatorPL_test.o 
+./src/PlaylistSamplerPL.o \
+./src/main.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
@@ -27,8 +27,8 @@ CPP_DEPS += \
 ./src/AprxLogParser.d \
 ./src/ConfigurationFile.d \
 ./src/ForecastFinder.d \
-./src/PlaylistCreatorPL.d \
-./src/PlaylistCreatorPL_test.d 
+./src/PlaylistSamplerPL.d \
+./src/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

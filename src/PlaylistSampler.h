@@ -5,8 +5,8 @@
  *      Author: mateusz
  */
 
-#ifndef PLAYLISTCREATOR_H_
-#define PLAYLISTCREATOR_H_
+#ifndef PLAYLISTSAMPLER_H_
+#define PLAYLISTSAMPLER_H_
 
 #include <vector>
 #include <string>
@@ -18,7 +18,7 @@
 /**
  * Enumeration representing different measurement units.
  */
-enum PlaylistCreator_Unit {
+enum PlaylistSampler_Unit {
 	KNOTS,
 	MS,		//!< Meters per second
 	DEG,	//!< Degrees (like for wind direction)
@@ -30,14 +30,14 @@ enum PlaylistCreator_Unit {
 /**
  * Constant element of an anouncement.
  */
-enum PlaylistCreator_ConstanElement {
+enum PlaylistSampler_ConstanElement {
 	CURRENT_TIME,	//!< like "Current time is"
 	CURRENT_WEATHER,//!< "Current weather conditions"
 	FORECAST,		//!< "Forecast for next"
 	HOURS			//!< "hours"
 };
 
-class PlaylistCreator {
+class PlaylistSampler {
 
 	std::string locale;
 
@@ -79,7 +79,7 @@ public:
 	 * \param value Needed for language with which has declination depending on number
 	 * \return Path to audio file
 	 */
-	virtual std::string getAudioFromUnit(PlaylistCreator_Unit unit, int value) = 0;
+	virtual std::string getAudioFromUnit(PlaylistSampler_Unit unit, int value) = 0;
 
 	/**
 	 * Returns a list of audio samples for current time
@@ -93,7 +93,7 @@ public:
 	 * \return Optional path to file representing constant element of an announcement, or
 	 * 		   empty if no file could be found
 	 */
-	virtual std::optional<std::string> getConstantElement(PlaylistCreator_ConstanElement element) = 0;
+	virtual std::optional<std::string> getConstantElement(PlaylistSampler_ConstanElement element) = 0;
 
 	/**
 	 * Returns a list of audio samples for forecast announcement like
@@ -122,7 +122,7 @@ public:
 	 *
 	 */
 //	PlaylistCreator();
-	virtual ~PlaylistCreator() {
+	virtual ~PlaylistSampler() {
 
 	}
 //	PlaylistCreator(const PlaylistCreator &other);
@@ -131,4 +131,4 @@ public:
 //	PlaylistCreator& operator=(PlaylistCreator &&other);
 };
 
-#endif /* PLAYLISTCREATOR_H_ */
+#endif /* PLAYLISTSAMPLER_H_ */

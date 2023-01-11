@@ -5,8 +5,8 @@
  *      Author: mateusz
  */
 
-#include "PlaylistCreatorPL.h"
-#include "PlaylistCreatorPL_files.h"
+#include "PlaylistSamplerPL.h"
+#include "PlaylistSamplerPL_files.h"
 
 #undef SPDLOG_ACTIVE_LEVEL
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
@@ -16,32 +16,31 @@
 
 #include <boost/algorithm/string.hpp>
 
-PlaylistCreatorPL::PlaylistCreatorPL(ConfigurationFile & configurationFile) : config(configurationFile) {
-	// TODO Auto-generated constructor stub
+PlaylistSamplerPL::PlaylistSamplerPL(ConfigurationFile & configurationFile) : config(configurationFile) {
 
 }
 
-PlaylistCreatorPL::~PlaylistCreatorPL() {
+PlaylistSamplerPL::~PlaylistSamplerPL() {
 	// TODO Auto-generated destructor stub
 }
 
-PlaylistCreatorPL::PlaylistCreatorPL(const PlaylistCreatorPL &other) : config(other.config) {
+PlaylistSamplerPL::PlaylistSamplerPL(const PlaylistSamplerPL &other) : config(other.config) {
 	// TODO Auto-generated constructor stub
 
 }
 
-PlaylistCreatorPL::PlaylistCreatorPL(PlaylistCreatorPL &&other) : config(other.config) {
+PlaylistSamplerPL::PlaylistSamplerPL(PlaylistSamplerPL &&other) : config(other.config) {
 	// TODO Auto-generated constructor stub
 
 }
 
-PlaylistCreatorPL& PlaylistCreatorPL::operator=(
-		const PlaylistCreatorPL &other) {
+PlaylistSamplerPL& PlaylistSamplerPL::operator=(
+		const PlaylistSamplerPL &other) {
 	// TODO Auto-generated method stub
 
 }
 
-PlaylistCreatorPL& PlaylistCreatorPL::operator=(PlaylistCreatorPL &&other) {
+PlaylistSamplerPL& PlaylistSamplerPL::operator=(PlaylistSamplerPL &&other) {
 	// TODO Auto-generated method stub
 
 }
@@ -61,7 +60,7 @@ std::tuple<
 				std::allocator<
 						std::__cxx11::basic_string<char,
 								std::char_traits<char>, std::allocator<char> > > >,
-		boost::posix_time::ptime> PlaylistCreatorPL::getAudioForCurrentTime() {
+		boost::posix_time::ptime> PlaylistSamplerPL::getAudioForCurrentTime() {
 
 	// get current time
 	boost::posix_time::ptime current = boost::posix_time::second_clock::universal_time();
@@ -138,7 +137,7 @@ std::optional<
 						std::allocator<char> >,
 				std::allocator<
 						std::__cxx11::basic_string<char, std::char_traits<char>,
-								std::allocator<char> > > > > PlaylistCreatorPL::getAudioForForecastAnouncement(
+								std::allocator<char> > > > > PlaylistSamplerPL::getAudioForForecastAnouncement(
 		int minutes) {
 
 
@@ -189,7 +188,7 @@ std::vector<
 				std::allocator<char> >,
 		std::allocator<
 				std::__cxx11::basic_string<char, std::char_traits<char>,
-						std::allocator<char> > > > PlaylistCreatorPL::getAudioListFromNumber(
+						std::allocator<char> > > > PlaylistSamplerPL::getAudioListFromNumber(
 		float decimal) {
 
 	std::vector<std::string> out;
@@ -335,7 +334,7 @@ std::vector<
  */
 std::optional<
 		std::__cxx11::basic_string<char, std::char_traits<char>,
-				std::allocator<char> > > PlaylistCreatorPL::getAudioForStationName(
+				std::allocator<char> > > PlaylistSamplerPL::getAudioForStationName(
 		std::string name) {
 
 	std::optional<std::string> out = std::nullopt;
@@ -368,7 +367,7 @@ std::optional<
  *
  * \param name weather station or forecast point name
  */
-std::optional<std::string> PlaylistCreatorPL::getAudioForForecastName(std::string name)
+std::optional<std::string> PlaylistSamplerPL::getAudioForForecastName(std::string name)
 {
 	std::optional<std::string> out = std::nullopt;
 
@@ -411,7 +410,7 @@ std::vector<
 				std::allocator<char> >,
 		std::allocator<
 				std::__cxx11::basic_string<char, std::char_traits<char>,
-						std::allocator<char> > > > PlaylistCreatorPL::getAudioListFromNumber(
+						std::allocator<char> > > > PlaylistSamplerPL::getAudioListFromNumber(
 		int integer) {
 
 	std::vector<std::string> out;
@@ -530,44 +529,44 @@ std::vector<
  * \param value Needed for language which has declination depending on number
  * \return Path to audio file
  */
-std::string PlaylistCreatorPL::getAudioFromUnit(PlaylistCreator_Unit unit, int value) {
+std::string PlaylistSamplerPL::getAudioFromUnit(PlaylistSampler_Unit unit, int value) {
 
 	std::string out;
 
-	if (unit == PlaylistCreator_Unit::PERCENT) {
+	if (unit == PlaylistSampler_Unit::PERCENT) {
 		// percents doesn't depends on value, it always "procent"
 		out = PERCENTS;
 	}
-	else if (unit == PlaylistCreator_Unit::HPA) {
+	else if (unit == PlaylistSampler_Unit::HPA) {
 		// the same with hectopascals. it will be always >>>> 4
 		out = HECTOPASCALS;
 	}
-	else if (unit == PlaylistCreator_Unit::CELSIUS) {
+	else if (unit == PlaylistSampler_Unit::CELSIUS) {
 		// celsius will be second word after
 		out = CELSIUSS;
 	}
 	else {
 		if ( value == 1) {
 			switch (unit) {
-			case PlaylistCreator_Unit::KNOTS:	out = KNOT_ONE; 		break;
-			case PlaylistCreator_Unit::MS:		out = MS_ONE;			break;
-			case PlaylistCreator_Unit::DEG:		out = DEGREE_ONE;		break;
+			case PlaylistSampler_Unit::KNOTS:	out = KNOT_ONE; 		break;
+			case PlaylistSampler_Unit::MS:		out = MS_ONE;			break;
+			case PlaylistSampler_Unit::DEG:		out = DEGREE_ONE;		break;
 			default: break;
 			}
 		}
 		else if ( value == 2 || value == 3 || value == 4) {
 			switch (unit) {
-			case PlaylistCreator_Unit::KNOTS:	out = KNOT_TWO_FOUR; 		break;
-			case PlaylistCreator_Unit::MS:		out = MS_TWO_FOUR;			break;
-			case PlaylistCreator_Unit::DEG:		out = DEGREE_TWO_FOUR;		break;
+			case PlaylistSampler_Unit::KNOTS:	out = KNOT_TWO_FOUR; 		break;
+			case PlaylistSampler_Unit::MS:		out = MS_TWO_FOUR;			break;
+			case PlaylistSampler_Unit::DEG:		out = DEGREE_TWO_FOUR;		break;
 			default: break;
 			}
 		}
 		else {
 			switch (unit) {
-			case PlaylistCreator_Unit::KNOTS:	out = KNOT_TWO_FOUR; 		break;
-			case PlaylistCreator_Unit::MS:		out = MS_TWO_FOUR;			break;
-			case PlaylistCreator_Unit::DEG:		out = DEGREE_TWO_FOUR;		break;
+			case PlaylistSampler_Unit::KNOTS:	out = KNOT_TWO_FOUR; 		break;
+			case PlaylistSampler_Unit::MS:		out = MS_TWO_FOUR;			break;
+			case PlaylistSampler_Unit::DEG:		out = DEGREE_TWO_FOUR;		break;
 			default: break;
 			}
 		}
@@ -584,8 +583,8 @@ std::string PlaylistCreatorPL::getAudioFromUnit(PlaylistCreator_Unit unit, int v
  */
 std::optional<
 		std::__cxx11::basic_string<char, std::char_traits<char>,
-				std::allocator<char> > > PlaylistCreatorPL::getConstantElement(
-		PlaylistCreator_ConstanElement element) {
+				std::allocator<char> > > PlaylistSamplerPL::getConstantElement(
+		PlaylistSampler_ConstanElement element) {
 
 	switch (element) {
 	case CURRENT_TIME:	return TIME;	//!< like "Current time is"

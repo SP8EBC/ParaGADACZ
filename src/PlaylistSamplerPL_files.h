@@ -5,8 +5,8 @@
  *      Author: mateusz
  */
 
-#ifndef PLAYLISTCREATORPL_FILES_H_
-#define PLAYLISTCREATORPL_FILES_H_
+#ifndef PLAYLISTSAMPLERPL_FILES_H_
+#define PLAYLISTSAMPLERPL_FILES_H_
 
 #define DECIMAL		 "kropka.mp3"
 
@@ -129,4 +129,4 @@
 
 #define NUMBER_2_	"dwie.mp3"
 
-#endif /* PLAYLISTCREATORPL_FILES_H_ */
+#endif /* PLAYLISTSAMPLERPL_FILES_H_ */

@@ -60,13 +60,13 @@ int main() {
     libvlc_event_manager_t *evm;
 
     auto type = listofAllStation.listOfAllStationsGet().get();
-    auto skrzyczne_summary = stationApi.stationStationNameSummaryGet("skrzyczne").get();
+    std::shared_ptr<org::openapitools::client::model::Summary> skrzyczne_summary = stationApi.stationStationNameSummaryGet("skrzyczne").get();
 
 	apiConfiguration.setBaseUrl("http://my.meteoblue.com/packages/");
 	apiClient->setConfiguration(apiConfigurationPtr);
 
 	org::openapitools::client::api::ForecastApi forecastApi(apiClient);
-	auto forecast = forecastApi.basicDayBasic3hGet(19.03, 49.68, "timestamp_utc", METEOBLUE_API_KEY, boost::optional<std::string>()).get();
+	std::shared_ptr<org::openapitools::client::model::Inline_response_200> forecast = forecastApi.basicDayBasic3hGet(19.03, 49.68, "timestamp_utc", METEOBLUE_API_KEY, boost::optional<std::string>()).get();
 
 	std::tuple<int64_t, float> temperature = ForecastFinder::getTemperatureMeteoblue(forecast, 180);
 
