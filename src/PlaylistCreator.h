@@ -76,9 +76,10 @@ public:
 	 * Returns single path to audio file
 	 *
 	 * \param unit Measurement unit to get audio file for
+	 * \param value Needed for language with which has declination depending on number
 	 * \return Path to audio file
 	 */
-	virtual std::string getAudioFromUnit(PlaylistCreator_Unit unit) = 0;
+	virtual std::string getAudioFromUnit(PlaylistCreator_Unit unit, int value) = 0;
 
 	/**
 	 * Returns a list of audio samples for current time
@@ -102,12 +103,20 @@ public:
 	virtual std::optional<std::vector<std::string>> getAudioForForecastAnouncement(int minutes) = 0;
 
 	/**
-	 * Returns an audio file with given station name or forecast name. If the station is unknown
+	 * Returns an audio file with given station name. If the station is unknown
 	 * enpty optional is returned
 	 *
 	 * \param name weather station or forecast point name
 	 */
 	virtual std::optional<std::string> getAudioForStationName(std::string name) = 0;
+
+	/**
+	 * Returns an audio file with given forecast name. If the station is unknown
+	 * enpty optional is returned
+	 *
+	 * \param name weather station or forecast point name
+	 */
+	virtual std::optional<std::string> getAudioForForecastName(std::string name) = 0;
 
 	/**
 	 *

@@ -32,7 +32,55 @@
 #define TWENTY_CLOCK	"dwudziesta.mp3"
 
 #define TIME	"godzina.mp3"
-#define UTC		"czasu_lokalnego.mp3"
+#define UTC		"czasu_uniwersalnego.mp3"
+
+#define WEATHER	"aktualne_warunki.mp3"
+#define FCAST	"prognoza_pogody.mp3"
+#define FOR_NEXT"na_nastepne.mp3"
+
+#define WINDSPEED	"predkosc_wiatru.mp3"
+#define WINDGUSTS	"porywy.mp3"
+#define DIRECTION	"wiatr.mp3"
+#define TEMPERATURE	"temperatura.mp3"
+#define QNH			"cisnienie.mp3"
+#define HUMIDITY	"wilgotnosc.mp3"
+
+#define DIRECTION_N		"polnocny.mp3"
+#define DIRECTION_NNE	"polnocny_polnocno_wschodni.mp3"
+#define DIRECTION_NE	"polnocno_wschodni.mp3"
+#define DIRECTION_ENE	"wschodni_polnocno_wschodni.mp3"
+#define DIRECTION_E		"wschodni.mp3"
+#define DIRECTION_ESE	"wschodni_poludniowo_wschodni.mp3"
+#define DIRECTION_SE	"poludniowo_wschodni.mp3"
+#define DIRECTION_SSE	"poludniowy_poludniowo_wschodni.mp3"
+#define DIRECTION_S		"poludniowy.mp3"
+#define DIRECTION_SSW	"poludniowy_poludniowo_zachodni.mp3"
+#define DIRECTION_SW	"poludniowo_zachodni.mp3"
+#define DIRECTION_WSW	"wschodni_poludniowo_wschodni.mp3"
+#define DIRECTION_W		"zachodni.mp3"
+#define DIRECTION_WNW	"zachodni_polnocno_zachodni.mp3"
+#define DIRECTION_NW	"polnocno_zachodni.mp3"
+#define DIRECTION_NNW	"polnocny_polnocno_zachodni.mp3"
+
+#define MS_ONE		"metr_na_sekunde.mp3"
+#define MS_TWO_FOUR	"metry_na_sekunde.mp3"
+#define MS_FOUR		"metrow_na_sekunde.mp3"
+
+#define KNOT_ONE		"wezel.mp3"
+#define KNOT_TWO_FOUR	"wezly.mp3"
+#define KNOT_FOUR		"wezlow.mp3"
+
+#define DEGREE_ONE			"stopien.mp3"
+#define DEGREE_TWO_FOUR		"stopnie.mp3"
+#define DEGREE_FOUR			"stopni.mp3"
+
+#define HOUR_ONE		"godzine.mp3"
+#define HOUR_TWO_FOUR	"godziny.mp3"
+#define HOUR_FOUR		"godzin.mp3"
+
+#define HECTOPASCALS	"hektopaskale.mp3"
+#define PERCENTS		"procent.mp3"
+#define CELSIUSS		"celsjusza.mp3"
 
 #define NUMBER_1k    "tysiac.mp3"
 #define NUMBER_2k_4k "tysiace.mp3"
@@ -79,5 +127,6 @@
 #define NUMBER_9	"dziewiec.mp3"
 #define NUMBER_0	"zero.mp3"
 
+#define NUMBER_2_	"dwie.mp3"
 
 #endif /* PLAYLISTCREATORPL_FILES_H_ */

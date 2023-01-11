@@ -9,7 +9,6 @@ CPP_SRCS += \
 ../src/AprxLogParser.cpp \
 ../src/ConfigurationFile.cpp \
 ../src/ForecastFinder.cpp \
-../src/ForecastFinder_test.cpp \
 ../src/PlaylistCreatorPL.cpp \
 ../src/PlaylistCreatorPL_test.cpp 
 
@@ -19,7 +18,6 @@ OBJS += \
 ./src/AprxLogParser.o \
 ./src/ConfigurationFile.o \
 ./src/ForecastFinder.o \
-./src/ForecastFinder_test.o \
 ./src/PlaylistCreatorPL.o \
 ./src/PlaylistCreatorPL_test.o 
 
@@ -29,7 +27,6 @@ CPP_DEPS += \
 ./src/AprxLogParser.d \
 ./src/ConfigurationFile.d \
 ./src/ForecastFinder.d \
-./src/ForecastFinder_test.d \
 ./src/PlaylistCreatorPL.d \
 ./src/PlaylistCreatorPL_test.d 
 

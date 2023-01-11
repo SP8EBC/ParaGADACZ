@@ -14,7 +14,9 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-PlaylistCreatorPL::PlaylistCreatorPL() {
+#include <boost/algorithm/string.hpp>
+
+PlaylistCreatorPL::PlaylistCreatorPL(ConfigurationFile & configurationFile) : config(configurationFile) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -23,12 +25,12 @@ PlaylistCreatorPL::~PlaylistCreatorPL() {
 	// TODO Auto-generated destructor stub
 }
 
-PlaylistCreatorPL::PlaylistCreatorPL(const PlaylistCreatorPL &other) {
+PlaylistCreatorPL::PlaylistCreatorPL(const PlaylistCreatorPL &other) : config(other.config) {
 	// TODO Auto-generated constructor stub
 
 }
 
-PlaylistCreatorPL::PlaylistCreatorPL(PlaylistCreatorPL &&other) {
+PlaylistCreatorPL::PlaylistCreatorPL(PlaylistCreatorPL &&other) : config(other.config) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -138,6 +140,35 @@ std::optional<
 						std::__cxx11::basic_string<char, std::char_traits<char>,
 								std::allocator<char> > > > > PlaylistCreatorPL::getAudioForForecastAnouncement(
 		int minutes) {
+
+
+	if ((minutes % 60) != 0) {
+		return std::nullopt;
+	}
+	else {
+		std::vector<std::string> out;
+
+		// "prognoza pogody na nastepne"
+		out.push_back(FCAST);
+
+		out.push_back(FOR_NEXT);
+
+		switch ((int)(minutes / 60)) {
+		case 1: out.push_back(NUMBER_1); out.push_back(HOUR_ONE); break;
+		case 2: out.push_back(NUMBER_2_); out.push_back(HOUR_TWO_FOUR); break;
+		case 3: out.push_back(NUMBER_3); out.push_back(HOUR_TWO_FOUR);  break;
+		case 4: out.push_back(NUMBER_4); out.push_back(HOUR_TWO_FOUR);  break;
+		case 5: out.push_back(NUMBER_5); out.push_back(HOUR_FOUR);  break;
+		case 6: out.push_back(NUMBER_6); out.push_back(HOUR_FOUR);  break;
+		case 7: out.push_back(NUMBER_7); out.push_back(HOUR_FOUR);  break;
+		case 8: out.push_back(NUMBER_8); out.push_back(HOUR_FOUR);  break;
+		case 9: out.push_back(NUMBER_9); out.push_back(HOUR_FOUR);  break;
+		}
+
+		return out;
+
+	}
+
 }
 
 /**
@@ -306,6 +337,61 @@ std::optional<
 		std::__cxx11::basic_string<char, std::char_traits<char>,
 				std::allocator<char> > > PlaylistCreatorPL::getAudioForStationName(
 		std::string name) {
+
+	std::optional<std::string> out = std::nullopt;
+
+	boost::to_upper(name);
+
+	// get meteoblue forecast configuration
+	const std::vector<ConfigurationFile_CurrentWeather> & stations = config.getCurrent();
+
+	// iterate through all configuration
+	for (auto station : stations) {
+		// get a copy of a name of this station
+		std::string location_name = station.name;
+
+		// convert uppercase
+		boost::to_upper(location_name);
+
+		// check if this is the thing we're looking for
+		if (location_name == name) {
+			out = station.nameIdent;
+		}
+	}
+
+	return out;
+}
+
+/**
+ * Returns an audio file with given forecast name. If the station is unknown
+ * enpty optional is returned
+ *
+ * \param name weather station or forecast point name
+ */
+std::optional<std::string> PlaylistCreatorPL::getAudioForForecastName(std::string name)
+{
+	std::optional<std::string> out = std::nullopt;
+
+	boost::to_upper(name);
+
+	// get meteoblue forecast configuration
+	const ConfigurationFile_ForecastMeteoblue & forecasts = config.getForecast();
+
+	// iterate through all configuration
+	for (auto location : forecasts.locations) {
+		// get a copy of a name of this station
+		std::string location_name = location.name;
+
+		// convert uppercase
+		boost::to_upper(location_name);
+
+		// check if this is the thing we're looking for
+		if (location_name == name) {
+			out = location.nameIdent;
+		}
+	}
+
+	return out;
 }
 
 /**
@@ -441,9 +527,53 @@ std::vector<
  * Returns single path to audio file
  *
  * \param unit Measurement unit to get audio file for
+ * \param value Needed for language which has declination depending on number
  * \return Path to audio file
  */
-std::string PlaylistCreatorPL::getAudioFromUnit(PlaylistCreator_Unit unit) {
+std::string PlaylistCreatorPL::getAudioFromUnit(PlaylistCreator_Unit unit, int value) {
+
+	std::string out;
+
+	if (unit == PlaylistCreator_Unit::PERCENT) {
+		// percents doesn't depends on value, it always "procent"
+		out = PERCENTS;
+	}
+	else if (unit == PlaylistCreator_Unit::HPA) {
+		// the same with hectopascals. it will be always >>>> 4
+		out = HECTOPASCALS;
+	}
+	else if (unit == PlaylistCreator_Unit::CELSIUS) {
+		// celsius will be second word after
+		out = CELSIUSS;
+	}
+	else {
+		if ( value == 1) {
+			switch (unit) {
+			case PlaylistCreator_Unit::KNOTS:	out = KNOT_ONE; 		break;
+			case PlaylistCreator_Unit::MS:		out = MS_ONE;			break;
+			case PlaylistCreator_Unit::DEG:		out = DEGREE_ONE;		break;
+			default: break;
+			}
+		}
+		else if ( value == 2 || value == 3 || value == 4) {
+			switch (unit) {
+			case PlaylistCreator_Unit::KNOTS:	out = KNOT_TWO_FOUR; 		break;
+			case PlaylistCreator_Unit::MS:		out = MS_TWO_FOUR;			break;
+			case PlaylistCreator_Unit::DEG:		out = DEGREE_TWO_FOUR;		break;
+			default: break;
+			}
+		}
+		else {
+			switch (unit) {
+			case PlaylistCreator_Unit::KNOTS:	out = KNOT_TWO_FOUR; 		break;
+			case PlaylistCreator_Unit::MS:		out = MS_TWO_FOUR;			break;
+			case PlaylistCreator_Unit::DEG:		out = DEGREE_TWO_FOUR;		break;
+			default: break;
+			}
+		}
+	}
+
+	return out;
 }
 
 /**
@@ -456,4 +586,13 @@ std::optional<
 		std::__cxx11::basic_string<char, std::char_traits<char>,
 				std::allocator<char> > > PlaylistCreatorPL::getConstantElement(
 		PlaylistCreator_ConstanElement element) {
+
+	switch (element) {
+	case CURRENT_TIME:	return TIME;	//!< like "Current time is"
+	case CURRENT_WEATHER:	return WEATHER;	//!< "Current weather conditions"
+	case FORECAST:		return FCAST;	//!< "Forecast for next"
+	case HOURS:			return HOUR_TWO_FOUR;				//!< "hours"
+	}
+
+	return {};
 }

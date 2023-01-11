@@ -59,6 +59,7 @@ struct ConfigurationFile_CurrentWeather {
 };
 
 struct ConfigurationFile_ForecastMeteoblue_Locations {
+	std::string name;	//!< Name od this forecast point
 	float latitude;
 	float longitude;
 	std::string nameIdent; //!< Name of audio file with this forecast point name/identification

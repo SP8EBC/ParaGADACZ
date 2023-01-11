@@ -9,14 +9,18 @@
 #define PLAYLISTCREATORPL_H_
 
 #include "PlaylistCreator.h"
+#include "ConfigurationFile.h"
 
 /**
  * This class is a speicifc implementation of PlaylistCreator for Polish
  * language.
  */
 class PlaylistCreatorPL: public virtual PlaylistCreator {
+
+	ConfigurationFile & config;
+
 public:
-	PlaylistCreatorPL();
+	PlaylistCreatorPL(ConfigurationFile & configurationFile);
 	virtual ~PlaylistCreatorPL();
 	PlaylistCreatorPL(const PlaylistCreatorPL &other);
 	PlaylistCreatorPL(PlaylistCreatorPL &&other);
@@ -86,6 +90,14 @@ public:
 			std::string name);
 
 	/**
+	 * Returns an audio file with given forecast name. If the station is unknown
+	 * enpty optional is returned
+	 *
+	 * \param name weather station or forecast point name
+	 */
+	virtual std::optional<std::string> getAudioForForecastName(std::string name);
+
+	/**
 	 * Returns a list of audio files representing given integer number (may be negative).
 	 * As an example, number -123 will return in English:
 	 * 		minus.mp3
@@ -109,9 +121,10 @@ public:
 	 * Returns single path to audio file
 	 *
 	 * \param unit Measurement unit to get audio file for
+	 * \param value Needed for language which has declination depending on number
 	 * \return Path to audio file
 	 */
-	virtual std::string getAudioFromUnit(PlaylistCreator_Unit unit);
+	virtual std::string getAudioFromUnit(PlaylistCreator_Unit unit, int value);
 
 	/**
 	 * Returns a file for given constant announcement element, or empty optional if

@@ -192,6 +192,7 @@ bool ConfigurationFile::parse() {
 		for (int i = 0; i < forecastPoints.getLength(); i++) {
 			ConfigurationFile_ForecastMeteoblue_Locations l;
 
+			forecastPoints[i].lookupValue("Name", l.name);
 			forecastPoints[i].lookupValue("Latitude", l.latitude);
 			forecastPoints[i].lookupValue("Longitude", l.longitude);
 			forecastPoints[i].lookupValue("NameIdent", l.nameIdent);

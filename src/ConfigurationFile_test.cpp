@@ -63,6 +63,7 @@ BOOST_AUTO_TEST_CASE (simple_parse)
 	/////////////////
 	BOOST_CHECK_EQUAL(configurationFile.getForecast().futureTime , 180);
 	BOOST_CHECK_EQUAL(configurationFile.getForecast().locations.size(), 2);
+	BOOST_CHECK_EQUAL(configurationFile.getForecast().locations.at(0).name, "Skrzyczne");
 	BOOST_CHECK_EQUAL(configurationFile.getForecast().locations.at(0).nameIdent, "costam.mp3");
 	BOOST_CHECK_EQUAL(configurationFile.getForecast().locations.at(0).sayPrecipation, true);
 	BOOST_CHECK_EQUAL(configurationFile.getForecast().locations.at(0).sayTemperature, true);
