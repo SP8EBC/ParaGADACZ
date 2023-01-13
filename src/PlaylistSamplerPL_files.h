@@ -43,6 +43,7 @@
 #define DIRECTION	"wiatr.mp3"
 #define TEMPERATURE	"temperatura.mp3"
 #define QNH			"cisnienie.mp3"
+#define QNH_REGIONAL"cisnienie_w_regionie.mp3"
 #define HUMIDITY	"wilgotnosc.mp3"
 
 #define DIRECTION_N		"polnocny.mp3"

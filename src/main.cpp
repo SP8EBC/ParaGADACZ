@@ -25,6 +25,7 @@
 #include "secret.h"
 
 #include "ForecastFinder.h"
+#include "PlaylistAssembler.h"
 
 std::condition_variable conditionVariable;
 

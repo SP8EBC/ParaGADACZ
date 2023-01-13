@@ -34,6 +34,7 @@ enum PlaylistSampler_ConstanElement {
 	CURRENT_TIME,	//!< like "Current time is"
 	CURRENT_WEATHER,//!< "Current weather conditions"
 	FORECAST,		//!< "Forecast for next"
+	REGIONAL_QNH,	//!< "Regional pressure"
 	HOURS			//!< "hours"
 };
 

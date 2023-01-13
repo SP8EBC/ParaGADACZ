@@ -589,6 +589,7 @@ std::optional<
 	switch (element) {
 	case CURRENT_TIME:	return TIME;	//!< like "Current time is"
 	case CURRENT_WEATHER:	return WEATHER;	//!< "Current weather conditions"
+	case REGIONAL_QNH: 		return QNH_REGIONAL;
 	case FORECAST:		return FCAST;	//!< "Forecast for next"
 	case HOURS:			return HOUR_TWO_FOUR;				//!< "hours"
 	}
