@@ -35,7 +35,8 @@ enum PlaylistSampler_ConstanElement {
 	CURRENT_WEATHER,//!< "Current weather conditions"
 	FORECAST,		//!< "Forecast for next"
 	REGIONAL_QNH,	//!< "Regional pressure"
-	HOURS			//!< "hours"
+	HOURS,			//!< "hours"
+	WIND			//!< "wind"
 };
 
 class PlaylistSampler {
@@ -118,6 +119,13 @@ public:
 	 * \param name weather station or forecast point name
 	 */
 	virtual std::optional<std::string> getAudioForForecastName(std::string name) = 0;
+
+	/**
+	 * Converts wind direction to wind direction name
+	 *
+	 * \param direction
+	 */
+	virtual std::string getAudioForWindDirection(int direction) = 0;
 
 	/**
 	 *

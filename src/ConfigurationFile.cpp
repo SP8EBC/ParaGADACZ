@@ -148,7 +148,7 @@ bool ConfigurationFile::parse() {
 				c.type = type;
 
 				currentWeather[i].lookupValue("Name", c.name);
-				currentWeather[i].lookupValue("NameIdent", c.nameIdent);
+				currentWeather[i].lookupValue("NameIdent", c.fnIdent);
 				currentWeather[i].lookupValue("SayTemperature", c.sayTemperature);
 				currentWeather[i].lookupValue("SayWind", c.sayWind);
 				currentWeather[i].lookupValue("SayHumidity", c.sayHumidy);

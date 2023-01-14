@@ -136,6 +136,14 @@ public:
 			std::__cxx11::basic_string<char, std::char_traits<char>,
 					std::allocator<char> > > getConstantElement(
 			PlaylistSampler_ConstanElement element);
+
+	/**
+	 * Converts wind direction to wind direction name
+	 *
+	 * \param direction
+	 */
+	virtual std::string getAudioForWindDirection(int direction);
+
 };
 
 #endif /* PLAYLISTSAMPLERPL_H_ */

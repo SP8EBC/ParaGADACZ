@@ -7,7 +7,7 @@
 #include <queue>
 #include <string>
 
-using namespace std;
+//using namespace std;
 
 enum class WXDataSource {
 	APRSIS,

@@ -354,7 +354,7 @@ std::optional<
 
 		// check if this is the thing we're looking for
 		if (location_name == name) {
-			out = station.nameIdent;
+			out = station.fnIdent;
 		}
 	}
 
@@ -592,7 +592,51 @@ std::optional<
 	case REGIONAL_QNH: 		return QNH_REGIONAL;
 	case FORECAST:		return FCAST;	//!< "Forecast for next"
 	case HOURS:			return HOUR_TWO_FOUR;				//!< "hours"
+	case WIND: 			return DIRECTION;	//!< "wiatr"
 	}
 
 	return {};
+}
+
+/**
+ * Converts wind direction to wind direction name
+ *
+ * \param direction
+ */
+std::string PlaylistSamplerPL::getAudioForWindDirection(int direction) {
+
+	if (direction <= 11 && direction >= 349)
+		return DIRECTION_N;
+	else if (direction <= 34 && direction > 11)
+		return DIRECTION_NNE;
+	else if (direction <= 56 && direction > 34)
+		return DIRECTION_NE;
+	else if (direction <= 79 && direction > 56)
+		return DIRECTION_ENE;
+	else if (direction <= 101 && direction > 79)
+		return DIRECTION_E;
+	else if (direction <= 124 && direction > 101)
+		return DIRECTION_ESE;
+	else if (direction <= 146 && direction > 124)
+		return DIRECTION_SE;
+	else if (direction <= 169 && direction > 146)
+		return DIRECTION_SSE;
+	else if (direction <= 191 && direction > 169)
+		return DIRECTION_S;
+	else if (direction <= 214 && direction > 191)
+		return DIRECTION_SSW;
+	else if (direction <= 236 && direction > 214)
+		return DIRECTION_SW;
+	else if (direction <= 259 && direction > 236)
+		return DIRECTION_WSW;
+	else if (direction <= 281 && direction > 259)
+		return DIRECTION_W;
+	else if (direction <= 304 && direction > 281)
+		return DIRECTION_WNW;
+	else if (direction <= 327 && direction > 304)
+		return DIRECTION_NW;
+	else if (direction <= 349 && direction > 327)
+		return DIRECTION_NNW;
+	else
+		return "";
 }

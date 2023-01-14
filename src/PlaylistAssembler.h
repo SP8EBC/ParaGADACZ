@@ -19,10 +19,14 @@
 
 class PlaylistAssembler {
 
+	std::vector<std::string> playlist;
+
 	PlaylistSampler & playlistSampler;
 
+	ConfigurationFile & configurationFile;
+
 public:
-	PlaylistAssembler(PlaylistSampler & sampler, std::string audioBasePath);
+	PlaylistAssembler(PlaylistSampler & sampler, ConfigurationFile & config);
 	virtual ~PlaylistAssembler();
 	PlaylistAssembler(const PlaylistAssembler &other);
 	PlaylistAssembler(PlaylistAssembler &&other);
@@ -31,10 +35,8 @@ public:
 
 	/**
 	 * Initializes new playlist and appends an intro to it and optionally current time
-	 *
-	 * \param currentTime if current time announcement should be added to playlist
 	 */
-	void start(bool currentTime);
+	void start();
 
 	/**
 	 * Appends an announcement with regional pressure
@@ -44,9 +46,24 @@ public:
 	void regionalPressure (float pressure);
 
 	/**
-	 * Appends current weather conditions. Internally this methof works
+	 * Appends current weather conditions. It maintains an order defined in configuration file
 	 */
-	void currentWeather(ConfigurationFile & config, std::vector<org::openapitools::client::model::Summary> & summary, std::vector<AprsWXData> & result);
+	void currentWeather(std::vector<org::openapitools::client::model::Summary> & summary, std::vector<AprsWXData> & result);
+
+	/**
+	 * Appends meteoblue forecast
+	 */
+	void forecastMeteoblue(std::vector<org::openapitools::client::model::Inline_response_200> forecasts);
+
+	/**
+	 * Appends prerecorded anouncement either at the begining or the end
+	 */
+	void recordedAnnouncement(bool preOrPost);
+
+	/**
+	 * Appends sign off message
+	 */
+	void signOff();
 };
 
 #endif /* PLAYLISTASSEMBLER_H_ */
