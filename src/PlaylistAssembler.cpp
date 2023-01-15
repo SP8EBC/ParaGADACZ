@@ -8,11 +8,15 @@
 #include "PlaylistAssembler.h"
 #include "WrongOrderEx.h"
 #include "DefinedStationNotFoundEx.h"
+#include "UnknownStationTypeEx.h"
 
 #include <algorithm>
 
+#include <boost/algorithm/string.hpp>
+
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+
 
 PlaylistAssembler::PlaylistAssembler(PlaylistSampler & sampler, ConfigurationFile & config) : playlistSampler(sampler), configurationFile(config) {
 	// TODO Auto-generated constructor stub
@@ -88,8 +92,8 @@ void PlaylistAssembler::regionalPressure(float pressure) {
 }
 
 void PlaylistAssembler::currentWeather(
-		std::vector<org::openapitools::client::model::Summary> &summary,
-		std::vector<AprsWXData> &result) {
+		std::vector<std::pair<std::string, org::openapitools::client::model::Summary>> & summary,
+		std::vector<AprsWXData> & result) {
 
 	// add current weather anouncement
 	playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::CURRENT_WEATHER).value_or(""));
@@ -111,7 +115,7 @@ void PlaylistAssembler::currentWeather(
 
 			// find matching weather data from a set parsed from APRX file
 			auto weather = std::find_if(result.begin(), result.end(), [& w](AprsWXData & data ) {
-				if (data.call == w.name) {		// name in this case will be set to a callsign
+				if (boost::to_upper_copy(data.call) == boost::to_upper_copy(w.name)) {		// name in this case will be set to a callsign
 					return true;
 				}
 				else {
@@ -131,8 +135,48 @@ void PlaylistAssembler::currentWeather(
 
 			}
 			else {
+				SPDLOG_ERROR("DefinedStationNotFoundEx, w.type: {}, w.name: {}", w.type, w.name);
+
 				throw DefinedStationNotFoundEx();
 			}
+		}
+
+		else if (w.type == ConfigurationFile_CurrentWeatherType::POGODA_CC) {
+			// find matching weather data from a set parsed from APRX file
+			auto weather = std::find_if(
+					summary.begin(),
+					summary.end(),
+					[& w](std::pair<std::string, org::openapitools::client::model::Summary> summary_pair)
+					{
+						if (boost::to_upper_copy(summary_pair.first) == boost::to_upper_copy(w.name)) {		// name in this case will be set to a callsign
+							return true;
+						}
+						else {
+							return false;
+						}
+					});
+
+			// check if data has been found
+			if (weather != summary.end()) {
+
+				wind_speed = weather->second.getAverageSpeed();
+				wind_gusts = weather->second.getGusts();
+				temperature = weather->second.getAvgTemperature();
+				pressure = weather->second.getQnh();
+				direction = weather->second.getDirection();
+				humidity = weather->second.getHumidity();
+
+			}
+			else {
+				SPDLOG_ERROR("DefinedStationNotFoundEx, w.type: {}, w.name: {}", w.type, w.name);
+
+				throw DefinedStationNotFoundEx();
+			}
+		}
+		else {
+			SPDLOG_ERROR("UnknownStationTypeEx, w.type: {}", w.type);
+
+			throw UnknownStationTypeEx();
 		}
 
 		// put anouncement for this station
@@ -140,16 +184,74 @@ void PlaylistAssembler::currentWeather(
 
 		// put wind if it is configured
 		if (w.sayWind) {
+			SPDLOG_INFO("appending wind speed {} for station: {}", wind_speed, w.name);
+
 			// say "wind" or "kierunek"
 			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND).value_or(""));
 
-			// say wind direction as name like 'east' or 'north' (not wind direction
+			// say wind direction as name like 'east' or 'north' (not degrees)
 			playlist.push_back(playlistSampler.getAudioForWindDirection(direction));
 
-			// say wind speed
+			// say wind speed in m/s
 			intermediate = playlistSampler.getAudioListFromNumber(wind_speed);
 			playlist.insert(playlist.end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
 
+			// and the unit itself
+			playlist.push_back(playlistSampler.getAudioFromUnit(PlaylistSampler_Unit::MS, (int)wind_speed));
+
+			// say "gusts" or "porywy"
+			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND_GUSTS).value_or(""));
+
+			// and gust value
+			intermediate = playlistSampler.getAudioListFromNumber(wind_gusts);
+			playlist.insert(playlist.end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
+
+			// unit
+			playlist.push_back(playlistSampler.getAudioFromUnit(PlaylistSampler_Unit::MS, (int)wind_gusts));
+
+		}
+
+		if (w.sayTemperature) {
+			SPDLOG_INFO("appending temperature {} for station: {}", temperature,  w.name);
+
+			// say "temperature
+			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::TEMPERATURE).value_or(""));
+
+			// say wind temperature but round to integer
+			intermediate = playlistSampler.getAudioListFromNumber((int)std::round(temperature));
+			playlist.insert(playlist.end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
+
+			// and the unit itself
+			playlist.push_back(playlistSampler.getAudioFromUnit(PlaylistSampler_Unit::CELSIUS, (int)wind_speed));
+
+		}
+
+		if (w.sayHumidy) {
+			SPDLOG_INFO("appending humidity {} for station: {}", humidity, w.name);
+
+			// say "temperature
+			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(""));
+
+			// say wind temperature but round to integer
+			intermediate = playlistSampler.getAudioListFromNumber(humidity);
+			playlist.insert(playlist.end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
+
+			// and the unit itself
+			playlist.push_back(playlistSampler.getAudioFromUnit(PlaylistSampler_Unit::PERCENT, (int)wind_speed));
+		}
+
+		if (w.sayPressure) {
+			SPDLOG_INFO("appending pressure {} for station: {}", pressure, w.name);
+
+			// say "pressure
+			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(""));
+
+			// say wind temperature but round to integer
+			intermediate = playlistSampler.getAudioListFromNumber((int)std::round(pressure));
+			playlist.insert(playlist.end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
+
+			// and the unit itself
+			playlist.push_back(playlistSampler.getAudioFromUnit(PlaylistSampler_Unit::CELSIUS, (int)wind_speed));
 		}
 	}
 

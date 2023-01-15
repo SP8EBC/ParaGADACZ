@@ -13,6 +13,8 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#include <stdexcept>
+
 PlaylistSamplerPL::PlaylistSamplerPL(ConfigurationFile & configurationFile) : config(configurationFile) {
 
 }
@@ -139,6 +141,9 @@ std::optional<
 
 
 	if ((minutes % 60) != 0) {
+
+		SPDLOG_ERROR("Time step for forecast should be in 1 hour resoulution. minutes: {}", minutes);
+
 		return std::nullopt;
 	}
 	else {
@@ -291,6 +296,7 @@ std::vector<
 	// add tens if this isn't a number from 10...19 range
 	if (tens != 1) {
 		switch (units) {
+		case 0: out.push_back(NUMBER_0); break;
 		case 1: out.push_back(NUMBER_1); break;
 		case 2: out.push_back(NUMBER_2); break;
 		case 3: out.push_back(NUMBER_3); break;
@@ -343,6 +349,7 @@ std::optional<
 
 	// iterate through all configuration
 	for (auto station : stations) {
+
 		// get a copy of a name of this station
 		std::string location_name = station.name;
 
@@ -352,6 +359,8 @@ std::optional<
 		// check if this is the thing we're looking for
 		if (location_name == name) {
 			out = station.fnIdent;
+
+			SPDLOG_INFO("Found audio anonucement {} for station {}", station.name, station.fnIdent);
 		}
 	}
 
@@ -384,6 +393,8 @@ std::optional<std::string> PlaylistSamplerPL::getAudioForForecastName(std::strin
 		// check if this is the thing we're looking for
 		if (location_name == name) {
 			out = location.nameIdent;
+
+			SPDLOG_INFO("Found audio anonucement {} for meteoblue fotecast {}", name, location.nameIdent);
 		}
 	}
 
@@ -504,6 +515,7 @@ std::vector<
 	// add tens if this isn't a number from 10...19 range
 	if (tens != 1) {
 		switch (units) {
+		case 0: out.push_back(NUMBER_0); break;
 		case 1: out.push_back(NUMBER_1); break;
 		case 2: out.push_back(NUMBER_2); break;
 		case 3: out.push_back(NUMBER_3); break;
@@ -561,9 +573,9 @@ std::string PlaylistSamplerPL::getAudioFromUnit(PlaylistSampler_Unit unit, int v
 		}
 		else {
 			switch (unit) {
-			case PlaylistSampler_Unit::KNOTS:	out = KNOT_TWO_FOUR; 		break;
-			case PlaylistSampler_Unit::MS:		out = MS_TWO_FOUR;			break;
-			case PlaylistSampler_Unit::DEG:		out = DEGREE_TWO_FOUR;		break;
+			case PlaylistSampler_Unit::KNOTS:	out = KNOT_FOUR; 		break;
+			case PlaylistSampler_Unit::MS:		out = MS_FOUR;			break;
+			case PlaylistSampler_Unit::DEG:		out = DEGREE_FOUR;		break;
 			default: break;
 			}
 		}
@@ -584,13 +596,18 @@ std::optional<
 		PlaylistSampler_ConstanElement element) {
 
 	switch (element) {
-	case CURRENT_TIME:	return TIME;	//!< like "Current time is"
-	case CURRENT_WEATHER:	return WEATHER;	//!< "Current weather conditions"
-	case REGIONAL_QNH: 		return QNH_REGIONAL;
-	case FORECAST:		return FCAST;	//!< "Forecast for next"
-	case HOURS:			return HOUR_TWO_FOUR;				//!< "hours"
-	case WIND: 			return DIRECTION;	//!< "wiatr"
+	case PlaylistSampler_ConstanElement::CURRENT_TIME:	return TIME;			//!< "godzina"
+	case PlaylistSampler_ConstanElement::CURRENT_WEATHER:	return WEATHER;		//!< "Aktualne Warunki"
+	case PlaylistSampler_ConstanElement::REGIONAL_QNH: 		return QNH_REGIONAL;//!< "Ciśnienie atmosferyczne w regionie"
+	case PlaylistSampler_ConstanElement::FORECAST:		return FCAST;			//!< "Prognoza na nastepne"
+	case PlaylistSampler_ConstanElement::HOURS:			return HOUR_TWO_FOUR;	//!< "hours"
+	case PlaylistSampler_ConstanElement::WIND: 			return DIRECTION;		//!< "wiatr"
+	case PlaylistSampler_ConstanElement::TEMPERATURE: 	return TMPRATURE;
+	case PlaylistSampler_ConstanElement::HUMIDITY:		return HMIDITY;
+	case PlaylistSampler_ConstanElement::WIND_GUSTS:		return WINDGUSTS;
 	}
+
+	SPDLOG_ERROR("Unknown element: {}", element);
 
 	return {};
 }
@@ -602,7 +619,7 @@ std::optional<
  */
 std::string PlaylistSamplerPL::getAudioForWindDirection(int direction) {
 
-	if (direction <= 11 && direction >= 349)
+	if ((direction <= 11 && direction >= 0) || (direction > 349 && direction < 360))
 		return DIRECTION_N;
 	else if (direction <= 34 && direction > 11)
 		return DIRECTION_NNE;
@@ -634,6 +651,9 @@ std::string PlaylistSamplerPL::getAudioForWindDirection(int direction) {
 		return DIRECTION_NW;
 	else if (direction <= 349 && direction > 327)
 		return DIRECTION_NNW;
-	else
-		return "";
+	else {
+		SPDLOG_ERROR("Unknown wind direction, directon {}", direction);
+		throw std::range_error("");
+		//return "";
+	}
 }

@@ -41,10 +41,10 @@
 #define WINDSPEED	"predkosc_wiatru.mp3"
 #define WINDGUSTS	"porywy.mp3"
 #define DIRECTION	"wiatr.mp3"
-#define TEMPERATURE	"temperatura.mp3"
+#define TMPRATURE	"temperatura.mp3"
 #define QNH			"cisnienie.mp3"
 #define QNH_REGIONAL"cisnienie_w_regionie.mp3"
-#define HUMIDITY	"wilgotnosc.mp3"
+#define HMIDITY		"wilgotnosc.mp3"
 
 #define DIRECTION_N		"polnocny.mp3"
 #define DIRECTION_NNE	"polnocny_polnocno_wschodni.mp3"

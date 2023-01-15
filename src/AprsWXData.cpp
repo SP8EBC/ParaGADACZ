@@ -241,13 +241,13 @@ AprsWXData::AprsWXData(const AprsWXData& in) {
 
 	this->DebugOutput = in.DebugOutput;
 
-	this->ssid = 0;
-	this->call = "";
+	this->ssid = in.ssid;
+	this->call = in.call;
 
-	this->is_primary = false;
-	this->is_secondary = false;
+	this->is_primary = in.is_primary;
+	this->is_secondary = in.is_secondary;
 
-	this->convertPressure = false;
+	this->convertPressure = in.convertPressure;
 }
 
 AprsWXData& AprsWXData::operator =(AprsWXData& _in) {

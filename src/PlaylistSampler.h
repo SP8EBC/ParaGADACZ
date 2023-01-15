@@ -36,7 +36,11 @@ enum PlaylistSampler_ConstanElement {
 	FORECAST,		//!< "Forecast for next"
 	REGIONAL_QNH,	//!< "Regional pressure"
 	HOURS,			//!< "hours"
-	WIND			//!< "wind"
+	WIND,			//!< "wind"
+	WIND_GUSTS,		//!< "gusts"
+	TEMPERATURE,	//!< "temperature"
+	HUMIDITY		//!< "humidity
+
 };
 
 class PlaylistSampler {

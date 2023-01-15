@@ -11,8 +11,7 @@ CPP_SRCS += \
 ../src/ForecastFinder.cpp \
 ../src/PlaylistAssembler.cpp \
 ../src/PlaylistAssembler_test.cpp \
-../src/PlaylistSamplerPL.cpp \
-../src/main.cpp 
+../src/PlaylistSamplerPL.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
@@ -22,8 +21,7 @@ OBJS += \
 ./src/ForecastFinder.o \
 ./src/PlaylistAssembler.o \
 ./src/PlaylistAssembler_test.o \
-./src/PlaylistSamplerPL.o \
-./src/main.o 
+./src/PlaylistSamplerPL.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
@@ -33,15 +31,14 @@ CPP_DEPS += \
 ./src/ForecastFinder.d \
 ./src/PlaylistAssembler.d \
 ./src/PlaylistAssembler_test.d \
-./src/PlaylistSamplerPL.d \
-./src/main.d 
+./src/PlaylistSamplerPL.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
 src/%.o: ../src/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -std=c++17 -I../lib/nlohman_json_3_7_1/include/ -I../meteoblue/api -I../meteoblue/model -I../pogodacc/api -I../pogodacc -I../pogodacc/model -I/usr/include/curl -I/usr/include/spdlog -O0 -g3 -pedantic -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	g++ -std=c++17 -DSPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG -I../lib/nlohman_json_3_7_1/include/ -I../meteoblue/api -I../meteoblue/model -I../pogodacc/api -I../pogodacc -I../pogodacc/model -I/usr/include/curl -I/usr/include/spdlog -O0 -g3 -pedantic -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

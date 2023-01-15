@@ -1,0 +1,38 @@
+Running 1 test case...
+Entering test module "PlaylistAssembler_test"
+../src/PlaylistAssembler_test.cpp(47): Entering test case "current_weather_first"
+../src/PlaylistAssembler_test.cpp(88): info: check "ident.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(89): info: check "aktualne_warunki.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(90): info: check "magurka.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(91): info: check "wiatr.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(92): info: check "polnocny.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(93): info: check "zero.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(94): info: check "metrow_na_sekunde.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(95): info: check "porywy.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(96): info: check "zero.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(97): info: check "metrow_na_sekunde.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(98): info: check "temperatura.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(99): info: check "zero.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(100): info: check "celsjusza.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(101): info: check "wilgotnosc.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(102): info: check "zero.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(103): info: check "procent.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(104): info: check "skrzyczne.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(105): info: check "wiatr.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(106): info: check "wschodni.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(107): info: check "cztery.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(108): info: check "metry_na_sekunde.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(109): info: check "porywy.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(110): info: check "siedem.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(111): info: check "kropka.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(112): error: in "current_weather_first": check "siedem.mp3" == playlist[i++] has failed [siedem.mp3 != szesc.mp3]
+../src/PlaylistAssembler_test.cpp(113): info: check "metrow_na_sekunde.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(114): info: check "temperatura.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(115): info: check "dwadziescia.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(116): info: check "trzy.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(117): info: check "celsjusza.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(118): info: check "wilgotnosc.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(119): info: check "dwanascie.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(120): info: check "procent.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(47): Leaving test case "current_weather_first"; testing time: 419us
+Leaving test module "PlaylistAssembler_test"; testing time: 434us

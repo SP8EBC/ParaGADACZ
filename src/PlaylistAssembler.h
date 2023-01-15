@@ -11,6 +11,7 @@
 #define PLAYLISTASSEMBLER_H_
 
 #include <string>
+#include <utility>
 #include "PlaylistSampler.h"
 #include "Inline_response_200.h"
 #include "ConfigurationFile.h"
@@ -47,8 +48,12 @@ public:
 
 	/**
 	 * Appends current weather conditions. It maintains an order defined in configuration file
+	 *
+	 * \param summary Vector of pairs with station_name - station_summary
 	 */
-	void currentWeather(std::vector<org::openapitools::client::model::Summary> & summary, std::vector<AprsWXData> & result);
+	void currentWeather(
+			std::vector<std::pair<std::string, org::openapitools::client::model::Summary>> & summary,
+			std::vector<AprsWXData> & result);
 
 	/**
 	 * Appends meteoblue forecast
@@ -64,6 +69,10 @@ public:
 	 * Appends sign off message
 	 */
 	void signOff();
+
+	const std::vector<std::string> & getPlaylist() {
+		return playlist;
+	}
 };
 
 #endif /* PLAYLISTASSEMBLER_H_ */
