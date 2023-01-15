@@ -8,13 +8,10 @@
 #include "PlaylistSamplerPL.h"
 #include "PlaylistSamplerPL_files.h"
 
-#undef SPDLOG_ACTIVE_LEVEL
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#include <boost/algorithm/string.hpp>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
-
-#include <boost/algorithm/string.hpp>
 
 PlaylistSamplerPL::PlaylistSamplerPL(ConfigurationFile & configurationFile) : config(configurationFile) {
 

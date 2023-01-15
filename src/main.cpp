@@ -27,9 +27,13 @@
 #include "ForecastFinder.h"
 #include "PlaylistAssembler.h"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 std::condition_variable conditionVariable;
 
 std::mutex mutex;
+
 
 void callback (const struct libvlc_event_t *p_event, void *p_data) {
 	std::cout << "dupa" << std::endl;

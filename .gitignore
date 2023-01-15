@@ -35,3 +35,4 @@ secret.h
 *.out
 *.app
 /Debug/
+/Release/
