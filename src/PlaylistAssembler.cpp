@@ -6,8 +6,11 @@
  */
 
 #include "PlaylistAssembler.h"
+#include "ForecastFinder.h"
+
 #include "WrongOrderEx.h"
 #include "DefinedStationNotFoundEx.h"
+#include "AudioFileNotFoundEx.h"
 #include "UnknownStationTypeEx.h"
 
 #include <algorithm>
@@ -16,7 +19,6 @@
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
-
 
 PlaylistAssembler::PlaylistAssembler(PlaylistSampler & sampler, ConfigurationFile & config) : playlistSampler(sampler), configurationFile(config) {
 	// TODO Auto-generated constructor stub
@@ -81,6 +83,8 @@ void PlaylistAssembler::regionalPressure(float pressure) {
 
 	SPDLOG_INFO("assembling announcement for pressure: {}", pressure);
 
+	playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::REGIONAL_QNH).value_or(throwOnEmptyOptional()));
+
 	// generate playlist for rounder pressure
 	std::vector<std::string> intermediate = playlistSampler.getAudioListFromNumber((int)std::round(pressure));
 
@@ -96,7 +100,7 @@ void PlaylistAssembler::currentWeather(
 		std::vector<AprsWXData> & result) {
 
 	// add current weather anouncement
-	playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::CURRENT_WEATHER).value_or(""));
+	playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::CURRENT_WEATHER).value_or(throwOnEmptyOptional()));
 
 	// iterate through configuration
 	for (ConfigurationFile_CurrentWeather w : configurationFile.getCurrent()) {
@@ -187,7 +191,7 @@ void PlaylistAssembler::currentWeather(
 			SPDLOG_INFO("appending wind speed {} for station: {}", wind_speed, w.name);
 
 			// say "wind" or "kierunek"
-			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND).value_or(""));
+			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND).value_or(throwOnEmptyOptional()));
 
 			// say wind direction as name like 'east' or 'north' (not degrees)
 			playlist.push_back(playlistSampler.getAudioForWindDirection(direction));
@@ -200,7 +204,7 @@ void PlaylistAssembler::currentWeather(
 			playlist.push_back(playlistSampler.getAudioFromUnit(PlaylistSampler_Unit::MS, (int)wind_speed));
 
 			// say "gusts" or "porywy"
-			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND_GUSTS).value_or(""));
+			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND_GUSTS).value_or(throwOnEmptyOptional()));
 
 			// and gust value
 			intermediate = playlistSampler.getAudioListFromNumber(wind_gusts);
@@ -215,7 +219,7 @@ void PlaylistAssembler::currentWeather(
 			SPDLOG_INFO("appending temperature {} for station: {}", temperature,  w.name);
 
 			// say "temperature
-			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::TEMPERATURE).value_or(""));
+			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::TEMPERATURE).value_or(throwOnEmptyOptional()));
 
 			// say wind temperature but round to integer
 			intermediate = playlistSampler.getAudioListFromNumber((int)std::round(temperature));
@@ -230,7 +234,7 @@ void PlaylistAssembler::currentWeather(
 			SPDLOG_INFO("appending humidity {} for station: {}", humidity, w.name);
 
 			// say "temperature
-			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(""));
+			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(throwOnEmptyOptional()));
 
 			// say wind temperature but round to integer
 			intermediate = playlistSampler.getAudioListFromNumber(humidity);
@@ -244,7 +248,7 @@ void PlaylistAssembler::currentWeather(
 			SPDLOG_INFO("appending pressure {} for station: {}", pressure, w.name);
 
 			// say "pressure
-			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(""));
+			playlist.push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(throwOnEmptyOptional()));
 
 			// say wind temperature but round to integer
 			intermediate = playlistSampler.getAudioListFromNumber((int)std::round(pressure));
@@ -258,10 +262,82 @@ void PlaylistAssembler::currentWeather(
 }
 
 void PlaylistAssembler::forecastMeteoblue(
-		std::vector<org::openapitools::client::model::Inline_response_200> forecasts) {
+		std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> forecasts) {
+
+	// generate forecast anouncement
+	std::optional<std::vector<std::string>> intermediate = playlistSampler.getAudioForForecastAnouncement(configurationFile.getForecast().futureTime);
+
+	// and put this into the playlist
+	if (intermediate.has_value()) {
+		playlist.insert(playlist.end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
+	}
+	else {
+		throw new AudioFileNotFoundEx();
+	}
+
+	// iterate through all configured locations for forecast
+	for (ConfigurationFile_ForecastMeteoblue_Locations location : configurationFile.getForecast().locations) {
+
+		// location from the configuration, a name of forecast to find (in uppercase)
+		std::string nameUppercase = boost::to_upper_copy(location.name);
+
+		// look for matching forecast in API response
+		auto found = std::find_if(forecasts.begin(), forecasts.end(), [& location](std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> r) {
+			std::string locationUppercase = boost::to_upper_copy(location.name);
+
+			std::string forecastUppercase = boost::to_upper_copy(r.first);
+
+			// check if this is what we're looking for
+			if (forecastUppercase == locationUppercase) {
+				return true;
+			}
+			else {
+				return false;
+			}
+
+		});
+
+		// check if anything has been found
+		if (found == forecasts.end()) {
+			SPDLOG_ERROR("DefinedStationNotFoundEx, location.name: {}", location.name);
+
+			throw DefinedStationNotFoundEx();
+		}
+
+		// extract forecast API response from the pair
+		std::shared_ptr<org::openapitools::client::model::Inline_response_200> foundForecast = found->second;
+
+
+		if (location.sayWind) {
+
+		}
+
+		if (location.sayTemperature) {
+			std::tuple<int64_t, float> temperature = ForecastFinder::getTemperatureMeteoblue(foundForecast, configurationFile.getForecast().futureTime);
+
+		}
+	}
 }
 
 void PlaylistAssembler::recordedAnnouncement(bool preOrPost) {
+
+	std::vector<std::string> filesToAppend;
+
+	if (preOrPost) {
+		filesToAppend = configurationFile.getRecordedSpecialAnnouncementPost();
+	}
+	else {
+		filesToAppend = configurationFile.getRecordedSpecialAnnouncementPre();
+	}
+
+	for (std::string file : filesToAppend) {
+		playlist.push_back(file);
+	}
+
+}
+
+std::string PlaylistAssembler::throwOnEmptyOptional() {
+	throw AudioFileNotFoundEx();
 }
 
 void PlaylistAssembler::signOff() {

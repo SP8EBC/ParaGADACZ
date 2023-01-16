@@ -23,6 +23,13 @@ class ForecastFinder {
 public:
 	static std::tuple<int64_t, float> getTemperatureMeteoblue(std::shared_ptr<org::openapitools::client::model::Inline_response_200> meteoblueData, uint16_t minutesFromNow);
 
+	static std::tuple<int64_t, float> getWindSpeedMeteoblue(std::shared_ptr<org::openapitools::client::model::Inline_response_200> meteoblueData, uint16_t minutesFromNow);
+
+	static std::tuple<int64_t, float> getWindGustsMeteoblue(std::shared_ptr<org::openapitools::client::model::Inline_response_200> meteoblueData, uint16_t minutesFromNow);
+
+	static std::tuple<int64_t, float> getWindDirectionMeteoblue(std::shared_ptr<org::openapitools::client::model::Inline_response_200> meteoblueData, uint16_t minutesFromNow);
+
+
 	static float getRegionalPressure(ConfigurationFile & config, std::vector<org::openapitools::client::model::Summary> & summary, std::vector<AprsWXData> & result);
 
 private:

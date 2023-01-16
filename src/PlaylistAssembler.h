@@ -12,6 +12,8 @@
 
 #include <string>
 #include <utility>
+#include <memory>
+
 #include "PlaylistSampler.h"
 #include "Inline_response_200.h"
 #include "ConfigurationFile.h"
@@ -25,6 +27,8 @@ class PlaylistAssembler {
 	PlaylistSampler & playlistSampler;
 
 	ConfigurationFile & configurationFile;
+
+	std::string throwOnEmptyOptional();
 
 public:
 	PlaylistAssembler(PlaylistSampler & sampler, ConfigurationFile & config);
@@ -58,7 +62,7 @@ public:
 	/**
 	 * Appends meteoblue forecast
 	 */
-	void forecastMeteoblue(std::vector<org::openapitools::client::model::Inline_response_200> forecasts);
+	void forecastMeteoblue(std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> forecasts);
 
 	/**
 	 * Appends prerecorded anouncement either at the begining or the end
