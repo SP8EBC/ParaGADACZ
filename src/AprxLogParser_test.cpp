@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE (with_ssid)
 {
 	const std::string expected = "2022-12-03 14:05:29.678 SR9NSK    R SQ5BUJ-7>APAT81,SR7NST*,WIDE1*,WIDE2-1:!5042.54N/02024.29E>198/066/A=000902145.500MHz TG2605 FMLINK JANEK";
 
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE (cieszyn_find_first_no_wx_only)
 {
 	const std::string expected = "2022-12-03 14:06:07.521 SR9NSK    R SR9NCI>AKLPRZ,WIDE2-1::SR9NCI   :EQNS.0,1,0,0,1,0,0,1,0,0,1,0,0,0.25,-25";
 
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 
@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE (cieszyn_find_first_wx_only)
 {
 	const std::string expected = "2022-12-03 14:09:11.801 SR9NSK    R SR9NCI>AKLPRZ,WIDE2-1:!4944.22N/01838.20E_013/000g002t037r...p...P...b00000";
 
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE (cieszyn_convert_to_wxdata)
 	BOOST_TEST_MESSAGE("2022-12-03 14:29:22.996 SR9NSK    R SR9NCI>AKLPRZ,SR9GM-2*,WIDE2*:!4944.22N/01838.20E_045/005g007t036r...p...P...b00000");
 
 
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 	parser.rewindFile();
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE (cieszyn_convert_to_wxdata)
 // 2022-12-03 14:27:29.321 SR9NSK    R SP9UVG-13>APMI06,SR9GM-2*,SP9DLM*,WIDE2*:@031427z5010.48N/01913.46E_000/007g007t030r000p000P...h91b10213 WX Myslowice
 BOOST_AUTO_TEST_CASE (myslowice_convert_to_wxdata)
 {
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	BOOST_TEST_MESSAGE("2022-12-03 14:27:29.321 SR9NSK    R SP9UVG-13>APMI06,SR9GM-2*,SP9DLM*,WIDE2*:@031427z5010.48N/01913.46E_000/007g007t030r000p000P...h91b10213 WX Myslowice");
 
@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE (one)
 {
 	const std::string expected = "2022-12-03 14:05:08.760 SR9NSK    R SR9NWC>APMI03:=4939.19NL01959.53E#PHG2620 W3,SPn 80km Lubon W. alt=1040 Jerzy SP9FBT";
 
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE (one)
 
 BOOST_AUTO_TEST_CASE (one_only_wx)
 {
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE (two)
 {
 	const std::string expected = "2022-12-03 14:05:28.139 SR9NSK    R SR3NZG>APMI06,SR6NWS*,WIDE1*:@292217z5156.05N/01531.88E#Digi/I-Gate Lubuskiego OT PZK nr 32";
 
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 
@@ -183,7 +183,7 @@ BOOST_AUTO_TEST_CASE (two)
 BOOST_AUTO_TEST_CASE (fast_forwarded) {
 	const std::string expected = "2022-12-03 14:18:33.117 SR9NSK    R SR9WXM>AKLPRZ:!4946.58N/01907.84E_200/004g006t036r...p...P...b00000h00";
 
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 	parser.rewindFile();
@@ -198,7 +198,7 @@ BOOST_AUTO_TEST_CASE (fast_forwarded) {
 BOOST_AUTO_TEST_CASE (parse) {
 	//const std::string expected = "2022-12-03 14:18:33.117 SR9NSK    R SR9WXM>AKLPRZ:!4946.58N/01907.84E_200/004g006t036r...p...P...b00000h00";
 
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 	parser.rewindFile();

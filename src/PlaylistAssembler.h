@@ -22,13 +22,13 @@
 
 class PlaylistAssembler {
 
-	std::vector<std::string> playlist;
+	std::shared_ptr<std::vector<std::string>> playlist;
 
 	PlaylistSampler & playlistSampler;
 
-	ConfigurationFile & configurationFile;
+	const ConfigurationFile & configurationFile;
 
-	std::string throwOnEmptyOptional();
+	static std::string throwOnEmptyOptional();
 
 public:
 	PlaylistAssembler(PlaylistSampler & sampler, ConfigurationFile & config);
@@ -62,7 +62,7 @@ public:
 	/**
 	 * Appends meteoblue forecast
 	 */
-	void forecastMeteoblue(std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> forecasts);
+	void forecastMeteoblue(std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts);
 
 	/**
 	 * Appends prerecorded anouncement either at the begining or the end
@@ -74,7 +74,7 @@ public:
 	 */
 	void signOff();
 
-	const std::vector<std::string> & getPlaylist() {
+	const std::shared_ptr<std::vector<std::string>> getPlaylist() {
 		return playlist;
 	}
 };

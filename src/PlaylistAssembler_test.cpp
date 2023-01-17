@@ -18,8 +18,8 @@
 
 #include "PlaylistSamplerPL_files.h"
 
-ConfigurationFile configuration_file_first("configuration_playlist_assembler_first.conf");
-ConfigurationFile configuration_file_second("configuration_playlist_assembler_second.conf");
+ConfigurationFile configuration_file_first("./test_input/configuration_playlist_assembler_first.conf");
+ConfigurationFile configuration_file_second("./test_input/configuration_playlist_assembler_second.conf");
 std::unique_ptr<PlaylistSampler> playlist_sampler;
 
 struct MyConfig
@@ -84,7 +84,8 @@ BOOST_AUTO_TEST_CASE(current_weather_first) {
 		BOOST_CHECK(false);
 	}
 
-	auto playlist = assembler.getPlaylist();
+	std::shared_ptr<std::vector<std::string>> playlist_ptr = assembler.getPlaylist();
+	std::vector<std::string> playlist = *playlist_ptr;
 
 	int i = 0;
 
@@ -166,7 +167,9 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 		BOOST_CHECK(false);
 	}
 
-	auto playlist = assembler.getPlaylist();
+	std::shared_ptr<std::vector<std::string>> playlist_ptr = assembler.getPlaylist();
+	auto playlist = *playlist_ptr;
+
 
 	int i = 0;
 

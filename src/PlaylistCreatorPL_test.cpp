@@ -5,8 +5,8 @@
  *      Author: mateusz
  */
 
-#include "PlaylistCreatorPL.h"
-#include "PlaylistCreatorPL_files.h"
+#include "PlaylistSamplerPL.h"
+#include "PlaylistSamplerPL_files.h"
 
 
 #define BOOST_TEST_MODULE PlaylistCreatorPL_test
@@ -19,7 +19,7 @@
 
 #include "ConfigurationFile.h"
 
-ConfigurationFile config("configuration_playlist_creator_pl.conf");
+ConfigurationFile config("./test_input/configuration_playlist_creator_pl.conf");
 
 struct MyConfig
 {
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(decimal_123_4) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	std::vector<std::string> out = c->getAudioListFromNumber(123.4f);
 
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(decimal_1123_4) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	std::vector<std::string> out = c->getAudioListFromNumber(1123.4f);
 
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(decimal_1103_4) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	std::vector<std::string> out = c->getAudioListFromNumber(1103.4f);
 
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(decimal_1013_4) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	std::vector<std::string> out = c->getAudioListFromNumber(1013.4f);
 
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE(decimal_1013) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	std::vector<std::string> out = c->getAudioListFromNumber(1013.0f);
 
@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(decimal_999) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	std::vector<std::string> out = c->getAudioListFromNumber(999.0f);
 
@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE(decimal_11) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	std::vector<std::string> out = c->getAudioListFromNumber(11.0f);
 
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(integer_11) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	std::vector<std::string> out = c->getAudioListFromNumber((int)11);
 
@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE(integer_999) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	std::vector<std::string> out = c->getAudioListFromNumber((int)999);
 
@@ -189,7 +189,7 @@ BOOST_AUTO_TEST_CASE(current_time) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	auto out = c->getAudioForCurrentTime();
 
@@ -287,7 +287,7 @@ BOOST_AUTO_TEST_CASE(get_audio_for_skrzyczne) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	bool parsing_result = config.parse();
 
@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE(get_audio_for_nonexistent_station) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	bool parsing_result = config.parse();
 
@@ -319,7 +319,7 @@ BOOST_AUTO_TEST_CASE(get_audio_for_meteoblue_jezioro) {
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	std::unique_ptr<PlaylistCreator> c = std::make_unique<PlaylistCreatorPL>(config);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
 	bool parsing_result = config.parse();
 

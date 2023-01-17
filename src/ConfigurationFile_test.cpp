@@ -35,7 +35,7 @@ BOOST_GLOBAL_FIXTURE (MyConfig);
 
 BOOST_AUTO_TEST_CASE (simple_parse)
 {
-	ConfigurationFile configurationFile("configuration_simple_parse.conf");
+	ConfigurationFile configurationFile("./test_input/configuration_simple_parse.conf");
 
 	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 

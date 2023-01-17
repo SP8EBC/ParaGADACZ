@@ -17,7 +17,7 @@
  */
 class PlaylistSamplerPL: public virtual PlaylistSampler {
 
-	ConfigurationFile & config;
+	const ConfigurationFile & config;
 
 public:
 	PlaylistSamplerPL(ConfigurationFile & configurationFile);

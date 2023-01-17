@@ -8,6 +8,7 @@ CPP_SRCS += \
 ../src/AprsWXData.cpp \
 ../src/AprxLogParser.cpp \
 ../src/ConfigurationFile.cpp \
+../src/ForecastDownloader.cpp \
 ../src/ForecastFinder.cpp \
 ../src/PlaylistAssembler.cpp \
 ../src/PlaylistAssembler_test.cpp \
@@ -18,6 +19,7 @@ OBJS += \
 ./src/AprsWXData.o \
 ./src/AprxLogParser.o \
 ./src/ConfigurationFile.o \
+./src/ForecastDownloader.o \
 ./src/ForecastFinder.o \
 ./src/PlaylistAssembler.o \
 ./src/PlaylistAssembler_test.o \
@@ -28,6 +30,7 @@ CPP_DEPS += \
 ./src/AprsWXData.d \
 ./src/AprxLogParser.d \
 ./src/ConfigurationFile.d \
+./src/ForecastDownloader.d \
 ./src/ForecastFinder.d \
 ./src/PlaylistAssembler.d \
 ./src/PlaylistAssembler_test.d \
