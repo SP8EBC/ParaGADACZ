@@ -100,7 +100,7 @@ void PlaylistAssembler::currentWeather(
 		std::vector<std::pair<std::string, org::openapitools::client::model::Summary>> & summary,
 		std::vector<AprsWXData> & result) {
 
-	std::function<std::string()> lazyFailsafe = [this]() {PlaylistAssembler::throwOnEmptyOptional();};
+	std::function<std::string()> lazyFailsafe = [=]() {PlaylistAssembler::throwOnEmptyOptional(); return std::string();};
 
 	// add current weather anouncement
 	playlist->push_back(playlistSampler
