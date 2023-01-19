@@ -21,6 +21,17 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+struct Checker
+{
+    template<typename T>
+    operator T() const
+    {
+    	SPDLOG_ERROR("AudioFileNotFoundEx!!");
+    	throw AudioFileNotFoundEx();
+    }
+};
+constexpr Checker checker{};
+
 PlaylistAssembler::PlaylistAssembler(PlaylistSampler & sampler, ConfigurationFile & config) : playlistSampler(sampler), configurationFile(config) {
 
 	this->playlist = std::make_shared<std::vector<std::string>>();
@@ -84,7 +95,7 @@ void PlaylistAssembler::regionalPressure(float pressure) {
 
 	SPDLOG_INFO("assembling announcement for pressure: {}", pressure);
 
-	playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::REGIONAL_QNH).value_or(throwOnEmptyOptional()));
+	playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::REGIONAL_QNH).value_or(checker));
 
 	// generate playlist for rounder pressure
 	std::vector<std::string> intermediate = playlistSampler.getAudioListFromNumber((int)std::round(pressure));
@@ -100,12 +111,10 @@ void PlaylistAssembler::currentWeather(
 		std::vector<std::pair<std::string, org::openapitools::client::model::Summary>> & summary,
 		std::vector<AprsWXData> & result) {
 
-	std::function<std::string()> lazyFailsafe = [=]() {PlaylistAssembler::throwOnEmptyOptional(); return std::string();};
-
 	// add current weather anouncement
 	playlist->push_back(playlistSampler
 			.getConstantElement(PlaylistSampler_ConstanElement::CURRENT_WEATHER)
-			.value_or(lazyFailsafe));
+			.value_or(checker));
 
 	// iterate through configuration
 	for (ConfigurationFile_CurrentWeather w : configurationFile.getCurrent()) {
@@ -196,7 +205,7 @@ void PlaylistAssembler::currentWeather(
 			SPDLOG_INFO("appending wind speed {} for station: {}", wind_speed, w.name);
 
 			// say "wind" or "kierunek"
-			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND).value_or(throwOnEmptyOptional()));
+			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND).value_or(checker));
 
 			// say wind direction as name like 'east' or 'north' (not degrees)
 			playlist->push_back(playlistSampler.getAudioForWindDirection(direction));
@@ -209,7 +218,7 @@ void PlaylistAssembler::currentWeather(
 			playlist->push_back(playlistSampler.getAudioFromUnit(PlaylistSampler_Unit::MS, (int)wind_speed));
 
 			// say "gusts" or "porywy"
-			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND_GUSTS).value_or(throwOnEmptyOptional()));
+			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::WIND_GUSTS).value_or(checker));
 
 			// and gust value
 			intermediate = playlistSampler.getAudioListFromNumber(wind_gusts);
@@ -224,7 +233,7 @@ void PlaylistAssembler::currentWeather(
 			SPDLOG_INFO("appending temperature {} for station: {}", temperature,  w.name);
 
 			// say "temperature
-			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::TEMPERATURE).value_or(throwOnEmptyOptional()));
+			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::TEMPERATURE).value_or(checker));
 
 			// say wind temperature but round to integer
 			intermediate = playlistSampler.getAudioListFromNumber((int)std::round(temperature));
@@ -239,7 +248,7 @@ void PlaylistAssembler::currentWeather(
 			SPDLOG_INFO("appending humidity {} for station: {}", humidity, w.name);
 
 			// say "temperature
-			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(throwOnEmptyOptional()));
+			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(checker));
 
 			// say wind temperature but round to integer
 			intermediate = playlistSampler.getAudioListFromNumber(humidity);
@@ -253,7 +262,7 @@ void PlaylistAssembler::currentWeather(
 			SPDLOG_INFO("appending pressure {} for station: {}", pressure, w.name);
 
 			// say "pressure
-			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(throwOnEmptyOptional()));
+			playlist->push_back(playlistSampler.getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(checker));
 
 			// say wind temperature but round to integer
 			intermediate = playlistSampler.getAudioListFromNumber((int)std::round(pressure));
@@ -376,12 +385,6 @@ void PlaylistAssembler::recordedAnnouncement(bool preOrPost) {
 		playlist->push_back(file);
 	}
 
-}
-
-std::string PlaylistAssembler::throwOnEmptyOptional() {
-	SPDLOG_ERROR("AudioFileNotFoundEx!!");
-
-	throw AudioFileNotFoundEx();
 }
 
 void PlaylistAssembler::signOff() {

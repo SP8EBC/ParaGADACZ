@@ -1,0 +1,5 @@
+Running 1 test case...
+Entering test module "ForecastDownloader_test"
+../src/ForecastDownloader_test.cpp(34): Entering test case "download_first_set"
+creating downloader instance
+downloading meteoblue
