@@ -16,9 +16,11 @@
 
 ForecastDownloader::ForecastDownloader(ConfigurationFile & config) : configurationFile(config) {
 
+	apiConfiguration = std::make_shared<org::openapitools::client::api::ApiConfiguration>();
+	apiConfiguration->setBaseUrl("http://pogoda.cc:8080/meteo_backend_web/");
+
 	apiClient = std::make_shared<org::openapitools::client::api::ApiClient>();
-	apiConfiguration.setBaseUrl("http://pogoda.cc:8080/meteo_backend_web/");
-	//auto apiConfigurationPtr = std::shared_ptr<org::openapitools::client::api::ApiConfiguration>(&apiConfiguration);
+	apiClient->setConfiguration(apiConfiguration);
 
 	forecastApi = std::make_shared<org::openapitools::client::api::ForecastApi>(apiClient);
 }
@@ -78,7 +80,7 @@ void ForecastDownloader::downloadAllMeteoblue() {
 			allResults.push_back(tuple);
 		}
 		catch (org::openapitools::client::api::ApiException & e) {
-			SPDLOG_ERROR("Something really wrong has happened during downloading forecast for {}", location.name );
+			SPDLOG_ERROR("ApiException has happened during downloading forecast for {}", location.name );
 		}
 		catch (...) {
 			SPDLOG_ERROR("Something really wrong has happened during downloading forecast for {}", location.name );

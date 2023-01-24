@@ -30,6 +30,8 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#include <string_view>
+
 std::condition_variable conditionVariable;
 
 std::mutex mutex;
@@ -41,14 +43,17 @@ void callback (const struct libvlc_event_t *p_event, void *p_data) {
 	return;
 }
 
+//constexpr std::string_view pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
+const utility::string_t pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
+const utility::string_t meteoblue_base_url = "http://my.meteoblue.com/packages/";
+
 int main() {
 
 	std::shared_ptr<org::openapitools::client::api::ApiClient> apiClient = std::make_shared<org::openapitools::client::api::ApiClient>();
-	org::openapitools::client::api::ApiConfiguration apiConfiguration;
-	apiConfiguration.setBaseUrl("http://pogoda.cc:8080/meteo_backend_web/");
-	auto apiConfigurationPtr = std::shared_ptr<org::openapitools::client::api::ApiConfiguration>(&apiConfiguration);
+	std::shared_ptr<org::openapitools::client::api::ApiConfiguration> apiConfiguration = std::make_shared<org::openapitools::client::api::ApiConfiguration>();
+	apiConfiguration->setBaseUrl(pogoda_base_url);
 
-	apiClient->setConfiguration(apiConfigurationPtr);
+	apiClient->setConfiguration(apiConfiguration);
 
 	org::openapitools::client::api::ListOfAllStationsApi listofAllStation(apiClient);
 	org::openapitools::client::api::StationApi stationApi (apiClient);
@@ -67,13 +72,18 @@ int main() {
     auto type = listofAllStation.listOfAllStationsGet().get();
     std::shared_ptr<org::openapitools::client::model::Summary> skrzyczne_summary = stationApi.stationStationNameSummaryGet("skrzyczne").get();
 
-	apiConfiguration.setBaseUrl("http://my.meteoblue.com/packages/");
-	apiClient->setConfiguration(apiConfigurationPtr);
+	apiConfiguration->setBaseUrl(meteoblue_base_url);
 
 	org::openapitools::client::api::ForecastApi forecastApi(apiClient);
-	std::shared_ptr<org::openapitools::client::model::Inline_response_200> forecast = forecastApi.basicDayBasic3hGet(19.03, 49.68, "timestamp_utc", METEOBLUE_API_KEY, boost::optional<std::string>()).get();
+	std::shared_ptr<org::openapitools::client::model::Inline_response_200> forecast;
+	try {
+		forecast = forecastApi.basicDayBasic3hGet(19.03, 49.68, "timestamp_utc", METEOBLUE_API_KEY, boost::optional<std::string>()).get();
 
-	std::tuple<int64_t, float> temperature = ForecastFinder::getTemperatureMeteoblue(forecast, 180);
+		std::tuple<int64_t, float> temperature = ForecastFinder::getTemperatureMeteoblue(forecast, 180);
+	}
+	catch (org::openapitools::client::api::ApiException & e) {
+		std::cout << e.what();
+	}
 
     playlist.emplace_back("chirp.mp3");
     playlist.emplace_back("11-taniec-krotki-silent.mp3");

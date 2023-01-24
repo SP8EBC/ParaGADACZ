@@ -18,7 +18,7 @@ class ForecastDownloader {
 
 	const ConfigurationFile & configurationFile;
 
-	org::openapitools::client::api::ApiConfiguration apiConfiguration;
+	std::shared_ptr<org::openapitools::client::api::ApiConfiguration> apiConfiguration;
 
 	std::shared_ptr<org::openapitools::client::api::ApiClient> apiClient;
 
