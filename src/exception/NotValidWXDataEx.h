@@ -8,6 +8,8 @@
 #ifndef NOTVALIDWXDATAEX_H_
 #define NOTVALIDWXDATAEX_H_
 
+#include <exception>
+
 class NotValidWXData: public std::exception {
     virtual const char* what() const throw() {
 		return "\n--- Niepoprawny pakiet pogodowy\n";

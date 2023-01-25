@@ -81,9 +81,13 @@ void ForecastDownloader::downloadAllMeteoblue() {
 		}
 		catch (org::openapitools::client::api::ApiException & e) {
 			SPDLOG_ERROR("ApiException has happened during downloading forecast for {}", location.name );
+
+			anyError = true;
 		}
 		catch (...) {
 			SPDLOG_ERROR("Something really wrong has happened during downloading forecast for {}", location.name );
+
+			anyError = true;
 		}
 	}
 

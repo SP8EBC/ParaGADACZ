@@ -9,8 +9,9 @@ CPP_SRCS += \
 ../src/AprxLogParser.cpp \
 ../src/ConfigurationFile.cpp \
 ../src/ForecastDownloader.cpp \
-../src/ForecastDownloader_test.cpp \
 ../src/ForecastFinder.cpp \
+../src/Player.cpp \
+../src/Player_test.cpp \
 ../src/PlaylistAssembler.cpp \
 ../src/PlaylistSamplerPL.cpp 
 
@@ -20,8 +21,9 @@ OBJS += \
 ./src/AprxLogParser.o \
 ./src/ConfigurationFile.o \
 ./src/ForecastDownloader.o \
-./src/ForecastDownloader_test.o \
 ./src/ForecastFinder.o \
+./src/Player.o \
+./src/Player_test.o \
 ./src/PlaylistAssembler.o \
 ./src/PlaylistSamplerPL.o 
 
@@ -31,8 +33,9 @@ CPP_DEPS += \
 ./src/AprxLogParser.d \
 ./src/ConfigurationFile.d \
 ./src/ForecastDownloader.d \
-./src/ForecastDownloader_test.d \
 ./src/ForecastFinder.d \
+./src/Player.d \
+./src/Player_test.d \
 ./src/PlaylistAssembler.d \
 ./src/PlaylistSamplerPL.d 
 

@@ -26,6 +26,8 @@ class ForecastDownloader {
 
 	std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> allResults;
 
+	bool anyError = false;
+
 public:
 	ForecastDownloader(ConfigurationFile & config);
 	virtual ~ForecastDownloader();

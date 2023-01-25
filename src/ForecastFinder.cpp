@@ -1,6 +1,9 @@
 /*
  * ForecastFinder.cpp
  *
+ * This class used data downloaded from forecast API (meteoblue) to look for weather forecast
+ * for given location and a timepoint
+ *
  *  Created on: Dec 18, 2022
  *      Author: mateusz
  */

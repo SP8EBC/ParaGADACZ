@@ -2,10 +2,10 @@
 #define APRSWXDATA_H
 
 #include "AprsPacket.h"
-#include "NotValidWXDataEx.h"
 #include <exception>
 #include <queue>
 #include <string>
+#include "exception/NotValidWXDataEx.h"
 
 //using namespace std;
 

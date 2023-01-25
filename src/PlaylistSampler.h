@@ -1,5 +1,8 @@
 /*
- * PlaylistCreator.h
+ * PlaylistSampler.h
+ *
+ * This is an interface which shall be implemented by natural language specific implementation
+ * used to get
  *
  *  Created on: Dec 30, 2022
  *      Author: mateusz

@@ -1,6 +1,8 @@
 /*
  * AprxLogParser.h
  *
+ * Class used to parse data from APRX rf-log file and get last (newest) wx packet from
+ *
  *  Created on: Dec 3, 2022
  *      Author: mateusz
  */

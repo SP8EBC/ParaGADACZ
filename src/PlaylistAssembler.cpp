@@ -1,6 +1,9 @@
 /*
  * PlaylistAssembler.cpp
  *
+ *	This class takes all numeric data and then assemble complete playlist using given playlist sampler
+ *
+ *
  *  Created on: Jan 11, 2023
  *      Author: mateusz
  */
@@ -8,10 +11,10 @@
 #include "PlaylistAssembler.h"
 #include "ForecastFinder.h"
 
-#include "WrongOrderEx.h"
-#include "DefinedStationNotFoundEx.h"
-#include "AudioFileNotFoundEx.h"
-#include "UnknownStationTypeEx.h"
+#include "exception/WrongOrderEx.h"
+#include "exception/DefinedStationNotFoundEx.h"
+#include "exception/AudioFileNotFoundEx.h"
+#include "exception/UnknownStationTypeEx.h"
 
 #include <algorithm>
 #include <functional>

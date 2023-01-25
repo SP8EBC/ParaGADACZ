@@ -8,7 +8,9 @@
 #ifndef UNKNOWNSTATIONTYPEEX_H_
 #define UNKNOWNSTATIONTYPEEX_H_
 
-class UnknownStationTypeEx {
+#include <exception>
+
+class UnknownStationTypeEx : public std::exception {
 
     virtual const char* what() const throw() {
 		return "UnknownStationTypeEx";
