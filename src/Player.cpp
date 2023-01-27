@@ -23,6 +23,14 @@ Player::Player(ConfigurationFile & configurationFile) : config(configurationFile
 
     evm = NULL;
 
+    m = NULL;
+
+#ifdef NDEBUG
+
+#else
+
+#endif
+
 }
 
 Player::~Player() {
@@ -52,6 +60,36 @@ Player& Player::operator=(Player &&other) {
 
 void Player::playbackStoppedCallback() {
 
+	// rewind iterator to get next file
+	currentFile++;
+
+	// check if this was the last one
+	if (currentFile == currentPlaylist->end()) {
+		SPDLOG_INFO("Playlist done.");
+
+		// notify everybody that playback is done
+		conditionVariable.notify_all();
+	}
+	else {
+		// release current media
+        libvlc_media_release(m);
+
+	    // create an item to next file
+	    m = libvlc_media_new_path(inst, currentFile->c_str());
+
+	    // set this media for playback
+	    libvlc_media_player_set_media(mp, m);
+
+	    // play it
+	    const int playback_result = libvlc_media_player_play(mp);
+
+	    // check result
+	    if (playback_result != 0) {
+	    	throw PlaybackStartFailedEx();
+		}
+
+	}
+
 	SPDLOG_DEBUG("dupa dupa");
 
 }
@@ -66,10 +104,9 @@ void Player::plainStaticCallback(const struct libvlc_event_t *p_event,
 
 void Player::play(std::shared_ptr<std::vector<std::string> > playlist) {
 
-    libvlc_media_t *m;
-
     evm = libvlc_media_player_event_manager(mp);
 
+    // set a callback called after each audio file ends (something like Auto-Cue)
     const int result = libvlc_event_attach(evm, libvlc_MediaPlayerStopped, &Player::plainStaticCallback, static_cast<void*>(this));
 
     SPDLOG_DEBUG("Result of callback configuration {}", result);
@@ -78,8 +115,14 @@ void Player::play(std::shared_ptr<std::vector<std::string> > playlist) {
     	if (playlist->size() > 0) {
     		SPDLOG_INFO("Starting playback from file {}", playlist->at(0));
 
+    		// get an interator to first element of playlist
+    		currentFile = playlist->begin();
+
+    		// store the playlist we are working with
+    		currentPlaylist = playlist;
+
     	    // create a new item
-    	    m = libvlc_media_new_path(inst, playlist->at(0).c_str());
+    	    m = libvlc_media_new_path(inst, currentFile->c_str());
 
     	    libvlc_media_player_set_media(mp, m);
 
@@ -95,7 +138,16 @@ void Player::play(std::shared_ptr<std::vector<std::string> > playlist) {
 
 }
 
+void Player::waitForPlaybackToFinish() {
 
+	std::unique_lock<std::mutex> lock (mutex);
+
+	std::cv_status result = conditionVariable.wait_for(lock, std::chrono::seconds(PLAYER_PLAYBACK_TIMEOUT_SECONDS));
+
+	if (result == std::cv_status::timeout) {
+		SPDLOG_ERROR("Timeout during playlist playback. {} seconds expired", PLAYER_PLAYBACK_TIMEOUT_SECONDS);
+	}
+}
 /**
  * https://stackoverflow.com/questions/19808054/convert-c-function-pointer-to-c-function-pointer/19809787
  *

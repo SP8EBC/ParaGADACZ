@@ -20,6 +20,7 @@
 
 #include <vlc/vlc.h>
 
+#define PLAYER_PLAYBACK_TIMEOUT_SECONDS		180
 
 class Player {
 
@@ -31,9 +32,15 @@ class Player {
 
     libvlc_event_manager_t *evm;
 
+    libvlc_media_t *m;
+
     std::condition_variable conditionVariable;
 
     std::mutex mutex;
+
+    std::vector<std::string>::iterator currentFile;
+
+    std::shared_ptr<std::vector<std::string> > currentPlaylist;
 
     void playbackStoppedCallback();
 

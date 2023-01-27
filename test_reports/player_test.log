@@ -1,3 +1,6 @@
 Running 1 test case...
 Entering test module "Player_test"
-../src/Player_test.cpp(86): Entering test case "first"
+../src/Player_test.cpp(95): Entering test case "first"
+Test case first did not check any assertions
+../src/Player_test.cpp(95): Leaving test case "first"; testing time: 49771us
+Leaving test module "Player_test"; testing time: 49814us

@@ -81,11 +81,20 @@ std::shared_ptr<std::vector<std::string>> getTestPlaylist_1() {
 	return assembler.getPlaylist();
 }
 
+std::shared_ptr<std::vector<std::string>> getTestPlaylist_2() {
+
+	std::shared_ptr<std::vector<std::string>> out = std::make_shared<std::vector<std::string>>();
+
+	out->emplace_back("ident.mp3");
+
+	return out;
+}
+
 BOOST_GLOBAL_FIXTURE (MyConfig);
 
 BOOST_AUTO_TEST_CASE(first) {
 
 	Player player(configuration_file_first);
 
-	player.play(getTestPlaylist_1());
+	player.play(getTestPlaylist_2());
 }
