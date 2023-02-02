@@ -21,9 +21,14 @@ Player::Player(ConfigurationFile & configurationFile) : config(configurationFile
 
     mp = libvlc_media_player_new(inst);
 
-    evm = NULL;
+    evm = libvlc_media_player_event_manager(mp);
 
     m = NULL;
+
+    SPDLOG_INFO("Initializing player");
+
+    // set a callback called after each audio file ends (something like Auto-Cue)
+    libvlc_event_attach(evm, libvlc_MediaPlayerStopped, &Player::plainStaticCallback, static_cast<void*>(this));
 
 #ifdef NDEBUG
 
@@ -38,6 +43,8 @@ Player::~Player() {
     libvlc_media_player_release (mp);
 
     libvlc_release (inst);
+
+    SPDLOG_INFO("Deinitializing player");
 }
 
 Player::Player(const Player &other)  : config(other.config) {
@@ -60,37 +67,15 @@ Player& Player::operator=(Player &&other) {
 
 void Player::playbackStoppedCallback() {
 
-	// rewind iterator to get next file
-	currentFile++;
+	// release current media
+	libvlc_media_release(m);
 
-	// check if this was the last one
-	if (currentFile == currentPlaylist->end()) {
-		SPDLOG_INFO("Playlist done.");
+	// notify everybody that playback is done
+	conditionVariable.notify_all();
 
-		// notify everybody that playback is done
-		conditionVariable.notify_all();
-	}
-	else {
-		// release current media
-        libvlc_media_release(m);
-
-	    // create an item to next file
-	    m = libvlc_media_new_path(inst, currentFile->c_str());
-
-	    // set this media for playback
-	    libvlc_media_player_set_media(mp, m);
-
-	    // play it
-	    const int playback_result = libvlc_media_player_play(mp);
-
-	    // check result
-	    if (playback_result != 0) {
-	    	throw PlaybackStartFailedEx();
-		}
-
-	}
-
-	SPDLOG_DEBUG("dupa dupa");
+    if (currentFile == currentPlaylist->end()) {
+    	SPDLOG_INFO("Last file has been played");
+    }
 
 }
 
@@ -102,39 +87,42 @@ void Player::plainStaticCallback(const struct libvlc_event_t *p_event,
 	ptr->playbackStoppedCallback();
 }
 
-void Player::play(std::shared_ptr<std::vector<std::string> > playlist) {
-
-    evm = libvlc_media_player_event_manager(mp);
-
-    // set a callback called after each audio file ends (something like Auto-Cue)
-    const int result = libvlc_event_attach(evm, libvlc_MediaPlayerStopped, &Player::plainStaticCallback, static_cast<void*>(this));
-
-    SPDLOG_DEBUG("Result of callback configuration {}", result);
+void Player::setPlaylist(std::shared_ptr<std::vector<std::string> > playlist) {
 
     if (playlist) {
     	if (playlist->size() > 0) {
-    		SPDLOG_INFO("Starting playback from file {}", playlist->at(0));
+    		currentPlaylist = playlist;
 
     		// get an interator to first element of playlist
     		currentFile = playlist->begin();
-
-    		// store the playlist we are working with
-    		currentPlaylist = playlist;
-
-    	    // create a new item
-    	    m = libvlc_media_new_path(inst, currentFile->c_str());
-
-    	    libvlc_media_player_set_media(mp, m);
-
-    	    // play the media_player
-    	    const int playback_result = libvlc_media_player_play(mp);
-
-    	    // check result
-    	    if (playback_result != 0) {
-    	    	throw PlaybackStartFailedEx();
-			}
-		}
+    	}
     }
+}
+
+bool Player::playNext() {
+
+    if (currentFile == currentPlaylist->end()) {
+    	return false;
+    }
+
+	SPDLOG_INFO("Playling file file {}", currentFile->c_str());
+
+    // create a new item
+    m = libvlc_media_new_path(inst, currentFile->c_str());
+
+    libvlc_media_player_set_media(mp, m);
+
+    // play the media_player
+    const int playback_result = libvlc_media_player_play(mp);
+
+    // check result
+    if (playback_result != 0) {
+    	throw PlaybackStartFailedEx();
+	}
+
+    currentFile++;
+
+    return true;
 
 }
 

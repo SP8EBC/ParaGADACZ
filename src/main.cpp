@@ -99,6 +99,8 @@ int main() {
     vlc_result = libvlc_event_attach(evm, libvlc_MediaPlayerStopped, callback, 0);
 
     for (std::string file : playlist) {
+    	std::cout << file.c_str() << std::endl;
+
         // create a new item
         m = libvlc_media_new_path(inst, file.c_str());
 

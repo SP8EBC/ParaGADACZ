@@ -85,6 +85,16 @@ std::shared_ptr<std::vector<std::string>> getTestPlaylist_2() {
 
 	std::shared_ptr<std::vector<std::string>> out = std::make_shared<std::vector<std::string>>();
 
+	out->emplace_back("chirp.mp3");
+
+	return out;
+}
+
+std::shared_ptr<std::vector<std::string>> getTestPlaylist_3() {
+
+	std::shared_ptr<std::vector<std::string>> out = std::make_shared<std::vector<std::string>>();
+
+	out->emplace_back("chirp.mp3");
 	out->emplace_back("ident.mp3");
 
 	return out;
@@ -92,9 +102,23 @@ std::shared_ptr<std::vector<std::string>> getTestPlaylist_2() {
 
 BOOST_GLOBAL_FIXTURE (MyConfig);
 
-BOOST_AUTO_TEST_CASE(first) {
+//BOOST_AUTO_TEST_CASE(single_file) {
+//
+//	Player player(configuration_file_first);
+//
+//	BOOST_CHECK_NO_THROW(player.play(getTestPlaylist_2()));
+//
+//	BOOST_CHECK_NO_THROW(player.waitForPlaybackToFinish());
+//}
 
+BOOST_AUTO_TEST_CASE(two_files) {
 	Player player(configuration_file_first);
 
-	player.play(getTestPlaylist_2());
+	BOOST_CHECK_NO_THROW(player.setPlaylist(getTestPlaylist_3()));
+
+	while (player.playNext()) {
+		player.waitForPlaybackToFinish();
+	}
+
+	//BOOST_CHECK_NO_THROW(player.waitForPlaybackToFinish());
 }

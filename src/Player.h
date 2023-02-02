@@ -56,9 +56,14 @@ public:
 	Player& operator=(Player &&other);
 
 	/**
-	 * starts playing given playlist
+	 * Set a playlist and reset an internal state of the player
 	 */
-	void play(std::shared_ptr<std::vector<std::string>> playlist);
+	void setPlaylist(std::shared_ptr<std::vector<std::string>> playlist);
+
+	/**
+	 * starts playing given playlist or switch to next file
+	 */
+	bool playNext();
 
 	/**
 	 * Synchronously wait for playback to finish
