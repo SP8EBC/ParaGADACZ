@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE (find_double_wx_frames)
 	const std::string second_expected =
 			"2022-12-03 14:05:12.561 SR9NSK    R SR6WXP>AKLPRZ,SR9LC-1*,WIDE2*:!5038.00N/01747.00E_070/004g007t032r...p...P...b09995h36";
 
-	AprxLogParser parser("aprs-rf-2.log");
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
 
 	parser.openFile();
 

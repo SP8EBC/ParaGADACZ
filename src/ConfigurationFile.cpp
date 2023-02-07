@@ -185,6 +185,9 @@ bool ConfigurationFile::parse() {
 		// time from now, for which forecasts should be get
 		forecastMeteblue.lookupValue("FutureTime", this->forecast.futureTime);
 
+		// forecast could be defined but not enabled
+		forecastMeteblue.lookupValue("Enable", this->forecast.enable);
+
 		// get all locations forecast should be retrieved for
 		libconfig::Setting & forecastPoints = forecastMeteblue["Locations"];
 
@@ -206,9 +209,9 @@ bool ConfigurationFile::parse() {
 		}
 	}
 	catch (libconfig::SettingNotFoundException & e) {
-		SPDLOG_ERROR("SettingNotFoundException during parsing 'ForecastMeteoblue', e.getPath = {}", e.getPath());
+		SPDLOG_WARN("SettingNotFoundException during parsing 'ForecastMeteoblue', e.getPath = {}", e.getPath());
 
-		out = false;
+		this->forecast.enable = false;
 	}
 	catch (libconfig::ParseException & e) {
 		SPDLOG_ERROR("ParseException during parsing 'ForecastMeteoblue', e.getLine = {}, e.getError = {}", e.getLine(), e.getError());

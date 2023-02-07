@@ -4,5 +4,5 @@ Entering test module "ForecastDownloader_test"
 creating downloader instance
 downloading meteoblue
 ../src/ForecastDownloader_test.cpp(45): info: check true has passed
-../src/ForecastDownloader_test.cpp(34): Leaving test case "download_first_set"; testing time: 189572us
-Leaving test module "ForecastDownloader_test"; testing time: 189603us
+../src/ForecastDownloader_test.cpp(34): Leaving test case "download_first_set"; testing time: 197281us
+Leaving test module "ForecastDownloader_test"; testing time: 197322us

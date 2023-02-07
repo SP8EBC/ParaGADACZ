@@ -34,7 +34,7 @@ Entering test module "PlaylistAssembler_test"
 ../src/PlaylistAssembler_test.cpp(122): info: check "wilgotnosc.mp3" == playlist[i++] has passed
 ../src/PlaylistAssembler_test.cpp(123): info: check "dwanascie.mp3" == playlist[i++] has passed
 ../src/PlaylistAssembler_test.cpp(124): info: check "procent.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(50): Leaving test case "current_weather_first"; testing time: 401us
+../src/PlaylistAssembler_test.cpp(50): Leaving test case "current_weather_first"; testing time: 413us
 ../src/PlaylistAssembler_test.cpp(128): Entering test case "current_weather_second_with_preanouncement"
 ../src/PlaylistAssembler_test.cpp(176): info: check "ident.mp3" == playlist[i++] has passed
 ../src/PlaylistAssembler_test.cpp(177): info: check "pre_first.mp3" == playlist[i++] has passed
@@ -77,5 +77,5 @@ Entering test module "PlaylistAssembler_test"
 ../src/PlaylistAssembler_test.cpp(214): info: check "wilgotnosc.mp3" == playlist[i++] has passed
 ../src/PlaylistAssembler_test.cpp(215): info: check "zero.mp3" == playlist[i++] has passed
 ../src/PlaylistAssembler_test.cpp(216): info: check "procent.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(128): Leaving test case "current_weather_second_with_preanouncement"; testing time: 416us
-Leaving test module "PlaylistAssembler_test"; testing time: 848us
+../src/PlaylistAssembler_test.cpp(128): Leaving test case "current_weather_second_with_preanouncement"; testing time: 437us
+Leaving test module "PlaylistAssembler_test"; testing time: 880us

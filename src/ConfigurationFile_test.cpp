@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE (simple_parse)
 	BOOST_CHECK_EQUAL(configurationFile.getCurrent().size(), 2);
 	BOOST_CHECK_EQUAL(configurationFile.getCurrent().at(0).name, "SR9WXM");
 	BOOST_CHECK_EQUAL(configurationFile.getCurrent().at(0).type, APRX);
-	BOOST_CHECK_EQUAL(configurationFile.getCurrent().at(0).nameIdent, "magurka.mp3");
+	BOOST_CHECK_EQUAL(configurationFile.getCurrent().at(0).fnIdent, "magurka.mp3");
 	BOOST_CHECK_EQUAL(configurationFile.getCurrent().at(0).sayHumidy, true);
 	BOOST_CHECK_EQUAL(configurationFile.getCurrent().at(0).sayTemperature, true);
 	BOOST_CHECK_EQUAL(configurationFile.getCurrent().at(0).sayWind, true);

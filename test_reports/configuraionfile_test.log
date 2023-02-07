@@ -11,7 +11,7 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(54): info: check configurationFile.getCurrent().size() == 2 has passed
 ../src/ConfigurationFile_test.cpp(55): info: check configurationFile.getCurrent().at(0).name == "SR9WXM" has passed
 ../src/ConfigurationFile_test.cpp(56): info: check configurationFile.getCurrent().at(0).type == APRX has passed
-../src/ConfigurationFile_test.cpp(57): info: check configurationFile.getCurrent().at(0).nameIdent == "magurka.mp3" has passed
+../src/ConfigurationFile_test.cpp(57): info: check configurationFile.getCurrent().at(0).fnIdent == "magurka.mp3" has passed
 ../src/ConfigurationFile_test.cpp(58): info: check configurationFile.getCurrent().at(0).sayHumidy == true has passed
 ../src/ConfigurationFile_test.cpp(59): info: check configurationFile.getCurrent().at(0).sayTemperature == true has passed
 ../src/ConfigurationFile_test.cpp(60): info: check configurationFile.getCurrent().at(0).sayWind == true has passed
@@ -24,5 +24,5 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(68): info: check configurationFile.getForecast().locations.at(0).sayPrecipation == true has passed
 ../src/ConfigurationFile_test.cpp(69): info: check configurationFile.getForecast().locations.at(0).sayTemperature == true has passed
 ../src/ConfigurationFile_test.cpp(70): info: check configurationFile.getForecast().locations.at(0).sayWind == true has passed
-../src/ConfigurationFile_test.cpp(36): Leaving test case "simple_parse"; testing time: 530us
-Leaving test module "ConfigurationFile_test"; testing time: 551us
+../src/ConfigurationFile_test.cpp(36): Leaving test case "simple_parse"; testing time: 545us
+Leaving test module "ConfigurationFile_test"; testing time: 563us
