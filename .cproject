@@ -89,7 +89,7 @@
 					<sourceEntries>
 						<entry excluding="pogodacc|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pogodacc"/>
-						<entry excluding="PlaylistAssembler_test.cpp|ConfigurationFile_test.cpp|PlaylistCreatorPL_test.cpp|ForecastDownloader_test.cpp|AprxLogParser_test.cpp|ForecastFinder_test.cpp|main.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="PlaylistCreatorPL_test.cpp|PlaylistAssembler_test.cpp|ForecastFinder_test.cpp|ForecastDownloader_test.cpp|ConfigurationFile_test.cpp|AprxLogParser_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -183,7 +183,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="PlaylistAssembler_test.cpp|ConfigurationFile_test.cpp|PlaylistCreatorPL_test.cpp|ForecastDownloader_test.cpp|AprxLogParser_test.cpp|ForecastFinder_test.cpp|main.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="PlaylistCreatorPL_test.cpp|PlaylistAssembler_test.cpp|ForecastFinder_test.cpp|ForecastDownloader_test.cpp|ConfigurationFile_test.cpp|AprxLogParser_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

@@ -11,9 +11,9 @@ CPP_SRCS += \
 ../src/ForecastDownloader.cpp \
 ../src/ForecastFinder.cpp \
 ../src/Player.cpp \
-../src/Player_test.cpp \
 ../src/PlaylistAssembler.cpp \
-../src/PlaylistSamplerPL.cpp 
+../src/PlaylistSamplerPL.cpp \
+../src/main.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
@@ -23,9 +23,9 @@ OBJS += \
 ./src/ForecastDownloader.o \
 ./src/ForecastFinder.o \
 ./src/Player.o \
-./src/Player_test.o \
 ./src/PlaylistAssembler.o \
-./src/PlaylistSamplerPL.o 
+./src/PlaylistSamplerPL.o \
+./src/main.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
@@ -35,9 +35,9 @@ CPP_DEPS += \
 ./src/ForecastDownloader.d \
 ./src/ForecastFinder.d \
 ./src/Player.d \
-./src/Player_test.d \
 ./src/PlaylistAssembler.d \
-./src/PlaylistSamplerPL.d 
+./src/PlaylistSamplerPL.d \
+./src/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

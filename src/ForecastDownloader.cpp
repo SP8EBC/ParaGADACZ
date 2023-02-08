@@ -17,7 +17,7 @@
 ForecastDownloader::ForecastDownloader(ConfigurationFile & config) : configurationFile(config) {
 
 	apiConfiguration = std::make_shared<org::openapitools::client::api::ApiConfiguration>();
-	apiConfiguration->setBaseUrl("http://pogoda.cc:8080/meteo_backend_web/");
+	apiConfiguration->setBaseUrl("http://my.meteoblue.com/packages/");
 
 	apiClient = std::make_shared<org::openapitools::client::api::ApiClient>();
 	apiClient->setConfiguration(apiConfiguration);

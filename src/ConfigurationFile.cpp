@@ -36,8 +36,14 @@ bool ConfigurationFile::parse() {
 
 	bool out = true;
 
-	// read and parse configuration file
-	config.readFile(this->fn.c_str());
+	try {
+		// read and parse configuration file
+		config.readFile(this->fn.c_str());
+	}
+	catch (libconfig::FileIOException & e) {
+		SPDLOG_ERROR("libconfig::FileIOException has been trown: {}", e.what());
+		return false;
+	}
 
 	// get root of a configuration tree
 	libconfig::Setting& root = config.getRoot();

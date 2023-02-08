@@ -11,8 +11,6 @@
 
 #include "main.h"
 
-bool AprsWXData::DebugOutput = false;
-
 AprsWXData::AprsWXData() {
 	ssid = 0;
 	call = "";
@@ -239,8 +237,6 @@ AprsWXData::AprsWXData(const AprsWXData& in) {
 	this->useWind = in.useWind;
 	this->useTemperature = in.useTemperature;
 
-	this->DebugOutput = in.DebugOutput;
-
 	this->ssid = in.ssid;
 	this->call = in.call;
 
@@ -275,8 +271,6 @@ AprsWXData& AprsWXData::operator =(AprsWXData& _in) {
 	this->call = _in.call;
 	this->ssid = _in.ssid;
 
-	this->DebugOutput = _in.DebugOutput;
-
 	return * this;
 }
 
@@ -286,35 +280,22 @@ AprsWXData& AprsWXData::operator -(AprsWXData& _in) {
 
 	// scalar values are subtracted directly
 	if (_in.humidity && this->humidity) {
-		if (AprsWXData::DebugOutput) {
-			std::cout << "--- AprsWXData::operator -:342 - subtracting humidity parameters" << std::endl;
-		}
 
 		this->humidity = ::abs(this->humidity - _in.humidity);
 	}
 
 	if (_in.useTemperature && this->useTemperature) {
-		if (AprsWXData::DebugOutput) {
-			std::cout << "--- AprsWXData::operator -:350 - subtracting temperature parameters" << std::endl;
-		}
 
 		this->temperature -= _in.temperature;
 	}
 
 	if (_in.usePressure && this->usePressure) {
-		if (AprsWXData::DebugOutput) {
-			std::cout << "--- AprsWXData::operator -:358 - subtracting pressure parameters" << std::endl;
-		}
 
 		this->pressure = ::abs(this->pressure - _in.pressure);
 	}
 
 
 	if (_in.useWind && this->useWind) {
-		if (AprsWXData::DebugOutput) {
-			std::cout << "--- AprsWXData::operator -:367 - subtracting wind parameters" << std::endl;
-		}
-
 		// wind direction is a vector value so there are always two
 		// differences between them - calculated clockwise and counterclockwise
 		diff1 = this->wind_direction - _in.wind_direction;
@@ -480,4 +461,24 @@ void AprsWXData::NarrowPrecisionOfTemperature() {
 
 	temp = (int32_t)(this->temperature * 10.0f);
 	this->temperature = (float)temp / 10.0f;
+}
+
+AprsWXData AprsWXData::FromSummaryApiModel(
+		org::openapitools::client::model::Summary &model) {
+
+	AprsWXData out;
+
+	out.wind_speed = model.getAverageSpeed();
+	out.wind_gusts = model.getGusts();
+	out.wind_direction = model.getDirection();
+	out.temperature = model.getAvgTemperature();
+	out.humidity = model.getHumidity();
+	out.pressure = model.getQnh();
+
+	out.useHumidity = true;
+	out.usePressure = true;
+	out.useTemperature = true;
+	out.useWind = true;
+
+	return out;
 }

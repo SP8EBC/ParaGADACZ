@@ -32,98 +32,84 @@
 
 #include <string_view>
 
-std::condition_variable conditionVariable;
-
-std::mutex mutex;
-
-
-void callback (const struct libvlc_event_t *p_event, void *p_data) {
-	std::cout << "dupa" << std::endl;
-	conditionVariable.notify_all();
-	return;
-}
 
 //constexpr std::string_view pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
 const utility::string_t pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
 const utility::string_t meteoblue_base_url = "http://my.meteoblue.com/packages/";
 
-int main() {
+//!< Instance of configuration file
+std::shared_ptr<ConfigurationFile> configurationFile;
 
-	std::shared_ptr<org::openapitools::client::api::ApiClient> apiClient = std::make_shared<org::openapitools::client::api::ApiClient>();
-	std::shared_ptr<org::openapitools::client::api::ApiConfiguration> apiConfiguration = std::make_shared<org::openapitools::client::api::ApiConfiguration>();
+//!< Configuration of data sources for current weather conditions
+std::shared_ptr<std::vector<ConfigurationFile_CurrentWeather>> currentWeatherConfig;
+
+//!< Instance of API client used to contact REST API (used only for meteo_backend)
+std::shared_ptr<org::openapitools::client::api::ApiClient> apiClient;
+
+//!< Instance of API configuration class (used only for meteo_backend)
+std::shared_ptr<org::openapitools::client::api::ApiConfiguration> apiConfiguration;
+
+//!< Gets a list of all station
+std::shared_ptr<org::openapitools::client::api::ListOfAllStationsApi> listofAllStation;
+
+//!< Gets summary for given station and few more things
+std::shared_ptr<org::openapitools::client::api::StationApi> stationApi;
+
+int main(int argc, char **argv) {
+
+	std::string configFn;
+
+	spdlog::set_level(spdlog::level::debug);
+
+	SPDLOG_INFO("ParaGADACZ is starting");
+
+	if (argc > 1) {
+		configFn = std::string(argv[1]);
+	}
+	else {
+		configFn = "paragadacz.conf";
+	}
+
+	SPDLOG_INFO("Using configuration file: {}", configFn);
+
+	// create an instance of configuration file
+	configurationFile = std::make_shared<ConfigurationFile>(configFn);
+
+	// try parse the configuration file
+	const bool configParsingResult = configurationFile->parse();
+
+	// check parsing result
+	if (!configParsingResult) {
+		SPDLOG_ERROR("Configuration file hasn't been parsed correctly! Exiting application!");
+
+		return -1;
+	}
+
+	// create an instance of API client
+	apiClient = std::make_shared<org::openapitools::client::api::ApiClient>();
+
+	// create an instance of API configuration
+	apiConfiguration = std::make_shared<org::openapitools::client::api::ApiConfiguration>();
+
+	// set base URL
 	apiConfiguration->setBaseUrl(pogoda_base_url);
 
+	// set this configuration or API client
 	apiClient->setConfiguration(apiConfiguration);
 
-	org::openapitools::client::api::ListOfAllStationsApi listofAllStation(apiClient);
-	org::openapitools::client::api::StationApi stationApi (apiClient);
+    //auto type = listofAllStation.listOfAllStationsGet().get();
 
-	std::list<std::string> playlist;
+	// get configuration for current weather conditions. this is mandatory and is always enabled
+	currentWeatherConfig = std::make_shared<std::vector<ConfigurationFile_CurrentWeather>>(configurationFile->getCurrent());
 
-	std::unique_lock<std::mutex> lock(mutex);
-
-	int vlc_result = 0;
-
-    libvlc_instance_t * inst;
-    libvlc_media_player_t *mp;
-    libvlc_media_t *m;
-    libvlc_event_manager_t *evm;
-
-    auto type = listofAllStation.listOfAllStationsGet().get();
-    std::shared_ptr<org::openapitools::client::model::Summary> skrzyczne_summary = stationApi.stationStationNameSummaryGet("skrzyczne").get();
-
-	apiConfiguration->setBaseUrl(meteoblue_base_url);
-
-	org::openapitools::client::api::ForecastApi forecastApi(apiClient);
-	std::shared_ptr<org::openapitools::client::model::Inline_response_200> forecast;
-	try {
-		forecast = forecastApi.basicDayBasic3hGet(19.03, 49.68, "timestamp_utc", METEOBLUE_API_KEY, boost::optional<std::string>()).get();
-
-		std::tuple<int64_t, float> temperature = ForecastFinder::getTemperatureMeteoblue(forecast, 180);
+	for (ConfigurationFile_CurrentWeather current : *currentWeatherConfig) {
+		switch (current.type) {
+		case APRX:
+		case POGODA_CC:
+		default:
+			SPDLOG_ERROR("Unsupported current weather source");
+		}
 	}
-	catch (org::openapitools::client::api::ApiException & e) {
-		std::cout << e.what();
-	}
-
-    playlist.emplace_back("chirp.mp3");
-    playlist.emplace_back("11-taniec-krotki-silent.mp3");
-
-    /* Load the VLC engine */
-    inst = libvlc_new (0, NULL);
-
-    // create a media play playing environment
-    mp = libvlc_media_player_new(inst); //libvlc_media_player_new_from_media(m);
-
-    evm = libvlc_media_player_event_manager(mp);
-
-    vlc_result = libvlc_event_attach(evm, libvlc_MediaPlayerStopped, callback, 0);
-
-    for (std::string file : playlist) {
-    	std::cout << file.c_str() << std::endl;
-
-        // create a new item
-        m = libvlc_media_new_path(inst, file.c_str());
-
-        libvlc_media_player_set_media(mp, m);
-
-        // play the media_player
-        libvlc_media_player_play(mp);
-
-        conditionVariable.wait_for(lock, std::chrono::seconds(33));
-
-        libvlc_media_release(m);
-    }
-
-
-    //sleep(11);
-
-    // stop playing
-//    libvlc_media_player_stop(mp);
-
-    /* Free the media_player */
-    libvlc_media_player_release (mp);
-
-    libvlc_release (inst);
 
 	return 0;
 }
