@@ -50,6 +50,7 @@ BOOST_AUTO_TEST_CASE (simple_parse)
 	BOOST_CHECK_EQUAL(configurationFile.isDebug(), false);
 	BOOST_CHECK_EQUAL(configurationFile.getLogOutput(), "gadacz.log");
 	BOOST_CHECK_EQUAL(configurationFile.getMaximumDataAge(), 60);
+	BOOST_CHECK_EQUAL(configurationFile.getAprxRfLogPath(), "/var/log/aprx/test.log");
 	/////////////////
 	BOOST_CHECK_EQUAL(configurationFile.getCurrent().size(), 2);
 	BOOST_CHECK_EQUAL(configurationFile.getCurrent().at(0).name, "SR9WXM");

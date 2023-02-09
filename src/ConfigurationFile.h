@@ -96,6 +96,7 @@ class ConfigurationFile {
 	std::string logOutput;		//!< Path to created log file
 
 	int maximumDataAge;	//!< maximum time in minutes for current measurements to be usable
+	std::string aprxRfLogPath;	//!< Path to
 
 	std::vector<std::string> recordedSpecialAnnouncementPre;
 	std::vector<std::string> textSpecialAnnouncementPre;
@@ -108,6 +109,9 @@ class ConfigurationFile {
 
 	std::vector<std::string> recordedSpecialAnnouncementPost;
 	std::vector<std::string> textSpecialAnnouncementPost;
+
+	bool hasPogodacc;
+	bool hasAprx;
 
 public:
 
@@ -124,6 +128,9 @@ public:
 		return out;
 	}
 
+	/**
+	 * Parse configuration file from path provided to constructor.
+	 */
 	bool parse();
 
 	ConfigurationFile(std::string fileName);
@@ -175,6 +182,18 @@ public:
 
 	const std::vector<std::string>& getTextSpecialAnnouncementPre() const {
 		return textSpecialAnnouncementPre;
+	}
+
+	bool isHasPogodacc() const {
+		return hasPogodacc;
+	}
+
+	const std::string& getAprxRfLogPath() const {
+		return aprxRfLogPath;
+	}
+
+	bool isHasAprx() const {
+		return hasAprx;
 	}
 };
 

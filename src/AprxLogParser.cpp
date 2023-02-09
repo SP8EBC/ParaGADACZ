@@ -23,6 +23,10 @@ AprxLogParser::AprxLogParser(std::string fn) : fileName(fn), APRSIS("APRSIS") {
 	parsedLines = 0;
 }
 
+AprxLogParser::AprxLogParser() : APRSIS("APRSIS") {
+	parsedLines = 0;
+}
+
 AprxLogParser::~AprxLogParser() {
 	// TODO Auto-generated destructor stub
 }
@@ -218,6 +222,7 @@ void AprxLogParser::rewindFile() {
 	// get buffer lenght
 	std::streampos lenght = file.tellg();
 
+	// ???
 	file.seekg((int)lenght / 2, file.beg);
 }
 
@@ -225,4 +230,3 @@ AprxLogParser& AprxLogParser::operator=(AprxLogParser &&other) {
 	// TODO Auto-generated method stub
 
 }
-

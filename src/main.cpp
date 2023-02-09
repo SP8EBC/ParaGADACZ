@@ -12,6 +12,7 @@
 #include <vlc/vlc.h>
 #include <condition_variable>
 #include <list>
+#include <vector>
 #include <memory>
 
 // api
@@ -26,6 +27,7 @@
 
 #include "ForecastFinder.h"
 #include "PlaylistAssembler.h"
+#include "AprxLogParser.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -43,17 +45,23 @@ std::shared_ptr<ConfigurationFile> configurationFile;
 //!< Configuration of data sources for current weather conditions
 std::shared_ptr<std::vector<ConfigurationFile_CurrentWeather>> currentWeatherConfig;
 
-//!< Instance of API client used to contact REST API (used only for meteo_backend)
+//!< Instance of API client used to contact REST API (used only for pogoda.cc meteo_backend)
 std::shared_ptr<org::openapitools::client::api::ApiClient> apiClient;
 
-//!< Instance of API configuration class (used only for meteo_backend)
+//!< Instance of API configuration class (used only for pogoda.cc meteo_backend)
 std::shared_ptr<org::openapitools::client::api::ApiConfiguration> apiConfiguration;
 
 //!< Gets a list of all station
-std::shared_ptr<org::openapitools::client::api::ListOfAllStationsApi> listofAllStation;
+std::shared_ptr<org::openapitools::client::api::ListOfAllStationsApi> listofAllStationApi;
 
 //!< Gets summary for given station and few more things
 std::shared_ptr<org::openapitools::client::api::StationApi> stationApi;
+
+//!< List of all station from pogoda.cc meteo_backend
+std::vector<std::shared_ptr<org::openapitools::client::model::StationDefinitionModel>> listOfAllStationsPogodacc;
+
+//!< Parser of APRX rf-log file
+AprxLogParser logParser;
 
 int main(int argc, char **argv) {
 
@@ -97,14 +105,32 @@ int main(int argc, char **argv) {
 	// set this configuration or API client
 	apiClient->setConfiguration(apiConfiguration);
 
-    //auto type = listofAllStation.listOfAllStationsGet().get();
+	// check if there is anything to be downloaded from pogoda.cc backend
+	if (configurationFile->isHasPogodacc()) {
+		// get list of all stations
+		listOfAllStationsPogodacc = listofAllStationApi->listOfAllStationsGet().get();
+	}
+
+	// check if there is at least one station to be parsed from APRX rf log file
+	if (configurationFile->isHasAprx()) {
+		// set path to APRX file
+		logParser.setFileName(configurationFile->getAprxRfLogPath());
+
+		// open a file
+		logParser.openFile();
+
+		// and fast forward it to the middle
+		logParser.rewindFile();
+	}
 
 	// get configuration for current weather conditions. this is mandatory and is always enabled
 	currentWeatherConfig = std::make_shared<std::vector<ConfigurationFile_CurrentWeather>>(configurationFile->getCurrent());
 
+	// go through configuration and download current weather conditions
 	for (ConfigurationFile_CurrentWeather current : *currentWeatherConfig) {
 		switch (current.type) {
 		case APRX:
+
 		case POGODA_CC:
 		default:
 			SPDLOG_ERROR("Unsupported current weather source");

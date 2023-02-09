@@ -37,12 +37,17 @@ public:
 
 	AprsWXData getLastPacketForStation(std::string call, uint8_t ssid);
 
+	AprxLogParser();
 	AprxLogParser(std::string fn);
 	virtual ~AprxLogParser();
 	AprxLogParser(const AprxLogParser &other);
 	AprxLogParser(AprxLogParser &&other);
 	AprxLogParser& operator=(const AprxLogParser &other);
 	AprxLogParser& operator=(AprxLogParser &&other);
+
+	void setFileName(const std::string &fileName) {
+		this->fileName = fileName;
+	}
 };
 
 #endif /* APRXLOGPARSER_H_ */

@@ -13,6 +13,10 @@
 
 ConfigurationFile::ConfigurationFile(std::string fileName) {
 	fn = fileName;
+	hasPogodacc = false;
+	hasAprx = false;
+	debug = false;
+	maximumDataAge = 60;
 }
 
 ConfigurationFile::~ConfigurationFile() {
@@ -67,6 +71,12 @@ bool ConfigurationFile::parse() {
 	if (!root.lookupValue("MaximumDataAge", this->maximumDataAge )) {
 		this->maximumDataAge = 60;	// default value -> 60 minutes
 		SPDLOG_WARN("MaximumDataAge didn't find in configuration file! Set to default 60 minutes");
+	}
+
+	// get path to APRX rf log file
+	if (!root.lookupValue("AprsLogPath", this->aprxRfLogPath )) {
+		this->aprxRfLogPath = "/var/log/aprx/aprs-rf.log"; // default value -> 60 minutes
+		SPDLOG_WARN("No path to APRX rf log has been provided. Using default /var/log/aprx/aprs-rf.log");
 	}
 
 	// get 'Intro' configuration section
@@ -163,6 +173,13 @@ bool ConfigurationFile::parse() {
 				currentWeather[i].lookupValue("RegionalPressure", c.regionalPressure);
 
 				this->current.push_back(c);
+
+				if (c.type == POGODA_CC) {
+					hasPogodacc = true;
+				}
+				else if (c.type == APRX) {
+					hasAprx = true;
+				}
 			}
 		}
 		else {
