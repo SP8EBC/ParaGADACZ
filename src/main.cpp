@@ -14,6 +14,7 @@
 #include <list>
 #include <vector>
 #include <memory>
+#include <optional>
 
 // api
 #include "ApiConfiguration.h"
@@ -62,6 +63,12 @@ std::vector<std::shared_ptr<org::openapitools::client::model::StationDefinitionM
 
 //!< Parser of APRX rf-log file
 AprxLogParser logParser;
+
+//!< Vector of current weather conditions
+std::vector<AprsWXData> currentWeather;
+
+//!< Value of Regional pressure (if it is configured)
+std::optional<float> regionalPressure;
 
 int main(int argc, char **argv) {
 
@@ -129,9 +136,44 @@ int main(int argc, char **argv) {
 	// go through configuration and download current weather conditions
 	for (ConfigurationFile_CurrentWeather current : *currentWeatherConfig) {
 		switch (current.type) {
-		case APRX:
+		case APRX: {
+			// split callsign from SSID
+			std::tuple<std::string, unsigned> split = ConfigurationFile::splitCallsign(current.name);
 
-		case POGODA_CC:
+			// get last packet for that station
+			AprsWXData packet = logParser.getLastPacketForStation(std::get<std::string>(split), std::get<unsigned>(split));
+
+			// set what should be used from this packet
+			packet.useWind = current.sayWind;
+			packet.useTemperature = current.sayTemperature;
+			packet.useHumidity = current.sayHumidy;
+			packet.usePressure = current.sayPressure;
+
+			// check if this station should provide regional pressure value
+			if (current.regionalPressure) {
+
+				// check if regional pressure was get before
+				if (regionalPressure.has_value()) {
+					SPDLOG_ERROR("More than one source of regional pressure found!");
+
+					return -2;
+				}
+				else {
+					regionalPressure = packet.pressure;
+				}
+			}
+
+			SPDLOG_INFO("Adding current weather source of type APRX for station: {}", current.name);
+
+			// add this to the vector
+			currentWeather.push_back(std::move(packet));
+
+			break;
+		}
+
+		case POGODA_CC: {
+
+		}
 		default:
 			SPDLOG_ERROR("Unsupported current weather source");
 		}

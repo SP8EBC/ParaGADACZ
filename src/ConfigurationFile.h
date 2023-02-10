@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <tuple>
 
 #include <boost/algorithm/string.hpp>
 
@@ -126,6 +127,44 @@ public:
 		}
 
 		return out;
+	}
+
+	/**
+	 * Splits callsign and ssid stored in one string to separate elements
+	 */
+	static std::tuple<std::string, unsigned> splitCallsign(std::string input) {
+
+		auto it = input.begin();
+
+		std::string calsign, bufSSID;
+		unsigned ssid;
+
+		// copy callsign to separate buffer
+		while ( (*it != '-') && (*it != '>') && it != input.end()) {
+			calsign.append(1, *it);
+
+			it++;
+		}
+
+		// check SSID
+		if (*it == '-') {
+			// copy if exist
+			it++;
+
+			while ((*it != '>') && it != input.end()) {
+				bufSSID.append(1, *it);
+
+				it++;
+			}
+
+			// and convert to integer
+			ssid = std::stoi(bufSSID);
+		}
+		else {
+			ssid = 0;
+		}
+
+		return std::make_tuple(calsign, ssid);
 	}
 
 	/**

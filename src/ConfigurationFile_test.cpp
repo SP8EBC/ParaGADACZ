@@ -33,6 +33,26 @@ struct MyConfig
 
 BOOST_GLOBAL_FIXTURE (MyConfig);
 
+BOOST_AUTO_TEST_CASE (split_callsign)
+{
+	std::string test = "SP8EBC-11";
+
+	std::tuple<std::string, unsigned> result = ConfigurationFile::splitCallsign(test);
+
+	BOOST_CHECK_EQUAL(std::get<std::string>(result), "SP8EBC");
+	BOOST_CHECK_EQUAL(std::get<unsigned>(result), 11);
+}
+
+BOOST_AUTO_TEST_CASE (split_callsign_no_ssid)
+{
+	std::string test = "SP8EBC";
+
+	std::tuple<std::string, unsigned> result = ConfigurationFile::splitCallsign(test);
+
+	BOOST_CHECK_EQUAL(std::get<std::string>(result), "SP8EBC");
+	BOOST_CHECK_EQUAL(std::get<unsigned>(result), 0);
+}
+
 BOOST_AUTO_TEST_CASE (simple_parse)
 {
 	ConfigurationFile configurationFile("./test_input/configuration_simple_parse.conf");

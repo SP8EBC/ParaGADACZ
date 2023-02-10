@@ -246,6 +246,33 @@ AprsWXData::AprsWXData(const AprsWXData& in) {
 	this->convertPressure = in.convertPressure;
 }
 
+AprsWXData::AprsWXData(AprsWXData &&in) {
+	this->humidity = in.humidity;
+	this->pressure = in.pressure;
+	this->rain24 = in.rain24;
+	this->rain60 = in.rain60;
+	this->rain_day = in.rain_day;
+	this->temperature = in.temperature;
+	this->wind_direction = in.wind_direction;
+	this->wind_gusts = in.wind_gusts;
+	this->wind_speed = in.wind_speed;
+
+	this->valid = in.valid;
+
+	this->useHumidity = in.useHumidity;
+	this->usePressure = in.usePressure;
+	this->useWind = in.useWind;
+	this->useTemperature = in.useTemperature;
+
+	this->ssid = in.ssid;
+	this->call = in.call;
+
+	this->is_primary = in.is_primary;
+	this->is_secondary = in.is_secondary;
+
+	this->convertPressure = in.convertPressure;
+}
+
 AprsWXData& AprsWXData::operator =(AprsWXData& _in) {
 
 	this->humidity = _in.humidity;

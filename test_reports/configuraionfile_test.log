@@ -1,29 +1,37 @@
-Running 1 test case...
+Running 3 test cases...
 Entering test module "ConfigurationFile_test"
-../src/ConfigurationFile_test.cpp(36): Entering test case "simple_parse"
-../src/ConfigurationFile_test.cpp(44): info: check result == true has passed
-../src/ConfigurationFile_test.cpp(46): info: check configurationFile.getIntro().ident == "ident.mp3" has passed
-../src/ConfigurationFile_test.cpp(47): info: check configurationFile.getIntro().sayCurrentTime == false has passed
-../src/ConfigurationFile_test.cpp(48): info: check configurationFile.getIntro().sayRegionalPressure == true has passed
-../src/ConfigurationFile_test.cpp(50): info: check configurationFile.isDebug() == false has passed
-../src/ConfigurationFile_test.cpp(51): info: check configurationFile.getLogOutput() == "gadacz.log" has passed
-../src/ConfigurationFile_test.cpp(52): info: check configurationFile.getMaximumDataAge() == 60 has passed
-../src/ConfigurationFile_test.cpp(53): info: check configurationFile.getAprxRfLogPath() == "/var/log/aprx/test.log" has passed
-../src/ConfigurationFile_test.cpp(55): info: check configurationFile.getCurrent().size() == 2 has passed
-../src/ConfigurationFile_test.cpp(56): info: check configurationFile.getCurrent().at(0).name == "SR9WXM" has passed
-../src/ConfigurationFile_test.cpp(57): info: check configurationFile.getCurrent().at(0).type == APRX has passed
-../src/ConfigurationFile_test.cpp(58): info: check configurationFile.getCurrent().at(0).fnIdent == "magurka.mp3" has passed
-../src/ConfigurationFile_test.cpp(59): info: check configurationFile.getCurrent().at(0).sayHumidy == true has passed
-../src/ConfigurationFile_test.cpp(60): info: check configurationFile.getCurrent().at(0).sayTemperature == true has passed
-../src/ConfigurationFile_test.cpp(61): info: check configurationFile.getCurrent().at(0).sayWind == true has passed
-../src/ConfigurationFile_test.cpp(62): info: check configurationFile.getCurrent().at(0).sayPressure == false has passed
-../src/ConfigurationFile_test.cpp(63): info: check configurationFile.getCurrent().at(0).regionalPressure == true has passed
-../src/ConfigurationFile_test.cpp(65): info: check configurationFile.getForecast().futureTime == 180 has passed
-../src/ConfigurationFile_test.cpp(66): info: check configurationFile.getForecast().locations.size() == 2 has passed
-../src/ConfigurationFile_test.cpp(67): info: check configurationFile.getForecast().locations.at(0).name == "Skrzyczne" has passed
-../src/ConfigurationFile_test.cpp(68): info: check configurationFile.getForecast().locations.at(0).nameIdent == "costam.mp3" has passed
-../src/ConfigurationFile_test.cpp(69): info: check configurationFile.getForecast().locations.at(0).sayPrecipation == true has passed
-../src/ConfigurationFile_test.cpp(70): info: check configurationFile.getForecast().locations.at(0).sayTemperature == true has passed
-../src/ConfigurationFile_test.cpp(71): info: check configurationFile.getForecast().locations.at(0).sayWind == true has passed
-../src/ConfigurationFile_test.cpp(36): Leaving test case "simple_parse"; testing time: 543us
-Leaving test module "ConfigurationFile_test"; testing time: 559us
+../src/ConfigurationFile_test.cpp(36): Entering test case "split_callsign"
+../src/ConfigurationFile_test.cpp(42): info: check std::get<std::string>(result) == "SP8EBC" has passed
+../src/ConfigurationFile_test.cpp(43): info: check std::get<unsigned>(result) == 11 has passed
+../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 129us
+../src/ConfigurationFile_test.cpp(46): Entering test case "split_callsign_no_ssid"
+../src/ConfigurationFile_test.cpp(52): info: check std::get<std::string>(result) == "SP8EBC" has passed
+../src/ConfigurationFile_test.cpp(53): info: check std::get<unsigned>(result) == 0 has passed
+../src/ConfigurationFile_test.cpp(46): Leaving test case "split_callsign_no_ssid"; testing time: 118us
+../src/ConfigurationFile_test.cpp(56): Entering test case "simple_parse"
+../src/ConfigurationFile_test.cpp(64): info: check result == true has passed
+../src/ConfigurationFile_test.cpp(66): info: check configurationFile.getIntro().ident == "ident.mp3" has passed
+../src/ConfigurationFile_test.cpp(67): info: check configurationFile.getIntro().sayCurrentTime == false has passed
+../src/ConfigurationFile_test.cpp(68): info: check configurationFile.getIntro().sayRegionalPressure == true has passed
+../src/ConfigurationFile_test.cpp(70): info: check configurationFile.isDebug() == false has passed
+../src/ConfigurationFile_test.cpp(71): info: check configurationFile.getLogOutput() == "gadacz.log" has passed
+../src/ConfigurationFile_test.cpp(72): info: check configurationFile.getMaximumDataAge() == 60 has passed
+../src/ConfigurationFile_test.cpp(73): info: check configurationFile.getAprxRfLogPath() == "/var/log/aprx/test.log" has passed
+../src/ConfigurationFile_test.cpp(75): info: check configurationFile.getCurrent().size() == 2 has passed
+../src/ConfigurationFile_test.cpp(76): info: check configurationFile.getCurrent().at(0).name == "SR9WXM" has passed
+../src/ConfigurationFile_test.cpp(77): info: check configurationFile.getCurrent().at(0).type == APRX has passed
+../src/ConfigurationFile_test.cpp(78): info: check configurationFile.getCurrent().at(0).fnIdent == "magurka.mp3" has passed
+../src/ConfigurationFile_test.cpp(79): info: check configurationFile.getCurrent().at(0).sayHumidy == true has passed
+../src/ConfigurationFile_test.cpp(80): info: check configurationFile.getCurrent().at(0).sayTemperature == true has passed
+../src/ConfigurationFile_test.cpp(81): info: check configurationFile.getCurrent().at(0).sayWind == true has passed
+../src/ConfigurationFile_test.cpp(82): info: check configurationFile.getCurrent().at(0).sayPressure == false has passed
+../src/ConfigurationFile_test.cpp(83): info: check configurationFile.getCurrent().at(0).regionalPressure == true has passed
+../src/ConfigurationFile_test.cpp(85): info: check configurationFile.getForecast().futureTime == 180 has passed
+../src/ConfigurationFile_test.cpp(86): info: check configurationFile.getForecast().locations.size() == 2 has passed
+../src/ConfigurationFile_test.cpp(87): info: check configurationFile.getForecast().locations.at(0).name == "Skrzyczne" has passed
+../src/ConfigurationFile_test.cpp(88): info: check configurationFile.getForecast().locations.at(0).nameIdent == "costam.mp3" has passed
+../src/ConfigurationFile_test.cpp(89): info: check configurationFile.getForecast().locations.at(0).sayPrecipation == true has passed
+../src/ConfigurationFile_test.cpp(90): info: check configurationFile.getForecast().locations.at(0).sayTemperature == true has passed
+../src/ConfigurationFile_test.cpp(91): info: check configurationFile.getForecast().locations.at(0).sayWind == true has passed
+../src/ConfigurationFile_test.cpp(56): Leaving test case "simple_parse"; testing time: 539us
+Leaving test module "ConfigurationFile_test"; testing time: 826us

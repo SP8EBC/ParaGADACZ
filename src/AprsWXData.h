@@ -54,6 +54,9 @@ class AprsWXData
         // copy constructor
         AprsWXData(const AprsWXData& in);
 
+        // move constructor
+        AprsWXData(AprsWXData&& in);
+
         // assigment operator
         AprsWXData& operator= (AprsWXData&);
 
