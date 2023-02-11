@@ -20,20 +20,24 @@ ConfigurationFile::ConfigurationFile(std::string fileName) {
 }
 
 ConfigurationFile::~ConfigurationFile() {
+	SPDLOG_DEBUG("");
 }
 
-ConfigurationFile::ConfigurationFile(const ConfigurationFile &other) {
-
-}
-
-ConfigurationFile::ConfigurationFile(ConfigurationFile &&other) {
-
-}
-
-ConfigurationFile& ConfigurationFile::operator=(
-		const ConfigurationFile &other) {
-
-}
+//ConfigurationFile::ConfigurationFile(const ConfigurationFile &other) {
+//
+//}
+//
+//ConfigurationFile::ConfigurationFile(ConfigurationFile &&other) {
+//
+//}
+//
+//ConfigurationFile& ConfigurationFile::operator=(
+//		const ConfigurationFile &other) {
+//
+//}
+//ConfigurationFile& ConfigurationFile::operator=(ConfigurationFile &&other) {
+//
+//}
 
 bool ConfigurationFile::parse() {
 	SPDLOG_INFO("parsing configuration file: {}", this->fn);
@@ -233,7 +237,7 @@ bool ConfigurationFile::parse() {
 
 		}
 
-		SPDLOG_INFO("{} sources of meteoblue weather forecast read", forecastPoints.getLength());
+		SPDLOG_INFO("{} sources of meteoblue weather forecast read", this->forecast.locations.size());
 	}
 	catch (libconfig::SettingNotFoundException & e) {
 		SPDLOG_WARN("SettingNotFoundException during parsing 'ForecastMeteoblue', e.getPath = {}", e.getPath());
@@ -297,9 +301,5 @@ bool ConfigurationFile::parse() {
 	}
 
 	return out;
-}
-
-ConfigurationFile& ConfigurationFile::operator=(ConfigurationFile &&other) {
-
 }
 

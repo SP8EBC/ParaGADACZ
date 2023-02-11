@@ -11,7 +11,7 @@
 
 #include "ForecastDownloader.h"
 
-ConfigurationFile config("./test_input/configuration_forecast_downloader.conf");
+std::shared_ptr<ConfigurationFile> config;
 
 struct MyConfig
 {
@@ -19,7 +19,8 @@ struct MyConfig
   {
     boost::unit_test::unit_test_log.set_stream( test_log );
     boost::unit_test::unit_test_log.set_threshold_level(boost::unit_test::log_level::log_successful_tests);
-    config.parse();
+    config = std::make_shared<ConfigurationFile>("./test_input/configuration_forecast_downloader.conf");
+    config->parse();
   }
   ~MyConfig()
   {
@@ -40,7 +41,7 @@ BOOST_AUTO_TEST_CASE(download_first_set)
 
 	BOOST_TEST_MESSAGE("downloading meteoblue");
 
-	downloader.downloadAllMeteoblue();
+	bool result = downloader.downloadAllMeteoblue();
 
-	BOOST_CHECK(true);
+	BOOST_CHECK(result);
 }

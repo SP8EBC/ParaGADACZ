@@ -30,6 +30,8 @@
 #include "ForecastFinder.h"
 #include "PlaylistAssembler.h"
 #include "AprxLogParser.h"
+#include "AprsWXDataFactory.h"
+#include "ForecastDownloader.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -65,11 +67,17 @@ std::vector<std::shared_ptr<org::openapitools::client::model::StationDefinitionM
 //!< Parser of APRX rf-log file
 AprxLogParser logParser;
 
-//!< Vector of current weather conditions
-std::vector<AprsWXData> currentWeather;
+//!< Vector of current weather conditions (only from APRX rf log file
+std::vector<AprsWXData> currentWeatherAprx;
+
+//!<
+std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> currentWeatherMeteobackend;
 
 //!< Value of Regional pressure (if it is configured)
 std::optional<float> regionalPressure;
+
+//!< Interface to meteoblue auto generated code
+std::shared_ptr<ForecastDownloader> forecastDownloader;
 
 int main(int argc, char **argv) {
 
@@ -112,6 +120,18 @@ int main(int argc, char **argv) {
 
 	// set this configuration or API client
 	apiClient->setConfiguration(apiConfiguration);
+
+	listofAllStationApi = std::make_shared<org::openapitools::client::api::ListOfAllStationsApi>(apiClient);
+	stationApi = std::make_shared<org::openapitools::client::api::StationApi>(apiClient);
+
+	// create an instance of forecast downloader
+	forecastDownloader = std::make_shared<ForecastDownloader>(configurationFile);
+
+	// check if meteoblue forecasts are enabled in a configuration file
+	if (configurationFile->getForecast().enable) {
+		// download all forecast data
+		forecastDownloader->downloadAllMeteoblue();
+	}
 
 	// check if there is anything to be downloaded from pogoda.cc backend
 	if (configurationFile->isHasPogodacc()) {
@@ -165,14 +185,15 @@ int main(int argc, char **argv) {
 					}
 				}
 
-				SPDLOG_INFO("Adding current weather source of type APRX for station: {}", current.name);
+				SPDLOG_INFO("Adding current weather conditions from APRX for station: {}", current.name);
 
 				// add this to the vector of current weather
-				currentWeather.push_back(std::move(*packet));
+				currentWeatherAprx.push_back(std::move(*packet));
 			}
 			else {
 				SPDLOG_ERROR("Cannot find any current conditions for {} within APRX rf log file!!", current.name);
 #ifdef MAIN_FAIL_ON_MISSING_CURRENT_CONDITIONS
+				return -3;
 #else
 #endif
 			}
@@ -181,8 +202,8 @@ int main(int argc, char **argv) {
 		}
 
 		case POGODA_CC: {
-			// look for
-			std::find_if(listOfAllStationsPogodacc.begin(), listOfAllStationsPogodacc.end(), [& current](auto x) {
+			// look for weather station in results from meteo_backend
+			auto forecast = std::find_if(listOfAllStationsPogodacc.begin(), listOfAllStationsPogodacc.end(), [& current](auto x) {
 				if (x->getName() == current.name) {
 					return true;
 				}
@@ -191,6 +212,26 @@ int main(int argc, char **argv) {
 				}
 			});
 
+			// check if this station was found or not
+			if (forecast != listOfAllStationsPogodacc.end()) {
+				SPDLOG_INFO("Downloading meteo_backend summary for {}", (*forecast)->getName());
+
+				// get summary for that station
+				std::shared_ptr<org::openapitools::client::model::Summary> summary = stationApi->stationStationNameSummaryGet((*forecast)->getName()).get();
+
+				SPDLOG_INFO("Adding current weather conditions from meteo_backend for station: {}", current.name);
+
+				// add this result to
+				currentWeatherMeteobackend.push_back({current.name, summary});
+
+			}
+			else {
+				SPDLOG_ERROR("Cannot find any current conditions for {} within list of all station from pogoda.cc meteo_backend!!", current.name);
+#ifdef MAIN_FAIL_ON_MISSING_CURRENT_CONDITIONS
+				return -4;
+#else
+#endif
+			}
 			break;
 		}
 		default:

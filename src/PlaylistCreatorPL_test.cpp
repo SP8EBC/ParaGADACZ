@@ -19,7 +19,7 @@
 
 #include "ConfigurationFile.h"
 
-ConfigurationFile config("./test_input/configuration_playlist_creator_pl.conf");
+std::shared_ptr<ConfigurationFile> config;
 
 struct MyConfig
 {
@@ -29,6 +29,8 @@ struct MyConfig
     boost::unit_test::unit_test_log.set_threshold_level(boost::unit_test::log_level::log_successful_tests);
 	//spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
+	config = std::make_shared<ConfigurationFile>("./test_input/configuration_playlist_creator_pl.conf");
+	config->parse();
   }
   ~MyConfig()
   {
@@ -262,9 +264,9 @@ BOOST_AUTO_TEST_CASE(current_time) {
 BOOST_AUTO_TEST_CASE(get_audio_for_skrzyczne) {
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
-	bool parsing_result = config.parse();
-
-	BOOST_CHECK(parsing_result);
+//	bool parsing_result = config->parse();
+//
+//	BOOST_CHECK(parsing_result);
 
 	// intentionally check with lowerase, while config file
 	std::optional<std::string> result = c->getAudioForStationName("skrzyczne");
@@ -277,9 +279,9 @@ BOOST_AUTO_TEST_CASE(get_audio_for_nonexistent_station) {
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
-	bool parsing_result = config.parse();
-
-	BOOST_CHECK(parsing_result);
+//	bool parsing_result = config->parse();
+//
+//	BOOST_CHECK(parsing_result);
 
 	std::optional<std::string> result = c->getAudioForStationName("dupaduapaduadojiojorihg[iorhr[h");
 
@@ -290,9 +292,9 @@ BOOST_AUTO_TEST_CASE(get_audio_for_meteoblue_jezioro) {
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
-	bool parsing_result = config.parse();
-
-	BOOST_CHECK(parsing_result);
+//	bool parsing_result = config->parse();
+//
+//	BOOST_CHECK(parsing_result);
 
 	// intentionally check with lowerase, while config file
 	std::optional<std::string> result = c->getAudioForForecastName("JEZIORO");

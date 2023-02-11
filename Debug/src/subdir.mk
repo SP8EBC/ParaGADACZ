@@ -7,42 +7,39 @@ CPP_SRCS += \
 ../src/AprsPacket.cpp \
 ../src/AprsWXData.cpp \
 ../src/AprsWXDataFactory.cpp \
-../src/AprsWXDataFactory_test.cpp \
 ../src/AprxLogParser.cpp \
-../src/AprxLogParser_test.cpp \
 ../src/ConfigurationFile.cpp \
 ../src/ForecastDownloader.cpp \
 ../src/ForecastFinder.cpp \
 ../src/Player.cpp \
 ../src/PlaylistAssembler.cpp \
+../src/PlaylistAssembler_test.cpp \
 ../src/PlaylistSamplerPL.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
 ./src/AprsWXData.o \
 ./src/AprsWXDataFactory.o \
-./src/AprsWXDataFactory_test.o \
 ./src/AprxLogParser.o \
-./src/AprxLogParser_test.o \
 ./src/ConfigurationFile.o \
 ./src/ForecastDownloader.o \
 ./src/ForecastFinder.o \
 ./src/Player.o \
 ./src/PlaylistAssembler.o \
+./src/PlaylistAssembler_test.o \
 ./src/PlaylistSamplerPL.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
 ./src/AprsWXData.d \
 ./src/AprsWXDataFactory.d \
-./src/AprsWXDataFactory_test.d \
 ./src/AprxLogParser.d \
-./src/AprxLogParser_test.d \
 ./src/ConfigurationFile.d \
 ./src/ForecastDownloader.d \
 ./src/ForecastFinder.d \
 ./src/Player.d \
 ./src/PlaylistAssembler.d \
+./src/PlaylistAssembler_test.d \
 ./src/PlaylistSamplerPL.d 
 
 

@@ -16,7 +16,7 @@
 
 class ForecastDownloader {
 
-	const ConfigurationFile & configurationFile;
+	const std::shared_ptr<ConfigurationFile> & configurationFile;
 
 	std::shared_ptr<org::openapitools::client::api::ApiConfiguration> apiConfiguration;
 
@@ -29,7 +29,7 @@ class ForecastDownloader {
 	bool anyError = false;
 
 public:
-	ForecastDownloader(ConfigurationFile & config);
+	ForecastDownloader(std::shared_ptr<ConfigurationFile> & config);
 	virtual ~ForecastDownloader();
 	ForecastDownloader(const ForecastDownloader &other);
 	ForecastDownloader(ForecastDownloader &&other);
@@ -39,7 +39,7 @@ public:
 	/**
 	 * Synchronously download all configured meteoblue forecast
 	 */
-	void downloadAllMeteoblue();
+	bool downloadAllMeteoblue();
 
 	/**
 	 * Get meteoblue forecast for point name

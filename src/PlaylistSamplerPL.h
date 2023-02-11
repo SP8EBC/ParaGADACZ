@@ -12,15 +12,15 @@
 #include "PlaylistSampler.h"
 
 /**
- * This class is a speicifc implementation of PlaylistCreator for Polish
+ * This class is a specific implementation of PlaylistCreator for Polish
  * language.
  */
 class PlaylistSamplerPL: public virtual PlaylistSampler {
 
-	const ConfigurationFile & config;
+	const std::shared_ptr<ConfigurationFile> & config;
 
 public:
-	PlaylistSamplerPL(ConfigurationFile & configurationFile);
+	PlaylistSamplerPL(std::shared_ptr<ConfigurationFile> & configurationFile);
 	virtual ~PlaylistSamplerPL();
 	PlaylistSamplerPL(const PlaylistSamplerPL &other);
 	PlaylistSamplerPL(PlaylistSamplerPL &&other);

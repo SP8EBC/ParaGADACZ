@@ -174,10 +174,10 @@ public:
 
 	ConfigurationFile(std::string fileName);
 	virtual ~ConfigurationFile();
-	ConfigurationFile(const ConfigurationFile &other);
-	ConfigurationFile(ConfigurationFile &&other);
-	ConfigurationFile& operator=(const ConfigurationFile &other);
-	ConfigurationFile& operator=(ConfigurationFile &&other);
+	//ConfigurationFile(const ConfigurationFile &other);
+	//ConfigurationFile(ConfigurationFile &&other);
+//	ConfigurationFile& operator=(const ConfigurationFile &other);
+//	ConfigurationFile& operator=(ConfigurationFile &&other);
 
 	const std::string& getAudioBasePath() const {
 		return audioBasePath;

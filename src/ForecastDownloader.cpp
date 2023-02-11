@@ -14,7 +14,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-ForecastDownloader::ForecastDownloader(ConfigurationFile & config) : configurationFile(config) {
+ForecastDownloader::ForecastDownloader(std::shared_ptr<ConfigurationFile> & config) : configurationFile(config) {
 
 	apiConfiguration = std::make_shared<org::openapitools::client::api::ApiConfiguration>();
 	apiConfiguration->setBaseUrl("http://my.meteoblue.com/packages/");
@@ -50,10 +50,10 @@ ForecastDownloader& ForecastDownloader::operator=(ForecastDownloader &&other) {
 
 }
 
-void ForecastDownloader::downloadAllMeteoblue() {
+bool ForecastDownloader::downloadAllMeteoblue() {
 
 	// get all configured forecast points
-	const ConfigurationFile_ForecastMeteoblue & forecasts = configurationFile.getForecast();
+	const ConfigurationFile_ForecastMeteoblue & forecasts = configurationFile->getForecast();
 
 	// iterate through all locations
 	for (ConfigurationFile_ForecastMeteoblue_Locations location : forecasts.locations) {
@@ -91,6 +91,7 @@ void ForecastDownloader::downloadAllMeteoblue() {
 		}
 	}
 
+	return anyError;
 
 	/**
 	 *

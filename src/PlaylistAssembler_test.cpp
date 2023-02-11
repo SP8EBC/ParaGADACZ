@@ -18,9 +18,9 @@
 
 #include "PlaylistSamplerPL_files.h"
 
-ConfigurationFile configuration_file_first("./test_input/configuration_playlist_assembler_first.conf");
-ConfigurationFile configuration_file_second("./test_input/configuration_playlist_assembler_second.conf");
-std::unique_ptr<PlaylistSampler> playlist_sampler;
+std::shared_ptr<ConfigurationFile> configuration_file_first; //("./test_input/configuration_playlist_assembler_first.conf");
+std::shared_ptr<ConfigurationFile> configuration_file_second; //("./test_input/configuration_playlist_assembler_second.conf");
+std::shared_ptr<PlaylistSampler> playlist_sampler;
 
 struct MyConfig
 {
@@ -28,9 +28,13 @@ struct MyConfig
   {
     boost::unit_test::unit_test_log.set_stream( test_log );
     boost::unit_test::unit_test_log.set_threshold_level(boost::unit_test::log_level::log_successful_tests);
-    configuration_file_first.parse();
-    configuration_file_second.parse();
-    playlist_sampler = std::make_unique<PlaylistSamplerPL>(configuration_file_first); 	// used for 'getAudioForStationName' and
+
+    configuration_file_first = std::make_shared<ConfigurationFile>("./test_input/configuration_playlist_assembler_first.conf");
+    configuration_file_second = std::make_shared<ConfigurationFile>("./test_input/configuration_playlist_assembler_second.conf");
+
+    configuration_file_first->parse();
+    configuration_file_second->parse();
+    playlist_sampler = std::make_shared<PlaylistSamplerPL>(configuration_file_first); 	// used for 'getAudioForStationName' and
     																					// 'getAudioForForecast' name
   }
   ~MyConfig()
@@ -56,9 +60,9 @@ BOOST_AUTO_TEST_CASE(current_weather_first) {
 	summary.setDirection(90);
 	summary.setAvgTemperature(23.0f);
 
-	std::pair<std::string, org::openapitools::client::model::Summary> pair = std::make_pair("skrzyczne", summary);
+	auto pair = std::make_pair("skrzyczne", std::make_shared<org::openapitools::client::model::Summary>(summary));
 
-	std::vector<std::pair<std::string, org::openapitools::client::model::Summary>> vector_of_pairs;
+	std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> vector_of_pairs;
 	vector_of_pairs.push_back(pair);
 
 	AprsWXData wx_data;
@@ -70,10 +74,8 @@ BOOST_AUTO_TEST_CASE(current_weather_first) {
 	wx_data.useTemperature = true;
 	wx_data.useWind = true;
 	std::vector<AprsWXData> vector_of_wx_data = {wx_data};
-//	std::vector<AprsWXData> vector_of_wx_data;
-//	vector_of_wx_data.push_back(wx_data);
 
-	PlaylistAssembler assembler(*playlist_sampler, configuration_file_first);
+	PlaylistAssembler assembler(playlist_sampler, configuration_file_first);
 
 	try {
 		assembler.start();
@@ -135,9 +137,9 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 	summary.setAvgTemperature(23.0f);
 	summary.setQnh(999);
 
-	std::pair<std::string, org::openapitools::client::model::Summary> pair = std::make_pair("skrzyczne", summary);
+	auto pair = std::make_pair("skrzyczne", std::make_shared<org::openapitools::client::model::Summary>(summary));
 
-	std::vector<std::pair<std::string, org::openapitools::client::model::Summary>> vector_of_pairs;
+	std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> vector_of_pairs;
 	vector_of_pairs.push_back(pair);
 
 	AprsWXData wx_data;
@@ -152,7 +154,7 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 //	std::vector<AprsWXData> vector_of_wx_data;
 //	vector_of_wx_data.push_back(wx_data);
 
-	PlaylistAssembler assembler(*playlist_sampler, configuration_file_second);
+	PlaylistAssembler assembler(playlist_sampler, configuration_file_second);
 
 	try {
 		assembler.start();

@@ -3,11 +3,11 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(36): Entering test case "split_callsign"
 ../src/ConfigurationFile_test.cpp(42): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(43): info: check std::get<unsigned>(result) == 11 has passed
-../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 129us
+../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 146us
 ../src/ConfigurationFile_test.cpp(46): Entering test case "split_callsign_no_ssid"
 ../src/ConfigurationFile_test.cpp(52): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(53): info: check std::get<unsigned>(result) == 0 has passed
-../src/ConfigurationFile_test.cpp(46): Leaving test case "split_callsign_no_ssid"; testing time: 118us
+../src/ConfigurationFile_test.cpp(46): Leaving test case "split_callsign_no_ssid"; testing time: 123us
 ../src/ConfigurationFile_test.cpp(56): Entering test case "simple_parse"
 ../src/ConfigurationFile_test.cpp(64): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(66): info: check configurationFile.getIntro().ident == "ident.mp3" has passed
@@ -33,5 +33,5 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(89): info: check configurationFile.getForecast().locations.at(0).sayPrecipation == true has passed
 ../src/ConfigurationFile_test.cpp(90): info: check configurationFile.getForecast().locations.at(0).sayTemperature == true has passed
 ../src/ConfigurationFile_test.cpp(91): info: check configurationFile.getForecast().locations.at(0).sayWind == true has passed
-../src/ConfigurationFile_test.cpp(56): Leaving test case "simple_parse"; testing time: 539us
-Leaving test module "ConfigurationFile_test"; testing time: 826us
+../src/ConfigurationFile_test.cpp(56): Leaving test case "simple_parse"; testing time: 18588us
+Leaving test module "ConfigurationFile_test"; testing time: 18904us

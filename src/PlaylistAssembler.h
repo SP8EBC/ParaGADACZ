@@ -24,14 +24,14 @@ class PlaylistAssembler {
 
 	std::shared_ptr<std::vector<std::string>> playlist;
 
-	PlaylistSampler & playlistSampler;
+	std::shared_ptr<PlaylistSampler> & playlistSampler;
 
-	const ConfigurationFile & configurationFile;
+	std::shared_ptr<ConfigurationFile> & configurationFile;
 
 	static std::string throwOnEmptyOptional();
 
 public:
-	PlaylistAssembler(PlaylistSampler & sampler, ConfigurationFile & config);
+	PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config);
 	virtual ~PlaylistAssembler();
 	PlaylistAssembler(const PlaylistAssembler &other);
 	PlaylistAssembler(PlaylistAssembler &&other);
@@ -56,7 +56,7 @@ public:
 	 * \param summary Vector of pairs with station_name - station_summary
 	 */
 	void currentWeather(
-			std::vector<std::pair<std::string, org::openapitools::client::model::Summary>> & summary,
+			std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> & summary,
 			std::vector<AprsWXData> & result);
 
 	/**

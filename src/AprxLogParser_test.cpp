@@ -108,6 +108,7 @@ BOOST_AUTO_TEST_CASE (cieszyn_convert_to_wxdata)
 
 	const std::optional<AprsWXData> result = parser.getLastPacketForStation("SR9NCI", 0);
 
+	BOOST_CHECK(result.has_value());
 	BOOST_CHECK(result->valid);
 	BOOST_CHECK_EQUAL(result->call, "SR9NCI");
 	BOOST_CHECK(result->wind_direction == 45);
@@ -125,11 +126,25 @@ BOOST_AUTO_TEST_CASE (myslowice_convert_to_wxdata)
 
 	const std::optional<AprsWXData> result = parser.getLastPacketForStation("SP9UVG", 13);
 
+	BOOST_CHECK(result.has_value());
 	BOOST_CHECK(result->valid);
 	BOOST_CHECK_EQUAL(result->call, "SP9UVG");
 	BOOST_CHECK_EQUAL(result->ssid, 13);
 	BOOST_CHECK(result->wind_direction == 0);
 	BOOST_CHECK_CLOSE(result->temperature, -1.1, 5);
+}
+
+BOOST_AUTO_TEST_CASE (nonexistent)
+{
+	AprxLogParser parser("./test_input/aprs-rf-2.log");
+
+	parser.openFile();
+	parser.rewindFile();
+
+	const std::optional<AprsWXData> result = parser.getLastPacketForStation("dupa", 13);
+
+	BOOST_CHECK(!result.has_value());
+
 }
 
 

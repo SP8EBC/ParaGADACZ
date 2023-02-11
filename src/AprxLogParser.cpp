@@ -96,7 +96,7 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 	}
 	else {
 		// nothing found for that callsign in that APRX log file
-		;
+		return std::nullopt;
 	}
 
     return out;

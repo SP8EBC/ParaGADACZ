@@ -15,7 +15,7 @@
 
 #include <stdexcept>
 
-PlaylistSamplerPL::PlaylistSamplerPL(ConfigurationFile & configurationFile) : config(configurationFile) {
+PlaylistSamplerPL::PlaylistSamplerPL(std::shared_ptr<ConfigurationFile> & configurationFile) : config(configurationFile) {
 
 }
 
@@ -345,7 +345,7 @@ std::optional<
 	boost::to_upper(name);
 
 	// get meteoblue forecast configuration
-	const std::vector<ConfigurationFile_CurrentWeather> & stations = config.getCurrent();
+	const std::vector<ConfigurationFile_CurrentWeather> & stations = config->getCurrent();
 
 	// iterate through all configuration
 	for (auto station : stations) {
@@ -380,7 +380,7 @@ std::optional<std::string> PlaylistSamplerPL::getAudioForForecastName(std::strin
 	boost::to_upper(name);
 
 	// get meteoblue forecast configuration
-	const ConfigurationFile_ForecastMeteoblue & forecasts = config.getForecast();
+	const ConfigurationFile_ForecastMeteoblue & forecasts = config->getForecast();
 
 	// iterate through all configuration
 	for (auto location : forecasts.locations) {
