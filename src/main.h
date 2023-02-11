@@ -12,5 +12,8 @@
 //!< Program will close if any current conditions data for configured source isn't find.
 #define MAIN_FAIL_ON_MISSING_CURRENT_CONDITIONS
 
+//!< Program will close if there will be an error during
+#define MAIN_FAIL_ON_MISSING_FORECAST
+
 
 #endif /* MAIN_H_ */

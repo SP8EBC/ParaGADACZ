@@ -12,6 +12,9 @@
 #include <boost/algorithm/string.hpp>
 #include <sstream>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 #define SOURCE_OFFSET		24
 #define RTD_OFFSET			34
 #define CALLSIGN_OFFSET		36
@@ -46,7 +49,7 @@ AprxLogParser& AprxLogParser::operator=(const AprxLogParser &other) {
 
 }
 
-AprsWXData AprxLogParser::getLastPacketForStation(std::string call,
+std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string call,
 		uint8_t ssid) {
 
 	AprsWXData out;
@@ -77,19 +80,23 @@ AprsWXData AprxLogParser::getLastPacketForStation(std::string call,
 		// parse line
 		boost::split(seprated, lastLine, boost::is_any_of(" "));
 
-	}
+		if (seprated.size() > 7) {
+			// element at index 7 should consist frame
+			lastLine = std::move(seprated.at(7));
 
-	if (seprated.size() > 7) {
-		// element at index 7 should consist frame
-		lastLine = std::move(seprated.at(7));
+			// try convert this do APRSpacket
+			const int result = AprsPacket::ParseAPRSISData(lastLine.c_str(), lastLine.size(), &aprsPacket);
 
-		// try convert this do APRSpacket
-		const int result = AprsPacket::ParseAPRSISData(lastLine.c_str(), lastLine.size(), &aprsPacket);
-
-		if (result == OK) {
-			// extract WX data
-			const int resultWx = AprsWXData::ParseData(aprsPacket, &out);
+			if (result == OK) {
+				// extract WX data
+				const int resultWx = AprsWXData::ParseData(aprsPacket, &out);
+			}
 		}
+
+	}
+	else {
+		// nothing found for that callsign in that APRX log file
+		;
 	}
 
     return out;
@@ -211,6 +218,8 @@ std::optional<std::string> AprxLogParser::getNextLine(std::string call,
 }
 
 void AprxLogParser::openFile() {
+	SPDLOG_INFO("Opening log file from path: {}", fileName);
+
 	// open file for reading
     file = std::ifstream(fileName);
 }

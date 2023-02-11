@@ -35,7 +35,7 @@ public:
 
 	std::optional<std::string> getNextLine(std::string call, uint8_t ssid, bool wxOnly);
 
-	AprsWXData getLastPacketForStation(std::string call, uint8_t ssid);
+	std::optional<AprsWXData> getLastPacketForStation(std::string call, uint8_t ssid);
 
 	AprxLogParser();
 	AprxLogParser(std::string fn);
