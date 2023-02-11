@@ -7,9 +7,6 @@
 #include <string>
 #include "exception/NotValidWXDataEx.h"
 
-// api
-#include "StationApi.h"
-
 enum class WXDataSource {
 	APRSIS,
 	SERIAL,
@@ -77,7 +74,6 @@ class AprsWXData
 		static short DirectionCorrection(AprsWXData& packet, short direction, short correction);
 		static void DirectionCorrection(AprsWXData& packet, short correction);
 
-		static AprsWXData FromSummaryApiModel(org::openapitools::client::model::Summary & model);
 };
 
 #endif // APRSWXDATA_H
