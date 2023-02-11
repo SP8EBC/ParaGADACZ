@@ -140,7 +140,7 @@ bool ConfigurationFile::parse() {
 			}
 		}
 
-		SPDLOG_INFO("{} text special pre=anouncement has been parsed", size);
+		SPDLOG_INFO("{} text special pre-anouncement has been parsed", size);
 	}
 	catch (...) {
 		; // this section is not mandatory, so do nothing if it doesn't exist
@@ -181,6 +181,8 @@ bool ConfigurationFile::parse() {
 					hasAprx = true;
 				}
 			}
+
+			SPDLOG_INFO("{} sources of current weather read", size);
 		}
 		else {
 			SPDLOG_ERROR("'CurrentWeather' section didn't find in the configuration file");
@@ -230,6 +232,8 @@ bool ConfigurationFile::parse() {
 			this->forecast.locations.push_back(l);
 
 		}
+
+		SPDLOG_INFO("{} sources of meteoblue weather forecast read", forecastPoints.getLength());
 	}
 	catch (libconfig::SettingNotFoundException & e) {
 		SPDLOG_WARN("SettingNotFoundException during parsing 'ForecastMeteoblue', e.getPath = {}", e.getPath());

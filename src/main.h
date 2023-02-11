@@ -9,7 +9,8 @@
 #define MAIN_H_
 
 
-
+//!< Program will close if any current conditions data for configured source isn't find.
+#define MAIN_FAIL_ON_MISSING_CURRENT_CONDITIONS
 
 
 #endif /* MAIN_H_ */

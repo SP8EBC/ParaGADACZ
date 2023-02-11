@@ -15,6 +15,7 @@
 #include <vector>
 #include <memory>
 #include <optional>
+#include <algorithm>
 
 // api
 #include "ApiConfiguration.h"
@@ -141,38 +142,56 @@ int main(int argc, char **argv) {
 			std::tuple<std::string, unsigned> split = ConfigurationFile::splitCallsign(current.name);
 
 			// get last packet for that station
-			AprsWXData packet = logParser.getLastPacketForStation(std::get<std::string>(split), std::get<unsigned>(split));
+			std::optional<AprsWXData> packet = logParser.getLastPacketForStation(std::get<std::string>(split), std::get<unsigned>(split));
 
-			// set what should be used from this packet
-			packet.useWind = current.sayWind;
-			packet.useTemperature = current.sayTemperature;
-			packet.useHumidity = current.sayHumidy;
-			packet.usePressure = current.sayPressure;
+			if (packet.has_value()) {
+				// set what should be used from this packet
+				packet->useWind = current.sayWind;
+				packet->useTemperature = current.sayTemperature;
+				packet->useHumidity = current.sayHumidy;
+				packet->usePressure = current.sayPressure;
 
-			// check if this station should provide regional pressure value
-			if (current.regionalPressure) {
+				// check if this station should provide regional pressure value
+				if (current.regionalPressure) {
 
-				// check if regional pressure was get before
-				if (regionalPressure.has_value()) {
-					SPDLOG_ERROR("More than one source of regional pressure found!");
+					// check if regional pressure was get before
+					if (regionalPressure.has_value()) {
+						SPDLOG_ERROR("More than one source of regional pressure found!");
 
-					return -2;
+						return -2;
+					}
+					else {
+						regionalPressure = packet->pressure;
+					}
 				}
-				else {
-					regionalPressure = packet.pressure;
-				}
+
+				SPDLOG_INFO("Adding current weather source of type APRX for station: {}", current.name);
+
+				// add this to the vector of current weather
+				currentWeather.push_back(std::move(*packet));
 			}
-
-			SPDLOG_INFO("Adding current weather source of type APRX for station: {}", current.name);
-
-			// add this to the vector
-			currentWeather.push_back(std::move(packet));
+			else {
+				SPDLOG_ERROR("Cannot find any current conditions for {} within APRX rf log file!!", current.name);
+#ifdef MAIN_FAIL_ON_MISSING_CURRENT_CONDITIONS
+#else
+#endif
+			}
 
 			break;
 		}
 
 		case POGODA_CC: {
+			// look for
+			std::find_if(listOfAllStationsPogodacc.begin(), listOfAllStationsPogodacc.end(), [& current](auto x) {
+				if (x->getName() == current.name) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			});
 
+			break;
 		}
 		default:
 			SPDLOG_ERROR("Unsupported current weather source");
