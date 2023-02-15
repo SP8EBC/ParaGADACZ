@@ -266,37 +266,37 @@ std::vector<
 	}
 
 	switch (tens) {
-	case 2: out.push_back(NUMBER_20); break;
-	case 3: out.push_back(NUMBER_30); break;
-	case 4: out.push_back(NUMBER_40); break;
-	case 5: out.push_back(NUMBER_50); break;
-	case 6: out.push_back(NUMBER_60); break;
-	case 7: out.push_back(NUMBER_70); break;
-	case 8: out.push_back(NUMBER_80); break;
-	case 9: out.push_back(NUMBER_90); break;
+		case 2: out.push_back(NUMBER_20); break;
+		case 3: out.push_back(NUMBER_30); break;
+		case 4: out.push_back(NUMBER_40); break;
+		case 5: out.push_back(NUMBER_50); break;
+		case 6: out.push_back(NUMBER_60); break;
+		case 7: out.push_back(NUMBER_70); break;
+		case 8: out.push_back(NUMBER_80); break;
+		case 9: out.push_back(NUMBER_90); break;
 
-	// special case for number in range 10-19
-	case 1: {
-		switch (units) {
-		case 1: out.push_back(NUMBER_11); break;
-		case 2: out.push_back(NUMBER_12); break;
-		case 3: out.push_back(NUMBER_13); break;
-		case 4: out.push_back(NUMBER_14); break;
-		case 5: out.push_back(NUMBER_15); break;
-		case 6: out.push_back(NUMBER_16); break;
-		case 7: out.push_back(NUMBER_17); break;
-		case 8: out.push_back(NUMBER_18); break;
-		case 9: out.push_back(NUMBER_19); break;
-		case 0: out.push_back(NUMBER_10); break;
+		// special case for number in range 10-19
+		case 1: {
+			switch (units) {
+			case 1: out.push_back(NUMBER_11); break;
+			case 2: out.push_back(NUMBER_12); break;
+			case 3: out.push_back(NUMBER_13); break;
+			case 4: out.push_back(NUMBER_14); break;
+			case 5: out.push_back(NUMBER_15); break;
+			case 6: out.push_back(NUMBER_16); break;
+			case 7: out.push_back(NUMBER_17); break;
+			case 8: out.push_back(NUMBER_18); break;
+			case 9: out.push_back(NUMBER_19); break;
+			case 0: out.push_back(NUMBER_10); break;
 
+			}
 		}
-	}
 	}
 
 	// add tens if this isn't a number from 10...19 range
 	if (tens != 1) {
 		switch (units) {
-		case 0: out.push_back(NUMBER_0); break;
+		//case 0: out.push_back(NUMBER_0); break;
 		case 1: out.push_back(NUMBER_1); break;
 		case 2: out.push_back(NUMBER_2); break;
 		case 3: out.push_back(NUMBER_3); break;
@@ -485,37 +485,37 @@ std::vector<
 	}
 
 	switch (tens) {
-	case 2: out.push_back(NUMBER_20); break;
-	case 3: out.push_back(NUMBER_30); break;
-	case 4: out.push_back(NUMBER_40); break;
-	case 5: out.push_back(NUMBER_50); break;
-	case 6: out.push_back(NUMBER_60); break;
-	case 7: out.push_back(NUMBER_70); break;
-	case 8: out.push_back(NUMBER_80); break;
-	case 9: out.push_back(NUMBER_90); break;
+		case 2: out.push_back(NUMBER_20); break;
+		case 3: out.push_back(NUMBER_30); break;
+		case 4: out.push_back(NUMBER_40); break;
+		case 5: out.push_back(NUMBER_50); break;
+		case 6: out.push_back(NUMBER_60); break;
+		case 7: out.push_back(NUMBER_70); break;
+		case 8: out.push_back(NUMBER_80); break;
+		case 9: out.push_back(NUMBER_90); break;
 
-	// special case for number in range 10-19
-	case 1: {
-		switch (units) {
-		case 1: out.push_back(NUMBER_11); break;
-		case 2: out.push_back(NUMBER_12); break;
-		case 3: out.push_back(NUMBER_13); break;
-		case 4: out.push_back(NUMBER_14); break;
-		case 5: out.push_back(NUMBER_15); break;
-		case 6: out.push_back(NUMBER_16); break;
-		case 7: out.push_back(NUMBER_17); break;
-		case 8: out.push_back(NUMBER_18); break;
-		case 9: out.push_back(NUMBER_19); break;
-		case 0: out.push_back(NUMBER_10); break;
+		// special case for number in range 10-19
+		case 1: {
+			switch (units) {
+			case 1: out.push_back(NUMBER_11); break;
+			case 2: out.push_back(NUMBER_12); break;
+			case 3: out.push_back(NUMBER_13); break;
+			case 4: out.push_back(NUMBER_14); break;
+			case 5: out.push_back(NUMBER_15); break;
+			case 6: out.push_back(NUMBER_16); break;
+			case 7: out.push_back(NUMBER_17); break;
+			case 8: out.push_back(NUMBER_18); break;
+			case 9: out.push_back(NUMBER_19); break;
+			case 0: out.push_back(NUMBER_10); break;
 
+			}
 		}
-	}
 	}
 
 	// add tens if this isn't a number from 10...19 range
 	if (tens != 1) {
 		switch (units) {
-		case 0: out.push_back(NUMBER_0); break;
+		//case 0: out.push_back(NUMBER_0); break;
 		case 1: out.push_back(NUMBER_1); break;
 		case 2: out.push_back(NUMBER_2); break;
 		case 3: out.push_back(NUMBER_3); break;

@@ -57,6 +57,19 @@ BOOST_AUTO_TEST_CASE(decimal_123_4) {
 
 }
 
+// 20.7
+BOOST_AUTO_TEST_CASE(decimal_20_7) {
+
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	std::vector<std::string> out = c->getAudioListFromNumber(20.7f);
+
+//	BOOST_CHECK_EQUAL(5, out.size());
+	BOOST_CHECK_EQUAL(NUMBER_20, out.at(0));
+	BOOST_CHECK_EQUAL(DECIMAL, out.at(1));
+	BOOST_CHECK_EQUAL(NUMBER_7, out.at(2));
+}
+
 BOOST_AUTO_TEST_CASE(decimal_1123_4) {
 
 	//spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );

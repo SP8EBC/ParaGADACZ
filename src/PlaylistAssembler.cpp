@@ -343,24 +343,29 @@ void PlaylistAssembler::forecastMeteoblue(
 
 			SPDLOG_INFO("appending Meteoblue wind forecast, wind: {}, windDirection: {}", std::get<1>(wind), std::get<1>(windDirection));
 
+			// "wind"
+			playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::WIND).value());
+
+			// convert wind direction to audio file
+			std::string windDirectionAudioFile = playlistSampler->getAudioForWindDirection(std::get<1>(windDirection));
+
+			// and append that to main playlist
+			playlist->push_back(windDirectionAudioFile);
+
+
 			// convert wind speed to playlist
 			auto windAudioFile = playlistSampler->getAudioListFromNumber(std::get<1>(wind));
 
 			// and append that to main playlist
 			playlist->insert(playlist->end(), std::make_move_iterator(windAudioFile.begin()), std::make_move_iterator(windAudioFile.end()));
 
-			// convert wind direction to audio file
-			auto windDirectionAudioFile = playlistSampler->getAudioListFromNumber(std::get<1>(windDirection));
-
-			// and append that to main playlist
-			playlist->insert(playlist->end(), std::make_move_iterator(windDirectionAudioFile.begin()), std::make_move_iterator(windDirectionAudioFile.end()));
 
 		}
 
 		if (location.sayTemperature) {
 			std::tuple<int64_t, float> temperature = ForecastFinder::getTemperatureMeteoblue(foundForecast, configurationFile->getForecast().futureTime);
 
-			//SPDLOG_INFO("appending wind forecast, temperature: {}, windDirection: {}", wind, windDirection);
+			SPDLOG_INFO("appending wind forecast, temperature: {}", std::get<1>(temperature));
 			// convert wind speed to playlist
 			auto temperatureAudioFile = playlistSampler->getAudioListFromNumber(std::get<1>(temperature));
 

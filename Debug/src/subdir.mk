@@ -13,7 +13,7 @@ CPP_SRCS += \
 ../src/ForecastFinder.cpp \
 ../src/Player.cpp \
 ../src/PlaylistAssembler.cpp \
-../src/PlaylistAssembler_test.cpp \
+../src/PlaylistCreatorPL_test.cpp \
 ../src/PlaylistSamplerPL.cpp 
 
 OBJS += \
@@ -26,7 +26,7 @@ OBJS += \
 ./src/ForecastFinder.o \
 ./src/Player.o \
 ./src/PlaylistAssembler.o \
-./src/PlaylistAssembler_test.o \
+./src/PlaylistCreatorPL_test.o \
 ./src/PlaylistSamplerPL.o 
 
 CPP_DEPS += \
@@ -39,7 +39,7 @@ CPP_DEPS += \
 ./src/ForecastFinder.d \
 ./src/Player.d \
 ./src/PlaylistAssembler.d \
-./src/PlaylistAssembler_test.d \
+./src/PlaylistCreatorPL_test.d \
 ./src/PlaylistSamplerPL.d 
 
 

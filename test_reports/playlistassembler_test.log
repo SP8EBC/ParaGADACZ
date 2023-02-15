@@ -1,87 +1,42 @@
 Running 3 test cases...
 Entering test module "PlaylistAssembler_test"
 ../src/PlaylistAssembler_test.cpp(54): Entering test case "meteoblue"
-../src/PlaylistAssembler_test.cpp(101): info: check 'no exceptions thrown by assembler.forecastMeteoblue(vct)' has passed
-../src/PlaylistAssembler_test.cpp(108): info: check "ident.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(109): info: check "prognoza_pogody.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(110): info: check "na_nastepne.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(54): Leaving test case "meteoblue"; testing time: 245us
-../src/PlaylistAssembler_test.cpp(114): Entering test case "current_weather_first"
-../src/PlaylistAssembler_test.cpp(154): info: check "ident.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(155): info: check "aktualne_warunki.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(156): info: check "magurka.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(157): info: check "wiatr.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(158): info: check "polnocny.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(159): info: check "zero.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(160): info: check "metrow_na_sekunde.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(161): info: check "porywy.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(162): info: check "zero.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(163): info: check "metrow_na_sekunde.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(164): info: check "temperatura.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(165): info: check "zero.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(166): info: check "celsjusza.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(167): info: check "wilgotnosc.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(168): info: check "zero.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(169): info: check "procent.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(170): info: check "skrzyczne.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(171): info: check "wiatr.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(172): info: check "wschodni.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(173): info: check "cztery.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(174): info: check "metry_na_sekunde.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(175): info: check "porywy.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(176): info: check "siedem.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(177): info: check "kropka.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(178): info: check "szesc.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(179): info: check "metrow_na_sekunde.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(180): info: check "temperatura.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(181): info: check "dwadziescia.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(182): info: check "trzy.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(183): info: check "celsjusza.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(184): info: check "wilgotnosc.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(185): info: check "dwanascie.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(186): info: check "procent.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(114): Leaving test case "current_weather_first"; testing time: 372us
-../src/PlaylistAssembler_test.cpp(190): Entering test case "current_weather_second_with_preanouncement"
-../src/PlaylistAssembler_test.cpp(238): info: check "ident.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(239): info: check "pre_first.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(240): info: check "pre_second.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(241): info: check "pre_third.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(242): info: check "cisnienie_w_regionie.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(243): info: check "dziewiecset.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(244): info: check "dziewiecdziesiat.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(245): info: check "dziewiec.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(246): info: check "hektopaskale.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(247): info: check "aktualne_warunki.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(248): info: check "skrzyczne.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(249): info: check "wiatr.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(250): info: check "wschodni.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(251): info: check "cztery.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(252): info: check "metry_na_sekunde.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(253): info: check "porywy.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(254): info: check "siedem.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(255): info: check "kropka.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(256): info: check "szesc.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(257): info: check "metrow_na_sekunde.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(258): info: check "temperatura.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(259): info: check "dwadziescia.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(260): info: check "trzy.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(261): info: check "celsjusza.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(262): info: check "wilgotnosc.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(263): info: check "dwanascie.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(264): info: check "procent.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(265): info: check "magurka.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(266): info: check "wiatr.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(267): info: check "polnocny.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(268): info: check "zero.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(269): info: check "metrow_na_sekunde.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(270): info: check "porywy.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(271): info: check "zero.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(272): info: check "metrow_na_sekunde.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(273): info: check "temperatura.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(274): info: check "zero.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(275): info: check "celsjusza.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(276): info: check "wilgotnosc.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(277): info: check "zero.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(278): info: check "procent.mp3" == playlist[i++] has passed
-../src/PlaylistAssembler_test.cpp(190): Leaving test case "current_weather_second_with_preanouncement"; testing time: 416us
-Leaving test module "PlaylistAssembler_test"; testing time: 1077us
+expected_timestamp: 
+1676500625
+expected_temperature: 
+20.7
+expected_windspeed: 
+1.7
+expected_winddirection: 
+187
+../src/PlaylistAssembler_test.cpp(136): info: check 'no exceptions thrown by assembler.forecastMeteoblue(vct)' has passed
+../src/PlaylistAssembler_test.cpp(145): info: check "ident.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(146): info: check "prognoza_pogody.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(147): info: check "na_nastepne.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(151): info: check "trzy.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(151): info: check "godziny.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(160): info: check configuration_file_second->getForecast().locations[0].nameIdent == playlist[i++] has passed
+costam.mp3
+../src/PlaylistAssembler_test.cpp(163): info: check "wiatr.mp3" == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(181): info: check "poludniowy.mp3" == playlist[i++] has passed
+jeden.mp3
+../src/PlaylistAssembler_test.cpp(198): info: check elem == playlist[i++] has passed
+kropka.mp3
+../src/PlaylistAssembler_test.cpp(198): info: check elem == playlist[i++] has passed
+siedem.mp3
+../src/PlaylistAssembler_test.cpp(198): info: check elem == playlist[i++] has passed
+../src/PlaylistAssembler_test.cpp(203): error: in "meteoblue": check "temperatura.mp3" == playlist[i++] has failed [temperatura.mp3 != dwadziescia.mp3]
+dwadziescia.mp3
+../src/PlaylistAssembler_test.cpp(206): error: in "meteoblue": check elem == playlist[i++] has failed [dwadziescia.mp3 != zero.mp3]
+zero.mp3
+../src/PlaylistAssembler_test.cpp(206): error: in "meteoblue": check elem == playlist[i++] has failed [zero.mp3 != kropka.mp3]
+kropka.mp3
+../src/PlaylistAssembler_test.cpp(206): error: in "meteoblue": check elem == playlist[i++] has failed [kropka.mp3 != siedem.mp3]
+siedem.mp3
+../src/PlaylistAssembler_test.cpp(206): error: in "meteoblue": check elem == playlist[i++] has failed [siedem.mp3 != 
+unknown location(0): fatal error: in "meteoblue": memory access violation at address: 0x00000000: no mapping at fault address
+../src/PlaylistAssembler_test.cpp(206): last checkpoint
+Test is aborted
+../src/PlaylistAssembler_test.cpp(54): Leaving test case "meteoblue"; testing time: 462us
+Test is aborted
+Leaving test module "PlaylistAssembler_test"

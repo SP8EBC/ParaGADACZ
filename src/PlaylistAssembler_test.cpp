@@ -53,6 +53,7 @@ BOOST_GLOBAL_FIXTURE (MyConfig);
 
 BOOST_AUTO_TEST_CASE(meteoblue) {
 	PlaylistAssembler assembler(playlist_sampler, configuration_file_second);
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(configuration_file_second);
 
 	// std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts
 
@@ -65,6 +66,9 @@ BOOST_AUTO_TEST_CASE(meteoblue) {
 	// timestamp
 	long ts = (current - epoch).total_seconds();
 
+	// forecast future time in minutes!!!
+	uint32_t future_time = configuration_file_second->getForecast().futureTime;
+
 	//org::openapitools::client::model::Inline_response_200
 	auto meteoblueResponse = std::make_shared<org::openapitools::client::model::Inline_response_200>();
 	auto data3h = std::make_shared<org::openapitools::client::model::Data_3h>();
@@ -74,12 +78,43 @@ BOOST_AUTO_TEST_CASE(meteoblue) {
 	std::vector<int32_t> winddirection;
 	std::vector<float> windspeed;
 
+	float expected_temperature = 0.0f;
+	int32_t expected_winddrection = 0;
+	float expected_windspeed = 0.0f;
+
+	int64_t expected_timestamp = ts + (future_time / 30) * 1800;
+	BOOST_TEST_MESSAGE("expected_timestamp: ");
+	BOOST_TEST_MESSAGE(expected_timestamp);
+
+	////////////// prepare stubbed weather forecast data
 	for (int i = 0; i < 64; i++) {
 		time.push_back(ts + i * 1800);
 		temperature.push_back(20.0f + 0.1f * i);
 		windspeed.push_back(1.0f + 0.1f * i);
 		winddirection.push_back(180 + i);
+
+		if (expected_timestamp < (ts + (i + 1) * 1800)) {
+			if (expected_timestamp >= (ts + i * 1800)) {
+				///////////////////////////////////////////
+				expected_temperature = 20.0f + 0.1f * (i + 1);
+				expected_winddrection = 180 + i + 1;
+				expected_windspeed = 1.0f + 0.1f * (i + 1);
+				///////////////////////////////////////////
+				BOOST_TEST_MESSAGE("expected_temperature: ");
+				BOOST_TEST_MESSAGE(expected_temperature);
+				BOOST_TEST_MESSAGE("expected_windspeed: ");
+				BOOST_TEST_MESSAGE(expected_windspeed);
+				BOOST_TEST_MESSAGE("expected_winddirection: ");
+				BOOST_TEST_MESSAGE(expected_winddrection);
+			}
+		}
 	}
+
+
+	std::vector<std::string> playlist_expected_temperature = c->getAudioListFromNumber(expected_temperature);
+	std::vector<std::string> playlist_expected_windspeed = c->getAudioListFromNumber(expected_windspeed);
+	std::vector<std::string> playlist_expected_winddir = c->getAudioListFromNumber(expected_winddrection);
+
 
 	data3h->setTime(time);
 	data3h->setTemperature(temperature);
@@ -96,18 +131,81 @@ BOOST_AUTO_TEST_CASE(meteoblue) {
 	vct.push_back(skrzyczne);
 	vct.push_back(jezioro);
 
-	// assemble
+	//////////////////////////// assemble playlist
 	assembler.start();
 	BOOST_CHECK_NO_THROW(assembler.forecastMeteoblue(vct));
+	////////////////////////////
 
 	std::shared_ptr<std::vector<std::string>> playlist_ptr = assembler.getPlaylist();
 	std::vector<std::string> playlist = *playlist_ptr;
 
 	int i = 0;
 
+	//////////////////////////////////// checks for playlist content starts here
 	BOOST_CHECK_EQUAL("ident.mp3", playlist[i++]);
 	BOOST_CHECK_EQUAL(FCAST, playlist[i++]);
 	BOOST_CHECK_EQUAL(FOR_NEXT, playlist[i++]);
+	switch (future_time / 60) {
+	case 1: BOOST_CHECK_EQUAL(NUMBER_1, playlist[i++]); 	BOOST_CHECK_EQUAL(HOUR_ONE, playlist[i++]);break;
+	case 2:	BOOST_CHECK_EQUAL(NUMBER_2_, playlist[i++]);	BOOST_CHECK_EQUAL(HOUR_TWO_FOUR, playlist[i++]);break;
+	case 3:	BOOST_CHECK_EQUAL(NUMBER_3, playlist[i++]); 	BOOST_CHECK_EQUAL(HOUR_TWO_FOUR, playlist[i++]);break;
+	case 4:	BOOST_CHECK_EQUAL(NUMBER_4, playlist[i++]); 	BOOST_CHECK_EQUAL(HOUR_TWO_FOUR, playlist[i++]);break;
+	case 5:	BOOST_CHECK_EQUAL(NUMBER_5, playlist[i++]); 	BOOST_CHECK_EQUAL(HOUR_FOUR, playlist[i++]);break;
+	case 6:	BOOST_CHECK_EQUAL(NUMBER_6, playlist[i++]); 	BOOST_CHECK_EQUAL(HOUR_FOUR, playlist[i++]);break;
+	case 7:	BOOST_CHECK_EQUAL(NUMBER_7, playlist[i++]);	 	BOOST_CHECK_EQUAL(HOUR_FOUR, playlist[i++]);break;
+	case 8:	BOOST_CHECK_EQUAL(NUMBER_8, playlist[i++]); 	BOOST_CHECK_EQUAL(HOUR_FOUR, playlist[i++]);break;
+	case 9:	BOOST_CHECK_EQUAL(NUMBER_9, playlist[i++]); 	BOOST_CHECK_EQUAL(HOUR_FOUR, playlist[i++]);break;
+	default: BOOST_CHECK(false);
+	}
+	BOOST_CHECK_EQUAL(configuration_file_second->getForecast().locations[0].nameIdent, playlist[i++]);
+	BOOST_TEST_MESSAGE(configuration_file_second->getForecast().locations[0].nameIdent);
+	if (configuration_file_second->getForecast().locations[0].sayWind) {
+		BOOST_CHECK_EQUAL(DIRECTION, playlist[i++]);
+		if ((expected_winddrection <= 11 && expected_winddrection >= 0) || (expected_winddrection > 349 && expected_winddrection < 360))
+			BOOST_CHECK_EQUAL(DIRECTION_N, playlist[i++]);
+		else if (expected_winddrection <= 34 && expected_winddrection > 11)
+			BOOST_CHECK_EQUAL(DIRECTION_NNE, playlist[i++]);
+		else if (expected_winddrection <= 56 && expected_winddrection > 34)
+			BOOST_CHECK_EQUAL(DIRECTION_NE, playlist[i++]);
+		else if (expected_winddrection <= 79 && expected_winddrection > 56)
+			BOOST_CHECK_EQUAL(DIRECTION_ENE, playlist[i++]);
+		else if (expected_winddrection <= 101 && expected_winddrection > 79)
+			BOOST_CHECK_EQUAL(DIRECTION_E, playlist[i++]);
+		else if (expected_winddrection <= 124 && expected_winddrection > 101)
+			BOOST_CHECK_EQUAL(DIRECTION_ESE, playlist[i++]);
+		else if (expected_winddrection <= 146 && expected_winddrection > 124)
+			BOOST_CHECK_EQUAL(DIRECTION_SE, playlist[i++]);
+		else if (expected_winddrection <= 169 && expected_winddrection > 146)
+			BOOST_CHECK_EQUAL(DIRECTION_SSE, playlist[i++]);
+		else if (expected_winddrection <= 191 && expected_winddrection > 169)
+			BOOST_CHECK_EQUAL(DIRECTION_S, playlist[i++]);
+		else if (expected_winddrection <= 214 && expected_winddrection > 191)
+			BOOST_CHECK_EQUAL(DIRECTION_SSW, playlist[i++]);
+		else if (expected_winddrection <= 236 && expected_winddrection > 214)
+			BOOST_CHECK_EQUAL(DIRECTION_SW, playlist[i++]);
+		else if (expected_winddrection <= 259 && expected_winddrection > 236)
+			BOOST_CHECK_EQUAL(DIRECTION_WSW, playlist[i++]);
+		else if (expected_winddrection <= 281 && expected_winddrection > 259)
+			BOOST_CHECK_EQUAL(DIRECTION_W, playlist[i++]);
+		else if (expected_winddrection <= 304 && expected_winddrection > 281)
+			BOOST_CHECK_EQUAL(DIRECTION_WNW, playlist[i++]);
+		else if (expected_winddrection <= 327 && expected_winddrection > 304)
+			BOOST_CHECK_EQUAL(DIRECTION_NW, playlist[i++]);
+		else if (expected_winddrection <= 349 && expected_winddrection > 327)
+			BOOST_CHECK_EQUAL(DIRECTION_NNW, playlist[i++]);
+		for (std::string elem : playlist_expected_windspeed) {
+			BOOST_TEST_MESSAGE(elem);
+			BOOST_CHECK_EQUAL(elem, playlist[i++]);
+		}
+	}
+
+	if (configuration_file_second->getForecast().locations[0].sayTemperature) {
+		BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
+		for (std::string elem : playlist_expected_temperature) {
+			BOOST_TEST_MESSAGE(elem);
+			BOOST_CHECK_EQUAL(elem, playlist[i++]);
+		}
+	}
 
 }
 
