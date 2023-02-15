@@ -62,7 +62,7 @@ public:
 	/**
 	 * Appends meteoblue forecast
 	 */
-	void forecastMeteoblue(std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts);
+	void forecastMeteoblue(std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts);
 
 	/**
 	 * Appends prerecorded anouncement either at the begining or the end

@@ -176,6 +176,13 @@ bool ConfigurationFile::parse() {
 				currentWeather[i].lookupValue("SayTemperature", c.sayTemperature);
 				currentWeather[i].lookupValue("RegionalPressure", c.regionalPressure);
 
+				// don't say any local pressure if regional pressure will be sayed
+				if(this->intro.sayRegionalPressure) {
+					c.sayPressure = false;
+
+					SPDLOG_WARN("Local pressure cannot be used while regional pressure is enabled!");
+				}
+
 				this->current.push_back(c);
 
 				if (c.type == POGODA_CC) {

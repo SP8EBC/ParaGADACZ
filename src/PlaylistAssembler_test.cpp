@@ -51,6 +51,66 @@ BOOST_GLOBAL_FIXTURE (MyConfig);
 //		std::vector<std::pair<std::string, org::openapitools::client::model::Summary>> & summary,
 //		std::vector<AprsWXData> & result) {
 
+BOOST_AUTO_TEST_CASE(meteoblue) {
+	PlaylistAssembler assembler(playlist_sampler, configuration_file_second);
+
+	// std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts
+
+	// get currrent timestamp
+	boost::posix_time::ptime current = boost::posix_time::second_clock::universal_time();
+
+	// epoch
+	boost::posix_time::ptime epoch = boost::posix_time::ptime(boost::gregorian::date(1970, 1, 1), boost::posix_time::time_duration(0,0,0,0));
+
+	// timestamp
+	long ts = (current - epoch).total_seconds();
+
+	//org::openapitools::client::model::Inline_response_200
+	auto meteoblueResponse = std::make_shared<org::openapitools::client::model::Inline_response_200>();
+	auto data3h = std::make_shared<org::openapitools::client::model::Data_3h>();
+
+	std::vector<int32_t> time;
+	std::vector<float> temperature;
+	std::vector<int32_t> winddirection;
+	std::vector<float> windspeed;
+
+	for (int i = 0; i < 64; i++) {
+		time.push_back(ts + i * 1800);
+		temperature.push_back(20.0f + 0.1f * i);
+		windspeed.push_back(1.0f + 0.1f * i);
+		winddirection.push_back(180 + i);
+	}
+
+	data3h->setTime(time);
+	data3h->setTemperature(temperature);
+	data3h->setWinddirection(winddirection);
+	data3h->setWindspeed(windspeed);
+
+	meteoblueResponse->setData3h(data3h);
+
+	std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> skrzyczne = std::make_tuple("skrzyczne", meteoblueResponse);
+	std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> jezioro = std::make_tuple("jezioro", meteoblueResponse);
+
+
+	std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> vct;
+	vct.push_back(skrzyczne);
+	vct.push_back(jezioro);
+
+	// assemble
+	assembler.start();
+	BOOST_CHECK_NO_THROW(assembler.forecastMeteoblue(vct));
+
+	std::shared_ptr<std::vector<std::string>> playlist_ptr = assembler.getPlaylist();
+	std::vector<std::string> playlist = *playlist_ptr;
+
+	int i = 0;
+
+	BOOST_CHECK_EQUAL("ident.mp3", playlist[i++]);
+	BOOST_CHECK_EQUAL(FCAST, playlist[i++]);
+	BOOST_CHECK_EQUAL(FOR_NEXT, playlist[i++]);
+
+}
+
 BOOST_AUTO_TEST_CASE(current_weather_first) {
 
 	org::openapitools::client::model::Summary summary;

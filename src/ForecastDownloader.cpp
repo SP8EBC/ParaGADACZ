@@ -105,5 +105,7 @@ std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastD
 
 std::vector<
 		std::tuple<std::string,
-				org::openapitools::client::model::Inline_response_200> >& ForecastDownloader::getAllForecast() {
+		std::shared_ptr<org::openapitools::client::model::Inline_response_200>> > & ForecastDownloader::getAllForecast() {
+
+	return allResults;
 }

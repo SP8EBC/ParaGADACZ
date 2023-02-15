@@ -29,6 +29,7 @@
 
 #include "ForecastFinder.h"
 #include "PlaylistAssembler.h"
+#include "PlaylistSamplerPL.h"
 #include "AprxLogParser.h"
 #include "AprsWXDataFactory.h"
 #include "ForecastDownloader.h"
@@ -79,6 +80,10 @@ std::optional<float> regionalPressure;
 //!< Interface to meteoblue auto generated code
 std::shared_ptr<ForecastDownloader> forecastDownloader;
 
+std::shared_ptr<PlaylistSampler> playlistSampler;
+
+std::shared_ptr<PlaylistAssembler> playlistAssembler;
+
 int main(int argc, char **argv) {
 
 	std::string configFn;
@@ -126,6 +131,11 @@ int main(int argc, char **argv) {
 
 	// create an instance of forecast downloader
 	forecastDownloader = std::make_shared<ForecastDownloader>(configurationFile);
+
+	// create an instance of playlist sampler in PL variant
+	playlistSampler = std::make_shared<PlaylistSamplerPL>(configurationFile);
+
+	playlistAssembler = std::make_shared<PlaylistAssembler>(playlistSampler, configurationFile);
 
 	// check if meteoblue forecasts are enabled in a configuration file
 	if (configurationFile->getForecast().enable) {
@@ -238,6 +248,22 @@ int main(int argc, char **argv) {
 			SPDLOG_ERROR("Unsupported current weather source");
 		}
 	}
+
+	// start to create playlist
+	playlistAssembler->start();
+
+	// append pre announcement
+	playlistAssembler->recordedAnnouncement(false);
+
+	// if there is regional pressure to say
+	if (regionalPressure.has_value()) {
+		playlistAssembler->regionalPressure(*regionalPressure);
+	}
+
+	// inset current weather
+	playlistAssembler->currentWeather(currentWeatherMeteobackend, currentWeatherAprx);
+
+	playlistAssembler->forecastMeteoblue(forecastDownloader->getAllForecast());
 
 	return 0;
 }

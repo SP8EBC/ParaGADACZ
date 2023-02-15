@@ -277,7 +277,7 @@ void PlaylistAssembler::currentWeather(
 }
 
 void PlaylistAssembler::forecastMeteoblue(
-		std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts) {
+		std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts) {
 
 	// generate forecast anouncement
 	std::optional<std::vector<std::string>> intermediate = playlistSampler->getAudioForForecastAnouncement(configurationFile->getForecast().futureTime);
@@ -296,13 +296,13 @@ void PlaylistAssembler::forecastMeteoblue(
 		// location from the configuration, a name of forecast to find (in uppercase)
 		std::string nameUppercase = boost::to_upper_copy(location.name);
 
-		SPDLOG_INFO("assembling announcement for weather forecast, location.name: {}", location.name);
+		SPDLOG_INFO("assembling announcement for Meteoblue weather forecast, location.name: {}", location.name);
 
 		// look for matching forecast in API response
-		auto found = std::find_if(forecasts.begin(), forecasts.end(), [& location](std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> r) {
+		auto found = std::find_if(forecasts.begin(), forecasts.end(), [& location](std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> r) {
 			std::string locationUppercase = boost::to_upper_copy(location.name);
 
-			std::string forecastUppercase = boost::to_upper_copy(r.first);
+			std::string forecastUppercase = boost::to_upper_copy(std::get<std::string>(r));
 
 			// check if this is what we're looking for
 			if (forecastUppercase == locationUppercase) {
@@ -334,14 +334,14 @@ void PlaylistAssembler::forecastMeteoblue(
 		playlist->push_back(*forecastPointAudioFile);
 
 		// extract forecast API response from the pair
-		std::shared_ptr<org::openapitools::client::model::Inline_response_200> foundForecast = found->second;
+		std::shared_ptr<org::openapitools::client::model::Inline_response_200> foundForecast = std::get<1>(*found);
 
 
 		if (location.sayWind) {
 			std::tuple<int64_t, float> wind = ForecastFinder::getWindSpeedMeteoblue(foundForecast, configurationFile->getForecast().futureTime);
-			std::tuple<int64_t, float> windDirection = ForecastFinder::getWindSpeedMeteoblue(foundForecast, configurationFile->getForecast().futureTime);
+			std::tuple<int64_t, float> windDirection = ForecastFinder::getWindDirectionMeteoblue(foundForecast, configurationFile->getForecast().futureTime);
 
-			SPDLOG_INFO("appending wind forecast, wind: {}, windDirection: {}", std::get<1>(wind), std::get<1>(windDirection));
+			SPDLOG_INFO("appending Meteoblue wind forecast, wind: {}, windDirection: {}", std::get<1>(wind), std::get<1>(windDirection));
 
 			// convert wind speed to playlist
 			auto windAudioFile = playlistSampler->getAudioListFromNumber(std::get<1>(wind));

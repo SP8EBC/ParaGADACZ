@@ -49,7 +49,11 @@ public:
 	/**
 	 *
 	 */
-	std::vector<std::tuple<std::string, org::openapitools::client::model::Inline_response_200>> & getAllForecast();
+	std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & getAllForecast();
+
+	bool isAnyError() const {
+		return anyError;
+	}
 };
 
 #endif /* FORECASTDOWNLOADER_H_ */
