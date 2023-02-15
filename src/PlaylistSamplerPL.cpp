@@ -293,8 +293,8 @@ std::vector<
 		}
 	}
 
-	// add tens if this isn't a number from 10...19 range
-	if (tens != 1) {
+	// add tens digit if this isn't a number from 10...19 range
+	if (tens > 1) {
 		switch (units) {
 		//case 0: out.push_back(NUMBER_0); break;
 		case 1: out.push_back(NUMBER_1); break;
@@ -307,6 +307,23 @@ std::vector<
 		case 8: out.push_back(NUMBER_8); break;
 		case 9: out.push_back(NUMBER_9); break;
 		}
+	}
+	else if (tens == 0){
+		switch (units) {
+		case 0: out.push_back(NUMBER_0); break;
+		case 1: out.push_back(NUMBER_1); break;
+		case 2: out.push_back(NUMBER_2); break;
+		case 3: out.push_back(NUMBER_3); break;
+		case 4: out.push_back(NUMBER_4); break;
+		case 5: out.push_back(NUMBER_5); break;
+		case 6: out.push_back(NUMBER_6); break;
+		case 7: out.push_back(NUMBER_7); break;
+		case 8: out.push_back(NUMBER_8); break;
+		case 9: out.push_back(NUMBER_9); break;
+		}
+	}
+	else {
+		;	// already added for range 10...19 in tens switch case 1
 	}
 
 	// if there is any decimal part
@@ -512,8 +529,8 @@ std::vector<
 		}
 	}
 
-	// add tens if this isn't a number from 10...19 range
-	if (tens != 1) {
+	// add tens digit if this isn't a number from 10...19 range
+	if (tens > 1) {
 		switch (units) {
 		//case 0: out.push_back(NUMBER_0); break;
 		case 1: out.push_back(NUMBER_1); break;
@@ -526,6 +543,23 @@ std::vector<
 		case 8: out.push_back(NUMBER_8); break;
 		case 9: out.push_back(NUMBER_9); break;
 		}
+	}
+	else if (tens == 0){
+		switch (units) {
+		case 0: out.push_back(NUMBER_0); break;
+		case 1: out.push_back(NUMBER_1); break;
+		case 2: out.push_back(NUMBER_2); break;
+		case 3: out.push_back(NUMBER_3); break;
+		case 4: out.push_back(NUMBER_4); break;
+		case 5: out.push_back(NUMBER_5); break;
+		case 6: out.push_back(NUMBER_6); break;
+		case 7: out.push_back(NUMBER_7); break;
+		case 8: out.push_back(NUMBER_8); break;
+		case 9: out.push_back(NUMBER_9); break;
+		}
+	}
+	else {
+		;	// already added for range 10...19 in tens switch case 1
 	}
 
 	return out;

@@ -365,6 +365,9 @@ void PlaylistAssembler::forecastMeteoblue(
 		if (location.sayTemperature) {
 			std::tuple<int64_t, float> temperature = ForecastFinder::getTemperatureMeteoblue(foundForecast, configurationFile->getForecast().futureTime);
 
+			// "temperature"
+			playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::TEMPERATURE).value());
+
 			SPDLOG_INFO("appending wind forecast, temperature: {}", std::get<1>(temperature));
 			// convert wind speed to playlist
 			auto temperatureAudioFile = playlistSampler->getAudioListFromNumber(std::get<1>(temperature));
