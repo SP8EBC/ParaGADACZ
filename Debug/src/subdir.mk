@@ -9,12 +9,13 @@ CPP_SRCS += \
 ../src/AprsWXDataFactory.cpp \
 ../src/AprxLogParser.cpp \
 ../src/ConfigurationFile.cpp \
+../src/CurentConditionsDownloader.cpp \
 ../src/ForecastDownloader.cpp \
 ../src/ForecastFinder.cpp \
 ../src/Player.cpp \
 ../src/PlaylistAssembler.cpp \
-../src/PlaylistAssembler_test.cpp \
-../src/PlaylistSamplerPL.cpp 
+../src/PlaylistSamplerPL.cpp \
+../src/main.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
@@ -22,12 +23,13 @@ OBJS += \
 ./src/AprsWXDataFactory.o \
 ./src/AprxLogParser.o \
 ./src/ConfigurationFile.o \
+./src/CurentConditionsDownloader.o \
 ./src/ForecastDownloader.o \
 ./src/ForecastFinder.o \
 ./src/Player.o \
 ./src/PlaylistAssembler.o \
-./src/PlaylistAssembler_test.o \
-./src/PlaylistSamplerPL.o 
+./src/PlaylistSamplerPL.o \
+./src/main.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
@@ -35,12 +37,13 @@ CPP_DEPS += \
 ./src/AprsWXDataFactory.d \
 ./src/AprxLogParser.d \
 ./src/ConfigurationFile.d \
+./src/CurentConditionsDownloader.d \
 ./src/ForecastDownloader.d \
 ./src/ForecastFinder.d \
 ./src/Player.d \
 ./src/PlaylistAssembler.d \
-./src/PlaylistAssembler_test.d \
-./src/PlaylistSamplerPL.d 
+./src/PlaylistSamplerPL.d \
+./src/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
