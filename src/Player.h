@@ -24,8 +24,6 @@
 
 class Player {
 
-	ConfigurationFile & config;
-
     libvlc_instance_t * inst;
 
     libvlc_media_player_t *mp;
@@ -48,12 +46,8 @@ class Player {
 
 
 public:
-	Player(ConfigurationFile & configurationFile);
+	Player();
 	virtual ~Player();
-	Player(const Player &other);
-	Player(Player &&other);
-	Player& operator=(const Player &other);
-	Player& operator=(Player &&other);
 
 	/**
 	 * Set a playlist and reset an internal state of the player

@@ -35,8 +35,6 @@ public:
 	virtual ~PlaylistAssembler();
 	PlaylistAssembler(const PlaylistAssembler &other);
 	PlaylistAssembler(PlaylistAssembler &&other);
-	PlaylistAssembler& operator=(const PlaylistAssembler &other);
-	PlaylistAssembler& operator=(PlaylistAssembler &&other);
 
 	/**
 	 * Initializes new playlist and appends an intro to it and optionally current time

@@ -14,7 +14,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-Player::Player(ConfigurationFile & configurationFile) : config(configurationFile) {
+Player::Player() {
 
     /* Load the VLC engine */
     inst = libvlc_new (0, NULL);
@@ -45,24 +45,6 @@ Player::~Player() {
     libvlc_release (inst);
 
     SPDLOG_INFO("Deinitializing player");
-}
-
-Player::Player(const Player &other)  : config(other.config) {
-    evm = NULL;
-
-}
-
-Player::Player(Player &&other)  : config(other.config) {
-    evm = NULL;
-
-}
-
-Player& Player::operator=(const Player &other) {
-
-}
-
-Player& Player::operator=(Player &&other) {
-
 }
 
 void Player::playbackStoppedCallback() {

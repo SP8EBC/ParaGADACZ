@@ -14,6 +14,9 @@ RM := rm -rf
 -include pogodacc/subdir.mk
 -include meteoblue/model/subdir.mk
 -include meteoblue/api/subdir.mk
+-include lib/wjwwood_serial/src/impl/list_ports/subdir.mk
+-include lib/wjwwood_serial/src/impl/subdir.mk
+-include lib/wjwwood_serial/src/subdir.mk
 -include subdir.mk
 -include objects.mk
 

@@ -31,10 +31,6 @@ class ForecastDownloader {
 public:
 	ForecastDownloader(std::shared_ptr<ConfigurationFile> & config);
 	virtual ~ForecastDownloader();
-	ForecastDownloader(const ForecastDownloader &other);
-	ForecastDownloader(ForecastDownloader &&other);
-	ForecastDownloader& operator=(const ForecastDownloader &other);
-	ForecastDownloader& operator=(ForecastDownloader &&other);
 
 	/**
 	 * Synchronously download all configured meteoblue forecast

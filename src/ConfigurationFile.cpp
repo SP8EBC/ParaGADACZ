@@ -44,6 +44,7 @@ bool ConfigurationFile::parse() {
 
 	bool out = true;
 
+
 	try {
 		// read and parse configuration file
 		config.readFile(this->fn.c_str());
@@ -218,11 +219,25 @@ bool ConfigurationFile::parse() {
 	try{
 		libconfig::Setting & forecastMeteblue = root["ForecastMeteoblue"];
 
+		// check if mandatory configuration exists
+		if (!forecastMeteblue.exists("FutureTime")) {
+			SPDLOG_WARN("Couldn't find 'FutureTime' within 'ForecastMeteoblue' configuration section!");
+
+			throw libconfig::SettingNotFoundException(forecastMeteblue, 0);
+		}
+
 		// time from now, for which forecasts should be get
 		forecastMeteblue.lookupValue("FutureTime", this->forecast.futureTime);
 
 		// forecast could be defined but not enabled
-		forecastMeteblue.lookupValue("Enable", this->forecast.enable);
+		if (!forecastMeteblue.lookupValue("Enable", this->forecast.enable)) {
+			this->forecast.enable = false;
+		}
+
+		//
+		if (!forecastMeteblue.lookupValue("SkipAnouncementIfAnyIsMissing", this->forecast.skipAnouncementIfAnyIsMissing)) {
+			this->forecast.skipAnouncementIfAnyIsMissing = false;
+		}
 
 		// get all locations forecast should be retrieved for
 		libconfig::Setting & forecastPoints = forecastMeteblue["Locations"];

@@ -34,6 +34,7 @@
 #include "AprsWXDataFactory.h"
 #include "ForecastDownloader.h"
 #include "CurentConditionsDownloader.h"
+#include "Player.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -69,6 +70,9 @@ std::vector<std::shared_ptr<org::openapitools::client::model::StationDefinitionM
 //!< Parser of APRX rf-log file
 AprxLogParser logParser;
 
+//!< Instance of media player wrapper
+Player player;
+
 //!< Vector of current weather conditions (only from APRX rf log file
 std::vector<AprsWXData> currentWeatherAprx;
 
@@ -81,8 +85,10 @@ std::optional<float> regionalPressure;
 //!< Interface to meteoblue auto generated code
 std::shared_ptr<ForecastDownloader> forecastDownloader;
 
+//!< Returns path or a vector of paths (std::string's) to audio files representing given number or other element
 std::shared_ptr<PlaylistSampler> playlistSampler;
 
+//!< Assembly complete playlist
 std::shared_ptr<PlaylistAssembler> playlistAssembler;
 
 int main(int argc, char **argv) {
@@ -115,6 +121,10 @@ int main(int argc, char **argv) {
 		SPDLOG_ERROR("Configuration file hasn't been parsed correctly! Exiting application!");
 
 		return -1;
+	}
+
+	if (!configurationFile->isDebug()) {
+		spdlog::set_level(spdlog::level::info);
 	}
 
 	// create an instance of API client
@@ -195,10 +205,43 @@ int main(int argc, char **argv) {
 		playlistAssembler->regionalPressure(*regionalPressure);
 	}
 
-	// inset current weather
+	// insert current weather
 	playlistAssembler->currentWeather(currentWeatherMeteobackend, currentWeatherAprx);
 
-	playlistAssembler->forecastMeteoblue(forecastDownloader->getAllForecast());
+	// insert weather forecast
+	if (configurationFile->getForecast().enable) {
+		if (forecastDownloader->isAnyError() && !configurationFile->getForecast().skipAnouncementIfAnyIsMissing) {
+			SPDLOG_WARN("Weather forecast announcement skipped due to problem with downloading at least one of them");
+		}
+		else {
+			playlistAssembler->forecastMeteoblue(forecastDownloader->getAllForecast());
+		}
+	}
+
+	// put post anouncements
+	playlistAssembler->recordedAnnouncement(true);
+
+	playlistAssembler->signOff();
+
+	// get finished playlist
+	auto playlist = playlistAssembler->getPlaylist();
+
+	// print all playlist elements
+	if (configurationFile->isDebug()) {
+		SPDLOG_INFO("Generated playlist has {} elements", playlist->size());
+
+		for (std::string elem : *playlist) {
+			SPDLOG_INFO("Element: {}", elem);
+		}
+	}
+
+	// set playlist
+	player.setPlaylist(playlist);
+
+	// play all files
+	while (player.playNext()) {
+		player.waitForPlaybackToFinish();
+	}
 
 	return 0;
 }

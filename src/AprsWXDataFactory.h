@@ -17,10 +17,6 @@ class AprsWXDataFactory {
 private:
 	AprsWXDataFactory();
 	virtual ~AprsWXDataFactory();
-	AprsWXDataFactory(const AprsWXDataFactory &other);
-	AprsWXDataFactory(AprsWXDataFactory &&other);
-	AprsWXDataFactory& operator=(const AprsWXDataFactory &other);
-	AprsWXDataFactory& operator=(AprsWXDataFactory &&other);
 
 public:
 

@@ -8,34 +8,12 @@
 #include "AprsWXDataFactory.h"
 
 AprsWXDataFactory::AprsWXDataFactory() {
-	// TODO Auto-generated constructor stub
 
 }
 
 AprsWXDataFactory::~AprsWXDataFactory() {
-	// TODO Auto-generated destructor stub
 }
 
-AprsWXDataFactory::AprsWXDataFactory(const AprsWXDataFactory &other) {
-	// TODO Auto-generated constructor stub
-
-}
-
-AprsWXDataFactory::AprsWXDataFactory(AprsWXDataFactory &&other) {
-	// TODO Auto-generated constructor stub
-
-}
-
-AprsWXDataFactory& AprsWXDataFactory::operator=(
-		const AprsWXDataFactory &other) {
-	// TODO Auto-generated method stub
-
-}
-
-AprsWXDataFactory& AprsWXDataFactory::operator=(AprsWXDataFactory &&other) {
-	// TODO Auto-generated method stub
-
-}
 
 AprsWXData AprsWXDataFactory::FromSummaryApiModel(
 		org::openapitools::client::model::Summary &model) {

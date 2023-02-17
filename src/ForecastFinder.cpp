@@ -14,28 +14,12 @@
 
 
 ForecastFinder::ForecastFinder() {
-	// TODO Auto-generated constructor stub
 
 }
 
 ForecastFinder::~ForecastFinder() {
-	// TODO Auto-generated destructor stub
 }
 
-ForecastFinder::ForecastFinder(const ForecastFinder &other) {
-	// TODO Auto-generated constructor stub
-
-}
-
-ForecastFinder::ForecastFinder(ForecastFinder &&other) {
-	// TODO Auto-generated constructor stub
-
-}
-
-ForecastFinder& ForecastFinder::operator=(const ForecastFinder &other) {
-	// TODO Auto-generated method stub
-
-}
 
 std::tuple<int64_t, float> ForecastFinder::getTemperatureMeteoblue(
 		std::shared_ptr<org::openapitools::client::model::Inline_response_200> meteoblueData,
@@ -71,11 +55,6 @@ std::tuple<int64_t, float> ForecastFinder::getTemperatureMeteoblue(
 	}
 
 	return out;
-}
-
-ForecastFinder& ForecastFinder::operator=(ForecastFinder &&other) {
-	// TODO Auto-generated method stub
-
 }
 
 std::tuple<int64_t, float> ForecastFinder::getWindSpeedMeteoblue(

@@ -112,7 +112,7 @@ BOOST_GLOBAL_FIXTURE (MyConfig);
 //}
 
 BOOST_AUTO_TEST_CASE(two_files) {
-	Player player(configuration_file_first);
+	Player player;
 
 	BOOST_CHECK_NO_THROW(player.setPlaylist(getTestPlaylist_3()));
 

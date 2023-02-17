@@ -23,6 +23,9 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+lib/wjwwood_serial/src/impl/list_ports \
+lib/wjwwood_serial/src/impl \
+lib/wjwwood_serial/src \
 meteoblue/api \
 meteoblue/model \
 pogodacc \

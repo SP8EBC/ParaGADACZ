@@ -72,6 +72,7 @@ struct ConfigurationFile_ForecastMeteoblue_Locations {
 struct ConfigurationFile_ForecastMeteoblue {
 	bool enable;					//!< If meteo blue forecast is enabled
 	uint32_t futureTime;			//!< number of minutes from now to get forecast for
+	bool skipAnouncementIfAnyIsMissing;	//!< skip missing forecast announcement instead of skipping whole forecast anouncement
 	std::vector<ConfigurationFile_ForecastMeteoblue_Locations> locations;	//!< forecast loca
 };
 

@@ -54,17 +54,6 @@ PlaylistAssembler::PlaylistAssembler(PlaylistAssembler &&other) : playlistSample
 
 }
 
-PlaylistAssembler& PlaylistAssembler::operator=(
-		const PlaylistAssembler &other) {
-	// TODO Auto-generated method stub
-
-}
-
-PlaylistAssembler& PlaylistAssembler::operator=(PlaylistAssembler &&other) {
-	// TODO Auto-generated method stub
-
-}
-
 void PlaylistAssembler::start() {
 
 	SPDLOG_INFO("initializing new playlist->");

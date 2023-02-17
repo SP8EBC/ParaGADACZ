@@ -31,23 +31,8 @@ AprxLogParser::AprxLogParser() : APRSIS("APRSIS") {
 }
 
 AprxLogParser::~AprxLogParser() {
-	// TODO Auto-generated destructor stub
 }
 
-AprxLogParser::AprxLogParser(const AprxLogParser &other) {
-	// TODO Auto-generated constructor stub
-
-}
-
-AprxLogParser::AprxLogParser(AprxLogParser &&other) {
-	// TODO Auto-generated constructor stub
-
-}
-
-AprxLogParser& AprxLogParser::operator=(const AprxLogParser &other) {
-	// TODO Auto-generated method stub
-
-}
 
 std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string call,
 		uint8_t ssid) {
@@ -235,7 +220,3 @@ void AprxLogParser::rewindFile() {
 	file.seekg((int)lenght / 2, file.beg);
 }
 
-AprxLogParser& AprxLogParser::operator=(AprxLogParser &&other) {
-	// TODO Auto-generated method stub
-
-}

@@ -35,10 +35,6 @@ public:
 private:
 	ForecastFinder();
 	virtual ~ForecastFinder();
-	ForecastFinder(const ForecastFinder &other);
-	ForecastFinder(ForecastFinder &&other);
-	ForecastFinder& operator=(const ForecastFinder &other);
-	ForecastFinder& operator=(ForecastFinder &&other);
 
 
 };

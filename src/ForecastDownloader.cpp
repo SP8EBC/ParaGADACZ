@@ -29,27 +29,6 @@ ForecastDownloader::~ForecastDownloader() {
 	// TODO Auto-generated destructor stub
 }
 
-ForecastDownloader::ForecastDownloader(const ForecastDownloader &other) : configurationFile(other.configurationFile) {
-	// TODO Auto-generated constructor stub
-
-}
-
-ForecastDownloader::ForecastDownloader(ForecastDownloader &&other) : configurationFile(other.configurationFile) {
-	// TODO Auto-generated constructor stub
-
-}
-
-ForecastDownloader& ForecastDownloader::operator=(
-		const ForecastDownloader &other) {
-	// TODO Auto-generated method stub
-
-}
-
-ForecastDownloader& ForecastDownloader::operator=(ForecastDownloader &&other) {
-	// TODO Auto-generated method stub
-
-}
-
 bool ForecastDownloader::downloadAllMeteoblue() {
 
 	// get all configured forecast points
