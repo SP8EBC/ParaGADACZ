@@ -17,6 +17,13 @@ ConfigurationFile::ConfigurationFile(std::string fileName) {
 	hasAprx = false;
 	debug = false;
 	maximumDataAge = 60;
+
+	inhibitor.serial.enable = false;
+	inhibitor.http.enable = false;
+	inhibitor.exec.enable = false;
+
+	pttControl.preDelay = 200;
+	pttControl.postDelay = 0;
 }
 
 ConfigurationFile::~ConfigurationFile() {
@@ -70,6 +77,62 @@ bool ConfigurationFile::parse() {
 	// get log output
 	if (!root.lookupValue("AudioBasePath", this->audioBasePath)) {
 		this->audioBasePath = "";
+	}
+
+	// get 'Inhibitor'
+	try {
+		libconfig::Setting &inhibitor = root["Inhibitor"];
+
+		libconfig::Setting &inhibitorSerial = inhibitor["Serial"];
+		libconfig::Setting &inhibitorExec = inhibitor["Exec"];
+		libconfig::Setting &inhibitorHttp = inhibitor["Http"];
+
+		inhibitorSerial.lookupValue("Enable", this->inhibitor.serial.enable);
+		inhibitorSerial.lookupValue("OkActiveLevel", this->inhibitor.serial.okActiveLevel);
+		inhibitorSerial.lookupValue("Port", this->inhibitor.serial.port);
+
+		inhibitorExec.lookupValue("Enable", this->inhibitor.exec.enable);
+		inhibitorExec.lookupValue("OkRetval", this->inhibitor.exec.okRetval);
+		inhibitorExec.lookupValue("Path", this->inhibitor.exec.path);
+
+		inhibitorHttp.lookupValue("Enable", this->inhibitor.http.enable);
+		inhibitorHttp.lookupValue("IgnoreNoAnswer", this->inhibitor.http.ignoreNoAnswer);
+		inhibitorHttp.lookupValue("Url", this->inhibitor.http.url);
+
+	}
+	catch (libconfig::SettingNotFoundException & e) {
+		SPDLOG_INFO("SettingNotFoundException during parsing 'Inhibitor', inhibitor won't be enabled");
+
+		this->inhibitor.serial.enable = false;
+		this->inhibitor.http.enable = false;
+		this->inhibitor.exec.enable = false;
+	}
+	catch (libconfig::ParseException & e) {
+		SPDLOG_ERROR("ParseException during parsing 'Inhibitor', e.getLine = {}, e.getError = {}", e.getLine(), e.getError());
+
+		out = false;
+	}
+
+	// get 'PttControl'
+	try {
+		libconfig::Setting &pttControl = root["PttControl"];
+
+		pttControl.lookupValue("Port", this->pttControl.port);
+		pttControl.lookupValue("DelayPre", this->pttControl.preDelay);
+		pttControl.lookupValue("DelayPost", this->pttControl.postDelay);
+
+
+	}
+	catch (libconfig::SettingNotFoundException & e) {
+		SPDLOG_ERROR("SettingNotFoundException during parsing 'PttControl', e.getPath = {}", e.getPath());
+
+		out = false;
+
+	}
+	catch (libconfig::ParseException & e) {
+		SPDLOG_ERROR("ParseException during parsing 'Inhibitor', e.getLine = {}, e.getError = {}", e.getLine(), e.getError());
+
+		out = false;
 	}
 
 	// get maximum data age

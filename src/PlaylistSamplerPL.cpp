@@ -33,17 +33,6 @@ PlaylistSamplerPL::PlaylistSamplerPL(PlaylistSamplerPL &&other) : config(other.c
 
 }
 
-PlaylistSamplerPL& PlaylistSamplerPL::operator=(
-		const PlaylistSamplerPL &other) {
-	// TODO Auto-generated method stub
-
-}
-
-PlaylistSamplerPL& PlaylistSamplerPL::operator=(PlaylistSamplerPL &&other) {
-	// TODO Auto-generated method stub
-
-}
-
 // this method implementations have been generated automatically by Eclipse
 // and it's 'implement method' function. what I should say? Eclipse being
 // Eclipse one more time ?

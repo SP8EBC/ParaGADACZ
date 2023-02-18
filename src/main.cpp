@@ -35,6 +35,7 @@
 #include "ForecastDownloader.h"
 #include "CurentConditionsDownloader.h"
 #include "Player.h"
+#include "InhibitorAndPttControl.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -72,6 +73,9 @@ AprxLogParser logParser;
 
 //!< Instance of media player wrapper
 Player player;
+
+//!<
+InhibitorAndPttControl inhibitAndPtt;
 
 //!< Vector of current weather conditions (only from APRX rf log file
 std::vector<AprsWXData> currentWeatherAprx;
@@ -127,6 +131,28 @@ int main(int argc, char **argv) {
 		spdlog::set_level(spdlog::level::info);
 	}
 
+	auto inhibitorConfig = configurationFile->getInhibitor();
+
+	// check inhibit conditions by executing configured script / executable
+	if (!InhibitorAndPttControl::checkInhibitExec(inhibitorConfig)) {
+		SPDLOG_ERROR("Transmission inhibited by EXEC");
+
+		return -10;
+	}
+
+	// the same by ask configured HTTP server if we are free to transmit
+	if (!InhibitorAndPttControl::checkInhibitHttp(inhibitorConfig)) {
+		SPDLOG_ERROR("Transmission inhibited by HTTP server response");
+
+		return -11;
+	}
+
+	if (!InhibitorAndPttControl::checkInhibitSerial(inhibitorConfig)) {
+		SPDLOG_ERROR("Transmission inhibited by serial port CTS line");
+
+		return -12;
+	}
+
 	// create an instance of API client
 	apiClient = std::make_shared<org::openapitools::client::api::ApiClient>();
 
@@ -148,6 +174,7 @@ int main(int argc, char **argv) {
 	// create an instance of playlist sampler in PL variant
 	playlistSampler = std::make_shared<PlaylistSamplerPL>(configurationFile);
 
+	// create playlist assembler instance which will use sampler to create playlist from weather data
 	playlistAssembler = std::make_shared<PlaylistAssembler>(playlistSampler, configurationFile);
 
 	// check if meteoblue forecasts are enabled in a configuration file
@@ -221,6 +248,7 @@ int main(int argc, char **argv) {
 	// put post anouncements
 	playlistAssembler->recordedAnnouncement(true);
 
+	// add signoff
 	playlistAssembler->signOff();
 
 	// get finished playlist
@@ -235,13 +263,22 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	inhibitAndPtt.setConfigAndCheckPort(configurationFile);
+
+	// key ptt
+	inhibitAndPtt.keyPtt(true);
+
 	// set playlist
-	player.setPlaylist(playlist);
+	player.setPlaylist(playlist, configurationFile->getAudioBasePath());
 
 	// play all files
 	while (player.playNext()) {
 		player.waitForPlaybackToFinish();
 	}
+
+	// dekey PTT
+	inhibitAndPtt.dekeyPtt();
+
 
 	return 0;
 }

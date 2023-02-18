@@ -44,6 +44,7 @@ class Player {
 
     static void plainStaticCallback(const struct libvlc_event_t *p_event, void *p_data);
 
+    std::string filePrefix;
 
 public:
 	Player();
@@ -52,7 +53,7 @@ public:
 	/**
 	 * Set a playlist and reset an internal state of the player
 	 */
-	void setPlaylist(std::shared_ptr<std::vector<std::string>> playlist);
+	void setPlaylist(std::shared_ptr<std::vector<std::string>> playlist, const std::string & prefix);
 
 	/**
 	 * starts playing given playlist or switch to next file

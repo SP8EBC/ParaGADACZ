@@ -12,6 +12,7 @@ CPP_SRCS += \
 ../src/CurentConditionsDownloader.cpp \
 ../src/ForecastDownloader.cpp \
 ../src/ForecastFinder.cpp \
+../src/InhibitorAndPttControl.cpp \
 ../src/Player.cpp \
 ../src/PlaylistAssembler.cpp \
 ../src/PlaylistSamplerPL.cpp \
@@ -26,6 +27,7 @@ OBJS += \
 ./src/CurentConditionsDownloader.o \
 ./src/ForecastDownloader.o \
 ./src/ForecastFinder.o \
+./src/InhibitorAndPttControl.o \
 ./src/Player.o \
 ./src/PlaylistAssembler.o \
 ./src/PlaylistSamplerPL.o \
@@ -40,6 +42,7 @@ CPP_DEPS += \
 ./src/CurentConditionsDownloader.d \
 ./src/ForecastDownloader.d \
 ./src/ForecastFinder.d \
+./src/InhibitorAndPttControl.d \
 ./src/Player.d \
 ./src/PlaylistAssembler.d \
 ./src/PlaylistSamplerPL.d \

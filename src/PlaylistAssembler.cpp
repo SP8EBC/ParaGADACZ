@@ -10,6 +10,7 @@
 
 #include "PlaylistAssembler.h"
 #include "ForecastFinder.h"
+#include "main.h"
 
 #include "exception/WrongOrderEx.h"
 #include "exception/DefinedStationNotFoundEx.h"
@@ -144,8 +145,11 @@ void PlaylistAssembler::currentWeather(
 			}
 			else {
 				SPDLOG_ERROR("DefinedStationNotFoundEx, w.type: {}, w.name: {}", w.type, w.name);
-
+#ifdef MAIN_FAIL_ON_MISSING_CURRENT_CONDITIONS
 				throw DefinedStationNotFoundEx();
+#else
+				continue;
+#endif
 			}
 		}
 
@@ -306,8 +310,11 @@ void PlaylistAssembler::forecastMeteoblue(
 		// check if anything has been found
 		if (found == forecasts.end()) {
 			SPDLOG_ERROR("DefinedStationNotFoundEx, location.name: {}", location.name);
-
+#ifdef MAIN_FAIL_ON_MISSING_FORECAST
 			throw DefinedStationNotFoundEx();
+#else
+			continue;
+#endif
 		}
 
 		// place location announcement for this forecast

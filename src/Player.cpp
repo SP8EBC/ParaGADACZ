@@ -69,9 +69,11 @@ void Player::plainStaticCallback(const struct libvlc_event_t *p_event,
 	ptr->playbackStoppedCallback();
 }
 
-void Player::setPlaylist(std::shared_ptr<std::vector<std::string> > playlist) {
+void Player::setPlaylist(std::shared_ptr<std::vector<std::string> > playlist, const std::string & prefix) {
 
     if (playlist) {
+    	filePrefix = prefix;
+
     	if (playlist->size() > 0) {
     		currentPlaylist = playlist;
 
@@ -87,10 +89,19 @@ bool Player::playNext() {
     	return false;
     }
 
-	SPDLOG_INFO("Playling file file {}", currentFile->c_str());
+    std::string fn;
+
+    if (filePrefix.length() > 1) {
+    	fn = filePrefix + *currentFile;
+    }
+    else {
+    	fn = *currentFile;
+    }
+
+	SPDLOG_INFO("Playling file file {}", fn.c_str());
 
     // create a new item
-    m = libvlc_media_new_path(inst, currentFile->c_str());
+    m = libvlc_media_new_path(inst, fn.c_str());
 
     libvlc_media_player_set_media(mp, m);
 

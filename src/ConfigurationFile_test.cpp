@@ -53,11 +53,33 @@ BOOST_AUTO_TEST_CASE (split_callsign_no_ssid)
 	BOOST_CHECK_EQUAL(std::get<unsigned>(result), 0);
 }
 
+BOOST_AUTO_TEST_CASE (inhibitor_parse)
+{
+	ConfigurationFile configurationFile("./test_input/configuration_inhibitor_parse.conf");
+
+	bool result = configurationFile.parse();
+
+	BOOST_CHECK_EQUAL(result, true);
+	/////////////////////////////////////
+	const ConfigurationFile_Inhibitor inhibitor = configurationFile.getInhibitor();
+	BOOST_CHECK_EQUAL(inhibitor.serial.enable, true);
+	BOOST_CHECK_EQUAL(inhibitor.serial.okActiveLevel, false);
+	BOOST_CHECK_EQUAL(inhibitor.serial.port, "/dev/ttyS0");
+
+	BOOST_CHECK_EQUAL(inhibitor.http.enable, true);
+	BOOST_CHECK_EQUAL(inhibitor.http.ignoreNoAnswer, true);
+	BOOST_CHECK_EQUAL(inhibitor.http.url, "http://pogoda.cc");
+
+	BOOST_CHECK_EQUAL(inhibitor.exec.enable, true);
+	BOOST_CHECK_EQUAL(inhibitor.exec.okRetval, 0);
+	BOOST_CHECK_EQUAL(inhibitor.exec.path, "/bin/more");
+}
+
 BOOST_AUTO_TEST_CASE (simple_parse)
 {
 	ConfigurationFile configurationFile("./test_input/configuration_simple_parse.conf");
 
-	spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
+	//spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 
 	bool result = configurationFile.parse();
 

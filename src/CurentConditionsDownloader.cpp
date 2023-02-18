@@ -80,7 +80,7 @@ int CurentConditionsDownloader::downloadParseCurrentCondotions(
 		case POGODA_CC: {
 			// look for weather station in results from meteo_backend
 			auto forecast = std::find_if(listOfAllStationsPogodacc.begin(), listOfAllStationsPogodacc.end(), [& current](auto x) {
-				if (x->getName() == current.name) {
+				if (boost::algorithm::to_upper_copy(x->getName()) == boost::algorithm::to_upper_copy(current.name)) {
 					return true;
 				}
 				else {
@@ -96,13 +96,14 @@ int CurentConditionsDownloader::downloadParseCurrentCondotions(
 				std::shared_ptr<org::openapitools::client::model::Summary> summary = stationApi->stationStationNameSummaryGet((*forecast)->getName()).get();
 
 				SPDLOG_INFO("Adding current weather conditions from meteo_backend for station: {}", current.name);
+				SPDLOG_DEBUG("last_timestamp: {}, temperature: {}, wind_speed: {}", summary->getLastTimestamp(), summary->getAvgTemperature(), summary->getAverageSpeed());
 
 				// add this result to
 				currentWeatherMeteobackend.push_back({current.name, summary});
 
 			}
 			else {
-				SPDLOG_ERROR("Cannot find any current conditions for {} within list of all station from pogoda.cc meteo_backend!!", current.name);
+				SPDLOG_ERROR("Cannot find definition for {} within list of all stations from pogoda.cc meteo_backend!!", current.name);
 #ifdef MAIN_FAIL_ON_MISSING_CURRENT_CONDITIONS
 				return -4;
 #else

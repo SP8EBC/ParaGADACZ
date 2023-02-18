@@ -76,6 +76,36 @@ struct ConfigurationFile_ForecastMeteoblue {
 	std::vector<ConfigurationFile_ForecastMeteoblue_Locations> locations;	//!< forecast loca
 };
 
+struct ConfigurationFile_Inhibitor_Serial {
+	bool enable;
+	std::string port;		//!< Which serial port should be used by inhibitor
+	bool okActiveLevel;		//!< Which state on CTS line allows transmission.
+};
+
+struct ConfigurationFile_Inhibitor_Exec {
+	bool enable;
+	std::string path;		//!< Path to executable
+	int okRetval;			//!< Which return value is OK and allows
+};
+
+struct ConfigurationFile_Inhibitor_Http {
+	bool enable;
+	std::string url;		//!< URL to send request to
+	bool ignoreNoAnswer;	//!< Set to true to allow transmission if there is no answer from HTTP server
+};
+
+struct ConfigurationFile_Inhibitor {
+	ConfigurationFile_Inhibitor_Serial serial;
+	ConfigurationFile_Inhibitor_Exec exec;
+	ConfigurationFile_Inhibitor_Http http;
+};
+
+struct ConfigurationFile_PttControl {
+	std::string port;			// !< Port which will be used to control PTT line
+	uint32_t preDelay;			// !< Delay in miliseconds after keying PTT (pulling RTS down) and playback start
+	uint32_t postDelay;			// !< Delay after the end of anouncement and dekeying a transceiver
+};
+
 class ConfigurationFile {
 
 	libconfig::Config config;	//!< parsed configuration and its parser
@@ -96,6 +126,9 @@ class ConfigurationFile {
 
 	std::string audioBasePath;	//!< Base path do directory where all audio files are put
 	std::string logOutput;		//!< Path to created log file
+
+	ConfigurationFile_Inhibitor inhibitor;
+	ConfigurationFile_PttControl pttControl;
 
 	int maximumDataAge;	//!< maximum time in minutes for current measurements to be usable
 	std::string aprxRfLogPath;	//!< Path to
@@ -175,10 +208,6 @@ public:
 
 	ConfigurationFile(std::string fileName);
 	virtual ~ConfigurationFile();
-	//ConfigurationFile(const ConfigurationFile &other);
-	//ConfigurationFile(ConfigurationFile &&other);
-//	ConfigurationFile& operator=(const ConfigurationFile &other);
-//	ConfigurationFile& operator=(ConfigurationFile &&other);
 
 	const std::string& getAudioBasePath() const {
 		return audioBasePath;
@@ -234,6 +263,14 @@ public:
 
 	bool isHasAprx() const {
 		return hasAprx;
+	}
+
+	const ConfigurationFile_PttControl& getPttControl() const {
+		return pttControl;
+	}
+
+	const ConfigurationFile_Inhibitor& getInhibitor() const {
+		return inhibitor;
 	}
 };
 
