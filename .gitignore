@@ -1,6 +1,8 @@
 ParaGADACZ
 
 secret.h
+*.ogg
+/test_input/audio
 
 # Prerequisites
 *.d
