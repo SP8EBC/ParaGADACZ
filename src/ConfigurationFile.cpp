@@ -151,7 +151,19 @@ bool ConfigurationFile::parse() {
 	try {
 		libconfig::Setting &intro = root["Intro"];
 
-		intro.lookupValue("Ident", this->intro.ident);
+		// ident can be composed from few separate audio files
+		libconfig::Setting &ident = intro["Ident"];
+
+		//intro.lookupValue("Ident", this->intro.ident);
+		if (ident.getLength() > 0) {
+			for (size_t i = 0; i < ident.getLength(); i++) {
+				std::string s = ident[i];
+
+				// add all files
+				this->intro.ident.push_back(s);
+			}
+		}
+
 		intro.lookupValue("SayCurrentTime", this->intro.sayCurrentTime);
 		intro.lookupValue("SayRegionalPressure", this->intro.sayRegionalPressure);
 	}
@@ -159,7 +171,7 @@ bool ConfigurationFile::parse() {
 		SPDLOG_WARN("'Intro' section didn't find in configuration file! Set to defaults");
 
 		// set defaults values in case of exception
-		this->intro.ident = "";
+		//this->intro.ident = "";
 		this->intro.sayCurrentTime = true;
 		this->intro.sayRegionalPressure = false;
 	}

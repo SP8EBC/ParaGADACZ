@@ -28,6 +28,8 @@ class ForecastDownloader {
 
 	bool anyError = false;
 
+	bool anyGood = false;
+
 public:
 	ForecastDownloader(std::shared_ptr<ConfigurationFile> & config);
 	virtual ~ForecastDownloader();
@@ -49,6 +51,10 @@ public:
 
 	bool isAnyError() const {
 		return anyError;
+	}
+
+	bool isAnyGood() const {
+		return anyGood;
 	}
 };
 

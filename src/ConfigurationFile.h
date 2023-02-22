@@ -39,7 +39,7 @@ enum ConfigurationFile_CurrentWeatherType {
  *
  */
 struct ConfigurationFile_Intro {
-	std::string ident;		//!< Name of audio file with station ident, played at the beginning
+	std::vector<std::string> ident;		//!< Name of audio file with station ident, played at the beginning
 	bool sayCurrentTime;	//!< Say current time after ident
 	bool sayRegionalPressure;	//!<
 };

@@ -8,7 +8,10 @@ $slownik = array(
 	array('wszystkie stacje wszystkie stacje wszystkie stacje tu','intro'),
 	array('skrzyczne skrzyczne radio', 'intro2'),
 	array('sierra november nine november sierra kilo', 'intro3'),
+
 	array('kropka', 'kropka'),
+	array('minus', 'minus'),
+
 	array('pierwsza', 'pierwsza'),
 	array('druga', 'druga'),
 	array('trzecia', 'trzecia'),
@@ -31,7 +34,7 @@ $slownik = array(
     array('dwudziesta', 'dwudziesta'),
 
     array('godzina', 'godzina'),
-    array('czasu uniwersalna', 'czasu_uniwersalna'),
+    array('czasu uniwersalnego', 'czasu_uniwersalnego'),
     array('czasu lokalnego', 'czasu_lokalnego'),
 
     array('aktualne warunki pogodowe', 'aktualne_warunki'),
@@ -107,6 +110,16 @@ $slownik = array(
     array('osiemdziesiąt', 'osiemdziesiat'),
     array('dziewięćdziesiąt', 'dziewiecdziesiat'),
 
+	array('jedenaście', 'jedenascie'),
+	array('dwanaście','dwanaście'),
+	array('trzynaście', 'trzynascie'),
+	array('czternaście', 'czternascie'),
+	array('piętnaście', 'pietnascie'),
+	array('szesnaście', 'szesnascie'),
+	array('siedemnaście', 'siedemnascie'),
+	array('osiemnaście', 'osiemnascie'),
+	array('dziewietnaście', 'dziewietnascie'),
+
     array('jeden', 'jeden'),
     array('dwa', 'dwa'),
     array('trzy', 'trzy'),
@@ -119,8 +132,33 @@ $slownik = array(
     array('zero', 'zero'),
 
     array('dwie', 'dwie'),
-    array('dousłyszenia', 'outro'),
-    array('ty skrzyczne radio koniec komunikatu', 'outro2'),
+    array('do usłyszenia', 'outro'),
+
+    array('brak komunikatów specjalnych', 'brak_komunikatow_specjalnych'),
+
+    array('zagrożnie lawinowe', 'zagrozenie_lawinowe'),
+    array('brak pokrywy śnieżnej', 'brak_pokrywy_snieznej'),
+    array('niskie, pierwszy stopień', 'stopien_pierwszy'),
+    array('umiarkowane, drugi stopień', 'stopien_drugi'),
+    array('znaczne, trzeci stopień', 'stopien_trzeci'),
+    array('wysokie, czwarty stopień', 'stopien_czwarty'),
+    array(' Szczególnie niebezpieczna wystawa', 'niebezpieczna_wystawa'),
+
+
+
+    array('skrzyczne', '_skrzyczne'),
+    array('startowisko', '_startowisko'),
+    array('jaworzyna skrzyczneńska', '_jaworzyna'),
+    array('szczyrk', '_szczyrk'),
+    array('magurka wilkowicka', '_magurka'),
+    array('jezioro żywieckie', '_jezioro_zywieckie'),
+    array('jezioro międzybrodzkie', '_jezioro_miedzybrodzkie'),
+    array('międzybrodzie żywieckie', '_jezioro_miedzybrodzkie'),
+    array('góra żar', '_zar'),
+    array('pilsko', '_pilsko'),
+    array('markowe szczawiny', '_markowe_szczawiny'),
+    array('babia góra', '_babia_gora'),
+
 
 );
 

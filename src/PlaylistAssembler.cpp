@@ -64,8 +64,9 @@ void PlaylistAssembler::start() {
 		playlist->clear();
 	}
 
-	// put an intro
-	playlist->push_back(configurationFile->getIntro().ident);
+	//put an intro
+	auto intro = configurationFile->getIntro().ident;
+	playlist->insert(playlist->end(), std::make_move_iterator(intro.begin()), std::make_move_iterator(intro.end()));
 
 	// put current time if required
 	if (configurationFile->getIntro().sayCurrentTime) {
@@ -234,7 +235,8 @@ void PlaylistAssembler::currentWeather(
 			playlist->insert(playlist->end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
 
 			// and the unit itself
-			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::CELSIUS, (int)wind_speed));
+			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::DEG, (int)temperature));
+			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::CELSIUS, (int)temperature));
 
 		}
 
@@ -258,12 +260,12 @@ void PlaylistAssembler::currentWeather(
 			// say "pressure
 			playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::HUMIDITY).value_or(checker));
 
-			// say wind temperature but round to integer
+			// say pressure, but round to integer
 			intermediate = playlistSampler->getAudioListFromNumber((int)std::round(pressure));
 			playlist->insert(playlist->end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
 
 			// and the unit itself
-			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::CELSIUS, (int)wind_speed));
+			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::HPA, (int)pressure));
 		}
 	}
 
@@ -348,7 +350,6 @@ void PlaylistAssembler::forecastMeteoblue(
 			// and append that to main playlist
 			playlist->push_back(windDirectionAudioFile);
 
-
 			// convert wind speed to playlist
 			auto windAudioFile = playlistSampler->getAudioListFromNumber(std::get<1>(wind));
 
@@ -364,12 +365,18 @@ void PlaylistAssembler::forecastMeteoblue(
 			// "temperature"
 			playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::TEMPERATURE).value());
 
-			SPDLOG_INFO("appending wind forecast, temperature: {}", std::get<1>(temperature));
-			// convert wind speed to playlist
-			auto temperatureAudioFile = playlistSampler->getAudioListFromNumber(std::get<1>(temperature));
+			auto _temperature = std::get<1>(temperature);
+
+			SPDLOG_INFO("appending wind forecast, temperature: {}", _temperature);
+			// convert temperature to playlist
+			auto temperatureAudioFile = playlistSampler->getAudioListFromNumber(_temperature);
 
 			// and append that to main playlist
 			playlist->insert(playlist->end(), std::make_move_iterator(temperatureAudioFile.begin()), std::make_move_iterator(temperatureAudioFile.end()));
+
+			// and the unit itself
+			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::DEG, (int)_temperature));
+			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::CELSIUS, (int)_temperature));
 
 		}
 	}

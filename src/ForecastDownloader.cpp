@@ -57,6 +57,8 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 
 			// add this to the vector
 			allResults.push_back(tuple);
+
+			anyGood = true;
 		}
 		catch (org::openapitools::client::api::ApiException & e) {
 			SPDLOG_ERROR("ApiException has happened during downloading forecast for {}", location.name );

@@ -9,6 +9,7 @@
 #define PLAYLISTSAMPLERPL_FILES_H_
 
 #define DECIMAL		 "kropka.ogg"
+#define	NEGAITVE	 "minus.ogg"
 
 #define ONE_CLOCK		"pierwsza.ogg"
 #define TWO_CLOCK		"druga.ogg"

@@ -194,7 +194,7 @@ std::vector<
 	// remaining after extracting thousands
 	helper = decimal - 1000.0f * thousands;
 
-	SPDLOG_DEBUG("thousands: {}, helper: {}", thousands, helper);
+	//SPDLOG_DEBUG("thousands: {}, helper: {}", thousands, helper);
 
 	// hundrets
 	const int hundreds = (int)(helper / 100.0f);
@@ -202,7 +202,7 @@ std::vector<
 	// remaining after extracting hundrets
 	helper = helper - 100.0f * hundreds;
 
-	SPDLOG_DEBUG("hundreds: {}, helper: {}", hundreds, helper);
+	//SPDLOG_DEBUG("hundreds: {}, helper: {}", hundreds, helper);
 
 	// tens
 	const int tens = (int)(helper / 10.0f);
@@ -210,7 +210,7 @@ std::vector<
 	// remaining after tens
 	helper = helper - 10.0f * tens;
 
-	SPDLOG_DEBUG("tens: {}, helper: {}", tens, helper);
+	//SPDLOG_DEBUG("tens: {}, helper: {}", tens, helper);
 
 	// units - we are done with integer part
 	const int units = (int) helper;
@@ -220,11 +220,11 @@ std::vector<
 	// remove integer part
 	helper = helper - (float)units;
 
-	SPDLOG_DEBUG("units: {}, helper: {}", units, helper);
+	//SPDLOG_DEBUG("units: {}, helper: {}", units, helper);
 
 	const int one_tens = (int)(helper * 10);
 
-	SPDLOG_DEBUG("one_tens: {}, helper: {}", one_tens, helper);
+	//SPDLOG_DEBUG("one_tens: {}, helper: {}", one_tens, helper);
 
 	// now select files
 	switch (thousands) {
@@ -433,13 +433,19 @@ std::vector<
 
 	float helper = 0.0f;
 
+	// check if this number is negative
+	const bool is_negative = (integer < 0) ? true : false;
+
+	//
+	integer = std::abs(integer);
+
 	// thousands from number
 	const int thousands = (int)(integer / 1000.0f);
 
 	// remaining after extracting thousands
 	helper = integer - 1000.0f * thousands;
 
-	SPDLOG_DEBUG("thousands: {}, helper: {}", thousands, helper);
+	//SPDLOG_DEBUG("thousands: {}, helper: {}", thousands, helper);
 
 	// hundrets
 	const int hundreds = (int)(helper / 100.0f);
@@ -447,7 +453,7 @@ std::vector<
 	// remaining after extracting hundrets
 	helper = helper - 100.0f * hundreds;
 
-	SPDLOG_DEBUG("hundreds: {}, helper: {}", hundreds, helper);
+	//SPDLOG_DEBUG("hundreds: {}, helper: {}", hundreds, helper);
 
 	// tens
 	const int tens = (int)(helper / 10.0f);
@@ -455,12 +461,16 @@ std::vector<
 	// remaining after tens
 	helper = helper - 10.0f * tens;
 
-	SPDLOG_DEBUG("tens: {}, helper: {}", tens, helper);
+	//SPDLOG_DEBUG("tens: {}, helper: {}", tens, helper);
 
 	// units - we are done with integer part
 	const int units = (int) helper;
 
-	SPDLOG_DEBUG("units: {}", units);
+	//SPDLOG_DEBUG("units: {}", units);
+
+	if (is_negative) {
+		 out.push_back(NEGAITVE);
+	}
 
 	// now select files
 	switch (thousands) {

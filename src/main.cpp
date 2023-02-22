@@ -237,11 +237,16 @@ int main(int argc, char **argv) {
 
 	// insert weather forecast
 	if (configurationFile->getForecast().enable) {
-		if (forecastDownloader->isAnyError() && !configurationFile->getForecast().skipAnouncementIfAnyIsMissing) {
-			SPDLOG_WARN("Weather forecast announcement skipped due to problem with downloading at least one of them");
+		if (forecastDownloader->isAnyGood()) {
+			if (forecastDownloader->isAnyError() && configurationFile->getForecast().skipAnouncementIfAnyIsMissing) {
+				SPDLOG_WARN("Weather forecast announcement skipped due to problem with downloading at least one of them");
+			}
+			else {
+				playlistAssembler->forecastMeteoblue(forecastDownloader->getAllForecast());
+			}
 		}
 		else {
-			playlistAssembler->forecastMeteoblue(forecastDownloader->getAllForecast());
+			SPDLOG_WARN("Weather forecast announcement skipped because no forecast data have been downloaded successfully");
 		}
 	}
 
