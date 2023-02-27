@@ -17,6 +17,12 @@ RM := rm -rf
 -include lib/wjwwood_serial/src/impl/list_ports/subdir.mk
 -include lib/wjwwood_serial/src/impl/subdir.mk
 -include lib/wjwwood_serial/src/subdir.mk
+-include lib/lexborisov_myhtml/source/myport/posix/mycore/utils/subdir.mk
+-include lib/lexborisov_myhtml/source/myport/posix/mycore/subdir.mk
+-include lib/lexborisov_myhtml/source/myhtml/subdir.mk
+-include lib/lexborisov_myhtml/source/myencoding/subdir.mk
+-include lib/lexborisov_myhtml/source/mycore/utils/subdir.mk
+-include lib/lexborisov_myhtml/source/mycore/subdir.mk
 -include subdir.mk
 -include objects.mk
 

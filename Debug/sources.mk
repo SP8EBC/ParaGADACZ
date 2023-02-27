@@ -23,6 +23,12 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+lib/lexborisov_myhtml/source/mycore \
+lib/lexborisov_myhtml/source/mycore/utils \
+lib/lexborisov_myhtml/source/myencoding \
+lib/lexborisov_myhtml/source/myhtml \
+lib/lexborisov_myhtml/source/myport/posix/mycore \
+lib/lexborisov_myhtml/source/myport/posix/mycore/utils \
 lib/wjwwood_serial/src/impl/list_ports \
 lib/wjwwood_serial/src/impl \
 lib/wjwwood_serial/src \
