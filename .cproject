@@ -74,6 +74,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.libs.62683817" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="config++"/>
+									<listOptionValue builtIn="false" value="curl"/>
 									<listOptionValue builtIn="false" value="fmt"/>
 									<listOptionValue builtIn="false" value="crypto"/>
 									<listOptionValue builtIn="false" value="pthread"/>

@@ -15,6 +15,20 @@ enum AvalancheWarnings_Location {
 	BABIA_GORA
 };
 
+struct AvalancheWarnings_Expositions {
+	bool north;
+	bool northEast;
+	bool east;
+	bool southEast;
+	bool south;
+	bool southWest;
+	bool west;
+	bool northWest;
+
+	AvalancheWarnings_Expositions() :
+		north(false), northEast(false), east(false), southEast(false), south(false), southWest(false), west(false), northWest(false) {}
+};
+
 class AvalancheWarnings {
 
 	/**
@@ -27,14 +41,35 @@ class AvalancheWarnings {
 	 */
 	std::string httpResponse;
 
+	/**
+	 * Current severity level for forecast downloaded
+	 */
+	int8_t currentLevel;
+
+	/**
+	 * Response from HTTP server
+	 */
+	std::string responseBuffer;
+
+	/**
+	 * Write callback uset to store HTTP server response
+	 */
+	void writeCallback(char* data, size_t data_size);
+
 protected:
 
 	/**
-	 *	Parse HTML from response
+	 * Used for unit testing only
 	 */
-	void parse();
+	void parseLevel(std::string & response);
 
-	void parse(std::string & response);
+	void parseDangerousExposition(std::string & str);
+
+	static int8_t parseSeverityLevelFromString(std::string & str);
+
+	static AvalancheWarnings_Expositions parseExpositionsFromString(std::string & str);
+
+	static size_t staticWriteCallback(char* get_data, size_t always_one, size_t get_data_size, void* userdata);
 
 public:
 	AvalancheWarnings();
@@ -43,7 +78,14 @@ public:
 	/**
 	 * Uses CURL to download warning data from TOPR/GOPR websites
 	 */
-	void download(AvalancheWarnings_Location location);
+	int download(AvalancheWarnings_Location location);
+
+	/**
+	 *	Parse HTML from response
+	 */
+	void parseLevel();
+
+	void parseDangerousExposition();
 
 	/**
 	 * Gets avalanche severity level from downloaded data
