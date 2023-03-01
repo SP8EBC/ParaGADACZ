@@ -48,6 +48,8 @@ void AvalancheWarnings::parseLevel() {
 		throw HtmlNoDataEx();
 	}
 
+	SPDLOG_INFO("Scraping severity level from downloaded response");
+
     // basic init
     myhtml_t* myhtml = myhtml_create();
     myhtml_init(myhtml, MyHTML_OPTIONS_DEFAULT, 1, 0);
@@ -58,8 +60,6 @@ void AvalancheWarnings::parseLevel() {
 
     // parse html
     mystatus_t result = myhtml_parse(tree, MyENCODING_UTF_8, this->httpResponse.c_str(), this->httpResponse.length());
-
-	SPDLOG_INFO("html parsing result: 0x{0:x}", result);
 
 	this->currentLevel = -1;
 
@@ -130,15 +130,12 @@ void AvalancheWarnings::parseLevel() {
 
     }
     else {
-    	SPDLOG_ERROR("nothing found");
+    	SPDLOG_ERROR("Cannot find avalanche severity level within HTTP data");
     }
 
     // release resources
     myhtml_tree_destroy(tree);
     myhtml_destroy(myhtml);
-
-    SPDLOG_INFO("done");
-
 }
 
 void AvalancheWarnings::parseDangerousExposition() {
@@ -161,6 +158,8 @@ void AvalancheWarnings::parseDangerousExposition() {
 		throw HtmlNoDataEx();
 	}
 
+	SPDLOG_INFO("Scraping dangerous exposition from downloaded response");
+
     // basic init
     myhtml_t* myhtml = myhtml_create();
     myhtml_init(myhtml, MyHTML_OPTIONS_DEFAULT, 1, 0);
@@ -172,7 +171,7 @@ void AvalancheWarnings::parseDangerousExposition() {
     // parse html
     mystatus_t result = myhtml_parse(tree, MyENCODING_UTF_8, this->httpResponse.c_str(), this->httpResponse.length());
 
-	SPDLOG_INFO("html parsing result: 0x{0:x}", result);
+	SPDLOG_INFO("HTML parsing result: 0x{0:x}", result);
 
     // look for certain point of HTML file downloaded from GOPR website
     myhtml_collection_t* collection = myhtml_get_nodes_by_attribute_value_contain(	tree, NULL, NULL, true,
@@ -196,7 +195,7 @@ void AvalancheWarnings::parseDangerousExposition() {
 			auto exposition = AvalancheWarnings::parseExpositionsFromString(value_as_string);
 		}
 		else {
-        	SPDLOG_ERROR("non existing attribute");
+        	SPDLOG_ERROR("cannot find dangerous exposition in HTML data!!");
 		}
     }
 }
@@ -221,6 +220,8 @@ int AvalancheWarnings::download(AvalancheWarnings_Location location) {
 			SPDLOG_ERROR("unknown location selected");
 			throw UnknownLocationEx();
 	}
+
+	SPDLOG_INFO("Downloading avalanche warning data from GOPR webpage, URL: ", url);
 
 	// initialize cURL
     auto curl = curl_easy_init();
@@ -247,9 +248,9 @@ int AvalancheWarnings::download(AvalancheWarnings_Location location) {
     curl_easy_getinfo(curl, CURLINFO_TOTAL_TIME, &elapsed);
     curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effectiveUrl);
 
-    SPDLOG_INFO("response_code: {}", boost::lexical_cast<std::string>(response_code));
-    SPDLOG_INFO("elapsed: {}", boost::lexical_cast<std::string>(elapsed));
-    SPDLOG_INFO("result: {}", curlCodeToStr(result));
+    SPDLOG_INFO("CURL response_code: {}", boost::lexical_cast<std::string>(response_code));
+    SPDLOG_INFO("CURL query elapsed time: {}", boost::lexical_cast<std::string>(elapsed));
+    SPDLOG_INFO("CURL result: {}", curlCodeToStr(result));
 
     // deinitialize cURL
     curl_easy_cleanup(curl);
@@ -319,7 +320,7 @@ AvalancheWarnings_Expositions AvalancheWarnings::parseExpositionsFromString(
 	if (first_split_result.size() == 2) {
 		boost::algorithm::split(expositions, first_split_result.at(1), boost::is_any_of("-"));
 
-		// assumption is that there is at least one dangerous exposition provided in the anouncement
+		// assumption is that there is at least one dangerous exposition provided in the announcement
 		if (expositions.size() > 1) {
 			SPDLOG_INFO("{} dangerous expositions found", expositions.size());
 

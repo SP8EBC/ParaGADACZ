@@ -141,7 +141,10 @@ public:
 	 * \param direction
 	 */
 	virtual std::string getAudioForWindDirection(int direction);
-
+	virtual std::optional<
+			std::__cxx11::basic_string<char, std::char_traits<char>,
+					std::allocator<char> > > getAudioForAvalancheWarningLocation(
+			AvalancheWarnings_Location location) override;
 };
 
 #endif /* PLAYLISTSAMPLERPL_H_ */

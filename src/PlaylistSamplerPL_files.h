@@ -10,6 +10,7 @@
 
 #define DECIMAL		 "kropka.ogg"
 #define	NEGAITVE	 "minus.ogg"
+#define _ALSO		 "oraz.ogg"
 
 #define ONE_CLOCK		"pierwsza.ogg"
 #define TWO_CLOCK		"druga.ogg"
@@ -46,6 +47,16 @@
 #define QNH			"cisnienie.ogg"
 #define QNH_REGIONAL"cisnienie_w_regionie.ogg"
 #define HMIDITY		"wilgotnosc.ogg"
+#define AVALNCHE_WR "zagrozenie_lawinowe.ogg"
+#define EXPOSITION	"niebezpieczna_wystawa.ogg"
+#define FIRST_LVL	"stopien_pierwszy.ogg"
+#define SECOND_LVL	"stopien_drugi.ogg"
+#define THIRD_LVL	"stopien_trzeci.ogg"
+#define FOURTH_LVL	"stopien_czwarty.ogg"
+
+// static definitions for Avalanche warnings
+// this data is scrapped anyway
+#define BABIA		"_babia_gora.ogg"
 
 #define DIRECTION_N		"polnocny.ogg"
 #define DIRECTION_NNE	"polnocny_polnocno_wschodni.ogg"

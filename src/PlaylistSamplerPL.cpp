@@ -638,11 +638,29 @@ std::optional<
 	case PlaylistSampler_ConstanElement::TEMPERATURE: 	return TMPRATURE;
 	case PlaylistSampler_ConstanElement::HUMIDITY:		return HMIDITY;
 	case PlaylistSampler_ConstanElement::WIND_GUSTS:		return WINDGUSTS;
+	case PlaylistSampler_ConstanElement::AVALANCHE_WARNING:	return AVALNCHE_WR;
+	case PlaylistSampler_ConstanElement::DANGEROUS_EXPOSITION: return EXPOSITION;
+	case PlaylistSampler_ConstanElement::FIRST_LEVEL:	return FIRST_LVL;
+	case PlaylistSampler_ConstanElement::SECOND_LEVEL:	return SECOND_LVL;
+	case PlaylistSampler_ConstanElement::THIRD_LEVEL:	return THIRD_LVL;
+	case PlaylistSampler_ConstanElement::FOURTH_LEVEL:	return FOURTH_LVL;
+	case PlaylistSampler_ConstanElement::ALSO:			return _ALSO;
 	}
 
 	SPDLOG_ERROR("Unknown element: {}", element);
 
 	return {};
+}
+
+std::optional<std::string> PlaylistSamplerPL::getAudioForAvalancheWarningLocation(AvalancheWarnings_Location location) {
+
+	std::optional<std::string> out;
+
+	switch (location) {
+	case BABIA_GORA: return BABIA;
+	default: return {};
+	}
+
 }
 
 /**

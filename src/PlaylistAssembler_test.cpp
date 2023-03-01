@@ -15,6 +15,7 @@
 #include "PlaylistSamplerPL.h"
 #include "PlaylistAssembler.h"
 #include "ConfigurationFile.h"
+#include "AvalancheWarnings.h"
 
 #include "PlaylistSamplerPL_files.h"
 
@@ -375,3 +376,9 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(PERCENTS, playlist[i++]);
 }
+
+BOOST_AUTO_TEST_CASE(gopr_avalanche_levels) {
+
+	AvalancheWarnings_Expositions exposition;
+}
+

@@ -19,6 +19,7 @@
 #include "ConfigurationFile.h"
 #include "StationApi.h"
 #include "AprsWXData.h"
+#include "AvalancheWarnings.h"
 
 class PlaylistAssembler {
 
@@ -61,6 +62,11 @@ public:
 	 * Appends meteoblue forecast
 	 */
 	void forecastMeteoblue(std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts);
+
+	/**
+	 * Avalanche warnings
+	 */
+	void avalancheWarning(AvalancheWarnings_Location location, int8_t level, AvalancheWarnings_Expositions expositions);
 
 	/**
 	 * Appends prerecorded anouncement either at the begining or the end

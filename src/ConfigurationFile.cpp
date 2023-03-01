@@ -11,6 +11,9 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#include <boost/algorithm/string.hpp>
+
+
 ConfigurationFile::ConfigurationFile(std::string fileName) {
 	fn = fileName;
 	hasPogodacc = false;
@@ -24,27 +27,64 @@ ConfigurationFile::ConfigurationFile(std::string fileName) {
 
 	pttControl.preDelay = 200;
 	pttControl.postDelay = 0;
+
+	avalancheWarning.goprBabiaGora = false;
+}
+
+ConfigurationFile_CurrentWeatherType ConfigurationFile::currentWeatherTypeFromString(
+		std::string in) {
+
+			ConfigurationFile_CurrentWeatherType out = UNSET;
+
+			boost::algorithm::to_upper(in);
+			switch(swstring(in.c_str())) {
+				case swstring("APRX"): out = APRX; break;
+				case swstring("POGODACC"): out = POGODA_CC; break;
+			}
+
+			return out;
+
+}
+
+std::tuple<std::string, unsigned> ConfigurationFile::splitCallsign(
+		std::string input) {
+
+			auto it = input.begin();
+
+			std::string calsign, bufSSID;
+			unsigned ssid;
+
+			// copy callsign to separate buffer
+			while ( (*it != '-') && (*it != '>') && it != input.end()) {
+				calsign.append(1, *it);
+
+				it++;
+			}
+
+			// check SSID
+			if (*it == '-') {
+				// copy if exist
+				it++;
+
+				while ((*it != '>') && it != input.end()) {
+					bufSSID.append(1, *it);
+
+					it++;
+				}
+
+				// and convert to integer
+				ssid = std::stoi(bufSSID);
+			}
+			else {
+				ssid = 0;
+			}
+
+			return std::make_tuple(calsign, ssid);
 }
 
 ConfigurationFile::~ConfigurationFile() {
 	SPDLOG_DEBUG("");
 }
-
-//ConfigurationFile::ConfigurationFile(const ConfigurationFile &other) {
-//
-//}
-//
-//ConfigurationFile::ConfigurationFile(ConfigurationFile &&other) {
-//
-//}
-//
-//ConfigurationFile& ConfigurationFile::operator=(
-//		const ConfigurationFile &other) {
-//
-//}
-//ConfigurationFile& ConfigurationFile::operator=(ConfigurationFile &&other) {
-//
-//}
 
 bool ConfigurationFile::parse() {
 	SPDLOG_INFO("parsing configuration file: {}", this->fn);
@@ -345,6 +385,20 @@ bool ConfigurationFile::parse() {
 		SPDLOG_ERROR("ParseException during parsing 'ForecastMeteoblue', e.getLine = {}, e.getError = {}", e.getLine(), e.getError());
 
 		out = false;
+	}
+
+	//
+	// get avalance warnings
+	//
+	try {
+		libconfig::Setting & avalanche = root["AvalancheWarning"];
+
+		avalanche.lookupValue("GoprBabiaGora", this->avalancheWarning.goprBabiaGora);
+
+	}
+	catch (...) {
+		SPDLOG_INFO("Avalanche warning configuration not present or malformed");
+		; // this section is not mandatory, so do nothing if it doesn't exist
 	}
 
 	//

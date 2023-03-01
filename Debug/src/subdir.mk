@@ -9,7 +9,6 @@ CPP_SRCS += \
 ../src/AprsWXDataFactory.cpp \
 ../src/AprxLogParser.cpp \
 ../src/AvalancheWarnings.cpp \
-../src/AvalancheWarnings_test.cpp \
 ../src/ConfigurationFile.cpp \
 ../src/CurentConditionsDownloader.cpp \
 ../src/ForecastDownloader.cpp \
@@ -17,6 +16,7 @@ CPP_SRCS += \
 ../src/InhibitorAndPttControl.cpp \
 ../src/Player.cpp \
 ../src/PlaylistAssembler.cpp \
+../src/PlaylistAssembler_test.cpp \
 ../src/PlaylistSamplerPL.cpp 
 
 OBJS += \
@@ -25,7 +25,6 @@ OBJS += \
 ./src/AprsWXDataFactory.o \
 ./src/AprxLogParser.o \
 ./src/AvalancheWarnings.o \
-./src/AvalancheWarnings_test.o \
 ./src/ConfigurationFile.o \
 ./src/CurentConditionsDownloader.o \
 ./src/ForecastDownloader.o \
@@ -33,6 +32,7 @@ OBJS += \
 ./src/InhibitorAndPttControl.o \
 ./src/Player.o \
 ./src/PlaylistAssembler.o \
+./src/PlaylistAssembler_test.o \
 ./src/PlaylistSamplerPL.o 
 
 CPP_DEPS += \
@@ -41,7 +41,6 @@ CPP_DEPS += \
 ./src/AprsWXDataFactory.d \
 ./src/AprxLogParser.d \
 ./src/AvalancheWarnings.d \
-./src/AvalancheWarnings_test.d \
 ./src/ConfigurationFile.d \
 ./src/CurentConditionsDownloader.d \
 ./src/ForecastDownloader.d \
@@ -49,6 +48,7 @@ CPP_DEPS += \
 ./src/InhibitorAndPttControl.d \
 ./src/Player.d \
 ./src/PlaylistAssembler.d \
+./src/PlaylistAssembler_test.d \
 ./src/PlaylistSamplerPL.d 
 
 

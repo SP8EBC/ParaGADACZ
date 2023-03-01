@@ -8,6 +8,7 @@
 #include "CurentConditionsDownloader.h"
 
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"

@@ -16,6 +16,8 @@
 #include <optional>
 #include <tuple>
 
+#include "AvalancheWarnings.h"
+
 #include "boost/date_time/posix_time/posix_time.hpp" //include all types plus i/o
 
 /**
@@ -42,8 +44,14 @@ enum PlaylistSampler_ConstanElement {
 	WIND,			//!< "wind"
 	WIND_GUSTS,		//!< "gusts"
 	TEMPERATURE,	//!< "temperature"
-	HUMIDITY		//!< "humidity
-
+	HUMIDITY,		//!< "humidity
+	AVALANCHE_WARNING,
+	DANGEROUS_EXPOSITION,
+	FIRST_LEVEL,	//!< avalanche warning level
+	SECOND_LEVEL,	//!< avalanche warning level
+	THIRD_LEVEL,	//!< avalanche warning level
+	FOURTH_LEVEL,	//!< avalanche warning level
+	ALSO
 };
 
 class PlaylistSampler {
@@ -126,6 +134,11 @@ public:
 	 * \param name weather station or forecast point name
 	 */
 	virtual std::optional<std::string> getAudioForForecastName(std::string name) = 0;
+
+	/**
+	 *
+	 */
+	virtual std::optional<std::string> getAudioForAvalancheWarningLocation(AvalancheWarnings_Location location) = 0;
 
 	/**
 	 * Converts wind direction to wind direction name

@@ -73,6 +73,9 @@ BOOST_AUTO_TEST_CASE (inhibitor_parse)
 	BOOST_CHECK_EQUAL(inhibitor.exec.enable, true);
 	BOOST_CHECK_EQUAL(inhibitor.exec.okRetval, 0);
 	BOOST_CHECK_EQUAL(inhibitor.exec.path, "/bin/more");
+	////////////////////////////////////////
+//	const ConfigurationFile_Avalanche avalanceWarning = configurationFile.getAvalancheWarning();
+//	BOOST_CHECK_EQUAL(avalanceWarning.goprBabiaGora, true);
 }
 
 BOOST_AUTO_TEST_CASE (simple_parse)
@@ -85,7 +88,7 @@ BOOST_AUTO_TEST_CASE (simple_parse)
 
 	BOOST_CHECK_EQUAL(result, true);
 	/////////////////
-	BOOST_CHECK_EQUAL(configurationFile.getIntro().ident, "ident.mp3");
+	BOOST_CHECK_EQUAL(configurationFile.getIntro().ident.at(0), "intro.ogg");
 	BOOST_CHECK_EQUAL(configurationFile.getIntro().sayCurrentTime, false);
 	BOOST_CHECK_EQUAL(configurationFile.getIntro().sayRegionalPressure, true);
 	/////////////////

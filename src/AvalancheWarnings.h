@@ -27,6 +27,36 @@ struct AvalancheWarnings_Expositions {
 
 	AvalancheWarnings_Expositions() :
 		north(false), northEast(false), east(false), southEast(false), south(false), southWest(false), west(false), northWest(false) {}
+
+	bool hasExposition() {
+		bool out = false;
+
+		out = north ? true : out;
+		out = northEast ? true : out;
+		out = east ? true : out;
+		out = southEast ? true : out;
+		out = south ? true : out;
+		out = southWest ? true : out;
+		out = west ? true : out;
+		out = northWest ? true : out;
+
+		return out;
+	}
+
+	int howMany() {
+		int out = 0;
+
+		north ? 	out++ : out;
+		northEast ? out++ : out;
+		east ? 		out++ : out;
+		southEast ? out++ : out;
+		south ? 	out++ : out;
+		southWest ? out++ : out;
+		west ? 		out++ : out;
+		northWest ? out++ : out;
+
+		return out;
+	}
 };
 
 class AvalancheWarnings {

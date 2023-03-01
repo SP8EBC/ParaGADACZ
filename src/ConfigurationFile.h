@@ -13,8 +13,6 @@
 #include <cstdint>
 #include <tuple>
 
-#include <boost/algorithm/string.hpp>
-
 #include <libconfig.h++>
 
 /**
@@ -106,6 +104,10 @@ struct ConfigurationFile_PttControl {
 	uint32_t postDelay;			// !< Delay after the end of anouncement and dekeying a transceiver
 };
 
+struct ConfigurationFile_Avalanche {
+	bool goprBabiaGora;
+};
+
 class ConfigurationFile {
 
 	libconfig::Config config;	//!< parsed configuration and its parser
@@ -142,6 +144,8 @@ class ConfigurationFile {
 
 	ConfigurationFile_ForecastMeteoblue forecast;
 
+	ConfigurationFile_Avalanche	avalancheWarning;
+
 	std::vector<std::string> recordedSpecialAnnouncementPost;
 	std::vector<std::string> textSpecialAnnouncementPost;
 
@@ -150,56 +154,12 @@ class ConfigurationFile {
 
 public:
 
-	static ConfigurationFile_CurrentWeatherType currentWeatherTypeFromString(std::string in) {
-
-		ConfigurationFile_CurrentWeatherType out = UNSET;
-
-		boost::algorithm::to_upper(in);
-		switch(swstring(in.c_str())) {
-			case swstring("APRX"): out = APRX; break;
-			case swstring("POGODACC"): out = POGODA_CC; break;
-		}
-
-		return out;
-	}
+	static ConfigurationFile_CurrentWeatherType currentWeatherTypeFromString(std::string in);
 
 	/**
 	 * Splits callsign and ssid stored in one string to separate elements
 	 */
-	static std::tuple<std::string, unsigned> splitCallsign(std::string input) {
-
-		auto it = input.begin();
-
-		std::string calsign, bufSSID;
-		unsigned ssid;
-
-		// copy callsign to separate buffer
-		while ( (*it != '-') && (*it != '>') && it != input.end()) {
-			calsign.append(1, *it);
-
-			it++;
-		}
-
-		// check SSID
-		if (*it == '-') {
-			// copy if exist
-			it++;
-
-			while ((*it != '>') && it != input.end()) {
-				bufSSID.append(1, *it);
-
-				it++;
-			}
-
-			// and convert to integer
-			ssid = std::stoi(bufSSID);
-		}
-		else {
-			ssid = 0;
-		}
-
-		return std::make_tuple(calsign, ssid);
-	}
+	static std::tuple<std::string, unsigned> splitCallsign(std::string input);
 
 	/**
 	 * Parse configuration file from path provided to constructor.
@@ -271,6 +231,10 @@ public:
 
 	const ConfigurationFile_Inhibitor& getInhibitor() const {
 		return inhibitor;
+	}
+
+	ConfigurationFile_Avalanche getAvalancheWarning() const {
+		return avalancheWarning;
 	}
 };
 

@@ -36,6 +36,7 @@
 #include "CurentConditionsDownloader.h"
 #include "Player.h"
 #include "InhibitorAndPttControl.h"
+#include "AvalancheWarnings.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -74,8 +75,11 @@ AprxLogParser logParser;
 //!< Instance of media player wrapper
 Player player;
 
-//!<
+//!< Controls PTT line using serial port and optionally inhibits
 InhibitorAndPttControl inhibitAndPtt;
+
+//!<
+AvalancheWarnings avalncheWarning;
 
 //!< Vector of current weather conditions (only from APRX rf log file
 std::vector<AprsWXData> currentWeatherAprx;

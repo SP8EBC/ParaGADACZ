@@ -399,5 +399,114 @@ void PlaylistAssembler::recordedAnnouncement(bool preOrPost) {
 
 }
 
+void PlaylistAssembler::avalancheWarning(AvalancheWarnings_Location location,
+		int8_t level, AvalancheWarnings_Expositions expositions)
+{
+	// level 5 is non existing in Poland, level 0 is either no
+	// avalanche warning at all or there is no snow
+	if (level > 0 && level < 5) {
+
+		auto audio_for_location = playlistSampler->getAudioForAvalancheWarningLocation(location);
+
+		// check if this location exists
+		if (audio_for_location.has_value()) {
+			// avalanche warnings announcement
+			playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::AVALANCHE_WARNING).value());
+
+			// location for this anouncement
+			playlist->push_back(*audio_for_location);
+
+			// severity level
+			switch (level) {
+			case 1:	playlist->push_back(*(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::FIRST_LEVEL))); break;
+			case 2: playlist->push_back(*(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::SECOND_LEVEL))); break;
+			case 3: playlist->push_back(*(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::THIRD_LEVEL))); break;
+			case 4: playlist->push_back(*(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::FOURTH_LEVEL))); break;
+			default: break;
+
+			// check if there is any dangerous exposition
+			if (expositions.hasExposition()) {
+				int howMany = expositions.howMany();
+
+				// exposition anouncement
+				playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::DANGEROUS_EXPOSITION).value());
+
+				// north exposition
+				if (expositions.north) {
+					playlist->push_back(playlistSampler->getAudioForWindDirection(1));
+
+					if ((--howMany) > 0) {
+						playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ALSO).value());
+					}
+				}
+
+				if (expositions.northEast) {
+					playlist->push_back(playlistSampler->getAudioForWindDirection(46));
+
+					if ((--howMany) > 0) {
+						playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ALSO).value());
+					}
+				}
+
+				if (expositions.east) {
+					playlist->push_back(playlistSampler->getAudioForWindDirection(91));
+
+					if ((--howMany) > 0) {
+						playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ALSO).value());
+					}
+				}
+
+				if (expositions.southEast) {
+					playlist->push_back(playlistSampler->getAudioForWindDirection(136));
+
+					if ((--howMany) > 0) {
+						playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ALSO).value());
+					}
+				}
+
+				if (expositions.south) {
+					playlist->push_back(playlistSampler->getAudioForWindDirection(181));
+
+					if ((--howMany) > 0) {
+						playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ALSO).value());
+					}
+				}
+
+				if (expositions.southWest) {
+					playlist->push_back(playlistSampler->getAudioForWindDirection(226));
+
+					if ((--howMany) > 0) {
+						playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ALSO).value());
+					}
+				}
+
+				if (expositions.west) {
+					playlist->push_back(playlistSampler->getAudioForWindDirection(271));
+
+					if ((--howMany) > 0) {
+						playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ALSO).value());
+					}
+				}
+
+				if (expositions.northWest) {
+					playlist->push_back(playlistSampler->getAudioForWindDirection(316));
+
+					if ((--howMany) > 0) {
+						playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ALSO).value());
+					}
+				}
+			}
+
+			}
+		}
+		else {
+			SPDLOG_ERROR("No audio file for this avalanche location was found");
+		}
+	}
+	else {
+		SPDLOG_WARN("There is no warining for this location due to wrong or non existing severity level");
+	}
+}
+
 void PlaylistAssembler::signOff() {
 }

@@ -9,9 +9,9 @@
 #define INHIBITORANDPTTCONTROL_H_
 
 #include "serial/serial.h"
-
-
 #include "ConfigurationFile.h"
+
+#include <memory>
 
 /**
  * This class is used to control PTT of connected transceiver and handle transmission inhibitor.
