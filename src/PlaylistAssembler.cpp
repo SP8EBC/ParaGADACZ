@@ -423,10 +423,12 @@ void PlaylistAssembler::avalancheWarning(AvalancheWarnings_Location location,
 			case 3: playlist->push_back(*(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::THIRD_LEVEL))); break;
 			case 4: playlist->push_back(*(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::FOURTH_LEVEL))); break;
 			default: break;
+			}
 
 			// check if there is any dangerous exposition
 			if (expositions.hasExposition()) {
-				int howMany = expositions.howMany();
+
+				volatile int howMany = expositions.howMany();
 
 				// exposition anouncement
 				playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::DANGEROUS_EXPOSITION).value());
@@ -495,8 +497,6 @@ void PlaylistAssembler::avalancheWarning(AvalancheWarnings_Location location,
 						playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ALSO).value());
 					}
 				}
-			}
-
 			}
 		}
 		else {

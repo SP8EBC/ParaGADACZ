@@ -262,6 +262,7 @@ BOOST_AUTO_TEST_CASE(current_weather_first) {
 	BOOST_CHECK_EQUAL(MS_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
+	BOOST_CHECK_EQUAL(DEGREE_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(CELSIUSS, playlist[i++]);
 	BOOST_CHECK_EQUAL(HMIDITY, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
@@ -279,6 +280,7 @@ BOOST_AUTO_TEST_CASE(current_weather_first) {
 	BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_20, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_3, playlist[i++]);
+	BOOST_CHECK_EQUAL(DEGREE_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(CELSIUSS, playlist[i++]);
 	BOOST_CHECK_EQUAL(HMIDITY, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_12, playlist[i++]);
@@ -357,6 +359,7 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 	BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_20, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_3, playlist[i++]);
+	BOOST_CHECK_EQUAL(DEGREE_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(CELSIUSS, playlist[i++]);
 	BOOST_CHECK_EQUAL(HMIDITY, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_12, playlist[i++]);
@@ -371,6 +374,7 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 	BOOST_CHECK_EQUAL(MS_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
+	BOOST_CHECK_EQUAL(DEGREE_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(CELSIUSS, playlist[i++]);
 	BOOST_CHECK_EQUAL(HMIDITY, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
@@ -380,5 +384,35 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 BOOST_AUTO_TEST_CASE(gopr_avalanche_levels) {
 
 	AvalancheWarnings_Expositions exposition;
+	exposition.north = true;
+	exposition.east = true;
+
+	PlaylistAssembler assembler(playlist_sampler, configuration_file_second);
+
+	try {
+		assembler.start();
+
+		assembler.avalancheWarning(AvalancheWarnings_Location::BABIA_GORA, 3, exposition);
+	}
+	catch (...)
+	{
+		BOOST_CHECK(false);
+	}
+
+	std::shared_ptr<std::vector<std::string>> playlist_ptr = assembler.getPlaylist();
+	auto playlist = *playlist_ptr;
+
+
+	int i = 0;
+
+	BOOST_CHECK_EQUAL("ident.mp3", playlist[i++]);
+	BOOST_CHECK_EQUAL(AVALNCHE_WR, playlist[i++]);
+	BOOST_CHECK_EQUAL(BABIA, playlist[i++]);
+	BOOST_CHECK_EQUAL(THIRD_LVL, playlist[i++]);
+	BOOST_CHECK_EQUAL(EXPOSITION, playlist[i++]);
+	BOOST_CHECK_EQUAL(DIRECTION_N, playlist[i++]);
+	BOOST_CHECK_EQUAL(_ALSO, playlist[i++]);
+	BOOST_CHECK_EQUAL(DIRECTION_E, playlist[i++]);
+
 }
 

@@ -11,11 +11,16 @@
 #include <string>
 #include <cstdint>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 enum AvalancheWarnings_Location {
 	BABIA_GORA
 };
 
-struct AvalancheWarnings_Expositions {
+class AvalancheWarnings_Expositions {
+public:
+
 	bool north;
 	bool northEast;
 	bool east;
@@ -28,22 +33,33 @@ struct AvalancheWarnings_Expositions {
 	AvalancheWarnings_Expositions() :
 		north(false), northEast(false), east(false), southEast(false), south(false), southWest(false), west(false), northWest(false) {}
 
+	AvalancheWarnings_Expositions(const AvalancheWarnings_Expositions & in) {
+		north = in.north;
+		northEast = in.northEast;
+		northWest = in.northWest;
+		east = in.east;
+		southEast = in.southEast;
+		southWest = in.southWest;
+		west = in.west;
+		south = in.south;
+	}
+
 	bool hasExposition() {
 		bool out = false;
 
-		out = north ? true : out;
-		out = northEast ? true : out;
-		out = east ? true : out;
-		out = southEast ? true : out;
-		out = south ? true : out;
-		out = southWest ? true : out;
-		out = west ? true : out;
-		out = northWest ? true : out;
+		out = (north ? true : out);
+		out = (northEast ? true : out);
+		out = (east ? true : out);
+		out = (southEast ? true : out);
+		out = (south ? true : out);
+		out = (southWest ? true : out);
+		out = (west ? true : out);
+		out = (northWest ? true : out);
 
 		return out;
 	}
 
-	int howMany() {
+	int howMany() const {
 		int out = 0;
 
 		north ? 	out++ : out;
