@@ -349,6 +349,11 @@ bool ConfigurationFile::parse() {
 			this->forecast.enable = false;
 		}
 
+		// demo mode
+		if (!forecastMeteblue.lookupValue("Demo", this->forecast.demo)) {
+			this->forecast.demo = false;
+		}
+
 		//
 		if (!forecastMeteblue.lookupValue("SkipAnouncementIfAnyIsMissing", this->forecast.skipAnouncementIfAnyIsMissing)) {
 			this->forecast.skipAnouncementIfAnyIsMissing = false;

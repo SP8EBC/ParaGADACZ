@@ -356,6 +356,8 @@ void PlaylistAssembler::forecastMeteoblue(
 			// and append that to main playlist
 			playlist->insert(playlist->end(), std::make_move_iterator(windAudioFile.begin()), std::make_move_iterator(windAudioFile.end()));
 
+			// and the unit itself
+			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MS, (int)std::get<1>(wind)));
 
 		}
 

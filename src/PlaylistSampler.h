@@ -51,7 +51,8 @@ enum PlaylistSampler_ConstanElement {
 	SECOND_LEVEL,	//!< avalanche warning level
 	THIRD_LEVEL,	//!< avalanche warning level
 	FOURTH_LEVEL,	//!< avalanche warning level
-	ALSO
+	ALSO,
+	SPECIAL_ANOUNCEMENT
 };
 
 class PlaylistSampler {

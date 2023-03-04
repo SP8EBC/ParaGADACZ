@@ -185,8 +185,17 @@ int main(int argc, char **argv) {
 
 	// check if meteoblue forecasts are enabled in a configuration file
 	if (configurationFile->getForecast().enable) {
-		// download all forecast data
-		forecastDownloader->downloadAllMeteoblue();
+
+		// check if demo mode is enabled or not
+		if (configurationFile->getForecast().demo) {
+			// create stub to have something
+			forecastDownloader->createDemoStub();
+		}
+		else {
+			// download all forecast data
+			forecastDownloader->downloadAllMeteoblue();
+		}
+
 	}
 
 	// check if there is anything to be downloaded from pogoda.cc backend

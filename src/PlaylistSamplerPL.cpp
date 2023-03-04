@@ -186,6 +186,12 @@ std::vector<
 
 	SPDLOG_INFO("decimal: {}", decimal);
 
+	// check if this number is negative
+	const bool is_negative = (decimal < 0) ? true : false;
+
+	//
+	decimal = std::abs(decimal);
+
 	float helper = 0.0f;
 
 	// thousands from number
@@ -225,6 +231,10 @@ std::vector<
 	const int one_tens = (int)(helper * 10);
 
 	//SPDLOG_DEBUG("one_tens: {}, helper: {}", one_tens, helper);
+
+	if (is_negative) {
+		 out.push_back(NEGAITVE);
+	}
 
 	// now select files
 	switch (thousands) {

@@ -90,3 +90,64 @@ std::vector<
 
 	return allResults;
 }
+
+/**
+ * ONLY FOR DEMO PURPOSES!!!!
+ */
+bool ForecastDownloader::createDemoStub() {
+#define START_TEMPERATURE	-2.0f
+#define START_WINDSPEED		6.0f
+#define START_WINDDIRECTION	230
+
+	SPDLOG_ERROR("WARNING!!! FORECAST DEMO MODE ENABLED!! Stubbing it.");
+
+	// get currrent timestamp
+	boost::posix_time::ptime current = boost::posix_time::second_clock::universal_time();
+
+	// epoch
+	boost::posix_time::ptime epoch = boost::posix_time::ptime(boost::gregorian::date(1970, 1, 1), boost::posix_time::time_duration(0,0,0,0));
+
+	// timestamp
+	long ts = (current - epoch).total_seconds();
+
+	// forecast future time in minutes!!!
+	uint32_t future_time = configurationFile->getForecast().futureTime;
+
+	//org::openapitools::client::model::Inline_response_200
+	auto meteoblueResponse = std::make_shared<org::openapitools::client::model::Inline_response_200>();
+	auto data3h = std::make_shared<org::openapitools::client::model::Data_3h>();
+
+	std::vector<int32_t> time;
+	std::vector<float> temperature;
+	std::vector<int32_t> winddirection;
+	std::vector<float> windspeed;
+
+	int64_t expected_timestamp = ts + (future_time / 30) * 1800;
+
+	////////////// prepare stubbed weather forecast data
+	for (int i = 0; i < 64; i++) {
+		time.push_back(ts + i * 1800);
+		temperature.push_back(START_TEMPERATURE + 0.1f * i);
+		windspeed.push_back(START_WINDSPEED + 0.1f * i);
+		winddirection.push_back(START_WINDDIRECTION + i);
+	}
+
+
+	data3h->setTime(time);
+	data3h->setTemperature(temperature);
+	data3h->setWinddirection(winddirection);
+	data3h->setWindspeed(windspeed);
+
+	meteoblueResponse->setData3h(data3h);
+
+	std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> skrzyczne = std::make_tuple("skrzyczne", meteoblueResponse);
+	std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> jezioro = std::make_tuple("jezioro", meteoblueResponse);
+
+	allResults.push_back(skrzyczne);
+	allResults.push_back(jezioro);
+
+	anyGood = true;
+
+	return true;
+
+}

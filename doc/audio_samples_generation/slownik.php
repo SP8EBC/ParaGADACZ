@@ -11,6 +11,9 @@ $slownik = array(
 
 	array('kropka', 'kropka'),
 	array('minus', 'minus'),
+    array('oraz', 'oraz'),
+    array('komunikaty specjalne', 'komunikaty_specjalne'),
+    array('brak komunikatów specjalnych', 'brak_komunikatow_specjalnych'),
 
 	array('pierwsza', 'pierwsza'),
 	array('druga', 'druga'),

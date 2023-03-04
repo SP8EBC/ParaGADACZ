@@ -40,6 +40,12 @@ public:
 	bool downloadAllMeteoblue();
 
 	/**
+	 * Only for presentation purposes!!!
+	 *
+	 */
+	bool createDemoStub();
+
+	/**
 	 * Get meteoblue forecast for point name
 	 */
 	std::shared_ptr<org::openapitools::client::model::Inline_response_200> getForName(std::string forecastPointName);
