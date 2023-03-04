@@ -45,6 +45,9 @@ void AvalancheWarnings::parseLevel() {
 
 	// check if a response is senseful
 	if (httpResponse.size() < MINIMUM_VALID_HTML_LENGHT) {
+
+		SPDLOG_ERROR("HTTP response looks invalid, lenght: {}", httpResponse.size());
+
 		throw HtmlNoDataEx();
 	}
 
@@ -193,6 +196,8 @@ void AvalancheWarnings::parseDangerousExposition() {
 			SPDLOG_INFO("exposition value scraped from HTTP response: {}", value_as_string);
 
 			auto exposition = AvalancheWarnings::parseExpositionsFromString(value_as_string);
+
+			currentExpositions = exposition;
 		}
 		else {
         	SPDLOG_ERROR("cannot find dangerous exposition in HTML data!!");
@@ -221,7 +226,7 @@ int AvalancheWarnings::download(AvalancheWarnings_Location location) {
 			throw UnknownLocationEx();
 	}
 
-	SPDLOG_INFO("Downloading avalanche warning data from GOPR webpage, URL: ", url);
+	SPDLOG_INFO("Downloading avalanche warning data from GOPR webpage, URL: {}", url);
 
 	// initialize cURL
     auto curl = curl_easy_init();
@@ -255,6 +260,10 @@ int AvalancheWarnings::download(AvalancheWarnings_Location location) {
     // deinitialize cURL
     curl_easy_cleanup(curl);
     curl = NULL;
+
+    if (response_code == 200) {
+    	httpResponse = std::move(responseBuffer);
+    }
 
     return response_code;
 

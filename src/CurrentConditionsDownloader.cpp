@@ -5,7 +5,7 @@
  *      Author: mateusz
  */
 
-#include "CurentConditionsDownloader.h"
+#include "CurrentConditionsDownloader.h"
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -13,11 +13,11 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-CurentConditionsDownloader::CurentConditionsDownloader() {}
+CurrentConditionsDownloader::CurrentConditionsDownloader() {}
 
-CurentConditionsDownloader::~CurentConditionsDownloader() {}
+CurrentConditionsDownloader::~CurrentConditionsDownloader() {}
 
-int CurentConditionsDownloader::downloadParseCurrentCondotions(
+int CurrentConditionsDownloader::downloadParseCurrentCondotions(
 		std::shared_ptr<std::vector<ConfigurationFile_CurrentWeather> > currentWeatherConfig,
 		std::vector<AprsWXData> &currentWeatherAprx,
 		std::vector<
@@ -118,4 +118,40 @@ int CurentConditionsDownloader::downloadParseCurrentCondotions(
 	}
 
 	return 0;
+}
+
+int CurrentConditionsDownloader::downloadParseAvalancheWarnings(
+		const ConfigurationFile_Avalanche &config,
+		AvalancheWarnings & warnings,
+		std::shared_ptr<PlaylistAssembler> playlistAssembler) {
+
+	int out = 0;
+
+	// if babia gora is enabled
+	if (config.goprBabiaGora) {
+
+		// download data
+		const int response = warnings.download(AvalancheWarnings_Location::BABIA_GORA);
+
+		// if response was successfull
+		if (response == 200) {
+
+			// scrap downloaded data
+			warnings.parseLevel();
+			warnings.parseDangerousExposition();
+
+			playlistAssembler->avalancheWarning(
+					AvalancheWarnings_Location::BABIA_GORA,
+					warnings.getSeverityLevel(),
+					warnings.getCurrentExpositions());
+
+		}
+		else {
+			SPDLOG_ERROR("Avalanche warning data cannot be downloaded from GOPR website!!!");
+
+			out = -1;
+		}
+	}
+
+	return out;
 }

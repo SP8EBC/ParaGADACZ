@@ -37,6 +37,7 @@ void InhibitorAndPttControl::keyPtt(bool withDelay) {
 
 	// key PTT
 	serial->setRTS(true);
+	serial->setDTR(true);
 
 }
 
@@ -48,6 +49,7 @@ void InhibitorAndPttControl::dekeyPtt() {
 	}
 
 	serial->setRTS(false);
+	serial->setDTR(false);
 
 	serial->close();
 }
@@ -70,6 +72,9 @@ bool InhibitorAndPttControl::setConfigAndCheckPort(
 
 		// and check if has been opened
 		out = serial->isOpen();
+
+		serial->setRTS(false);
+		serial->setDTR(false);
 
 		// close it back
 		serial->close();

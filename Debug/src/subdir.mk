@@ -10,14 +10,14 @@ CPP_SRCS += \
 ../src/AprxLogParser.cpp \
 ../src/AvalancheWarnings.cpp \
 ../src/ConfigurationFile.cpp \
-../src/CurentConditionsDownloader.cpp \
+../src/CurrentConditionsDownloader.cpp \
 ../src/ForecastDownloader.cpp \
 ../src/ForecastFinder.cpp \
 ../src/InhibitorAndPttControl.cpp \
 ../src/Player.cpp \
 ../src/PlaylistAssembler.cpp \
-../src/PlaylistAssembler_test.cpp \
-../src/PlaylistSamplerPL.cpp 
+../src/PlaylistSamplerPL.cpp \
+../src/main.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
@@ -26,14 +26,14 @@ OBJS += \
 ./src/AprxLogParser.o \
 ./src/AvalancheWarnings.o \
 ./src/ConfigurationFile.o \
-./src/CurentConditionsDownloader.o \
+./src/CurrentConditionsDownloader.o \
 ./src/ForecastDownloader.o \
 ./src/ForecastFinder.o \
 ./src/InhibitorAndPttControl.o \
 ./src/Player.o \
 ./src/PlaylistAssembler.o \
-./src/PlaylistAssembler_test.o \
-./src/PlaylistSamplerPL.o 
+./src/PlaylistSamplerPL.o \
+./src/main.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
@@ -42,14 +42,14 @@ CPP_DEPS += \
 ./src/AprxLogParser.d \
 ./src/AvalancheWarnings.d \
 ./src/ConfigurationFile.d \
-./src/CurentConditionsDownloader.d \
+./src/CurrentConditionsDownloader.d \
 ./src/ForecastDownloader.d \
 ./src/ForecastFinder.d \
 ./src/InhibitorAndPttControl.d \
 ./src/Player.d \
 ./src/PlaylistAssembler.d \
-./src/PlaylistAssembler_test.d \
-./src/PlaylistSamplerPL.d 
+./src/PlaylistSamplerPL.d \
+./src/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

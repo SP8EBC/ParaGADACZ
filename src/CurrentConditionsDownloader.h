@@ -5,8 +5,8 @@
  *      Author: mateusz
  */
 
-#ifndef CURENTCONDITIONSDOWNLOADER_H_
-#define CURENTCONDITIONSDOWNLOADER_H_
+#ifndef CURRENTCONDITIONSDOWNLOADER_H_
+#define CURRENTCONDITIONSDOWNLOADER_H_
 
 #include <vector>
 #include <memory>
@@ -14,15 +14,16 @@
 
 #include "AprxLogParser.h"
 #include "ConfigurationFile.h"
+#include "PlaylistAssembler.h"
 
 #include "StationApi.h"
 #include "ListOfAllStationsApi.h"
 
 
-class CurentConditionsDownloader {
+class CurrentConditionsDownloader {
 
-	CurentConditionsDownloader();
-	virtual ~CurentConditionsDownloader();
+	CurrentConditionsDownloader();
+	virtual ~CurrentConditionsDownloader();
 
 public:
 
@@ -35,6 +36,12 @@ public:
 			std::optional<float> regionalPressure,
 			AprxLogParser & logParser);
 
+	static int downloadParseAvalancheWarnings(
+			const ConfigurationFile_Avalanche & config,
+			AvalancheWarnings & warnings,
+			std::shared_ptr<PlaylistAssembler> playlistAssembler
+			);
+
 };
 
-#endif /* CURENTCONDITIONSDOWNLOADER_H_ */
+#endif /* CURRENTCONDITIONSDOWNLOADER_H_ */

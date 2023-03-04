@@ -33,7 +33,6 @@
 #include "AprxLogParser.h"
 #include "AprsWXDataFactory.h"
 #include "ForecastDownloader.h"
-#include "CurentConditionsDownloader.h"
 #include "Player.h"
 #include "InhibitorAndPttControl.h"
 #include "AvalancheWarnings.h"
@@ -42,6 +41,7 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 #include <string_view>
+#include "CurrentConditionsDownloader.h"
 
 
 //constexpr std::string_view pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
@@ -79,7 +79,7 @@ Player player;
 InhibitorAndPttControl inhibitAndPtt;
 
 //!<
-AvalancheWarnings avalncheWarning;
+AvalancheWarnings avalancheWarning;
 
 //!< Vector of current weather conditions (only from APRX rf log file
 std::vector<AprsWXData> currentWeatherAprx;
@@ -107,7 +107,9 @@ int main(int argc, char **argv) {
 
 	spdlog::set_level(spdlog::level::debug);
 
-	SPDLOG_INFO("ParaGADACZ is starting");
+	SPDLOG_INFO("============ ParaGADACZ is starting =============");
+	SPDLOG_INFO("===== Mateusz Lubecki, Bielsko - Biała 2023 =====");
+	SPDLOG_INFO("=================================================");
 
 	if (argc > 1) {
 		configFn = std::string(argv[1]);
@@ -209,7 +211,7 @@ int main(int argc, char **argv) {
 	currentWeatherConfig = std::make_shared<std::vector<ConfigurationFile_CurrentWeather>>(configurationFile->getCurrent());
 
 	// download all information about current conditions from Pogoda.cc and/or APRX rf-log using parsed configuration file
-	downloadParseResult = CurentConditionsDownloader::downloadParseCurrentCondotions(
+	downloadParseResult = CurrentConditionsDownloader::downloadParseCurrentCondotions(
 								currentWeatherConfig,
 								currentWeatherAprx,
 								currentWeatherMeteobackend,
@@ -253,6 +255,12 @@ int main(int argc, char **argv) {
 			SPDLOG_WARN("Weather forecast announcement skipped because no forecast data have been downloaded successfully");
 		}
 	}
+
+	// put avalance warnings
+	CurrentConditionsDownloader::downloadParseAvalancheWarnings(
+			configurationFile->getAvalancheWarning(),
+			avalancheWarning,
+			playlistAssembler);
 
 	// put post anouncements
 	playlistAssembler->recordedAnnouncement(true);

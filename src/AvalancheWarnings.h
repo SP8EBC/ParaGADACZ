@@ -18,8 +18,7 @@ enum AvalancheWarnings_Location {
 	BABIA_GORA
 };
 
-class AvalancheWarnings_Expositions {
-public:
+struct AvalancheWarnings_Expositions {
 
 	bool north;
 	bool northEast;
@@ -93,6 +92,11 @@ class AvalancheWarnings {
 	int8_t currentLevel;
 
 	/**
+	 *
+	 */
+	AvalancheWarnings_Expositions currentExpositions;
+
+	/**
 	 * Response from HTTP server
 	 */
 	std::string responseBuffer;
@@ -137,6 +141,10 @@ public:
 	 * Gets avalanche severity level from downloaded data
 	 */
 	int8_t getSeverityLevel();
+
+	const AvalancheWarnings_Expositions& getCurrentExpositions() const {
+		return currentExpositions;
+	}
 };
 
 #endif /* AVALANCHEWARNINGS_H_ */
