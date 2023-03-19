@@ -20,8 +20,6 @@
 // api
 #include "ApiConfiguration.h"
 #include "ApiClient.h"
-#include "ListOfAllStationsApi.h"
-#include "StationApi.h"
 
 // meteoblue api
 #include "ForecastApi.h"
@@ -33,6 +31,7 @@
 #include "AprxLogParser.h"
 #include "AprsWXDataFactory.h"
 #include "ForecastDownloader.h"
+#include "PogodaccDownloader.h"
 #include "Player.h"
 #include "InhibitorAndPttControl.h"
 #include "AvalancheWarnings.h"
@@ -47,6 +46,7 @@
 //constexpr std::string_view pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
 const utility::string_t pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
 const utility::string_t meteoblue_base_url = "http://my.meteoblue.com/packages/";
+const utility::string_t weatherlink_base_url = "https://api.weatherlink.com/v1/";
 
 //!< Instance of configuration file
 std::shared_ptr<ConfigurationFile> configurationFile;
@@ -54,20 +54,8 @@ std::shared_ptr<ConfigurationFile> configurationFile;
 //!< Configuration of data sources for current weather conditions
 std::shared_ptr<std::vector<ConfigurationFile_CurrentWeather>> currentWeatherConfig;
 
-//!< Instance of API client used to contact REST API (used only for pogoda.cc meteo_backend)
-std::shared_ptr<org::openapitools::client::api::ApiClient> apiClient;
-
-//!< Instance of API configuration class (used only for pogoda.cc meteo_backend)
-std::shared_ptr<org::openapitools::client::api::ApiConfiguration> apiConfiguration;
-
-//!< Gets a list of all station
-std::shared_ptr<org::openapitools::client::api::ListOfAllStationsApi> listofAllStationApi;
-
-//!< Gets summary for given station and few more things
-std::shared_ptr<org::openapitools::client::api::StationApi> stationApi;
-
-//!< List of all station from pogoda.cc meteo_backend
-std::vector<std::shared_ptr<org::openapitools::client::model::StationDefinitionModel>> listOfAllStationsPogodacc;
+//!< Used to download list of all stations and current conditions summary from Pogoda.cc
+std::shared_ptr<PogodaccDownloader> pogodaccDownloader;
 
 //!< Parser of APRX rf-log file
 AprxLogParser logParser;
@@ -159,20 +147,7 @@ int main(int argc, char **argv) {
 		return -12;
 	}
 
-	// create an instance of API client
-	apiClient = std::make_shared<org::openapitools::client::api::ApiClient>();
-
-	// create an instance of API configuration
-	apiConfiguration = std::make_shared<org::openapitools::client::api::ApiConfiguration>();
-
-	// set base URL
-	apiConfiguration->setBaseUrl(pogoda_base_url);
-
-	// set this configuration or API client
-	apiClient->setConfiguration(apiConfiguration);
-
-	listofAllStationApi = std::make_shared<org::openapitools::client::api::ListOfAllStationsApi>(apiClient);
-	stationApi = std::make_shared<org::openapitools::client::api::StationApi>(apiClient);
+	pogodaccDownloader = std::make_shared<PogodaccDownloader>(configurationFile);
 
 	// create an instance of forecast downloader
 	forecastDownloader = std::make_shared<ForecastDownloader>(configurationFile);
@@ -201,7 +176,8 @@ int main(int argc, char **argv) {
 	// check if there is anything to be downloaded from pogoda.cc backend
 	if (configurationFile->isHasPogodacc()) {
 		// get list of all stations
-		listOfAllStationsPogodacc = listofAllStationApi->listOfAllStationsGet().get();
+		//listOfAllStationsPogodacc = listofAllStationApi->listOfAllStationsGet().get();
+		pogodaccDownloader->downloadAllStationsList();
 	}
 
 	// check if there is at least one station to be parsed from APRX rf log file
@@ -224,8 +200,8 @@ int main(int argc, char **argv) {
 								currentWeatherConfig,
 								currentWeatherAprx,
 								currentWeatherMeteobackend,
-								listOfAllStationsPogodacc,
-								stationApi,
+								pogodaccDownloader->getListOfAllStationsPogodacc(),
+								pogodaccDownloader->getStationApi(),
 								regionalPressure,
 								logParser);
 

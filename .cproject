@@ -31,6 +31,8 @@
 									<listOptionValue builtIn="false" value="../lib/wjwwood_serial/include"/>
 									<listOptionValue builtIn="false" value="../meteoblue/api"/>
 									<listOptionValue builtIn="false" value="../meteoblue/model"/>
+									<listOptionValue builtIn="false" value="../weatherlink_v1/api/"/>
+									<listOptionValue builtIn="false" value="../weatherlink_v1/model/"/>
 									<listOptionValue builtIn="false" value="../pogodacc/api"/>
 									<listOptionValue builtIn="false" value="../pogodacc"/>
 									<listOptionValue builtIn="false" value="../pogodacc/model"/>
@@ -98,7 +100,7 @@
 					<sourceEntries>
 						<entry excluding="pogodacc|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pogodacc"/>
-						<entry excluding="PlaylistAssembler_test.cpp|PlaylistCreatorPL_test.cpp|ConfigurationFile_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|AprxLogParser_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="main.cpp|PlaylistAssembler_test.cpp|PlaylistCreatorPL_test.cpp|ConfigurationFile_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|AprxLogParser_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -134,6 +136,8 @@
 									<listOptionValue builtIn="false" value="../lib/wjwwood_serial/include"/>
 									<listOptionValue builtIn="false" value="../meteoblue/api"/>
 									<listOptionValue builtIn="false" value="../meteoblue/model"/>
+									<listOptionValue builtIn="false" value="../weatherlink_v1/api/"/>
+									<listOptionValue builtIn="false" value="../weatherlink_v1/model/"/>
 									<listOptionValue builtIn="false" value="../pogodacc/api"/>
 									<listOptionValue builtIn="false" value="../pogodacc"/>
 									<listOptionValue builtIn="false" value="../pogodacc/model"/>
@@ -200,7 +204,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="PlaylistAssembler_test.cpp|PlaylistCreatorPL_test.cpp|ConfigurationFile_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|AprxLogParser_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="main.cpp|PlaylistAssembler_test.cpp|PlaylistCreatorPL_test.cpp|ConfigurationFile_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|AprxLogParser_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

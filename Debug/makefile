@@ -8,6 +8,8 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include weatherlink_v1/model/subdir.mk
+-include weatherlink_v1/api/subdir.mk
 -include src/subdir.mk
 -include pogodacc/model/subdir.mk
 -include pogodacc/api/subdir.mk

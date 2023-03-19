@@ -38,4 +38,6 @@ pogodacc \
 pogodacc/api \
 pogodacc/model \
 src \
+weatherlink_v1/api \
+weatherlink_v1/model \
 
