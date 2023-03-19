@@ -1,0 +1,338 @@
+openapi: 3.0.3
+info:
+  title: WeatherLink API v1
+  version: 1.0.11
+  description: First version of an API to get weather data from Davis stations
+  termsOfService: https://www.weatherlink.com/static/docs/APIdocumentation.pdf
+servers:
+  - url: https://api.weatherlink.com/v1
+tags:
+  - name: Conditions
+    description: Get measurements sent by stations
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+paths:
+  /NoaaExt.json:
+    get:
+      tags:
+        - Conditions
+      summary: Current Conditions
+      description: ...
+      parameters:
+        - name: user
+          in: query
+          required: true
+          description: This is a Device ID from >>Device Info<< subpage on user account 
+          schema:
+            type: string
+        - name: pass
+          in: query
+          required: true
+          description: Password uset to login to weatherlink.com
+          schema:
+            type: string
+        - name: token
+          in: query
+          required: true
+          description: Password uset to login to weatherlink.com
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/root'
+        '404':
+          description: Station doesn't exist
+components:
+  schemas:
+    image:
+      type: object
+      properties:
+        url:
+          type: string
+          example: "http://www.weatherlink.com/images/Logo_Davis_reflxblu.jpg"
+        title:
+          type: string
+          example: "Davis WeatherLink"
+        link:
+          type: string
+          example: "http://www.weatherlink.com"
+    davis_current_observation:
+      type: object
+      properties:
+        DID:
+          type: string
+          example: "001D0A00C5C3"
+        station_name:
+          type: string
+          example: "Pszczyna / Studzienice"
+        observation_age:
+          type: integer
+          example: 10
+        dewpoint_day_high_f:
+          type: string
+          example: 42
+        dewpoint_day_high_time:
+          type: string
+          example: "3:20am"
+        dewpoint_day_low_f:
+          type: string
+          example: 22
+        dewpoint_day_low_time:
+          type: string
+          example: "12:00am"
+        dewpoint_month_high_f:
+          type: string
+          example: 55
+        dewpoint_month_low_f:
+          type: string
+          example: 10
+        dewpoint_year_high_f:
+          type: string
+          example: 73
+        dewpoint_year_low_f:
+          type: string
+          example: 91
+        heat_index_day_high_f:
+          type: string
+          example: 47
+        heat_index_day_high_time:
+          type: string
+        heat_index_month_high_f:
+          type: string
+        heat_index_year_high_f:
+          type: string
+        pressure_day_high_in:
+          type: string
+        pressure_day_high_time:
+          type: string
+        pressure_day_low_in:
+          type: string
+        pressure_day_low_time:
+          type: string
+        pressure_month_high_in:
+          type: string
+        pressure_month_low_in:
+          type: string
+        pressure_tendency_string:
+          type: string
+        pressure_year_high_in:
+          type: string
+        pressure_year_low_in:
+          type: string
+        rain_day_in:
+          type: string
+        rain_month_in:
+          type: string
+        rain_rate_day_high_in_per_hr:
+          type: string
+        rain_rate_hour_high_in_per_hr:
+          type: string
+        rain_rate_in_per_hr:
+          type: string
+        rain_rate_month_high_in_per_hr:
+          type: string
+        rain_rate_year_high_in_per_hr:
+          type: string
+        rain_storm_in:
+          type: string
+        rain_year_in:
+          type: string
+        relative_humidity_day_high:
+          type: string
+        relative_humidity_day_high_time:
+          type: string
+        relative_humidity_day_low:
+          type: string
+        relative_humidity_day_low_time:
+          type: string
+        relative_humidity_month_high:
+          type: string
+        relative_humidity_in:
+          type: string
+        relative_humidity_in_day_high:
+          type: string
+        relative_humidity_in_day_high_time:
+          type: string
+        relative_humidity_in_day_low:
+          type: string
+        relative_humidity_in_day_low_time:
+          type: string
+        relative_humidity_in_month_high:      
+          type: string
+        relative_humidity_in_month_low:
+          type: string
+        relative_humidity_in_year_high:
+          type: string
+        relative_humidity_in_year_low:        
+          type: string
+        sunrise:
+          type: string
+        sunset:   
+          type: string
+        temp_day_high_f:
+          type: string
+        temp_day_high_time:
+          type: string
+        temp_day_low_f:
+          type: string
+        temp_day_low_time:
+           type: string
+        temp_month_high_f:       
+          type: string
+        temp_month_low_f:
+          type: string
+        temp_year_high_f:
+          type: string
+        temp_year_low_f:
+          type: string
+        temp_in_day_high_f:
+          type: string
+        temp_in_day_high_time:
+          type: string
+        temp_in_day_low_f:
+          type: string
+        temp_in_day_low_time:
+          type: string
+        temp_in_f:
+          type: string
+        temp_in_month_high_f:
+          type: string
+        temp_in_month_low_f:
+          type: string
+        temp_in_year_high_f:
+          type: string
+        temp_in_year_low_f:
+          type: string
+        wind_day_high_mph:
+          type: string
+        wind_day_high_time:
+          type: string
+        wind_month_high_mph:
+          type: string
+        wind_ten_min_avg_mph:
+          type: string
+        wind_ten_min_gust_mph:
+          type: string
+        wind_year_high_mph:
+          type: string
+        windchill_day_low_f:
+          type: string
+        windchill_day_low_time:
+          type: string
+        windchill_month_low_f:
+          type: string
+        windchill_year_low_f:
+          type: string
+    root:
+      type: object
+      properties:
+        credit:
+          type: string
+          example: "Davis Instruments Corp."
+        credit_URL:
+          type: string
+          example: "http://www.davisnet.com"
+        disclaimer_url:
+          type: string
+          example: "http://www.davisnet.com/about/terms.asp"
+        copyright_url:
+          type: string
+          example: "http://www.davisnet.com/about/terms.asp"
+        privacy_policy_url:
+          type: string
+          example: "http://www.davisnet.com/about/privacy.asp"
+        image:
+          $ref: '#/components/schemas/image'
+        suggested_pickup:
+          type: string  
+          example: "15 minutes after the hour"
+        suggested_pickup_period:
+          type: string
+          example: 60
+        dewpoint_c:
+          type: string
+          example: 5.0
+        dewpoint_f:
+          type: string
+          example: 41.0
+        dewpoint_string:
+          type: string  
+          example: "41.0 F (5.0 C)"
+        heat_index_c:        
+          type: string
+          example: 8.3
+        heat_index_f:
+          type: string
+          example: 47.0
+        heat_index_string:
+          type: string
+          example: "47.0 F (8.3 C)"
+        location:
+          type: string
+          example: "Studzienice, Województwo Śląskie, Poland"
+        latitude:
+          type: string
+          example: 50.01797
+        longitude:
+          type: string
+          example: 18.98264
+        observation_time:
+          type: string
+        observation_time_rfc822:
+          type: string
+          example: "Sun, 19 Mar 2023 08:27:53 +0100"
+        pressure_in:
+          type: string
+          example: 29.961
+        pressure_mb:
+          type: string
+          example: 1014.6
+        pressure_string:
+          type: string
+          example: "1014.6 mb"
+        relative_humidity:
+          type: integer
+          example: 78
+        station_id:
+          type: string
+          example: "bspzar"
+        temp_c:
+          type: string
+          example: 8.4
+        temp_f:
+          type: string
+          example: 47.1
+        temperature_string:
+          type: string
+          example: "47.1 F (8.4 C)"
+        wind_degrees:
+          type: string
+          example: 239
+        wind_dir:
+          type: string
+          example: "West-southwest"
+        wind_kt:
+          type: string
+          example: 0.0
+        wind_mph:
+          type: string
+          example: 0.0
+        windchill_c:
+          type: string
+          example: 8.3
+        windchill_f:
+          type: string
+          example: 47.0
+        windchill_string:
+          type: string
+          example: "47.0 F (8.3 C)"
+        davis_current_observation:
+          $ref: '#/components/schemas/davis_current_observation'
+        time_to_generate:
+          type: string
+          example: "0.011587 seconds"
