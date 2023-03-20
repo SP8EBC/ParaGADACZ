@@ -1,6 +1,8 @@
 ParaGADACZ
 
 secret.h
+secret*
+
 *.ogg
 /test_input/audio
 
