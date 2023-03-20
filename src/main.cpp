@@ -32,6 +32,7 @@
 #include "AprsWXDataFactory.h"
 #include "ForecastDownloader.h"
 #include "PogodaccDownloader.h"
+#include "WeatherlinkDownloader.h"
 #include "Player.h"
 #include "InhibitorAndPttControl.h"
 #include "AvalancheWarnings.h"
@@ -66,11 +67,14 @@ Player player;
 //!< Controls PTT line using serial port and optionally inhibits
 InhibitorAndPttControl inhibitAndPtt;
 
-//!<
+//!< Scraps avalanche warnings from GOPR website
 AvalancheWarnings avalancheWarning;
 
 //!< Vector of current weather conditions (only from APRX rf log file
 std::vector<AprsWXData> currentWeatherAprx;
+
+//!< Vector of current conditions downloaded from WeatherLink v1 API provided by Davis
+std::vector<std::tuple<std::string, AprsWXData>> currentWeatherDavisWeatherlink;
 
 //!<
 std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> currentWeatherMeteobackend;
@@ -80,6 +84,9 @@ std::optional<float> regionalPressure;
 
 //!< Interface to meteoblue auto generated code
 std::shared_ptr<ForecastDownloader> forecastDownloader;
+
+//!< Weatherlink downloader
+std::shared_ptr<WeatherlinkDownloader> weatherlinkDownloader;
 
 //!< Returns path or a vector of paths (std::string's) to audio files representing given number or other element
 std::shared_ptr<PlaylistSampler> playlistSampler;
@@ -152,6 +159,9 @@ int main(int argc, char **argv) {
 	// create an instance of forecast downloader
 	forecastDownloader = std::make_shared<ForecastDownloader>(configurationFile);
 
+	// create an instance for download weatherlink
+	weatherlinkDownloader = std::make_shared<WeatherlinkDownloader>(configurationFile);
+
 	// create an instance of playlist sampler in PL variant
 	playlistSampler = std::make_shared<PlaylistSamplerPL>(configurationFile);
 
@@ -176,7 +186,6 @@ int main(int argc, char **argv) {
 	// check if there is anything to be downloaded from pogoda.cc backend
 	if (configurationFile->isHasPogodacc()) {
 		// get list of all stations
-		//listOfAllStationsPogodacc = listofAllStationApi->listOfAllStationsGet().get();
 		pogodaccDownloader->downloadAllStationsList();
 	}
 
@@ -199,11 +208,13 @@ int main(int argc, char **argv) {
 	downloadParseResult = CurrentConditionsDownloader::downloadParseCurrentCondotions(
 								currentWeatherConfig,
 								currentWeatherAprx,
+								currentWeatherDavisWeatherlink,
 								currentWeatherMeteobackend,
 								pogodaccDownloader->getListOfAllStationsPogodacc(),
 								pogodaccDownloader->getStationApi(),
 								regionalPressure,
-								logParser);
+								logParser,
+								weatherlinkDownloader);
 
 	// exit on any error
 	if (downloadParseResult != 0) {
@@ -224,7 +235,7 @@ int main(int argc, char **argv) {
 	}
 
 	// insert current weather
-	playlistAssembler->currentWeather(currentWeatherMeteobackend, currentWeatherAprx);
+	playlistAssembler->currentWeather(currentWeatherMeteobackend, currentWeatherAprx, currentWeatherDavisWeatherlink);
 
 	// insert weather forecast
 	if (configurationFile->getForecast().enable) {

@@ -296,7 +296,7 @@ components:
           type: string
           example: "1014.6 mb"
         relative_humidity:
-          type: integer
+          type: string
           example: 78
         station_id:
           type: string

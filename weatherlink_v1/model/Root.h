@@ -256,11 +256,11 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    int32_t getRelativeHumidity() const;
+    utility::string_t getRelativeHumidity() const;
     bool relativeHumidityIsSet() const;
     void unsetRelative_humidity();
 
-    void setRelativeHumidity(int32_t value);
+    void setRelativeHumidity(const utility::string_t& value);
 
     /// <summary>
     /// 
@@ -425,7 +425,7 @@ protected:
     bool m_Pressure_mbIsSet;
     utility::string_t m_Pressure_string;
     bool m_Pressure_stringIsSet;
-    int32_t m_Relative_humidity;
+    utility::string_t m_Relative_humidity;
     bool m_Relative_humidityIsSet;
     utility::string_t m_Station_id;
     bool m_Station_idIsSet;

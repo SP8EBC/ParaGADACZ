@@ -66,7 +66,7 @@ Root::Root()
     m_Pressure_mbIsSet = false;
     m_Pressure_string = utility::conversions::to_string_t("");
     m_Pressure_stringIsSet = false;
-    m_Relative_humidity = 0;
+    m_Relative_humidity = utility::conversions::to_string_t("");
     m_Relative_humidityIsSet = false;
     m_Station_id = utility::conversions::to_string_t("");
     m_Station_idIsSet = false;
@@ -486,7 +486,7 @@ bool Root::fromJson(const web::json::value& val)
         const web::json::value& fieldValue = val.at(utility::conversions::to_string_t("relative_humidity"));
         if(!fieldValue.is_null())
         {
-            int32_t refVal_relative_humidity;
+            utility::string_t refVal_relative_humidity;
             ok &= ModelBase::fromJson(fieldValue, refVal_relative_humidity);
             setRelativeHumidity(refVal_relative_humidity);
         }
@@ -920,7 +920,7 @@ bool Root::fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const uti
     }
     if(multipart->hasContent(utility::conversions::to_string_t("relative_humidity")))
     {
-        int32_t refVal_relative_humidity;
+        utility::string_t refVal_relative_humidity;
         ok &= ModelBase::fromHttpContent(multipart->getContent(utility::conversions::to_string_t("relative_humidity")), refVal_relative_humidity );
         setRelativeHumidity(refVal_relative_humidity);
     }
@@ -1445,12 +1445,12 @@ void Root::unsetPressure_string()
 {
     m_Pressure_stringIsSet = false;
 }
-int32_t Root::getRelativeHumidity() const
+utility::string_t Root::getRelativeHumidity() const
 {
     return m_Relative_humidity;
 }
 
-void Root::setRelativeHumidity(int32_t value)
+void Root::setRelativeHumidity(const utility::string_t& value)
 {
     m_Relative_humidity = value;
     m_Relative_humidityIsSet = true;

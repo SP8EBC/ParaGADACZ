@@ -22,7 +22,14 @@ enum ConfigurationFile_CurrentWeatherType {
 	APRX,
 	POGODA_CC,
 	HOLFUY,
+	DAVIS,
 	UNSET
+};
+
+struct ConfigurationFile_Secret {
+	std::string meteoblueKey;
+	std::string weatherlinkPassword;
+	std::string weatherlinkToken;
 };
 
 /**
@@ -129,6 +136,8 @@ class ConfigurationFile {
 
 	std::string audioBasePath;	//!< Base path do directory where all audio files are put
 	std::string logOutput;		//!< Path to created log file
+
+	ConfigurationFile_Secret secrets;
 
 	ConfigurationFile_Inhibitor inhibitor;
 	ConfigurationFile_PttControl pttControl;

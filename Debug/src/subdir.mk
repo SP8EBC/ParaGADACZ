@@ -18,9 +18,8 @@ CPP_SRCS += \
 ../src/PlaylistAssembler.cpp \
 ../src/PlaylistSamplerPL.cpp \
 ../src/PogodaccDownloader.cpp \
-../src/PogodaccDownloader_test.cpp \
 ../src/WeatherlinkDownloader.cpp \
-../src/WeatherlinkDownloader_test.cpp 
+../src/main.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
@@ -37,9 +36,8 @@ OBJS += \
 ./src/PlaylistAssembler.o \
 ./src/PlaylistSamplerPL.o \
 ./src/PogodaccDownloader.o \
-./src/PogodaccDownloader_test.o \
 ./src/WeatherlinkDownloader.o \
-./src/WeatherlinkDownloader_test.o 
+./src/main.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
@@ -56,9 +54,8 @@ CPP_DEPS += \
 ./src/PlaylistAssembler.d \
 ./src/PlaylistSamplerPL.d \
 ./src/PogodaccDownloader.d \
-./src/PogodaccDownloader_test.d \
 ./src/WeatherlinkDownloader.d \
-./src/WeatherlinkDownloader_test.d 
+./src/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

@@ -16,7 +16,7 @@ std::shared_ptr<ConfigurationFile> config;
 
 struct MyConfig
 {
-  MyConfig() : test_log( "./test_reports/forecastdownloader_test.log" )
+  MyConfig() : test_log( "./test_reports/weatherlinkdownloader_test.log" )
   {
     boost::unit_test::unit_test_log.set_stream( test_log );
     boost::unit_test::unit_test_log.set_threshold_level(boost::unit_test::log_level::log_successful_tests);
@@ -39,7 +39,9 @@ BOOST_AUTO_TEST_CASE(download_first_set)
 
 	weatherlink.downloadForStation("001D0A00C5C3", WEATHERLINK_PASS , WEATHERLINK_TOKEN);
 	auto result = weatherlink.getDownloadedContent();
+	AprsWXData wxData = WeatherlinkDownloader::convertModelToWxData(result);
 	utility::string_t credit = result->getCredit();
 
 	BOOST_CHECK_EQUAL(credit, "Davis Instruments Corp.");
+	BOOST_CHECK_EQUAL(wxData.call, "bspzar");
 }

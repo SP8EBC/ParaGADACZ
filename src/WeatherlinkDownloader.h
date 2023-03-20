@@ -11,9 +11,12 @@
 #include "ConfigurationFile.h"
 
 #include "ConditionsApi.h"
+#include "AprsWXData.h"
 
 #include <memory>
 #include <string>
+#include <tuple>
+
 
 class WeatherlinkDownloader {
 
@@ -36,6 +39,11 @@ class WeatherlinkDownloader {
 public:
 	WeatherlinkDownloader(std::shared_ptr<ConfigurationFile> & config);
 	virtual ~WeatherlinkDownloader();
+
+	/**
+	 * Converts model from Weatherlink (with numbers returned in Json as strings) to
+	 */
+	static std::tuple<std::string, AprsWXData> convertModelToWxData(std::shared_ptr<org::openapitools::client::model::Root> input);
 
 	/**
 	 * Download raw

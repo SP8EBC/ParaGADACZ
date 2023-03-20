@@ -15,6 +15,7 @@
 #include "AprxLogParser.h"
 #include "ConfigurationFile.h"
 #include "PlaylistAssembler.h"
+#include "WeatherlinkDownloader.h"
 
 #include "StationApi.h"
 #include "ListOfAllStationsApi.h"
@@ -30,11 +31,13 @@ public:
 	static int downloadParseCurrentCondotions(
 			std::shared_ptr<std::vector<ConfigurationFile_CurrentWeather>> currentWeatherConfig,
 			std::vector<AprsWXData> & currentWeatherAprx,
+			std::vector<std::tuple<std::string, AprsWXData>> & currentWeatherDavisWeatherlink,
 			std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> & currentWeatherMeteobackend,
 			std::vector<std::shared_ptr<org::openapitools::client::model::StationDefinitionModel>> listOfAllStationsPogodacc,
 			std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,
 			std::optional<float> regionalPressure,
-			AprxLogParser & logParser);
+			AprxLogParser & logParser,
+			std::shared_ptr<WeatherlinkDownloader> weatherlink);
 
 	static int downloadParseAvalancheWarnings(
 			const ConfigurationFile_Avalanche & config,

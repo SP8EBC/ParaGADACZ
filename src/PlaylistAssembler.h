@@ -56,7 +56,8 @@ public:
 	 */
 	void currentWeather(
 			std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> & summary,
-			std::vector<AprsWXData> & result);
+			std::vector<AprsWXData> & result,
+			std::vector<std::tuple<std::string, AprsWXData>> & weatherlink);
 
 	/**
 	 * Appends meteoblue forecast

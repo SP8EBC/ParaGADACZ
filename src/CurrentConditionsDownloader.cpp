@@ -18,17 +18,19 @@ CurrentConditionsDownloader::CurrentConditionsDownloader() {}
 CurrentConditionsDownloader::~CurrentConditionsDownloader() {}
 
 int CurrentConditionsDownloader::downloadParseCurrentCondotions(
-		std::shared_ptr<std::vector<ConfigurationFile_CurrentWeather> > currentWeatherConfig,
-		std::vector<AprsWXData> &currentWeatherAprx,
+		std::shared_ptr<std::vector<ConfigurationFile_CurrentWeather> > currentWeatherConfig /* input */,
+		std::vector<AprsWXData> &currentWeatherAprx,		/* output */
+		std::vector<std::tuple<std::string, AprsWXData>> & currentWeatherDavisWeatherlink /* output */,
 		std::vector<
 				std::pair<std::string,
 						std::shared_ptr<
-								org::openapitools::client::model::Summary> > > &currentWeatherMeteobackend,
+								org::openapitools::client::model::Summary> > > &currentWeatherMeteobackend,	/* output */
 		std::vector<
 				std::shared_ptr<
-						org::openapitools::client::model::StationDefinitionModel> > listOfAllStationsPogodacc,
-		std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,
-		std::optional<float> regionalPressure, AprxLogParser &logParser)
+						org::openapitools::client::model::StationDefinitionModel> > listOfAllStationsPogodacc,	/* input */
+		std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,		/* input */
+		std::optional<float> regionalPressure, AprxLogParser &logParser,			/* input */
+		std::shared_ptr<WeatherlinkDownloader> weatherlink)							/* input */
 {
 
 	// go through configuration and download current weather conditions
@@ -74,6 +76,27 @@ int CurrentConditionsDownloader::downloadParseCurrentCondotions(
 #else
 #endif
 			}
+
+			break;
+		}
+
+		case DAVIS: {
+//			auto davisConditions = std::find_if(currentWeatherDavisWeatherlink.begin(), currentWeatherDavisWeatherlink.end(), [& current](std::tuple<std::string, AprsWXData> x) {
+//
+//				AprsWXData data = std::get<0>(x);
+//
+//				if (boost::algorithm::to_upper_copy(data.call) == boost::algorithm::to_upper_copy(current.name)) {
+//					return true;
+//				}
+//				else {
+//					return false;
+//				}
+//			});
+
+			// get a device id to download
+			std::string did = current.name;
+
+
 
 			break;
 		}

@@ -103,7 +103,8 @@ void PlaylistAssembler::regionalPressure(float pressure) {
 
 void PlaylistAssembler::currentWeather(
 		std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> & summary,
-		std::vector<AprsWXData> & result) {
+		std::vector<AprsWXData> & result,
+		std::vector<std::tuple<std::string, AprsWXData>> & weatherlink) {
 
 	// add current weather anouncement
 	playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::CURRENT_WEATHER).value_or(checker));
@@ -152,6 +153,10 @@ void PlaylistAssembler::currentWeather(
 				continue;
 #endif
 			}
+		}
+
+		else if (w.type == ConfigurationFile_CurrentWeatherType::DAVIS) {
+
 		}
 
 		else if (w.type == ConfigurationFile_CurrentWeatherType::POGODA_CC) {

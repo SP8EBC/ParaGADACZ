@@ -119,6 +119,19 @@ bool ConfigurationFile::parse() {
 		this->audioBasePath = "";
 	}
 
+	// get 'secrets'
+	try {
+		libconfig::Setting &secrets = root["Secrets"];
+
+		secrets.lookupValue("MeteoblueKey", this->secrets.meteoblueKey);
+		secrets.lookupValue("WeatherlinkPassword", this->secrets.weatherlinkPassword);
+		secrets.lookupValue("WeatherlinkToken", this->secrets.weatherlinkToken);
+
+	}
+	catch (...) {
+		SPDLOG_WARN("failure during reading API keys and tokens. some online functions may not work correctly.");
+	}
+
 	// get 'Inhibitor'
 	try {
 		libconfig::Setting &inhibitor = root["Inhibitor"];
