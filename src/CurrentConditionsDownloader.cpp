@@ -18,9 +18,9 @@ CurrentConditionsDownloader::CurrentConditionsDownloader() {}
 CurrentConditionsDownloader::~CurrentConditionsDownloader() {}
 
 int CurrentConditionsDownloader::downloadParseCurrentCondotions(
-		std::shared_ptr<std::vector<ConfigurationFile_CurrentWeather> > currentWeatherConfig /* input */,
-		std::vector<AprsWXData> &currentWeatherAprx,		/* output */
-		std::vector<std::tuple<std::string, AprsWXData>> & currentWeatherDavisWeatherlink /* output */,
+		std::shared_ptr<std::vector<ConfigurationFile_CurrentWeather> > currentWeatherConfig, 	/* input */
+		std::vector<AprsWXData> &currentWeatherAprx,											/* output */
+		std::vector<std::tuple<std::string, AprsWXData>> & currentWeatherDavisWeatherlink, 		/* output */
 		std::vector<
 				std::pair<std::string,
 						std::shared_ptr<
@@ -28,9 +28,9 @@ int CurrentConditionsDownloader::downloadParseCurrentCondotions(
 		std::vector<
 				std::shared_ptr<
 						org::openapitools::client::model::StationDefinitionModel> > listOfAllStationsPogodacc,	/* input */
-		std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,		/* input */
-		std::optional<float> regionalPressure, AprxLogParser &logParser,			/* input */
-		std::shared_ptr<WeatherlinkDownloader> weatherlink)							/* input */
+		std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,					/* input */
+		std::optional<float> regionalPressure, AprxLogParser &logParser,						/* input */
+		std::shared_ptr<WeatherlinkDownloader> weatherlink)										/* input */
 {
 
 	// go through configuration and download current weather conditions
@@ -81,22 +81,23 @@ int CurrentConditionsDownloader::downloadParseCurrentCondotions(
 		}
 
 		case DAVIS: {
-//			auto davisConditions = std::find_if(currentWeatherDavisWeatherlink.begin(), currentWeatherDavisWeatherlink.end(), [& current](std::tuple<std::string, AprsWXData> x) {
-//
-//				AprsWXData data = std::get<0>(x);
-//
-//				if (boost::algorithm::to_upper_copy(data.call) == boost::algorithm::to_upper_copy(current.name)) {
-//					return true;
-//				}
-//				else {
-//					return false;
-//				}
-//			});
 
 			// get a device id to download
 			std::string did = current.name;
 
+			// download data for that station
+			weatherlink->downloadForStation(did);
 
+			// pick up the result
+			const std::shared_ptr<org::openapitools::client::model::Root>& weatherlinkResult = weatherlink->getDownloadedContent();
+
+			// if result has been obtained successfully
+			if (weatherlinkResult) {
+				// convert it to uniersal format
+				auto wxdata = WeatherlinkDownloader::convertModelToWxData(weatherlinkResult);
+
+				currentWeatherDavisWeatherlink.push_back(std::move(wxdata));
+			}
 
 			break;
 		}

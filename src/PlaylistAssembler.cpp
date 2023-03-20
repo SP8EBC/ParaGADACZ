@@ -36,6 +36,51 @@ struct Checker
 };
 constexpr Checker checker{};
 
+/**
+ * Used to extract string represending station name from different kinds of results got from different sources
+ */
+struct PlaylistAssembler_WxStationNameToString {
+
+	// POGODA_CC
+	static std::string toString(const std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>> & summary_pair) {
+		return summary_pair.first;
+	}
+
+	// APRX
+	static std::string toString(const AprsWXData & data) {
+		return data.call;
+	}
+
+	// WEATHERLINK
+	static std::string toString(const std::tuple<std::string, AprsWXData> & weatherlink) {
+		return std::get<0>(weatherlink);
+	}
+};
+
+/**
+ * Unary predicate to look for given station using std::find_if algorithm
+ */
+struct PlaylistAssembler_UnaryPredicate {
+
+	std::string whatToLookFor;
+
+	PlaylistAssembler_UnaryPredicate(std::string _whatToLookFor) : whatToLookFor(boost::to_upper_copy(_whatToLookFor)) {};
+
+	template<class T>
+	bool operator()(const T t) {
+		bool out = false;
+
+		if (boost::to_upper_copy(PlaylistAssembler_WxStationNameToString::toString(t)) == whatToLookFor) {		// name in this case will be set to a callsign
+			out = true;
+		}
+		else {
+			out = false;
+		}
+
+		return out;
+	}
+};
+
 PlaylistAssembler::PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config) : playlistSampler(sampler), configurationFile(config) {
 
 	this->playlist = std::make_shared<std::vector<std::string>>();
@@ -112,6 +157,8 @@ void PlaylistAssembler::currentWeather(
 	// iterate through configuration
 	for (ConfigurationFile_CurrentWeather w : configurationFile->getCurrent()) {
 
+		PlaylistAssembler_UnaryPredicate pred(w.name);
+
 		SPDLOG_INFO("assembling announcement for source name: {}", w.name);
 
 		// local variables to extract measurements
@@ -124,15 +171,7 @@ void PlaylistAssembler::currentWeather(
 		// check what type of current weather this is
 		if (w.type == ConfigurationFile_CurrentWeatherType::APRX) {
 
-			// find matching weather data from a set parsed from APRX file
-			auto weather = std::find_if(result.begin(), result.end(), [& w](AprsWXData & data ) {
-				if (boost::to_upper_copy(data.call) == boost::to_upper_copy(w.name)) {		// name in this case will be set to a callsign
-					return true;
-				}
-				else {
-					return false;
-				}
-			});
+			auto weather = std::find_if(result.begin(), result.end(), pred);
 
 			// check if data has been found
 			if (weather != result.end()) {
@@ -157,22 +196,25 @@ void PlaylistAssembler::currentWeather(
 
 		else if (w.type == ConfigurationFile_CurrentWeatherType::DAVIS) {
 
+			auto weather = std::find_if(weatherlink.begin(), weatherlink.end(), pred);
+
+			if (weather != weatherlink.end()) {
+				// get data
+				const AprsWXData data = std::get<1>(*weather);
+
+				wind_speed = data.wind_speed;
+				wind_gusts = data.wind_gusts;
+				temperature = data.temperature;
+				pressure = data.pressure;
+				direction = data.wind_direction;
+				humidity = data.humidity;
+			}
 		}
 
 		else if (w.type == ConfigurationFile_CurrentWeatherType::POGODA_CC) {
 			// find matching weather data from a set parsed from APRX file
-			auto weather = std::find_if(
-					summary.begin(),
-					summary.end(),
-					[& w](std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>> summary_pair)
-					{
-						if (boost::to_upper_copy(summary_pair.first) == boost::to_upper_copy(w.name)) {		// name in this case will be set to a callsign
-							return true;
-						}
-						else {
-							return false;
-						}
-					});
+			auto weather = std::find_if(summary.begin(), summary.end(), pred);
+
 
 			// check if data has been found
 			if (weather != summary.end()) {

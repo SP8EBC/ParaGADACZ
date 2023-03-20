@@ -278,8 +278,15 @@ int main(int argc, char **argv) {
 
 	inhibitAndPtt.setConfigAndCheckPort(configurationFile);
 
-	// key ptt
-	inhibitAndPtt.keyPtt(true);
+	try {
+		// key ptt
+		inhibitAndPtt.keyPtt(true);
+	}
+	catch (const std::runtime_error & e) {
+		SPDLOG_ERROR(e.what());
+
+		return -20;
+	}
 
 	// set playlist
 	player.setPlaylist(playlist, configurationFile->getAudioBasePath());

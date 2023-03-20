@@ -40,6 +40,8 @@ ConfigurationFile_CurrentWeatherType ConfigurationFile::currentWeatherTypeFromSt
 			switch(swstring(in.c_str())) {
 				case swstring("APRX"): out = APRX; break;
 				case swstring("POGODACC"): out = POGODA_CC; break;
+				case swstring("DAVIS"): out = DAVIS; break;
+				case swstring("WEATHERLINK"): out = DAVIS; break;
 			}
 
 			return out;

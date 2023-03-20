@@ -9,6 +9,9 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 WeatherlinkDownloader::WeatherlinkDownloader(std::shared_ptr<ConfigurationFile> & config)  : configurationFile(config) {
 
 	const utility::string_t pogoda_base_url = "https://api.weatherlink.com/v1/";
@@ -26,10 +29,22 @@ WeatherlinkDownloader::WeatherlinkDownloader(std::shared_ptr<ConfigurationFile> 
 WeatherlinkDownloader::~WeatherlinkDownloader() {
 }
 
-void WeatherlinkDownloader::downloadForStation(std::string deviceId,
-		std::string password, std::string token) {
+void WeatherlinkDownloader::downloadForStation(std::string deviceId) {
 
-	downloadedContent = conditionsApi->noaaExtJsonGet(deviceId, password, token).get();
+	try {
+		downloadedContent = conditionsApi->noaaExtJsonGet(
+								deviceId,
+								configurationFile->getSecrets().weatherlinkPassword,
+								configurationFile->getSecrets().weatherlinkToken).get();
+
+		SPDLOG_INFO("Weatherlink data station with devide id {} downloaded, station name is: {}", deviceId, downloadedContent->getStationId());
+		SPDLOG_INFO("Weatherlink temperature: {}, wind speed in mph!!: {}, windgust in mph!!: {}", downloadedContent->getTempC(), downloadedContent->getDavisCurrentObservation()->getWindTenMinAvgMph(), downloadedContent->getDavisCurrentObservation()->getWindTenMinGustMph());
+	}
+	catch (org::openapitools::client::api::ApiException & e) {
+		SPDLOG_ERROR("ApiException has happened during downloading Weatherlink data for DID {}", deviceId );
+
+		downloadedContent.reset();
+	}
 
 }
 
@@ -53,12 +68,12 @@ std::tuple<std::string, AprsWXData> WeatherlinkDownloader::convertModelToWxData(
 	out.wind_speed = boost::lexical_cast<float, std::string>(temp);
 
 	// convert wind speed from miles per hour to m/s
-	out.wind_speed /= 0.44f;
+	out.wind_speed *= 0.44f;
 
 	// the same but wind gusts
 	temp = input->getDavisCurrentObservation()->getWindTenMinGustMph();
 	out.wind_gusts = boost::lexical_cast<float, std::string>(temp);
-	out.wind_gusts /= 0.44f;
+	out.wind_gusts *= 0.44f;
 
 	// wind direction
 	temp = input->getWindDegrees();

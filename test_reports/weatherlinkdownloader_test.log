@@ -2,6 +2,6 @@ Running 1 test case...
 Entering test module "WeatherlinkDownloader_test"
 ../src/WeatherlinkDownloader_test.cpp(36): Entering test case "download_first_set"
 ../src/WeatherlinkDownloader_test.cpp(45): info: check credit == "Davis Instruments Corp." has passed
-../src/WeatherlinkDownloader_test.cpp(46): info: check wxData.call == "bspzar" has passed
-../src/WeatherlinkDownloader_test.cpp(36): Leaving test case "download_first_set"; testing time: 18542391us
-Leaving test module "WeatherlinkDownloader_test"; testing time: 18542437us
+../src/WeatherlinkDownloader_test.cpp(46): info: check std::get<1>(wxData).call == "bspzar" has passed
+../src/WeatherlinkDownloader_test.cpp(36): Leaving test case "download_first_set"; testing time: 597074us
+Leaving test module "WeatherlinkDownloader_test"; testing time: 597092us

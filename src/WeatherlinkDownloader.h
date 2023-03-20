@@ -48,7 +48,7 @@ public:
 	/**
 	 * Download raw
 	 */
-	void downloadForStation(std::string deviceId, std::string password, std::string token);
+	void downloadForStation(std::string deviceId);
 
 	const std::shared_ptr<org::openapitools::client::model::Root>& getDownloadedContent() const {
 		return downloadedContent;

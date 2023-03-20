@@ -37,11 +37,11 @@ BOOST_AUTO_TEST_CASE(download_first_set)
 {
 	WeatherlinkDownloader weatherlink(config);
 
-	weatherlink.downloadForStation("001D0A00C5C3", WEATHERLINK_PASS , WEATHERLINK_TOKEN);
+	weatherlink.downloadForStation("001D0A00C5C3");
 	auto result = weatherlink.getDownloadedContent();
-	AprsWXData wxData = WeatherlinkDownloader::convertModelToWxData(result);
+	std::tuple<std::string, AprsWXData> wxData = WeatherlinkDownloader::convertModelToWxData(result);
 	utility::string_t credit = result->getCredit();
 
 	BOOST_CHECK_EQUAL(credit, "Davis Instruments Corp.");
-	BOOST_CHECK_EQUAL(wxData.call, "bspzar");
+	BOOST_CHECK_EQUAL(std::get<1>(wxData).call, "bspzar");
 }

@@ -246,6 +246,10 @@ public:
 	ConfigurationFile_Avalanche getAvalancheWarning() const {
 		return avalancheWarning;
 	}
+
+	const ConfigurationFile_Secret& getSecrets() const {
+		return secrets;
+	}
 };
 
 #endif /* CONFIGURATIONFILE_H_ */
