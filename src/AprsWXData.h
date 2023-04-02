@@ -7,6 +7,8 @@
 #include <string>
 #include "exception/NotValidWXDataEx.h"
 
+#include <boost/date_time.hpp>
+
 enum class WXDataSource {
 	APRSIS,
 	SERIAL,
@@ -40,6 +42,11 @@ class AprsWXData
         bool useWind;
         bool usePressure;
         bool useHumidity;
+
+        boost::posix_time::ptime packetTimestmp;
+
+        int packetAgeInSecondsUtc;
+        int packetAgeInSecondsLocal;
 
 	bool convertPressure;
     public:

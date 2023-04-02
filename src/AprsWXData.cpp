@@ -244,6 +244,11 @@ AprsWXData::AprsWXData(const AprsWXData& in) {
 	this->is_secondary = in.is_secondary;
 
 	this->convertPressure = in.convertPressure;
+
+	this->packetAgeInSecondsLocal = in.packetAgeInSecondsLocal;
+	this->packetAgeInSecondsUtc = in.packetAgeInSecondsUtc;
+
+	this->packetTimestmp = in.packetTimestmp;
 }
 
 AprsWXData::AprsWXData(AprsWXData &&in) {
@@ -271,6 +276,11 @@ AprsWXData::AprsWXData(AprsWXData &&in) {
 	this->is_secondary = in.is_secondary;
 
 	this->convertPressure = in.convertPressure;
+
+	this->packetAgeInSecondsLocal = in.packetAgeInSecondsLocal;
+	this->packetAgeInSecondsUtc = in.packetAgeInSecondsUtc;
+
+	this->packetTimestmp = in.packetTimestmp;
 }
 
 AprsWXData& AprsWXData::operator =(AprsWXData& _in) {

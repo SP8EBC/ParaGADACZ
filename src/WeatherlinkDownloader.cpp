@@ -55,6 +55,8 @@ std::tuple<std::string, AprsWXData> WeatherlinkDownloader::convertModelToWxData(
 
 	std::string temp;
 
+	const int observationAge = input->getDavisCurrentObservation()->getObservationAge();
+
 	// interpret station-id as callsign
 	out.call = input->getStationId();
 	out.ssid = 0;

@@ -22,12 +22,45 @@
 
 #define SOURCE_LN			6
 
+const std::vector<std::locale> AprxLogParser::formats(
+	{
+	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%Y-%m-%d %H:%M:%S")),
+	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%Y/%m/%d %H:%M:%S")),
+	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%d.%m.%Y %H:%M:%S")),
+	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%Y-%m-%d"))
+	}
+);
+
 AprxLogParser::AprxLogParser(std::string fn) : fileName(fn), APRSIS("APRSIS") {
 	parsedLines = 0;
 }
 
 AprxLogParser::AprxLogParser() : APRSIS("APRSIS") {
 	parsedLines = 0;
+
+}
+
+boost::posix_time::ptime AprxLogParser::convertToFrameTimestamp(
+		std::string &date, std::string &time)
+{
+	boost::posix_time::ptime out;
+
+	const std::string joined = date + " " + time;
+
+	for (auto format : formats)
+	{
+        std::istringstream is(joined);
+        is.imbue(format);
+        is >> out;
+        if (out != boost::posix_time::ptime()) {
+        	SPDLOG_DEBUG("parsed frame timestamp: {}", boost::posix_time::to_simple_string(out));
+
+        	break;
+        }
+	}
+
+	return out;
+
 }
 
 AprxLogParser::~AprxLogParser() {
@@ -73,6 +106,19 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 			const int result = AprsPacket::ParseAPRSISData(lastLine.c_str(), lastLine.size(), &aprsPacket);
 
 			if (result == OK) {
+				// get frame timestamp
+				boost::posix_time::ptime timestamp = AprxLogParser::convertToFrameTimestamp(seprated.at(0), seprated.at(1));
+
+				// copy it to output object
+				out.packetTimestmp = timestamp;
+
+				// calculate an age of this frame
+				boost::posix_time::time_duration ageUniversal = boost::posix_time::second_clock::universal_time() - timestamp;
+				boost::posix_time::time_duration ageLocal = boost::posix_time::second_clock::local_time() - timestamp;
+
+				out.packetAgeInSecondsLocal = ageLocal.total_seconds();
+				out.packetAgeInSecondsUtc = ageUniversal.total_seconds();
+
 				// extract WX data
 				const int resultWx = AprsWXData::ParseData(aprsPacket, &out);
 			}

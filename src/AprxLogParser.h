@@ -14,6 +14,7 @@
 #include <cstdint>
 #include <optional>
 #include <fstream>
+#include <boost/date_time.hpp>
 
 #include "AprsWXData.h"
 
@@ -26,6 +27,10 @@ class AprxLogParser {
 	std::string fileName;
 
 	const std::string APRSIS;
+
+	static const std::vector<std::locale> formats;
+
+	static boost::posix_time::ptime convertToFrameTimestamp(std::string & date, std::string & time);
 
 public:
 

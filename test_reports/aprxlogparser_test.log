@@ -1,58 +1,60 @@
 Running 12 test cases...
 Entering test module "AprxLogParser_test"
-../src/AprxLogParser_test.cpp(32): Entering test case "with_ssid"
-../src/AprxLogParser_test.cpp(42): info: check result has passed
-../src/AprxLogParser_test.cpp(43): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(32): Leaving test case "with_ssid"; testing time: 222us
-../src/AprxLogParser_test.cpp(47): Entering test case "find_double_wx_frames"
-../src/AprxLogParser_test.cpp(60): info: check result has passed
-../src/AprxLogParser_test.cpp(61): info: check result.value() == first_expected has passed
-../src/AprxLogParser_test.cpp(64): info: check result2 has passed
-../src/AprxLogParser_test.cpp(65): info: check result2.value() == second_expected has passed
-../src/AprxLogParser_test.cpp(47): Leaving test case "find_double_wx_frames"; testing time: 152us
-../src/AprxLogParser_test.cpp(69): Entering test case "cieszyn_find_first_no_wx_only"
-../src/AprxLogParser_test.cpp(79): info: check result has passed
-../src/AprxLogParser_test.cpp(80): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(69): Leaving test case "cieszyn_find_first_no_wx_only"; testing time: 185us
-../src/AprxLogParser_test.cpp(83): Entering test case "cieszyn_find_first_wx_only"
-../src/AprxLogParser_test.cpp(93): info: check result has passed
-../src/AprxLogParser_test.cpp(94): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(83): Leaving test case "cieszyn_find_first_wx_only"; testing time: 171us
-../src/AprxLogParser_test.cpp(97): Entering test case "cieszyn_convert_to_wxdata"
+../src/AprxLogParser_test.cpp(37): Entering test case "with_ssid"
+../src/AprxLogParser_test.cpp(47): info: check result has passed
+../src/AprxLogParser_test.cpp(48): info: check result.value() == expected has passed
+../src/AprxLogParser_test.cpp(37): Leaving test case "with_ssid"; testing time: 425us
+../src/AprxLogParser_test.cpp(52): Entering test case "find_double_wx_frames"
+../src/AprxLogParser_test.cpp(65): info: check result has passed
+../src/AprxLogParser_test.cpp(66): info: check result.value() == first_expected has passed
+../src/AprxLogParser_test.cpp(69): info: check result2 has passed
+../src/AprxLogParser_test.cpp(70): info: check result2.value() == second_expected has passed
+../src/AprxLogParser_test.cpp(52): Leaving test case "find_double_wx_frames"; testing time: 372us
+../src/AprxLogParser_test.cpp(74): Entering test case "cieszyn_find_first_no_wx_only"
+../src/AprxLogParser_test.cpp(84): info: check result has passed
+../src/AprxLogParser_test.cpp(85): info: check result.value() == expected has passed
+../src/AprxLogParser_test.cpp(74): Leaving test case "cieszyn_find_first_no_wx_only"; testing time: 328us
+../src/AprxLogParser_test.cpp(88): Entering test case "cieszyn_find_first_wx_only"
+../src/AprxLogParser_test.cpp(98): info: check result has passed
+../src/AprxLogParser_test.cpp(99): info: check result.value() == expected has passed
+../src/AprxLogParser_test.cpp(88): Leaving test case "cieszyn_find_first_wx_only"; testing time: 400us
+../src/AprxLogParser_test.cpp(102): Entering test case "cieszyn_convert_to_wxdata"
 2022-12-03 14:29:22.996 SR9NSK    R SR9NCI>AKLPRZ,SR9GM-2*,WIDE2*:!4944.22N/01838.20E_045/005g007t036r...p...P...b00000
-../src/AprxLogParser_test.cpp(111): info: check result.has_value() has passed
-../src/AprxLogParser_test.cpp(112): info: check result->valid has passed
-../src/AprxLogParser_test.cpp(113): info: check result->call == "SR9NCI" has passed
-../src/AprxLogParser_test.cpp(114): info: check result->wind_direction == 45 has passed
-../src/AprxLogParser_test.cpp(97): Leaving test case "cieszyn_convert_to_wxdata"; testing time: 599us
-../src/AprxLogParser_test.cpp(118): Entering test case "myslowice_convert_to_wxdata"
+../src/AprxLogParser_test.cpp(116): info: check result.has_value() has passed
+../src/AprxLogParser_test.cpp(117): info: check result->valid has passed
+../src/AprxLogParser_test.cpp(118): info: check result->call == "SR9NCI" has passed
+../src/AprxLogParser_test.cpp(119): info: check result->wind_direction == 45 has passed
+../src/AprxLogParser_test.cpp(102): Leaving test case "cieszyn_convert_to_wxdata"; testing time: 1351us
+../src/AprxLogParser_test.cpp(123): Entering test case "myslowice_convert_to_wxdata"
 2022-12-03 14:27:29.321 SR9NSK    R SP9UVG-13>APMI06,SR9GM-2*,SP9DLM*,WIDE2*:@031427z5010.48N/01913.46E_000/007g007t030r000p000P...h91b10213 WX Myslowice
-../src/AprxLogParser_test.cpp(129): info: check result.has_value() has passed
-../src/AprxLogParser_test.cpp(130): info: check result->valid has passed
-../src/AprxLogParser_test.cpp(131): info: check result->call == "SP9UVG" has passed
-../src/AprxLogParser_test.cpp(132): info: check result->ssid == 13 has passed
-../src/AprxLogParser_test.cpp(133): info: check result->wind_direction == 0 has passed
-../src/AprxLogParser_test.cpp(134): info: difference{} between result->temperature{-1.11111116} and -1.1{-1.1000000000000001} doesn't exceed 5%
-../src/AprxLogParser_test.cpp(118): Leaving test case "myslowice_convert_to_wxdata"; testing time: 514us
-../src/AprxLogParser_test.cpp(137): Entering test case "nonexistent"
-../src/AprxLogParser_test.cpp(146): info: check !result.has_value() has passed
-../src/AprxLogParser_test.cpp(137): Leaving test case "nonexistent"; testing time: 238us
-../src/AprxLogParser_test.cpp(151): Entering test case "one"
-../src/AprxLogParser_test.cpp(161): info: check result has passed
-../src/AprxLogParser_test.cpp(162): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(151): Leaving test case "one"; testing time: 140us
-../src/AprxLogParser_test.cpp(166): Entering test case "one_only_wx"
-../src/AprxLogParser_test.cpp(174): info: check result.has_value() == false has passed
-../src/AprxLogParser_test.cpp(166): Leaving test case "one_only_wx"; testing time: 331us
-../src/AprxLogParser_test.cpp(181): Entering test case "two"
-../src/AprxLogParser_test.cpp(191): info: check result has passed
-../src/AprxLogParser_test.cpp(192): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(181): Leaving test case "two"; testing time: 139us
-../src/AprxLogParser_test.cpp(198): Entering test case "fast_forwarded"
-../src/AprxLogParser_test.cpp(208): info: check result has passed
-../src/AprxLogParser_test.cpp(209): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(198): Leaving test case "fast_forwarded"; testing time: 178us
-../src/AprxLogParser_test.cpp(213): Entering test case "parse"
+../src/AprxLogParser_test.cpp(134): info: check result.has_value() has passed
+../src/AprxLogParser_test.cpp(135): info: check result->valid has passed
+../src/AprxLogParser_test.cpp(136): info: check result->call == "SP9UVG" has passed
+../src/AprxLogParser_test.cpp(137): info: check result->ssid == 13 has passed
+../src/AprxLogParser_test.cpp(138): info: check result->wind_direction == 0 has passed
+../src/AprxLogParser_test.cpp(139): info: difference{} between result->temperature{-1.11111116} and -1.1{-1.1000000000000001} doesn't exceed 5%
+../src/AprxLogParser_test.cpp(141): info: check result->packetAgeInSecondsLocal != 0 has passed
+../src/AprxLogParser_test.cpp(142): info: check result->packetAgeInSecondsUtc != 0 has passed
+../src/AprxLogParser_test.cpp(123): Leaving test case "myslowice_convert_to_wxdata"; testing time: 1189us
+../src/AprxLogParser_test.cpp(145): Entering test case "nonexistent"
+../src/AprxLogParser_test.cpp(154): info: check !result.has_value() has passed
+../src/AprxLogParser_test.cpp(145): Leaving test case "nonexistent"; testing time: 506us
+../src/AprxLogParser_test.cpp(159): Entering test case "one"
+../src/AprxLogParser_test.cpp(169): info: check result has passed
+../src/AprxLogParser_test.cpp(170): info: check result.value() == expected has passed
+../src/AprxLogParser_test.cpp(159): Leaving test case "one"; testing time: 248us
+../src/AprxLogParser_test.cpp(174): Entering test case "one_only_wx"
+../src/AprxLogParser_test.cpp(182): info: check result.has_value() == false has passed
+../src/AprxLogParser_test.cpp(174): Leaving test case "one_only_wx"; testing time: 760us
+../src/AprxLogParser_test.cpp(189): Entering test case "two"
+../src/AprxLogParser_test.cpp(199): info: check result has passed
+../src/AprxLogParser_test.cpp(200): info: check result.value() == expected has passed
+../src/AprxLogParser_test.cpp(189): Leaving test case "two"; testing time: 326us
+../src/AprxLogParser_test.cpp(206): Entering test case "fast_forwarded"
+../src/AprxLogParser_test.cpp(216): info: check result has passed
+../src/AprxLogParser_test.cpp(217): info: check result.value() == expected has passed
+../src/AprxLogParser_test.cpp(206): Leaving test case "fast_forwarded"; testing time: 321us
+../src/AprxLogParser_test.cpp(221): Entering test case "parse"
 Test case parse did not check any assertions
-../src/AprxLogParser_test.cpp(213): Leaving test case "parse"; testing time: 579us
-Leaving test module "AprxLogParser_test"; testing time: 3636us
+../src/AprxLogParser_test.cpp(221): Leaving test case "parse"; testing time: 1174us
+Leaving test module "AprxLogParser_test"; testing time: 7761us

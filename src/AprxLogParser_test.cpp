@@ -11,12 +11,17 @@
 #include <boost/test/included/unit_test.hpp>
 #include <fstream>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 struct MyConfig
 {
   MyConfig() : test_log( "./test_reports/aprxlogparser_test.log" )
   {
     boost::unit_test::unit_test_log.set_stream( test_log );
     boost::unit_test::unit_test_log.set_threshold_level(boost::unit_test::log_level::log_successful_tests);
+
+	spdlog::set_level(spdlog::level::debug);
 
   }
   ~MyConfig()
@@ -132,6 +137,9 @@ BOOST_AUTO_TEST_CASE (myslowice_convert_to_wxdata)
 	BOOST_CHECK_EQUAL(result->ssid, 13);
 	BOOST_CHECK(result->wind_direction == 0);
 	BOOST_CHECK_CLOSE(result->temperature, -1.1, 5);
+
+	BOOST_CHECK(result->packetAgeInSecondsLocal != 0);
+	BOOST_CHECK(result->packetAgeInSecondsUtc != 0);
 }
 
 BOOST_AUTO_TEST_CASE (nonexistent)
