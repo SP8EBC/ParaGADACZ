@@ -165,6 +165,9 @@ void PlaylistAssembler::currentWeather(
 		float wind_speed = 0.0f, wind_gusts = 0.0f, temperature = 0.0f, pressure = 0.0f;
 		int direction = 0, humidity = 0;
 
+		// a timestamp marking how many seconds ago this frame has been received from radio
+		int timestamp = 0;
+
 		// intermediate vector to store playlist elements
 		std::vector<std::string> intermediate;
 
@@ -176,12 +179,28 @@ void PlaylistAssembler::currentWeather(
 			// check if data has been found
 			if (weather != result.end()) {
 
-				wind_speed = weather->wind_speed;
-				wind_gusts = weather->wind_gusts;
-				temperature = weather->temperature;
-				pressure = weather->pressure;
-				direction = weather->wind_direction;
-				humidity = weather->humidity;
+				// get timestamp depends on how a clock on APRX host is configured
+				if (this->configurationFile->isAprxRfLogTimeInLocal()) {
+					timestamp = weather->packetAgeInSecondsLocal;
+				}
+				else {
+					timestamp = weather->packetAgeInSecondsUtc;
+				}
+
+				// check if this data is not too old to be used
+				if (timestamp < this->configurationFile->getMaximumDataAgeInMinutes() * 60) {
+					wind_speed = weather->wind_speed;
+					wind_gusts = weather->wind_gusts;
+					temperature = weather->temperature;
+					pressure = weather->pressure;
+					direction = weather->wind_direction;
+					humidity = weather->humidity;
+				}
+				else {
+					SPDLOG_WARN("Data for station {} are too old and cannot be used", w.name);
+					continue;
+				}
+
 
 			}
 			else {
@@ -202,12 +221,23 @@ void PlaylistAssembler::currentWeather(
 				// get data
 				const AprsWXData data = std::get<1>(*weather);
 
-				wind_speed = data.wind_speed;
-				wind_gusts = data.wind_gusts;
-				temperature = data.temperature;
-				pressure = data.pressure;
-				direction = data.wind_direction;
-				humidity = data.humidity;
+				// get data age in seconds, do not need to care about timezones
+				timestamp = data.packetAgeInSecondsLocal;
+
+				// check if data are not too old
+				if (timestamp < this->configurationFile->getMaximumDataAgeInMinutes() * 60) {
+					wind_speed = data.wind_speed;
+					wind_gusts = data.wind_gusts;
+					temperature = data.temperature;
+					pressure = data.pressure;
+					direction = data.wind_direction;
+					humidity = data.humidity;
+				}
+				else {
+					SPDLOG_WARN("Data for Davis weatherlink station {} are too old and cannot be used", w.name);
+
+				}
+
 			}
 		}
 
@@ -225,6 +255,8 @@ void PlaylistAssembler::currentWeather(
 				pressure = weather->second->getQnh();
 				direction = weather->second->getDirection();
 				humidity = weather->second->getHumidity();
+
+				// check quality factors
 
 			}
 			else {

@@ -273,6 +273,14 @@ paths:
                   $ref: '#/components/schemas/StationGroupStations'
 components:
   schemas:
+    QualityFactor:
+      description: "Quality Factor"
+      type: string
+      enum:
+        - FULL,
+        - DEGRADED,
+        - NOT_AVALIABLE,
+        - NO_DATA
     AvailableParametersModel:
       description: "desc"
       properties:
@@ -472,17 +480,17 @@ components:
           type: number
           format: float
         temperature_qf:
-          type: string
+          $ref: '#/components/schemas/QualityFactor'
         qnh:
           type: integer
           format: int16
         qnh_qf:
-          type: string
+          $ref: '#/components/schemas/QualityFactor'
         humidity:
           type: integer
           format: int8
         humidity_qf:
-          type: string
+          $ref: '#/components/schemas/QualityFactor'
         direction:
           type: integer
           format: int16
@@ -502,8 +510,7 @@ components:
           type: number
           format: float
         wind_qf:
-          type: number
-          format: float
+          $ref: '#/components/schemas/QualityFactor'
     StationDataModel:
       type: object
       properties:

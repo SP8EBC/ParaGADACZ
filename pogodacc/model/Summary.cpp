@@ -30,15 +30,12 @@ Summary::Summary()
     m_Number_of_measurementsIsSet = false;
     m_Avg_temperature = 0.0f;
     m_Avg_temperatureIsSet = false;
-    m_Temperature_qf = utility::conversions::to_string_t("");
     m_Temperature_qfIsSet = false;
     m_Qnh = 0;
     m_QnhIsSet = false;
-    m_Qnh_qf = utility::conversions::to_string_t("");
     m_Qnh_qfIsSet = false;
     m_Humidity = 0;
     m_HumidityIsSet = false;
-    m_Humidity_qf = utility::conversions::to_string_t("");
     m_Humidity_qfIsSet = false;
     m_Direction = 0;
     m_DirectionIsSet = false;
@@ -52,7 +49,6 @@ Summary::Summary()
     m_Hour_max_average_speedIsSet = false;
     m_Hour_min_average_speed = 0.0f;
     m_Hour_min_average_speedIsSet = false;
-    m_Wind_qf = 0.0f;
     m_Wind_qfIsSet = false;
 }
 
@@ -173,7 +169,7 @@ bool Summary::fromJson(const web::json::value& val)
         const web::json::value& fieldValue = val.at(utility::conversions::to_string_t("temperature_qf"));
         if(!fieldValue.is_null())
         {
-            utility::string_t refVal_temperature_qf;
+            std::shared_ptr<QualityFactor> refVal_temperature_qf;
             ok &= ModelBase::fromJson(fieldValue, refVal_temperature_qf);
             setTemperatureQf(refVal_temperature_qf);
         }
@@ -193,7 +189,7 @@ bool Summary::fromJson(const web::json::value& val)
         const web::json::value& fieldValue = val.at(utility::conversions::to_string_t("qnh_qf"));
         if(!fieldValue.is_null())
         {
-            utility::string_t refVal_qnh_qf;
+            std::shared_ptr<QualityFactor> refVal_qnh_qf;
             ok &= ModelBase::fromJson(fieldValue, refVal_qnh_qf);
             setQnhQf(refVal_qnh_qf);
         }
@@ -213,7 +209,7 @@ bool Summary::fromJson(const web::json::value& val)
         const web::json::value& fieldValue = val.at(utility::conversions::to_string_t("humidity_qf"));
         if(!fieldValue.is_null())
         {
-            utility::string_t refVal_humidity_qf;
+            std::shared_ptr<QualityFactor> refVal_humidity_qf;
             ok &= ModelBase::fromJson(fieldValue, refVal_humidity_qf);
             setHumidityQf(refVal_humidity_qf);
         }
@@ -283,7 +279,7 @@ bool Summary::fromJson(const web::json::value& val)
         const web::json::value& fieldValue = val.at(utility::conversions::to_string_t("wind_qf"));
         if(!fieldValue.is_null())
         {
-            float refVal_wind_qf;
+            std::shared_ptr<QualityFactor> refVal_wind_qf;
             ok &= ModelBase::fromJson(fieldValue, refVal_wind_qf);
             setWindQf(refVal_wind_qf);
         }
@@ -389,7 +385,7 @@ bool Summary::fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const 
     }
     if(multipart->hasContent(utility::conversions::to_string_t("temperature_qf")))
     {
-        utility::string_t refVal_temperature_qf;
+        std::shared_ptr<QualityFactor> refVal_temperature_qf;
         ok &= ModelBase::fromHttpContent(multipart->getContent(utility::conversions::to_string_t("temperature_qf")), refVal_temperature_qf );
         setTemperatureQf(refVal_temperature_qf);
     }
@@ -401,7 +397,7 @@ bool Summary::fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const 
     }
     if(multipart->hasContent(utility::conversions::to_string_t("qnh_qf")))
     {
-        utility::string_t refVal_qnh_qf;
+        std::shared_ptr<QualityFactor> refVal_qnh_qf;
         ok &= ModelBase::fromHttpContent(multipart->getContent(utility::conversions::to_string_t("qnh_qf")), refVal_qnh_qf );
         setQnhQf(refVal_qnh_qf);
     }
@@ -413,7 +409,7 @@ bool Summary::fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const 
     }
     if(multipart->hasContent(utility::conversions::to_string_t("humidity_qf")))
     {
-        utility::string_t refVal_humidity_qf;
+        std::shared_ptr<QualityFactor> refVal_humidity_qf;
         ok &= ModelBase::fromHttpContent(multipart->getContent(utility::conversions::to_string_t("humidity_qf")), refVal_humidity_qf );
         setHumidityQf(refVal_humidity_qf);
     }
@@ -455,7 +451,7 @@ bool Summary::fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const 
     }
     if(multipart->hasContent(utility::conversions::to_string_t("wind_qf")))
     {
-        float refVal_wind_qf;
+        std::shared_ptr<QualityFactor> refVal_wind_qf;
         ok &= ModelBase::fromHttpContent(multipart->getContent(utility::conversions::to_string_t("wind_qf")), refVal_wind_qf );
         setWindQf(refVal_wind_qf);
     }
@@ -522,12 +518,12 @@ void Summary::unsetAvg_temperature()
 {
     m_Avg_temperatureIsSet = false;
 }
-utility::string_t Summary::getTemperatureQf() const
+std::shared_ptr<QualityFactor> Summary::getTemperatureQf() const
 {
     return m_Temperature_qf;
 }
 
-void Summary::setTemperatureQf(const utility::string_t& value)
+void Summary::setTemperatureQf(const std::shared_ptr<QualityFactor>& value)
 {
     m_Temperature_qf = value;
     m_Temperature_qfIsSet = true;
@@ -562,12 +558,12 @@ void Summary::unsetQnh()
 {
     m_QnhIsSet = false;
 }
-utility::string_t Summary::getQnhQf() const
+std::shared_ptr<QualityFactor> Summary::getQnhQf() const
 {
     return m_Qnh_qf;
 }
 
-void Summary::setQnhQf(const utility::string_t& value)
+void Summary::setQnhQf(const std::shared_ptr<QualityFactor>& value)
 {
     m_Qnh_qf = value;
     m_Qnh_qfIsSet = true;
@@ -602,12 +598,12 @@ void Summary::unsetHumidity()
 {
     m_HumidityIsSet = false;
 }
-utility::string_t Summary::getHumidityQf() const
+std::shared_ptr<QualityFactor> Summary::getHumidityQf() const
 {
     return m_Humidity_qf;
 }
 
-void Summary::setHumidityQf(const utility::string_t& value)
+void Summary::setHumidityQf(const std::shared_ptr<QualityFactor>& value)
 {
     m_Humidity_qf = value;
     m_Humidity_qfIsSet = true;
@@ -742,12 +738,12 @@ void Summary::unsetHour_min_average_speed()
 {
     m_Hour_min_average_speedIsSet = false;
 }
-float Summary::getWindQf() const
+std::shared_ptr<QualityFactor> Summary::getWindQf() const
 {
     return m_Wind_qf;
 }
 
-void Summary::setWindQf(float value)
+void Summary::setWindQf(const std::shared_ptr<QualityFactor>& value)
 {
     m_Wind_qf = value;
     m_Wind_qfIsSet = true;

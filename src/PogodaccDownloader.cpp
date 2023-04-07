@@ -7,6 +7,9 @@
 
 #include "PogodaccDownloader.h"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 PogodaccDownloader::PogodaccDownloader(std::shared_ptr<ConfigurationFile> & config) : configurationFile(config) {
 
 	const utility::string_t pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
@@ -26,6 +29,10 @@ PogodaccDownloader::~PogodaccDownloader() {
 }
 
 void PogodaccDownloader::downloadAllStationsList() {
-	listOfAllStationsPogodacc = listofAllStationApi->listOfAllStationsGet().get();
-
+	try {
+		listOfAllStationsPogodacc = listofAllStationApi->listOfAllStationsGet().get();
+	}
+	catch (web::json::json_exception & ex) {
+		SPDLOG_ERROR(ex.what());
+	}
 }

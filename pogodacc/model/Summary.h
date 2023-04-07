@@ -22,7 +22,7 @@
 
 #include "../ModelBase.h"
 
-#include <cpprest/details/basic_types.h>
+#include "QualityFactor.h"
 
 namespace org {
 namespace openapitools {
@@ -84,11 +84,11 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    utility::string_t getTemperatureQf() const;
+    std::shared_ptr<QualityFactor> getTemperatureQf() const;
     bool temperatureQfIsSet() const;
     void unsetTemperature_qf();
 
-    void setTemperatureQf(const utility::string_t& value);
+    void setTemperatureQf(const std::shared_ptr<QualityFactor>& value);
 
     /// <summary>
     /// 
@@ -102,11 +102,11 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    utility::string_t getQnhQf() const;
+    std::shared_ptr<QualityFactor> getQnhQf() const;
     bool qnhQfIsSet() const;
     void unsetQnh_qf();
 
-    void setQnhQf(const utility::string_t& value);
+    void setQnhQf(const std::shared_ptr<QualityFactor>& value);
 
     /// <summary>
     /// 
@@ -120,11 +120,11 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    utility::string_t getHumidityQf() const;
+    std::shared_ptr<QualityFactor> getHumidityQf() const;
     bool humidityQfIsSet() const;
     void unsetHumidity_qf();
 
-    void setHumidityQf(const utility::string_t& value);
+    void setHumidityQf(const std::shared_ptr<QualityFactor>& value);
 
     /// <summary>
     /// 
@@ -183,11 +183,11 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    float getWindQf() const;
+    std::shared_ptr<QualityFactor> getWindQf() const;
     bool windQfIsSet() const;
     void unsetWind_qf();
 
-    void setWindQf(float value);
+    void setWindQf(const std::shared_ptr<QualityFactor>& value);
 
 
 protected:
@@ -197,15 +197,15 @@ protected:
     bool m_Number_of_measurementsIsSet;
     float m_Avg_temperature;
     bool m_Avg_temperatureIsSet;
-    utility::string_t m_Temperature_qf;
+    std::shared_ptr<QualityFactor> m_Temperature_qf;
     bool m_Temperature_qfIsSet;
     int32_t m_Qnh;
     bool m_QnhIsSet;
-    utility::string_t m_Qnh_qf;
+    std::shared_ptr<QualityFactor> m_Qnh_qf;
     bool m_Qnh_qfIsSet;
     int32_t m_Humidity;
     bool m_HumidityIsSet;
-    utility::string_t m_Humidity_qf;
+    std::shared_ptr<QualityFactor> m_Humidity_qf;
     bool m_Humidity_qfIsSet;
     int32_t m_Direction;
     bool m_DirectionIsSet;
@@ -219,7 +219,7 @@ protected:
     bool m_Hour_max_average_speedIsSet;
     float m_Hour_min_average_speed;
     bool m_Hour_min_average_speedIsSet;
-    float m_Wind_qf;
+    std::shared_ptr<QualityFactor> m_Wind_qf;
     bool m_Wind_qfIsSet;
 };
 
