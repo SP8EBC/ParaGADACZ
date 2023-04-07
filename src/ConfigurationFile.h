@@ -142,7 +142,8 @@ class ConfigurationFile {
 	ConfigurationFile_Inhibitor inhibitor;
 	ConfigurationFile_PttControl pttControl;
 
-	int maximumDataAge;	//!< maximum time in minutes for current measurements to be usable
+	int maximumDataAgeInMinutes;	//!< maximum time in minutes for current measurements to be usable
+	bool aprxRfLogTimeInLocal;	//!< Set to true if timestamps in APRX log file are in local time not UTC
 	std::string aprxRfLogPath;	//!< Path to
 
 	std::vector<std::string> recordedSpecialAnnouncementPre;
@@ -203,8 +204,8 @@ public:
 		return logOutput;
 	}
 
-	int getMaximumDataAge() const {
-		return maximumDataAge;
+	int getMaximumDataAgeInMinutes() const {
+		return maximumDataAgeInMinutes;
 	}
 
 	const std::vector<std::string>& getRecordedSpecialAnnouncementPost() const {
@@ -249,6 +250,10 @@ public:
 
 	const ConfigurationFile_Secret& getSecrets() const {
 		return secrets;
+	}
+
+	bool isAprxRfLogTimeInLocal() const {
+		return aprxRfLogTimeInLocal;
 	}
 };
 

@@ -19,7 +19,7 @@ ConfigurationFile::ConfigurationFile(std::string fileName) {
 	hasPogodacc = false;
 	hasAprx = false;
 	debug = false;
-	maximumDataAge = 60;
+	maximumDataAgeInMinutes = 60;
 
 	inhibitor.serial.enable = false;
 	inhibitor.http.enable = false;
@@ -191,9 +191,15 @@ bool ConfigurationFile::parse() {
 	}
 
 	// get maximum data age
-	if (!root.lookupValue("MaximumDataAge", this->maximumDataAge )) {
-		this->maximumDataAge = 60;	// default value -> 60 minutes
+	if (!root.lookupValue("MaximumDataAge", this->maximumDataAgeInMinutes )) {
+		this->maximumDataAgeInMinutes = 60;	// default value -> 60 minutes
 		SPDLOG_WARN("MaximumDataAge didn't find in configuration file! Set to default 60 minutes");
+	}
+
+	// get maximum data age
+	if (!root.lookupValue("AprsLogInLocal", this->aprxRfLogTimeInLocal )) {
+		this->aprxRfLogTimeInLocal = false;
+		SPDLOG_INFO("Assuming that all times in APRX RF-Log are in universal time.");
 	}
 
 	// get path to APRX rf log file
