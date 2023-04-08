@@ -57,11 +57,11 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    int64_t getLastTimestamp() const;
+    int32_t getLastTimestamp() const;
     bool lastTimestampIsSet() const;
     void unsetLast_timestamp();
 
-    void setLastTimestamp(int64_t value);
+    void setLastTimestamp(int32_t value);
 
     /// <summary>
     /// 
@@ -191,7 +191,7 @@ public:
 
 
 protected:
-    int64_t m_Last_timestamp;
+    int32_t m_Last_timestamp;
     bool m_Last_timestampIsSet;
     int32_t m_Number_of_measurements;
     bool m_Number_of_measurementsIsSet;

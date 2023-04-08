@@ -472,7 +472,7 @@ components:
       properties:
         last_timestamp:
           type: integer
-          format: int64
+          format: int32
         number_of_measurements:
           type: integer
           format: int32

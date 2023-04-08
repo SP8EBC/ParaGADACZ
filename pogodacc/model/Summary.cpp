@@ -24,7 +24,7 @@ namespace model {
 
 Summary::Summary()
 {
-    m_Last_timestamp = 0L;
+    m_Last_timestamp = 0;
     m_Last_timestampIsSet = false;
     m_Number_of_measurements = 0;
     m_Number_of_measurementsIsSet = false;
@@ -139,7 +139,7 @@ bool Summary::fromJson(const web::json::value& val)
         const web::json::value& fieldValue = val.at(utility::conversions::to_string_t("last_timestamp"));
         if(!fieldValue.is_null())
         {
-            int64_t refVal_last_timestamp;
+            int32_t refVal_last_timestamp;
             ok &= ModelBase::fromJson(fieldValue, refVal_last_timestamp);
             setLastTimestamp(refVal_last_timestamp);
         }
@@ -367,7 +367,7 @@ bool Summary::fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const 
 
     if(multipart->hasContent(utility::conversions::to_string_t("last_timestamp")))
     {
-        int64_t refVal_last_timestamp;
+        int32_t refVal_last_timestamp;
         ok &= ModelBase::fromHttpContent(multipart->getContent(utility::conversions::to_string_t("last_timestamp")), refVal_last_timestamp );
         setLastTimestamp(refVal_last_timestamp);
     }
@@ -458,12 +458,12 @@ bool Summary::fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const 
     return ok;
 }
 
-int64_t Summary::getLastTimestamp() const
+int32_t Summary::getLastTimestamp() const
 {
     return m_Last_timestamp;
 }
 
-void Summary::setLastTimestamp(int64_t value)
+void Summary::setLastTimestamp(int32_t value)
 {
     m_Last_timestamp = value;
     m_Last_timestampIsSet = true;
