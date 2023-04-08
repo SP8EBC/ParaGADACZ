@@ -11,6 +11,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <sstream>
+#include <exception>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -242,6 +243,11 @@ std::optional<std::string> AprxLogParser::getNextLine(std::string call,
 				}
 			}
 		}
+	}
+	else {
+		SPDLOG_ERROR("APRX log file is not opened! Check if path provided in configuration is correct");
+
+		throw std::runtime_error("APRX log file is not opened!");
 	}
 
 	return {};
