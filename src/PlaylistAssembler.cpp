@@ -180,7 +180,7 @@ void PlaylistAssembler::currentWeather(
 			if (weather != result.end()) {
 
 				// get timestamp depends on how a clock on APRX host is configured
-				if (this->configurationFile->isAprxRfLogTimeInLocal()) {
+				if (this->configurationFile->getAprxConfig().aprxRfLogTimeInLocal) {
 					timestamp = weather->packetAgeInSecondsLocal;
 				}
 				else {
@@ -257,6 +257,30 @@ void PlaylistAssembler::currentWeather(
 				humidity = weather->second->getHumidity();
 
 				// check quality factors
+
+				// temperature
+				if (weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_ ||
+					weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_DEGRADED_)
+				{
+					w.sayTemperature = true;
+				}
+				else
+				{
+					w.sayTemperature = false;
+					SPDLOG_WARN("Temperature for station {} won't be said due to quality factor", w.name);
+				}
+
+				// wind
+				if (weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_ ||
+					weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_DEGRADED_)
+				{
+					w.sayTemperature = true;
+				}
+				else
+				{
+					w.sayTemperature = false;
+					SPDLOG_WARN("Temperature for station {} won't be said due to quality factor", w.name);
+				}
 
 			}
 			else {

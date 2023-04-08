@@ -3,11 +3,11 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(36): Entering test case "split_callsign"
 ../src/ConfigurationFile_test.cpp(42): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(43): info: check std::get<unsigned>(result) == 11 has passed
-../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 96us
+../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 86us
 ../src/ConfigurationFile_test.cpp(46): Entering test case "split_callsign_no_ssid"
 ../src/ConfigurationFile_test.cpp(52): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(53): info: check std::get<unsigned>(result) == 0 has passed
-../src/ConfigurationFile_test.cpp(46): Leaving test case "split_callsign_no_ssid"; testing time: 78us
+../src/ConfigurationFile_test.cpp(46): Leaving test case "split_callsign_no_ssid"; testing time: 77us
 ../src/ConfigurationFile_test.cpp(56): Entering test case "inhibitor_parse"
 ../src/ConfigurationFile_test.cpp(62): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(65): info: check inhibitor.serial.enable == true has passed
@@ -19,16 +19,16 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(73): info: check inhibitor.exec.enable == true has passed
 ../src/ConfigurationFile_test.cpp(74): info: check inhibitor.exec.okRetval == 0 has passed
 ../src/ConfigurationFile_test.cpp(75): info: check inhibitor.exec.path == "/bin/more" has passed
-../src/ConfigurationFile_test.cpp(56): Leaving test case "inhibitor_parse"; testing time: 386us
+../src/ConfigurationFile_test.cpp(56): Leaving test case "inhibitor_parse"; testing time: 415us
 ../src/ConfigurationFile_test.cpp(81): Entering test case "simple_parse"
 ../src/ConfigurationFile_test.cpp(89): info: check result == true has passed
-../src/ConfigurationFile_test.cpp(91): error: in "simple_parse": check configurationFile.getIntro().ident.at(0) == "ident.mp3" has failed [intro.ogg != ident.mp3]
+../src/ConfigurationFile_test.cpp(91): info: check configurationFile.getIntro().ident.at(0) == "intro.ogg" has passed
 ../src/ConfigurationFile_test.cpp(92): info: check configurationFile.getIntro().sayCurrentTime == false has passed
 ../src/ConfigurationFile_test.cpp(93): info: check configurationFile.getIntro().sayRegionalPressure == true has passed
 ../src/ConfigurationFile_test.cpp(95): info: check configurationFile.isDebug() == false has passed
 ../src/ConfigurationFile_test.cpp(96): info: check configurationFile.getLogOutput() == "gadacz.log" has passed
-../src/ConfigurationFile_test.cpp(97): info: check configurationFile.getMaximumDataAge() == 60 has passed
-../src/ConfigurationFile_test.cpp(98): info: check configurationFile.getAprxRfLogPath() == "/var/log/aprx/test.log" has passed
+../src/ConfigurationFile_test.cpp(97): info: check configurationFile.getMaximumDataAgeInMinutes() == 60 has passed
+../src/ConfigurationFile_test.cpp(98): info: check configurationFile.getAprxConfig().aprxRfLogPath == "/home/mateusz/Documents/test/aprx/aprx-rf.log" has passed
 ../src/ConfigurationFile_test.cpp(100): info: check configurationFile.getCurrent().size() == 2 has passed
 ../src/ConfigurationFile_test.cpp(101): info: check configurationFile.getCurrent().at(0).name == "SR9WXM" has passed
 ../src/ConfigurationFile_test.cpp(102): info: check configurationFile.getCurrent().at(0).type == APRX has passed
@@ -45,5 +45,5 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(114): info: check configurationFile.getForecast().locations.at(0).sayPrecipation == true has passed
 ../src/ConfigurationFile_test.cpp(115): info: check configurationFile.getForecast().locations.at(0).sayTemperature == true has passed
 ../src/ConfigurationFile_test.cpp(116): info: check configurationFile.getForecast().locations.at(0).sayWind == true has passed
-../src/ConfigurationFile_test.cpp(81): Leaving test case "simple_parse"; testing time: 350us
-Leaving test module "ConfigurationFile_test"; testing time: 958us
+../src/ConfigurationFile_test.cpp(81): Leaving test case "simple_parse"; testing time: 321us
+Leaving test module "ConfigurationFile_test"; testing time: 944us

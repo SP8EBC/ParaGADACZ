@@ -28,7 +28,15 @@ ConfigurationFile::ConfigurationFile(std::string fileName) {
 	pttControl.preDelay = 200;
 	pttControl.postDelay = 0;
 
+	pogodaCc.ignoreHumidityQf = false;
+	pogodaCc.ignorePressureQf = false;
+	pogodaCc.ignoreTemperatureQf = false;
+	pogodaCc.ignoreWindQf = false;
+
+	aprxConfig.aprxRfLogTimeInLocal = false;
+
 	avalancheWarning.goprBabiaGora = false;
+
 }
 
 ConfigurationFile_CurrentWeatherType ConfigurationFile::currentWeatherTypeFromString(
@@ -196,17 +204,44 @@ bool ConfigurationFile::parse() {
 		SPDLOG_WARN("MaximumDataAge didn't find in configuration file! Set to default 60 minutes");
 	}
 
-	// get maximum data age
-	if (!root.lookupValue("AprsLogInLocal", this->aprxRfLogTimeInLocal )) {
-		this->aprxRfLogTimeInLocal = false;
-		SPDLOG_INFO("Assuming that all times in APRX RF-Log are in universal time.");
+	// get 'Aprx' section
+	try {
+		libconfig::Setting &intro = root["Aprx"];
+
+		// base URL
+		if (!intro.lookupValue("LogPath", this->aprxConfig.aprxRfLogPath)) {
+			this->aprxConfig.aprxRfLogPath = "/var/log/aprx/aprs-rf.log";
+		}
+		intro.lookupValue("LogTimeInLocal", this->aprxConfig.aprxRfLogTimeInLocal);
+
+	}
+	catch (libconfig::SettingNotFoundException & e) {
+		SPDLOG_WARN("Configuration section for APRX log parser doesn't found. Using default values.");
+		this->aprxConfig.aprxRfLogPath = "/var/log/aprx/aprs-rf.log";
+		this->aprxConfig.aprxRfLogTimeInLocal = false;
 	}
 
-	// get path to APRX rf log file
-	if (!root.lookupValue("AprsLogPath", this->aprxRfLogPath )) {
-		this->aprxRfLogPath = "/var/log/aprx/aprs-rf.log"; // default value -> 60 minutes
-		SPDLOG_WARN("No path to APRX rf log has been provided. Using default /var/log/aprx/aprs-rf.log");
+	// get 'Pogodacc' section
+	try {
+		libconfig::Setting &intro = root["Pogodacc"];
+
+		// base URL
+		intro.lookupValue("IgnoreTemperatureQf", this->pogodaCc.ignoreTemperatureQf);
+		intro.lookupValue("IgnoreWindQf", this->pogodaCc.ignoreWindQf);
+		intro.lookupValue("IgnoreHumidityQf", this->pogodaCc.ignoreHumidityQf);
+		intro.lookupValue("IgnorePressureQf", this->pogodaCc.ignorePressureQf);
+
+
 	}
+	catch (libconfig::SettingNotFoundException & e) {
+		SPDLOG_WARN("Configuration section for pogoda.cc backend doesn't found. Using default base URL, not ignoring quality factors");
+	}
+
+//	// get maximum data age
+//	if (!root.lookupValue("AprsLogInLocal", this->aprxRfLogTimeInLocal )) {
+//		this->aprxRfLogTimeInLocal = false;
+//		SPDLOG_INFO("Assuming that all times in APRX RF-Log are in universal time.");
+//	}
 
 	// get 'Intro' configuration section
 	try {

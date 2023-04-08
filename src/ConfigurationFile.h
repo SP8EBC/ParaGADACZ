@@ -26,6 +26,27 @@ enum ConfigurationFile_CurrentWeatherType {
 	UNSET
 };
 
+/**
+ * APRX rf-log parser configuration
+ */
+struct ConfigurationFile_Aprx {
+	bool aprxRfLogTimeInLocal;	//!< Set to true if timestamps in APRX log file are in local time not UTC
+	std::string aprxRfLogPath;	//!< Path to
+};
+
+struct ConfigurationFile_Pogodacc {
+	std::string baseUrl;			// API base url
+	bool ignoreTemperatureQf;		// ignore temeprature quality factor and say it in any cases
+	bool ignoreWindQf;
+	bool ignoreHumidityQf;
+	bool ignorePressureQf;
+};
+
+/**
+ * All secrets like API keys, password and simmilar stuff which shall not be
+ * shared publicitly and usually is separated to separate config file,
+ * which then is included into main one
+ */
 struct ConfigurationFile_Secret {
 	std::string meteoblueKey;
 	std::string weatherlinkPassword;
@@ -142,9 +163,14 @@ class ConfigurationFile {
 	ConfigurationFile_Inhibitor inhibitor;
 	ConfigurationFile_PttControl pttControl;
 
+	ConfigurationFile_Aprx aprxConfig;
+
+	ConfigurationFile_Pogodacc pogodaCc;
+
+
+
 	int maximumDataAgeInMinutes;	//!< maximum time in minutes for current measurements to be usable
-	bool aprxRfLogTimeInLocal;	//!< Set to true if timestamps in APRX log file are in local time not UTC
-	std::string aprxRfLogPath;	//!< Path to
+
 
 	std::vector<std::string> recordedSpecialAnnouncementPre;
 	std::vector<std::string> textSpecialAnnouncementPre;
@@ -228,10 +254,6 @@ public:
 		return hasPogodacc;
 	}
 
-	const std::string& getAprxRfLogPath() const {
-		return aprxRfLogPath;
-	}
-
 	bool isHasAprx() const {
 		return hasAprx;
 	}
@@ -252,8 +274,12 @@ public:
 		return secrets;
 	}
 
-	bool isAprxRfLogTimeInLocal() const {
-		return aprxRfLogTimeInLocal;
+	const ConfigurationFile_Aprx& getAprxConfig() const {
+		return aprxConfig;
+	}
+
+	const ConfigurationFile_Pogodacc& getPogodaCc() const {
+		return pogodaCc;
 	}
 };
 

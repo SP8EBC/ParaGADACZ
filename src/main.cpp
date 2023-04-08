@@ -192,7 +192,7 @@ int main(int argc, char **argv) {
 	// check if there is at least one station to be parsed from APRX rf log file
 	if (configurationFile->isHasAprx()) {
 		// set path to APRX file
-		logParser.setFileName(configurationFile->getAprxRfLogPath());
+		logParser.setFileName(configurationFile->getAprxConfig().aprxRfLogPath);
 
 		// open a file
 		logParser.openFile();
