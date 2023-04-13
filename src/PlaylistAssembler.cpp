@@ -10,6 +10,7 @@
 
 #include "PlaylistAssembler.h"
 #include "ForecastFinder.h"
+#include "TimeTools.h"
 #include "main.h"
 
 #include "exception/WrongOrderEx.h"
@@ -166,7 +167,7 @@ void PlaylistAssembler::currentWeather(
 		int direction = 0, humidity = 0;
 
 		// a timestamp marking how many seconds ago this frame has been received from radio
-		int timestamp = 0;
+		long timestamp = 0;
 
 		// intermediate vector to store playlist elements
 		std::vector<std::string> intermediate;
@@ -197,7 +198,7 @@ void PlaylistAssembler::currentWeather(
 					humidity = weather->humidity;
 				}
 				else {
-					SPDLOG_WARN("Data for station {} are too old and cannot be used", w.name);
+					SPDLOG_WARN("Data for station {} from aprx rf-log are too old and cannot be used", w.name);
 					continue;
 				}
 
@@ -236,6 +237,8 @@ void PlaylistAssembler::currentWeather(
 				else {
 					SPDLOG_WARN("Data for Davis weatherlink station {} are too old and cannot be used", w.name);
 
+					// go to next station
+					continue;
 				}
 
 			}
@@ -256,30 +259,71 @@ void PlaylistAssembler::currentWeather(
 				direction = weather->second->getDirection();
 				humidity = weather->second->getHumidity();
 
+				// get timestamp of last measurement
+				timestamp = weather->second->getLastTimestamp();
+
+				if (TimeTools::getEpoch() - timestamp > this->configurationFile->getMaximumDataAgeInMinutes() * 60) {
+					SPDLOG_ERROR("Weather data from pogoda.cc station {} is too old and cannot be used.", w.name);
+
+					continue;
+				}
+
 				// check quality factors
 
-				// temperature
-				if (weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_ ||
-					weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_DEGRADED_)
-				{
-					w.sayTemperature = true;
-				}
-				else
-				{
-					w.sayTemperature = false;
-					SPDLOG_WARN("Temperature for station {} won't be said due to quality factor", w.name);
+				if (!configurationFile->getPogodaCc().ignoreTemperatureQf) {
+					// temperature
+					if (weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_ ||
+						weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_DEGRADED_)
+					{
+						w.sayTemperature = true;
+					}
+					else
+					{
+						w.sayTemperature = false;
+						SPDLOG_WARN("Temperature for station {} won't be said due to quality factor", w.name);
+					}
 				}
 
-				// wind
-				if (weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_ ||
-					weather->second->getTemperatureQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_DEGRADED_)
-				{
-					w.sayTemperature = true;
+				if (!configurationFile->getPogodaCc().ignoreWindQf) {
+					// wind
+					if (weather->second->getWindQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_ ||
+						weather->second->getWindQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_DEGRADED_)
+					{
+						w.sayTemperature = true;
+					}
+					else
+					{
+						w.sayTemperature = false;
+						SPDLOG_WARN("Temperature for station {} won't be said due to quality factor", w.name);
+					}
 				}
-				else
-				{
-					w.sayTemperature = false;
-					SPDLOG_WARN("Temperature for station {} won't be said due to quality factor", w.name);
+
+				if (!configurationFile->getPogodaCc().ignorePressureQf) {
+					// pressure
+					if (weather->second->getQnhQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_ ||
+						weather->second->getQnhQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_DEGRADED_)
+					{
+						w.sayPressure = true;
+					}
+					else
+					{
+						w.sayPressure = false;
+						SPDLOG_WARN("Pressure for station {} won't be said due to quality factor", w.name);
+					}
+				}
+
+				if (!configurationFile->getPogodaCc().ignoreHumidityQf) {
+					// humidity
+					if (weather->second->getHumidityQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_ ||
+						weather->second->getHumidityQf()->getValue() == org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_DEGRADED_)
+					{
+						w.sayHumidy = true;
+					}
+					else
+					{
+						w.sayHumidy = false;
+						SPDLOG_WARN("Humidity for station {} won't be said due to quality factor", w.name);
+					}
 				}
 
 			}

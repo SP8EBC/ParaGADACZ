@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lconfig++ -lcurl -lfmt -lcrypto -lpthread -lcpprest -lboost_chrono -lboost_thread -lboost_regex -lvlc -lconfig
+LIBS := -lconfig++ -lcurl -lfmt -lcrypto -lpthread -lcpprest -lboost_filesystem -lboost_chrono -lboost_thread -lboost_regex -lvlc -lconfig
 

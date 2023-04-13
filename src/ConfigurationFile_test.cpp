@@ -118,3 +118,18 @@ BOOST_AUTO_TEST_CASE (simple_parse)
 
 }
 
+BOOST_AUTO_TEST_CASE (parsing_pogodacc_config)
+{
+	ConfigurationFile configurationFile("./test_input/configuration_simple_parse.conf");
+
+	bool result = configurationFile.parse();
+
+	BOOST_CHECK_EQUAL(result, true);
+	///////////////////////////////////////////
+	BOOST_CHECK_EQUAL(configurationFile.getPogodaCc().baseUrl, "http://pogoda.cc:8080/meteo_backend");
+	BOOST_CHECK_EQUAL(configurationFile.getPogodaCc().ignoreTemperatureQf, true);
+	BOOST_CHECK_EQUAL(configurationFile.getPogodaCc().ignoreHumidityQf, true);
+	BOOST_CHECK_EQUAL(configurationFile.getPogodaCc().ignorePressureQf, false);
+	BOOST_CHECK_EQUAL(configurationFile.getPogodaCc().ignoreWindQf, false);
+
+}

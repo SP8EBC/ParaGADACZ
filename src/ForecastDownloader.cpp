@@ -14,6 +14,13 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#include "boost/filesystem/operations.hpp" // includes boost/filesystem/path.hpp
+
+#include <nlohmann/json.hpp>
+
+#include <iostream>
+#include <fstream>
+
 ForecastDownloader::ForecastDownloader(std::shared_ptr<ConfigurationFile> & config) : configurationFile(config) {
 
 	apiConfiguration = std::make_shared<org::openapitools::client::api::ApiConfiguration>();
@@ -39,6 +46,9 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 
 		SPDLOG_INFO("Downloading meteoblue forecast for: {}, longitude: {}, latitude: {}", location.name, location.longitude, location.latitude);
 
+		// used to extract from json object
+		std::stringstream stream;
+
 		try {
 			// download forecast (at least try to do so)
 			std::shared_ptr<org::openapitools::client::model::Inline_response_200> forecast =
@@ -48,6 +58,15 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 							"timestamp_utc",
 							METEOBLUE_API_KEY,
 							boost::optional<std::string>()).get();
+
+			// get response as json object
+			web::json::value forecastInJsonValue = forecast->toJson();
+
+			// stream JSON object as a string
+			stream << forecastInJsonValue;
+
+			// and get this tring from
+			std::string str = stream.str();
 
 			// put result
 			std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> tuple;
@@ -82,6 +101,84 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 
 std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastDownloader::getForName(
 		std::string forecastPointName) {
+}
+
+bool ForecastDownloader::saveInCache(std::string &data, std::string &name) {
+}
+
+std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastDownloader::loadFromCache(
+		std::string name) {
+}
+
+bool ForecastDownloader::loadCacheIndex() {
+
+	bool out = false;
+
+	// input buffer from data read from string
+	std::string inputBuffer;
+
+	// path to remporary directory
+	boost::filesystem::path dir(this->configurationFile->getForecast().cacheDirectory);
+
+	// path to cache index in temporary directory
+	boost::filesystem::path index(this->configurationFile->getForecast().cacheDirectory + "/index.json");
+
+	// check if temporary directory exists
+	if (boost::filesystem::is_directory(dir)) {
+		// check if index file exist
+		if (boost::filesystem::exists(index)) {
+			SPDLOG_INFO("Opening cache index file from: {}", index.generic_string());
+
+			// open file from disk
+			std::fstream inputFile;
+			inputFile.open(index.generic_string(), std::ios::in);
+
+			// check if has been opened successfully
+			if (inputFile.is_open()) {
+
+				// reserve place for whole index file
+				inputFile.seekg(0, std::ios::end);
+				inputBuffer.resize(inputFile.tellg());
+
+				// and rewind back to the begining
+				inputFile.seekg(0);
+
+				// read all content
+				inputFile.read(inputBuffer.data(), inputBuffer.size());
+
+				// try to parse JSON read from file
+				nlohmann::basic_json json = nlohmann::json::parse(inputBuffer, nullptr, false);
+
+				// check if parsing was successfull
+				if (nlohmann::json::value_t::discarded != json) {
+
+					// index is a root label for the content
+					if (json.contains("index")) {
+						nlohmann::json array = json["index"];
+
+						// get number of elements
+						nlohmann::json::size_type elemNumbers = array.size();
+
+						for (int i = 0 ; i < elemNumbers; i++) {
+
+						}
+					}
+				}
+				else {
+					SPDLOG_ERROR("Cache index doesn't contain valid JSON data");
+				}
+
+			}
+			else {
+				SPDLOG_ERROR("Error has happened during opening!!");
+			}
+		}
+		else {
+			SPDLOG_WARN("Cache index file doesn't exist. New one will be probably created later.");
+		}
+	}
+
+	return out;
 }
 
 std::vector<

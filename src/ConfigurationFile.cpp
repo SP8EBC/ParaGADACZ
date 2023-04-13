@@ -119,14 +119,14 @@ bool ConfigurationFile::parse() {
 		this->debug = false;
 	}
 
-	// get audio base path
+	// get log output
 	if (!root.lookupValue("LogOutput", this->logOutput)) {
-		this->logOutput = "";
+		this->logOutput = "paragadacz.log";
 	}
 
-	// get log output
+	// get audio base path
 	if (!root.lookupValue("AudioBasePath", this->audioBasePath)) {
-		this->audioBasePath = "";
+		this->audioBasePath = "/usr/share/paragadacz";
 	}
 
 	// get 'secrets'
@@ -226,6 +226,10 @@ bool ConfigurationFile::parse() {
 		libconfig::Setting &intro = root["Pogodacc"];
 
 		// base URL
+		if (!intro.lookupValue("BaseUrl", this->pogodaCc.baseUrl)) {
+			this->pogodaCc.baseUrl = "http://pogoda.cc:8080/meteo_backend_web/";
+		}
+
 		intro.lookupValue("IgnoreTemperatureQf", this->pogodaCc.ignoreTemperatureQf);
 		intro.lookupValue("IgnoreWindQf", this->pogodaCc.ignoreWindQf);
 		intro.lookupValue("IgnoreHumidityQf", this->pogodaCc.ignoreHumidityQf);
@@ -252,7 +256,7 @@ bool ConfigurationFile::parse() {
 
 		//intro.lookupValue("Ident", this->intro.ident);
 		if (ident.getLength() > 0) {
-			for (size_t i = 0; i < ident.getLength(); i++) {
+			for (int i = 0; i < ident.getLength(); i++) {
 				std::string s = ident[i];
 
 				// add all files
@@ -433,6 +437,21 @@ bool ConfigurationFile::parse() {
 			// add this to program configuration
 			this->forecast.locations.push_back(l);
 
+		}
+
+		// forecast cashing
+		if (!forecastMeteblue.lookupValue("Cache", this->forecast.cache)) {
+			this->forecast.cache = false;
+		}
+
+		// forecast cashing
+		if (!forecastMeteblue.lookupValue("CacheDirectory", this->forecast.cacheDirectory)) {
+			this->forecast.cacheDirectory = "/var/tmp/paragadacz";
+		}
+
+		// forecast cashing
+		if (!forecastMeteblue.lookupValue("MaximumCacheAgeMins", this->forecast.cacheAgeLimit)) {
+			this->forecast.cacheAgeLimit = 180;
 		}
 
 		SPDLOG_INFO("{} sources of meteoblue weather forecast read", this->forecast.locations.size());

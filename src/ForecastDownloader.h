@@ -12,7 +12,16 @@
 #include "ForecastApi.h"
 
 #include <tuple>
+#include <map>
 
+/**
+ * Class representing element of cache index
+ */
+struct ForecastDownloader_CacheIndexElem {
+	long timestamp;	//<! Timestamp when this forecast point has ben downloaded from meteoblue
+	std::string locationName;	//!< Name of this location
+	std::string filename;		//!< Filename where this forecast data is saved on disk
+};
 
 class ForecastDownloader {
 
@@ -29,6 +38,20 @@ class ForecastDownloader {
 	bool anyError = false;
 
 	bool anyGood = false;
+
+	std::map<std::string, ForecastDownloader_CacheIndexElem> cacheIndex;
+
+	/**
+	 * Saves this weather forecast into JSON file on disk and upates cache
+	 */
+	bool saveInCache(std::string & data, std::string & name);
+
+	std::shared_ptr<org::openapitools::client::model::Inline_response_200> loadFromCache (std::string name);
+
+	/**
+	 * Loads cache index from disk
+	 */
+	bool loadCacheIndex();
 
 public:
 	ForecastDownloader(std::shared_ptr<ConfigurationFile> & config);

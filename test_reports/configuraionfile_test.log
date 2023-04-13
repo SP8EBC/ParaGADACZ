@@ -1,13 +1,13 @@
-Running 4 test cases...
+Running 5 test cases...
 Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(36): Entering test case "split_callsign"
 ../src/ConfigurationFile_test.cpp(42): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(43): info: check std::get<unsigned>(result) == 11 has passed
-../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 86us
+../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 387us
 ../src/ConfigurationFile_test.cpp(46): Entering test case "split_callsign_no_ssid"
 ../src/ConfigurationFile_test.cpp(52): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(53): info: check std::get<unsigned>(result) == 0 has passed
-../src/ConfigurationFile_test.cpp(46): Leaving test case "split_callsign_no_ssid"; testing time: 77us
+../src/ConfigurationFile_test.cpp(46): Leaving test case "split_callsign_no_ssid"; testing time: 355us
 ../src/ConfigurationFile_test.cpp(56): Entering test case "inhibitor_parse"
 ../src/ConfigurationFile_test.cpp(62): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(65): info: check inhibitor.serial.enable == true has passed
@@ -19,7 +19,7 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(73): info: check inhibitor.exec.enable == true has passed
 ../src/ConfigurationFile_test.cpp(74): info: check inhibitor.exec.okRetval == 0 has passed
 ../src/ConfigurationFile_test.cpp(75): info: check inhibitor.exec.path == "/bin/more" has passed
-../src/ConfigurationFile_test.cpp(56): Leaving test case "inhibitor_parse"; testing time: 415us
+../src/ConfigurationFile_test.cpp(56): Leaving test case "inhibitor_parse"; testing time: 1775us
 ../src/ConfigurationFile_test.cpp(81): Entering test case "simple_parse"
 ../src/ConfigurationFile_test.cpp(89): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(91): info: check configurationFile.getIntro().ident.at(0) == "intro.ogg" has passed
@@ -45,5 +45,13 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(114): info: check configurationFile.getForecast().locations.at(0).sayPrecipation == true has passed
 ../src/ConfigurationFile_test.cpp(115): info: check configurationFile.getForecast().locations.at(0).sayTemperature == true has passed
 ../src/ConfigurationFile_test.cpp(116): info: check configurationFile.getForecast().locations.at(0).sayWind == true has passed
-../src/ConfigurationFile_test.cpp(81): Leaving test case "simple_parse"; testing time: 321us
-Leaving test module "ConfigurationFile_test"; testing time: 944us
+../src/ConfigurationFile_test.cpp(81): Leaving test case "simple_parse"; testing time: 1210us
+../src/ConfigurationFile_test.cpp(121): Entering test case "parsing_pogodacc_config"
+../src/ConfigurationFile_test.cpp(127): info: check result == true has passed
+../src/ConfigurationFile_test.cpp(129): info: check configurationFile.getPogodaCc().baseUrl == "http://pogoda.cc:8080/meteo_backend" has passed
+../src/ConfigurationFile_test.cpp(130): info: check configurationFile.getPogodaCc().ignoreTemperatureQf == true has passed
+../src/ConfigurationFile_test.cpp(131): info: check configurationFile.getPogodaCc().ignoreHumidityQf == true has passed
+../src/ConfigurationFile_test.cpp(132): info: check configurationFile.getPogodaCc().ignorePressureQf == false has passed
+../src/ConfigurationFile_test.cpp(133): info: check configurationFile.getPogodaCc().ignoreWindQf == false has passed
+../src/ConfigurationFile_test.cpp(121): Leaving test case "parsing_pogodacc_config"; testing time: 906us
+Leaving test module "ConfigurationFile_test"; testing time: 4833us

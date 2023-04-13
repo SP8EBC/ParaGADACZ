@@ -44,7 +44,7 @@ struct ConfigurationFile_Pogodacc {
 
 /**
  * All secrets like API keys, password and simmilar stuff which shall not be
- * shared publicitly and usually is separated to separate config file,
+ * shared publicity and usually is separated to separate config file,
  * which then is included into main one
  */
 struct ConfigurationFile_Secret {
@@ -101,6 +101,9 @@ struct ConfigurationFile_ForecastMeteoblue {
 	bool skipAnouncementIfAnyIsMissing;	//!< skip missing forecast announcement instead of skipping whole forecast anouncement
 	bool demo;						//!< Create forecast stub FOR DEMO ONLY if API key is missing
 	std::vector<ConfigurationFile_ForecastMeteoblue_Locations> locations;	//!< forecast loca
+	bool cache;				//!< Enable forecast cache to save money on API calls
+	std::string cacheDirectory;	//!< Path to directory with cache files
+	int cacheAgeLimit;		//!< How old the cache might be before it is discarded and new forecast is downloaded
 };
 
 struct ConfigurationFile_Inhibitor_Serial {
@@ -166,8 +169,6 @@ class ConfigurationFile {
 	ConfigurationFile_Aprx aprxConfig;
 
 	ConfigurationFile_Pogodacc pogodaCc;
-
-
 
 	int maximumDataAgeInMinutes;	//!< maximum time in minutes for current measurements to be usable
 
