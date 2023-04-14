@@ -12,6 +12,7 @@ CPP_SRCS += \
 ../src/ConfigurationFile.cpp \
 ../src/CurrentConditionsDownloader.cpp \
 ../src/ForecastDownloader.cpp \
+../src/ForecastDownloader_test_index.cpp \
 ../src/ForecastFinder.cpp \
 ../src/InhibitorAndPttControl.cpp \
 ../src/Player.cpp \
@@ -19,8 +20,7 @@ CPP_SRCS += \
 ../src/PlaylistSamplerPL.cpp \
 ../src/PogodaccDownloader.cpp \
 ../src/TimeTools.cpp \
-../src/WeatherlinkDownloader.cpp \
-../src/main.cpp 
+../src/WeatherlinkDownloader.cpp 
 
 OBJS += \
 ./src/AprsPacket.o \
@@ -31,6 +31,7 @@ OBJS += \
 ./src/ConfigurationFile.o \
 ./src/CurrentConditionsDownloader.o \
 ./src/ForecastDownloader.o \
+./src/ForecastDownloader_test_index.o \
 ./src/ForecastFinder.o \
 ./src/InhibitorAndPttControl.o \
 ./src/Player.o \
@@ -38,8 +39,7 @@ OBJS += \
 ./src/PlaylistSamplerPL.o \
 ./src/PogodaccDownloader.o \
 ./src/TimeTools.o \
-./src/WeatherlinkDownloader.o \
-./src/main.o 
+./src/WeatherlinkDownloader.o 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
@@ -50,6 +50,7 @@ CPP_DEPS += \
 ./src/ConfigurationFile.d \
 ./src/CurrentConditionsDownloader.d \
 ./src/ForecastDownloader.d \
+./src/ForecastDownloader_test_index.d \
 ./src/ForecastFinder.d \
 ./src/InhibitorAndPttControl.d \
 ./src/Player.d \
@@ -57,8 +58,7 @@ CPP_DEPS += \
 ./src/PlaylistSamplerPL.d \
 ./src/PogodaccDownloader.d \
 ./src/TimeTools.d \
-./src/WeatherlinkDownloader.d \
-./src/main.d 
+./src/WeatherlinkDownloader.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

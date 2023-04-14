@@ -48,10 +48,15 @@ class ForecastDownloader {
 
 	std::shared_ptr<org::openapitools::client::model::Inline_response_200> loadFromCache (std::string name);
 
+protected:
 	/**
 	 * Loads cache index from disk
 	 */
 	bool loadCacheIndex();
+
+	std::map<std::string, ForecastDownloader_CacheIndexElem> getCacheIndex() const {
+		return cacheIndex;
+	}
 
 public:
 	ForecastDownloader(std::shared_ptr<ConfigurationFile> & config);

@@ -1,0 +1,7 @@
+Running 1 test case...
+Entering test module "ForecastDownloader_test"
+../src/ForecastDownloader_test_index.cpp(54): Entering test case "first_good_idx"
+../src/ForecastDownloader_test_index.cpp(59): info: check true == downloader._loadCacheIndex() has passed
+../src/ForecastDownloader_test_index.cpp(63): info: check 3 == _map.size() has passed
+../src/ForecastDownloader_test_index.cpp(54): Leaving test case "first_good_idx"; testing time: 240us
+Leaving test module "ForecastDownloader_test"; testing time: 252us

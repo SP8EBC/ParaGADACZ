@@ -1,0 +1,19 @@
+{
+  "index": [
+    {
+      "timestamp": 1234,
+      "locationName": "dupa",
+      "filename": "file.json"
+    },
+    {
+      "timestamp": 5678,
+      "locationName": "dupa",
+      "filename": "file2.json"
+    },
+    {
+      "timestamp": 90123,
+      "locationName": "dupa",
+      "filename": "file3.json"
+    }
+  ]
+}

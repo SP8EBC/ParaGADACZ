@@ -20,6 +20,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <map>
+#include <utility>
 
 ForecastDownloader::ForecastDownloader(std::shared_ptr<ConfigurationFile> & config) : configurationFile(config) {
 
@@ -159,8 +161,34 @@ bool ForecastDownloader::loadCacheIndex() {
 						// get number of elements
 						nlohmann::json::size_type elemNumbers = array.size();
 
-						for (int i = 0 ; i < elemNumbers; i++) {
+						for (unsigned i = 0 ; i < static_cast<unsigned>(elemNumbers); i++) {
 
+							// get element from index
+							nlohmann::json elem = array[i];
+
+							// each element shall consist exactly three elements
+							if (elem.size() == 3) {
+
+								// get all values from JSON
+								long _timestamp = elem["timestamp"];
+								std::string _location = elem["locationName"];
+								std::string _filename = elem["filename"];
+
+								// create new object to store into the map
+								ForecastDownloader_CacheIndexElem elem;
+
+								elem.filename = _filename;
+								elem.locationName = _location;
+								elem.timestamp = _timestamp;
+
+								// put element on the map
+								this->cacheIndex.insert(std::pair{_filename, elem});
+
+								out = true;
+							}
+							else {
+								SPDLOG_DEBUG("Element at index {} has wrong size of {}", i, elem.size());
+							}
 						}
 					}
 				}
