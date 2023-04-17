@@ -9,6 +9,7 @@
 
 // meteoblue api
 #include "ForecastApi.h"
+#include "ModelBase.h"
 #include "secret.h"
 
 #include "spdlog/spdlog.h"
@@ -22,6 +23,10 @@
 #include <fstream>
 #include <map>
 #include <utility>
+
+#include "exception/ForecastInCacheTooOldEx.h"
+#include "exception/ForecastMissingInCache.h"
+#include "TimeTools.h"
 
 ForecastDownloader::ForecastDownloader(std::shared_ptr<ConfigurationFile> & config) : configurationFile(config) {
 
@@ -45,52 +50,7 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 
 	// iterate through all locations
 	for (ConfigurationFile_ForecastMeteoblue_Locations location : forecasts.locations) {
-
-		SPDLOG_INFO("Downloading meteoblue forecast for: {}, longitude: {}, latitude: {}", location.name, location.longitude, location.latitude);
-
-		// used to extract from json object
-		std::stringstream stream;
-
-		try {
-			// download forecast (at least try to do so)
-			std::shared_ptr<org::openapitools::client::model::Inline_response_200> forecast =
-					forecastApi->basicDayBasic3hGet(
-							location.longitude,
-							location.latitude,
-							"timestamp_utc",
-							METEOBLUE_API_KEY,
-							boost::optional<std::string>()).get();
-
-			// get response as json object
-			web::json::value forecastInJsonValue = forecast->toJson();
-
-			// stream JSON object as a string
-			stream << forecastInJsonValue;
-
-			// and get this tring from
-			std::string str = stream.str();
-
-			// put result
-			std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> tuple;
-
-			// create a tuple with results
-			tuple = std::make_tuple(location.name, forecast);
-
-			// add this to the vector
-			allResults.push_back(tuple);
-
-			anyGood = true;
-		}
-		catch (org::openapitools::client::api::ApiException & e) {
-			SPDLOG_ERROR("ApiException has happened during downloading forecast for {}", location.name );
-
-			anyError = true;
-		}
-		catch (...) {
-			SPDLOG_ERROR("Something really wrong has happened during downloading forecast for {}", location.name );
-
-			anyError = true;
-		}
+		downloadMeteoblue(location);
 	}
 
 	return anyError;
@@ -101,15 +61,174 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 	 */
 }
 
+bool ForecastDownloader::downloadMeteoblue(
+		ConfigurationFile_ForecastMeteoblue_Locations &location) {
+
+	SPDLOG_INFO("Downloading meteoblue forecast for: {}, longitude: {}, latitude: {}", location.name, location.longitude, location.latitude);
+
+	// used to extract from json object
+	std::stringstream stream;
+
+	try {
+		// download forecast (at least try to do so)
+		std::shared_ptr<org::openapitools::client::model::Inline_response_200> forecast =
+				forecastApi->basicDayBasic3hGet(
+						location.longitude,
+						location.latitude,
+						"timestamp_utc",
+						METEOBLUE_API_KEY,
+						boost::optional<std::string>()).get();
+
+		// get response as json object
+		web::json::value forecastInJsonValue = forecast->toJson();
+
+		// stream JSON object as a string
+		stream << forecastInJsonValue;
+
+		// and get this tring from
+		std::string str = stream.str();
+
+		// put result
+		std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>> tuple;
+
+		// create a tuple with results
+		tuple = std::make_tuple(location.name, forecast);
+
+		// add this to the vector
+		allResults.push_back(tuple);
+
+		this->saveInCache(str, location.name);
+
+		anyGood = true;
+	}
+	catch (org::openapitools::client::api::ApiException & e) {
+		SPDLOG_ERROR("ApiException has happened during downloading forecast for {}", location.name );
+
+		anyError = true;
+	}
+	catch (...) {
+		SPDLOG_ERROR("Something really wrong has happened during downloading forecast for {}", location.name );
+
+		anyError = true;
+	}
+
+	return true;
+}
+
 std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastDownloader::getForName(
 		std::string forecastPointName) {
 }
 
-bool ForecastDownloader::saveInCache(std::string &data, std::string &name) {
-}
-
 std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastDownloader::loadFromCache(
 		std::string name) {
+
+	std::shared_ptr<org::openapitools::client::model::Inline_response_200> out;
+
+	std::string buffer;
+
+	// look for element in index
+	auto idxIterator = this->cacheIndex.find(name);
+
+	// check if element has been found
+	if (idxIterator != this->cacheIndex.end()) {
+
+		// get an element itself
+		ForecastDownloader_CacheIndexElem elementFromIndex = idxIterator->second;
+
+		// check if data isn't too old
+		if (elementFromIndex.timestamp == 1 ||
+			elementFromIndex.timestamp + this->configurationFile->getForecast().cacheAgeLimit > TimeTools::getEpoch()) {
+
+			// path to cache file
+			boost::filesystem::path file(this->configurationFile->getForecast().cacheDirectory + "/" + elementFromIndex.filename);
+
+			// fstream to get content of a file
+			std::fstream cacheFile;
+			cacheFile.open(file.generic_string(), std::ios::in);
+
+			if (cacheFile.is_open()) {
+				SPDLOG_DEBUG("Loading stored forecast for {} from cache file {}", elementFromIndex.locationName, file.generic_string());
+
+				// reserve place for whole file file
+				cacheFile.seekg(0, std::ios::end);
+				buffer.resize(cacheFile.tellg());
+
+				// and rewind back to the begining
+				cacheFile.seekg(0);
+
+				// read all content
+				cacheFile.read(buffer.data(), buffer.size());
+
+				// create output object
+				out = std::make_shared<org::openapitools::client::model::Inline_response_200>();
+
+				// convert a string containing JSON data in text to JSON object itself
+				web::json::value value = web::json::value::parse(buffer);
+
+				out->fromJson(value);
+
+			}
+		}
+		else {
+			throw ForecastInCacheTooOldEx();
+		}
+	}
+	else {
+		throw ForecastMissingInCache();
+	}
+
+	return out;
+}
+
+bool ForecastDownloader::saveInCache(std::string &data, std::string &name) {
+
+	bool output = false;
+
+	// path to remporary directory
+	boost::filesystem::path dir(this->configurationFile->getForecast().cacheDirectory);
+
+	// path to file with this forecast
+	boost::filesystem::path file(this->configurationFile->getForecast().cacheDirectory + "/" + name + ".json");
+
+	SPDLOG_DEBUG("Saving meteoblue forecast for location {} in cache file {}", name, file.generic_string());
+
+	// check if temporary directory exists
+	if (boost::filesystem::is_directory(dir)) {
+
+		// open file from disk
+		std::fstream inputFile;
+		inputFile.open(file.generic_string(), std::ios::out | std::ios::trunc);
+
+		if (inputFile.is_open()) {
+			// save data to file
+			inputFile << data;
+
+			// close it
+			inputFile.close();
+
+			ForecastDownloader_CacheIndexElem cacheIndexElement;
+
+			// create new index element
+			cacheIndexElement.filename = name + ".json";
+			cacheIndexElement.locationName = name;
+			cacheIndexElement.timestamp = TimeTools::getEpoch();
+
+			// put element on the map
+			this->cacheIndex.insert(std::pair{cacheIndexElement.locationName, cacheIndexElement});
+
+			// update index on disk
+
+			output = true;
+		}
+		else {
+			SPDLOG_ERROR("Cannot open cache file for rewriting!!");
+		}
+	}
+	else {
+		SPDLOG_ERROR("Directory for cache files doesn't exist!!");
+	}
+
+	return output;
 }
 
 bool ForecastDownloader::loadCacheIndex() {
@@ -182,7 +301,7 @@ bool ForecastDownloader::loadCacheIndex() {
 								elem.timestamp = _timestamp;
 
 								// put element on the map
-								this->cacheIndex.insert(std::pair{_filename, elem});
+								this->cacheIndex.insert(std::pair{_location, elem});
 
 								out = true;
 							}
@@ -204,6 +323,73 @@ bool ForecastDownloader::loadCacheIndex() {
 		else {
 			SPDLOG_WARN("Cache index file doesn't exist. New one will be probably created later.");
 		}
+	}
+
+	return out;
+}
+
+bool ForecastDownloader::saveCacheIndex() {
+
+	return saveCacheIndex(this->cacheIndex);
+
+}
+
+bool ForecastDownloader::saveCacheIndex(
+		std::map<std::string, ForecastDownloader_CacheIndexElem> &idx)
+{
+	bool out = false;
+
+	SPDLOG_INFO("Saving forecast cache index to disk");
+
+	// path to remporary directory
+	boost::filesystem::path dir(this->configurationFile->getForecast().cacheDirectory);
+
+	// path to cache index in temporary directory
+	boost::filesystem::path index(this->configurationFile->getForecast().cacheDirectory + "/index.json");
+
+	// check if temporary directory exists
+	if (boost::filesystem::is_directory(dir)) {
+
+		std::fstream indexStream;
+
+		// open a file with an index and truncate it's content
+		indexStream.open(index.generic_string(), std::ios::out | std::ios::trunc);
+
+		if (indexStream.is_open()) {
+
+			// root of a document
+			nlohmann::json json = nlohmann::json::object();
+
+			// array with index elements
+			nlohmann::json arr = nlohmann::json::array();
+
+			for (const auto & [locationName, indexElem] : idx) {
+				// create single list object
+				nlohmann::basic_json _indexElementJson = nlohmann::json::object();
+
+				// fill it with data
+				_indexElementJson["timestamp"] = (indexElem.timestamp);
+				_indexElementJson["locationName"] = (indexElem.locationName);
+				_indexElementJson["filename"] = (indexElem.filename);
+
+				// and add to the array
+				arr.push_back(_indexElementJson);
+			}
+
+			// insert array into JSON structure
+			json["index"] = arr;
+
+			// put JSON into file on disk
+			indexStream << json;
+
+			indexStream.close();
+
+			out = true;
+		}
+
+	}
+	else {
+		SPDLOG_ERROR("Target directory for cache doesn't exist!");
 	}
 
 	return out;
@@ -236,7 +422,7 @@ bool ForecastDownloader::createDemoStub() {
 	long ts = (current - epoch).total_seconds();
 
 	// forecast future time in minutes!!!
-	uint32_t future_time = configurationFile->getForecast().futureTime;
+	//uint32_t future_time = configurationFile->getForecast().futureTime;
 
 	//org::openapitools::client::model::Inline_response_200
 	auto meteoblueResponse = std::make_shared<org::openapitools::client::model::Inline_response_200>();
@@ -246,8 +432,6 @@ bool ForecastDownloader::createDemoStub() {
 	std::vector<float> temperature;
 	std::vector<int32_t> winddirection;
 	std::vector<float> windspeed;
-
-	int64_t expected_timestamp = ts + (future_time / 30) * 1800;
 
 	////////////// prepare stubbed weather forecast data
 	for (int i = 0; i < 64; i++) {

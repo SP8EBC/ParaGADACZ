@@ -1,7 +1,16 @@
-Running 1 test case...
+Running 3 test cases...
 Entering test module "ForecastDownloader_test"
-../src/ForecastDownloader_test_index.cpp(54): Entering test case "first_good_idx"
-../src/ForecastDownloader_test_index.cpp(59): info: check true == downloader._loadCacheIndex() has passed
-../src/ForecastDownloader_test_index.cpp(63): info: check 3 == _map.size() has passed
-../src/ForecastDownloader_test_index.cpp(54): Leaving test case "first_good_idx"; testing time: 240us
-Leaving test module "ForecastDownloader_test"; testing time: 252us
+../src/ForecastDownloader_test_index.cpp(77): Entering test case "first_good_idx"
+../src/ForecastDownloader_test_index.cpp(82): info: check true == downloader._loadCacheIndex() has passed
+../src/ForecastDownloader_test_index.cpp(86): info: check 3 == _map.size() has passed
+../src/ForecastDownloader_test_index.cpp(77): Leaving test case "first_good_idx"; testing time: 360us
+../src/ForecastDownloader_test_index.cpp(89): Entering test case "create_index"
+../src/ForecastDownloader_test_index.cpp(111): info: check true == downloader._saveCacheIndex(_map) has passed
+../src/ForecastDownloader_test_index.cpp(113): info: check true == reader._loadCacheIndex() has passed
+../src/ForecastDownloader_test_index.cpp(114): info: check 3 == reader._getCacheIndex().size() has passed
+../src/ForecastDownloader_test_index.cpp(89): Leaving test case "create_index"; testing time: 342us
+../src/ForecastDownloader_test_index.cpp(118): Entering test case "read_from_cache"
+../src/ForecastDownloader_test_index.cpp(126): info: check 'no exceptions thrown by skrzyczne_result = downloader._loadFromCache("Skrzyczne")' has passed
+../src/ForecastDownloader_test_index.cpp(130): info: difference{} between 4.07f{4.07000017} and temperature.at(0){4.07000017} doesn't exceed 1%
+../src/ForecastDownloader_test_index.cpp(118): Leaving test case "read_from_cache"; testing time: 762us
+Leaving test module "ForecastDownloader_test"; testing time: 1548us

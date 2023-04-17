@@ -22,25 +22,6 @@ CPP_SRCS += \
 ../src/TimeTools.cpp \
 ../src/WeatherlinkDownloader.cpp 
 
-OBJS += \
-./src/AprsPacket.o \
-./src/AprsWXData.o \
-./src/AprsWXDataFactory.o \
-./src/AprxLogParser.o \
-./src/AvalancheWarnings.o \
-./src/ConfigurationFile.o \
-./src/CurrentConditionsDownloader.o \
-./src/ForecastDownloader.o \
-./src/ForecastDownloader_test_index.o \
-./src/ForecastFinder.o \
-./src/InhibitorAndPttControl.o \
-./src/Player.o \
-./src/PlaylistAssembler.o \
-./src/PlaylistSamplerPL.o \
-./src/PogodaccDownloader.o \
-./src/TimeTools.o \
-./src/WeatherlinkDownloader.o 
-
 CPP_DEPS += \
 ./src/AprsPacket.d \
 ./src/AprsWXData.d \
@@ -60,13 +41,39 @@ CPP_DEPS += \
 ./src/TimeTools.d \
 ./src/WeatherlinkDownloader.d 
 
+OBJS += \
+./src/AprsPacket.o \
+./src/AprsWXData.o \
+./src/AprsWXDataFactory.o \
+./src/AprxLogParser.o \
+./src/AvalancheWarnings.o \
+./src/ConfigurationFile.o \
+./src/CurrentConditionsDownloader.o \
+./src/ForecastDownloader.o \
+./src/ForecastDownloader_test_index.o \
+./src/ForecastFinder.o \
+./src/InhibitorAndPttControl.o \
+./src/Player.o \
+./src/PlaylistAssembler.o \
+./src/PlaylistSamplerPL.o \
+./src/PogodaccDownloader.o \
+./src/TimeTools.o \
+./src/WeatherlinkDownloader.o 
+
 
 # Each subdirectory must supply rules for building sources it contributes
-src/%.o: ../src/%.cpp
+src/%.o: ../src/%.cpp src/subdir.mk
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -std=c++17 -DSPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG -I../lib/nlohman_json_3_7_1/include/ -I../lib/lexborisov_myhtml/include -I../lib/HtmlParser/include -I../lib/wjwwood_serial/include -I../meteoblue/api -I../meteoblue/model -I../weatherlink_v1/api/ -I../weatherlink_v1/model/ -I../pogodacc/api -I../pogodacc -I../pogodacc/model -I/usr/include/curl -I/usr/include/spdlog -O0 -g3 -pedantic -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	g++ -std=c++17 -DSPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG -I../lib/nlohman_json_3_7_1/include/ -I../lib/lexborisov_myhtml/include -I../lib/HtmlParser/include -I../lib/wjwwood_serial/include -I../meteoblue/api -I../meteoblue/model -I../weatherlink_v1/api/ -I../weatherlink_v1/model/ -I../pogodacc/api -I../pogodacc -I../pogodacc/model -I/usr/include/curl -I/usr/include/spdlog -O0 -g3 -pedantic -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
+
+clean: clean-src
+
+clean-src:
+	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastDownloader_test_index.d ./src/ForecastDownloader_test_index.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/TimeTools.d ./src/TimeTools.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o
+
+.PHONY: clean-src
 

@@ -39,20 +39,46 @@ class ForecastDownloader {
 
 	bool anyGood = false;
 
+	/**
+	 * A map holding index data
+	 */
 	std::map<std::string, ForecastDownloader_CacheIndexElem> cacheIndex;
+
+	/**
+	 * Download meteoblue forecast for single location from the API
+	 */
+	bool downloadMeteoblue(ConfigurationFile_ForecastMeteoblue_Locations & location);
+
+protected:
+
+	/**
+	 * Loads existing forecast data from cache
+	 */
+	std::shared_ptr<org::openapitools::client::model::Inline_response_200> loadFromCache (std::string name);
 
 	/**
 	 * Saves this weather forecast into JSON file on disk and upates cache
 	 */
 	bool saveInCache(std::string & data, std::string & name);
 
-	std::shared_ptr<org::openapitools::client::model::Inline_response_200> loadFromCache (std::string name);
-
-protected:
 	/**
 	 * Loads cache index from disk
+	 * @return
 	 */
 	bool loadCacheIndex();
+
+	/**
+	 * Stores index back on disk in JSON format
+	 * @return
+	 */
+	bool saveCacheIndex();
+
+	/**
+	 * Stores given index in disk
+	 * @param idx
+	 * @return true if succeeded
+	 */
+	bool saveCacheIndex(std::map<std::string, ForecastDownloader_CacheIndexElem> & idx);
 
 	std::map<std::string, ForecastDownloader_CacheIndexElem> getCacheIndex() const {
 		return cacheIndex;
@@ -64,22 +90,26 @@ public:
 
 	/**
 	 * Synchronously download all configured meteoblue forecast
+	 * @return
 	 */
 	bool downloadAllMeteoblue();
 
 	/**
 	 * Only for presentation purposes!!!
-	 *
+	 * @return
 	 */
 	bool createDemoStub();
 
 	/**
 	 * Get meteoblue forecast for point name
+	 * @param forecastPointName
+	 * @return
 	 */
 	std::shared_ptr<org::openapitools::client::model::Inline_response_200> getForName(std::string forecastPointName);
 
 	/**
 	 *
+	 * @return
 	 */
 	std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & getAllForecast();
 
