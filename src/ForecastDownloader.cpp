@@ -48,9 +48,46 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 	// get all configured forecast points
 	const ConfigurationFile_ForecastMeteoblue & forecasts = configurationFile->getForecast();
 
+	// index loading result
+	bool indexResult;
+
+	// check if cache is enabled
+	if (forecasts.cache) {
+		SPDLOG_INFO("Loading forecast cache index from disk");
+
+		// load index
+		indexResult = loadCacheIndex();
+	}
+
 	// iterate through all locations
 	for (ConfigurationFile_ForecastMeteoblue_Locations location : forecasts.locations) {
-		downloadMeteoblue(location);
+
+		// if index has been loaded
+		if (indexResult) {
+			try {
+				// load it from cache
+				const auto forecast = loadFromCache(location.name);
+
+				// create a tuple with results
+				const auto tuple = std::make_tuple(location.name, forecast);
+
+				// add this to the vector
+				allResults.push_back(tuple);
+
+				anyGood = true;
+			}
+			catch (std::exception & e) {
+				SPDLOG_WARN(e.what());
+
+				// if forecast cannot be loaded from cache, download this from the API
+				downloadMeteoblue(location);
+
+			}
+		}
+		else {
+			downloadMeteoblue(location);
+		}
+
 	}
 
 	return anyError;
@@ -137,7 +174,7 @@ std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastD
 
 		// check if data isn't too old
 		if (elementFromIndex.timestamp == 1 ||
-			elementFromIndex.timestamp + this->configurationFile->getForecast().cacheAgeLimit > TimeTools::getEpoch()) {
+			elementFromIndex.timestamp + this->configurationFile->getForecast().cacheAgeLimit * 60 > TimeTools::getEpoch()) {
 
 			// path to cache file
 			boost::filesystem::path file(this->configurationFile->getForecast().cacheDirectory + "/" + elementFromIndex.filename);
@@ -190,7 +227,7 @@ bool ForecastDownloader::saveInCache(std::string &data, std::string &name) {
 	// path to file with this forecast
 	boost::filesystem::path file(this->configurationFile->getForecast().cacheDirectory + "/" + name + ".json");
 
-	SPDLOG_DEBUG("Saving meteoblue forecast for location {} in cache file {}", name, file.generic_string());
+	SPDLOG_INFO("Saving meteoblue forecast for location {} in cache file {}", name, file.generic_string());
 
 	// check if temporary directory exists
 	if (boost::filesystem::is_directory(dir)) {
@@ -217,6 +254,7 @@ bool ForecastDownloader::saveInCache(std::string &data, std::string &name) {
 			this->cacheIndex.insert(std::pair{cacheIndexElement.locationName, cacheIndexElement});
 
 			// update index on disk
+			saveCacheIndex();
 
 			output = true;
 		}
@@ -323,6 +361,9 @@ bool ForecastDownloader::loadCacheIndex() {
 		else {
 			SPDLOG_WARN("Cache index file doesn't exist. New one will be probably created later.");
 		}
+	}
+	else {
+		SPDLOG_ERROR("Cache directory doesn't exist!");
 	}
 
 	return out;

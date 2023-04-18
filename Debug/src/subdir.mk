@@ -12,7 +12,6 @@ CPP_SRCS += \
 ../src/ConfigurationFile.cpp \
 ../src/CurrentConditionsDownloader.cpp \
 ../src/ForecastDownloader.cpp \
-../src/ForecastDownloader_test_index.cpp \
 ../src/ForecastFinder.cpp \
 ../src/InhibitorAndPttControl.cpp \
 ../src/Player.cpp \
@@ -20,7 +19,8 @@ CPP_SRCS += \
 ../src/PlaylistSamplerPL.cpp \
 ../src/PogodaccDownloader.cpp \
 ../src/TimeTools.cpp \
-../src/WeatherlinkDownloader.cpp 
+../src/WeatherlinkDownloader.cpp \
+../src/main.cpp 
 
 CPP_DEPS += \
 ./src/AprsPacket.d \
@@ -31,7 +31,6 @@ CPP_DEPS += \
 ./src/ConfigurationFile.d \
 ./src/CurrentConditionsDownloader.d \
 ./src/ForecastDownloader.d \
-./src/ForecastDownloader_test_index.d \
 ./src/ForecastFinder.d \
 ./src/InhibitorAndPttControl.d \
 ./src/Player.d \
@@ -39,7 +38,8 @@ CPP_DEPS += \
 ./src/PlaylistSamplerPL.d \
 ./src/PogodaccDownloader.d \
 ./src/TimeTools.d \
-./src/WeatherlinkDownloader.d 
+./src/WeatherlinkDownloader.d \
+./src/main.d 
 
 OBJS += \
 ./src/AprsPacket.o \
@@ -50,7 +50,6 @@ OBJS += \
 ./src/ConfigurationFile.o \
 ./src/CurrentConditionsDownloader.o \
 ./src/ForecastDownloader.o \
-./src/ForecastDownloader_test_index.o \
 ./src/ForecastFinder.o \
 ./src/InhibitorAndPttControl.o \
 ./src/Player.o \
@@ -58,7 +57,8 @@ OBJS += \
 ./src/PlaylistSamplerPL.o \
 ./src/PogodaccDownloader.o \
 ./src/TimeTools.o \
-./src/WeatherlinkDownloader.o 
+./src/WeatherlinkDownloader.o \
+./src/main.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -73,7 +73,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastDownloader_test_index.d ./src/ForecastDownloader_test_index.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/TimeTools.d ./src/TimeTools.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o
+	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/TimeTools.d ./src/TimeTools.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o ./src/main.d ./src/main.o
 
 .PHONY: clean-src
 
