@@ -418,6 +418,21 @@ void PlaylistAssembler::currentWeather(
 
 }
 
+void PlaylistAssembler::putRainForecastFromMeteoblue(
+		std::shared_ptr<org::openapitools::client::model::Inline_response_200> &forecast) {
+
+	// https://docs.meteoblue.com/en/weather-apis/packages-api/forecast-data
+
+	// future time from configuration
+	uint32_t ft = configurationFile->getForecast().futureTime;
+
+	//
+
+	MeteobluePictocode pictocode = std::get<1>(ForecastFinder::getPictocodeMeteoblue(forecast, ft));
+
+}
+
+
 void PlaylistAssembler::forecastMeteoblue(
 		std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts) {
 
@@ -658,4 +673,6 @@ void PlaylistAssembler::avalancheWarning(AvalancheWarnings_Location location,
 }
 
 void PlaylistAssembler::signOff() {
+
 }
+

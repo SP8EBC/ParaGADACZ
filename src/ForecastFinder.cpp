@@ -9,6 +9,8 @@
  */
 
 #include "ForecastFinder.h"
+#include "TimeTools.h"
+#include "exception/NoMeteoblueForecastForGivenTimeEx.h"
 
 #include "boost/date_time/posix_time/posix_time.hpp" //include all types plus i/o
 
@@ -26,6 +28,9 @@ std::tuple<int64_t, float> ForecastFinder::getTemperatureMeteoblue(
 		uint16_t minutesFromNow) {
 
 	std::tuple<int64_t, float> out;
+
+	// set to true if forecast value has been found for given time
+	bool found = false;
 
 	// index of forecast timepoint to use
 	int index = 0;
@@ -48,10 +53,16 @@ std::tuple<int64_t, float> ForecastFinder::getTemperatureMeteoblue(
 		if (tim > (ts + minutesFromNow * 60)) {
 			out = std::make_tuple(tim, data->getTemperature().at(index));
 
+			found = true;
+
 			break;
 		}
 
 		index++;
+	}
+
+	if (!found) {
+		throw NoMeteoblueForecastForGivenTimeEx("temperature", minutesFromNow);
 	}
 
 	return out;
@@ -62,6 +73,9 @@ std::tuple<int64_t, float> ForecastFinder::getWindSpeedMeteoblue(
 		uint16_t minutesFromNow) {
 
 	std::tuple<int64_t, float> out;
+
+	// set to true if forecast value has been found for given time
+	bool found = false;
 
 	// index of forecast timepoint to use
 	int index = 0;
@@ -84,10 +98,16 @@ std::tuple<int64_t, float> ForecastFinder::getWindSpeedMeteoblue(
 		if (tim > (ts + minutesFromNow * 60)) {
 			out = std::make_tuple(tim, data->getWindspeed().at(index));
 
+			found = true;
+
 			break;
 		}
 
 		index++;
+	}
+
+	if (!found) {
+		throw NoMeteoblueForecastForGivenTimeEx("windspeed", minutesFromNow);
 	}
 
 	return out;
@@ -100,6 +120,9 @@ std::tuple<int64_t, float> ForecastFinder::getWindDirectionMeteoblue(
 		uint16_t minutesFromNow) {
 
 	std::tuple<int64_t, float> out;
+
+	// set to true if forecast value has been found for given time
+	bool found = false;
 
 	// index of forecast timepoint to use
 	int index = 0;
@@ -122,10 +145,16 @@ std::tuple<int64_t, float> ForecastFinder::getWindDirectionMeteoblue(
 		if (tim > (ts + minutesFromNow * 60)) {
 			out = std::make_tuple(tim, data->getWinddirection().at(index));
 
+			found = true;
+
 			break;
 		}
 
 		index++;
+	}
+
+	if (!found) {
+		throw NoMeteoblueForecastForGivenTimeEx("winddirection", minutesFromNow);
 	}
 
 	return out;
@@ -139,6 +168,90 @@ float ForecastFinder::getRegionalPressure(ConfigurationFile &config,
 
 	float out = 0.0f;
 
+
+	return out;
+}
+
+std::tuple<int64_t, utility::string_t> ForecastFinder::getRainSpotMeteoblue(
+		std::shared_ptr<org::openapitools::client::model::Inline_response_200> meteoblueData,
+		uint16_t minutesFromNow) {
+
+	std::tuple<int64_t, utility::string_t> out;
+
+	// set to true if forecast value has been found for given time
+	bool found = false;
+
+	long current_timestamp = TimeTools::getEpoch();
+
+	// index of forecast timepoint to use
+	int index = 0;
+
+	// get data
+	std::shared_ptr<org::openapitools::client::model::Data_3h> data = meteoblueData->getData3h();
+
+	// iterate through all timestamps
+	for (int64_t tim : data->getTime()) {
+		// break on first poinr after
+		if (tim > (current_timestamp + minutesFromNow * 60)) {
+			out = std::make_tuple(tim, data->getRainspot().at(index));
+
+			found = true;
+
+			break;
+		}
+
+		index++;
+	}
+
+	if (!found) {
+		throw NoMeteoblueForecastForGivenTimeEx("rainspot", minutesFromNow);
+	}
+
+	return out;
+
+}
+
+std::tuple<int64_t, MeteobluePictocode> ForecastFinder::getPictocodeMeteoblue(
+		std::shared_ptr<org::openapitools::client::model::Inline_response_200> meteoblueData,
+		uint16_t minutesFromNow) {
+
+	std::tuple<int64_t, MeteobluePictocode> out;
+
+	// set to true if forecast value has been found for given time
+	bool found = false;
+
+	int32_t found_pictocode;
+	int64_t found_time;
+
+	long current_timestamp = TimeTools::getEpoch();
+
+	// index of forecast timepoint to use
+	int index = 0;
+
+	// get data
+	std::shared_ptr<org::openapitools::client::model::Data_3h> data = meteoblueData->getData3h();
+
+	// iterate through all timestamps
+	for (int64_t tim : data->getTime()) {
+		// break on first poinr after
+		if (tim > (current_timestamp + minutesFromNow * 60)) {
+			found_pictocode = data->getPictocode().at(index);
+			found_time = tim;
+
+			found = true;
+
+			break;
+		}
+
+		index++;
+	}
+
+	if (!found) {
+		throw NoMeteoblueForecastForGivenTimeEx("pictocode", minutesFromNow);
+	}
+
+
+	out = std::make_tuple(found_time, MeteobluePictocode_valueOf(found_pictocode));
 
 	return out;
 }

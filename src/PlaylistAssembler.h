@@ -31,6 +31,14 @@ class PlaylistAssembler {
 
 	static std::string throwOnEmptyOptional();
 
+private:
+
+	/**
+	 * Helper private method for assembling rain forecast
+	 * @param forecast
+	 */
+	void putRainForecastFromMeteoblue(std::shared_ptr<org::openapitools::client::model::Inline_response_200> & forecast);
+
 public:
 	PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config);
 	virtual ~PlaylistAssembler();
