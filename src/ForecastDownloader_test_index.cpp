@@ -115,6 +115,17 @@ BOOST_AUTO_TEST_CASE(create_index)
 
 }
 
+BOOST_AUTO_TEST_CASE(download_and_save)
+{
+	/**
+	 * Enable this test to download real forecast for skrzyczne
+	 * and store it into "./test_output/test_cache_save/" directory
+	 */
+	ForecastDownloader_test downloader(save_cache);
+
+	downloader.downloadAllMeteoblue();
+}
+
 BOOST_AUTO_TEST_CASE(read_from_cache)
 {
 	std::shared_ptr<org::openapitools::client::model::Inline_response_200> skrzyczne_result;

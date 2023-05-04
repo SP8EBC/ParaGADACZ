@@ -81,7 +81,6 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 
 				// if forecast cannot be loaded from cache, download this from the API
 				downloadMeteoblue(location);
-
 			}
 		}
 		else {

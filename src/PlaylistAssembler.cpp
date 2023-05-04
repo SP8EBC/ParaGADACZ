@@ -418,18 +418,52 @@ void PlaylistAssembler::currentWeather(
 
 }
 
-void PlaylistAssembler::putRainForecastFromMeteoblue(
+PlaylistAssembler::PlaylistAssembler_MeteoblueRs PlaylistAssembler::putRainForecastFromMeteoblue(
 		std::shared_ptr<org::openapitools::client::model::Inline_response_200> &forecast) {
 
 	// https://docs.meteoblue.com/en/weather-apis/packages-api/forecast-data
 
+	PlaylistAssembler_MeteoblueRs rainspotStats;
+	memset(&rainspotStats, 0x00, sizeof(PlaylistAssembler_MeteoblueRs));
+
 	// future time from configuration
 	uint32_t ft = configurationFile->getForecast().futureTime;
 
-	//
-
+	// extract pictocode
 	MeteobluePictocode pictocode = std::get<1>(ForecastFinder::getPictocodeMeteoblue(forecast, ft));
 
+	// get rainspot
+	std::string rainspot = std::get<1>(ForecastFinder::getRainSpotMeteoblue(forecast, ft));
+
+	// go through rainspot string and count each rain forecast point
+	for (char s : rainspot) {
+
+		if (s == '0') {
+			rainspotStats.noRain++;
+		}
+		else if (s == '1') {
+			rainspotStats.lightRain++;
+		}
+		else if (s == '2') {
+			rainspotStats.medium++;
+		}
+		else if (s == '3') {
+			rainspotStats.heavy++;
+		}
+		else if (s == '9') {
+			rainspotStats.shower++;
+		}
+	}
+
+	// sum all rainspots with appropriate weight
+	const int sum =
+			rainspotStats.noRain +
+			rainspotStats.shower * 2 +
+			rainspotStats.lightRain * 3 +
+			rainspotStats.medium * 6 +
+			rainspotStats.heavy * 7;
+
+	return rainspotStats;
 }
 
 

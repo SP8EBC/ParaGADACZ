@@ -31,13 +31,41 @@ class PlaylistAssembler {
 
 	static std::string throwOnEmptyOptional();
 
-private:
+protected:
+
+	/**
+	 *	Struct to sum different kinds of meteoblue rainspots
+	 */
+	struct PlaylistAssembler_MeteoblueRs {
+		int noRain;		// 0
+		int lightRain;	// 1
+		int medium;		// 2
+		int heavy;		// 3
+		int shower;		// 9
+	};
+
+	/**
+	 * What rain type will be put into anouncement basing on rainspot and
+	 * icon
+	 */
+	enum PlaylistAssembler_RainType {
+		RAIN_TYPE_NO_RAIN,	//!<< No rain at all
+		RAIN_TYPE_SHOWERS,	//!<< up to half milimeter
+		RAIN_TYPE_LIGHT,	//!<< up to 2mm
+		RAIN_TYPE_MEDIUM,	//!<< up to 5mm
+		RAIN_TYPE_HEAVY_RAIN,		//!<< heavy rainfall
+		RAIN_TYPE_HEAVY_SNOWFALL,	//!<< heavy snowfall
+		RAIN_TYPE_THUNDERSTORM
+	};
 
 	/**
 	 * Helper private method for assembling rain forecast
 	 * @param forecast
+	 * @return
 	 */
-	void putRainForecastFromMeteoblue(std::shared_ptr<org::openapitools::client::model::Inline_response_200> & forecast);
+	PlaylistAssembler_MeteoblueRs putRainForecastFromMeteoblue(std::shared_ptr<org::openapitools::client::model::Inline_response_200> & forecast);
+
+
 
 public:
 	PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config);
