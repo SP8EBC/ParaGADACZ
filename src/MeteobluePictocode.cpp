@@ -43,10 +43,11 @@ MeteobluePictocode MeteobluePictocode_valueOf(int val) {
 		case 29: out = STORM_WITH_HEAVY_SNOW; break;
 		case 30: out = HEAVY_RAIN_THUNDERSTORMS_LIKELY; break;
 		case 31: out = MIXED_WITH_SHOWERS; break;
-		case 32: out = OVERCAST_WITH_LIGHT_RAIN; break;
-		case 33: out = OVERCAST_WITH_LIGHT_SNOW; break;
-		case 34: out = OVERCAST_WITH_MIXTURE_OF_SNOW_AND_RAIN; break;
-		case 35: out = WRONG_PICTOCODE; break;
+		case 32: out = MIXED_WITH_SNOW_SHOWERS; break;
+		case 33: out = OVERCAST_WITH_LIGHT_RAIN; break;
+		case 34: out = OVERCAST_WITH_LIGHT_SNOW; break;
+		case 35: out = OVERCAST_WITH_MIXTURE_OF_SNOW_AND_RAIN; break;
+		case 36: out = WRONG_PICTOCODE; break;
 	}
 
 	return out;
