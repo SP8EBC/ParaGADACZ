@@ -29,7 +29,8 @@ enum PlaylistSampler_Unit {
 	DEG,	//!< Degrees (like for wind direction)
 	PERCENT,
 	CELSIUS,//!< Degrees Celsius
-	HPA		//!<
+	HPA,	//!<
+	MILIMETER
 };
 
 /**
@@ -45,6 +46,14 @@ enum PlaylistSampler_ConstanElement {
 	WIND_GUSTS,		//!< "gusts"
 	TEMPERATURE,	//!< "temperature"
 	HUMIDITY,		//!< "humidity
+	PRECIPATION,	//!< "precipation"
+	INTERMITTENT,	//!<
+	RAIN,
+	SNOW,
+	UO_TO,			//!< "up to xxx"
+	ABOVE,			//!< "more than xxx" / "above xxx"
+	INTENSE,
+	LOCAL,			//!< "local"
 	AVALANCHE_WARNING,
 	DANGEROUS_EXPOSITION,
 	FIRST_LEVEL,	//!< avalanche warning level

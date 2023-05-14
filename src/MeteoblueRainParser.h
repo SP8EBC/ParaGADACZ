@@ -10,6 +10,7 @@
 
 #include "Inline_response_200.h"
 #include "ConfigurationFile.h"
+#include "MeteobluePictocode.h"
 
 class MeteoblueRainParser {
 
@@ -19,6 +20,7 @@ private:
 	static const int LIGHT_RAIN = 49;	//!<< upper barrier for light precipation
 	static const int MEDIUM_RAIN = 99;	//!<< upper barrier for medium precipation
 				// everything above is heavy rain
+
 public:
 
 	/**
@@ -37,16 +39,17 @@ public:
 	 * icon
 	 */
 	enum MeteoblueRainParser_PrecipType {
-		RAIN_TYPE_NO_PRECIPATION,	//!<< No rain or snow at all
-		RAIN_TYPE_SHOWERS_RAIN,		//!<< rain up to half milimeter
-		RAIN_TYPE_SHOWERS_SNOW,		//!<< snow up to half milimeter
-		RAIN_TYPE_LIGHT_RAIN,	//!<< rain up to 2mm
-		RAIN_TYPE_LIGHT_SNOW,	//!<< snow up to 2mm
-		RAIN_TYPE_MEDIUM_RAIN,	//!<< rain up to 5mm
-		RAIN_TYPE_MEDIUM_SNOW,	//!<< snow up to 5mm
-		RAIN_TYPE_HEAVY_RAIN,		//!<< heavy rainfall
-		RAIN_TYPE_HEAVY_SNOWFALL,	//!<< heavy snowfall
-		RAIN_TYPE_THUNDERSTORM	//!<< thunderstorm possible
+		RAIN_TYPE_NO_PRECIPATION,		//!<< No rain or snow at all
+		RAIN_TYPE_LOCAL_INTERMITTEND,	//!<< Some precipations in vicinity
+		RAIN_TYPE_SHOWERS_RAIN,			//!<< rain up to one milimeter
+		RAIN_TYPE_SHOWERS_SNOW,			//!<< snow up to one milimeter
+		RAIN_TYPE_LIGHT_RAIN,			//!<< rain up to 3mm
+		RAIN_TYPE_LIGHT_SNOW,			//!<< snow up to 3mm
+		RAIN_TYPE_MEDIUM_RAIN,			//!<< rain up to 5mm
+		RAIN_TYPE_MEDIUM_SNOW,			//!<< snow up to 5mm
+		RAIN_TYPE_HEAVY_RAIN,			//!<< heavy rainfall
+		RAIN_TYPE_HEAVY_SNOWFALL,		//!<< heavy snowfall
+		RAIN_TYPE_THUNDERSTORM			//!<< thunderstorm possible
 	};
 
 	/**
@@ -54,7 +57,7 @@ public:
 	 * @param forecast
 	 * @return
 	 */
-	static MeteoblueRainParser_PrecipType putRainForecastFromMeteoblue(
+	static MeteoblueRainParser_PrecipType getRainForecastFromMeteoblue(
 			std::shared_ptr<org::openapitools::client::model::Inline_response_200> & forecast,
 			std::shared_ptr<ConfigurationFile> & configurationFile);
 
@@ -62,6 +65,12 @@ public:
 
 	MeteoblueRainParser();
 	virtual ~MeteoblueRainParser();
+
+protected:
+
+	static MeteoblueRainParser::MeteoblueRainParser_PrecipType parse(
+			MeteobluePictocode pictocode,
+			std::string rainspot);
 };
 
 #endif /* METEOBLUERAINPARSER_H_ */

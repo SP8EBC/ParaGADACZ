@@ -11,6 +11,7 @@
 #include "PlaylistAssembler.h"
 #include "ForecastFinder.h"
 #include "TimeTools.h"
+#include "MeteoblueRainParser.h"
 #include "main.h"
 
 #include "exception/WrongOrderEx.h"
@@ -535,6 +536,71 @@ void PlaylistAssembler::forecastMeteoblue(
 			// and the unit itself
 			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::DEG, (int)_temperature));
 			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::CELSIUS, (int)_temperature));
+
+		}
+
+		if (location.sayPrecipation) {
+			MeteoblueRainParser::MeteoblueRainParser_PrecipType precipation = MeteoblueRainParser::getRainForecastFromMeteoblue(foundForecast, configurationFile);
+
+			switch (precipation) {
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_NO_PRECIPATION:
+					// say nothing and go ahead
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_LOCAL_INTERMITTEND:
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::INTERMITTENT).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::LOCAL).value());
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_SHOWERS_RAIN:
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::INTERMITTENT).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_SHOWERS_SNOW:
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::INTERMITTENT).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::SNOW).value());
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_LIGHT_RAIN:
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)1));
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_LIGHT_SNOW:
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::SNOW).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)1));
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_MEDIUM_RAIN:
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_MEDIUM_SNOW:
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::SNOW).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_HEAVY_RAIN:
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ABOVE).value());
+					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_HEAVY_SNOWFALL:
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::SNOW).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ABOVE).value());
+					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_THUNDERSTORM:
+					break;
+			}
+
 
 		}
 	}

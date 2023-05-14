@@ -13,23 +13,15 @@ MeteoblueRainParser::MeteoblueRainParser() {
 
 }
 
-MeteoblueRainParser::MeteoblueRainParser_PrecipType MeteoblueRainParser::putRainForecastFromMeteoblue(
-		std::shared_ptr<org::openapitools::client::model::Inline_response_200> &forecast,
-		std::shared_ptr<ConfigurationFile> & configurationFile) {
+MeteoblueRainParser::MeteoblueRainParser_PrecipType MeteoblueRainParser::parse(
+		MeteobluePictocode pictocode,
+		std::string rainspot
+		) {
 
 	MeteoblueRainParser_PrecipType out;
 
 	MeteoblueRainParser_Rs rainspotStats;
 	memset(&rainspotStats, 0x00, sizeof(MeteoblueRainParser_Rs));
-
-	// future time from configuration
-	uint32_t ft = configurationFile->getForecast().futureTime;
-
-	// extract pictocode
-	MeteobluePictocode pictocode = std::get<1>(ForecastFinder::getPictocodeMeteoblue(forecast, ft));
-
-	// get rainspot
-	std::string rainspot = std::get<1>(ForecastFinder::getRainSpotMeteoblue(forecast, ft));
 
 	// go through rainspot string and count each rain forecast point
 	for (char s : rainspot) {
@@ -49,6 +41,9 @@ MeteoblueRainParser::MeteoblueRainParser_PrecipType MeteoblueRainParser::putRain
 		else if (s == '9') {
 			rainspotStats.shower++;
 		}
+		/**
+		 * 0 = no rain, 1 = light rain (0.2 – 1.5 mm), 2 = medium (1.5 – 5 mm), 3 = heavy (>5 mm), 9 = shower (0.02 – 0.2 mm)
+		 */
 	}
 
 	// sum all rainspots with appropriate weight
@@ -102,7 +97,34 @@ MeteoblueRainParser::MeteoblueRainParser_PrecipType MeteoblueRainParser::putRain
 				out = RAIN_TYPE_HEAVY_RAIN;
 			}
 			break;
+		default:
+			// there is no rain exactly at this forecast point, but maybe there
+			// is something in the neighborhood.
+			if (sum >= NO_RAIN) {
+				out = RAIN_TYPE_LOCAL_INTERMITTEND;
+			}
+			break;
 	}
+
+	return out;
+}
+
+MeteoblueRainParser::MeteoblueRainParser_PrecipType MeteoblueRainParser::getRainForecastFromMeteoblue(
+		std::shared_ptr<org::openapitools::client::model::Inline_response_200> &forecast,
+		std::shared_ptr<ConfigurationFile> & configurationFile) {
+
+	MeteoblueRainParser_PrecipType out;
+
+	// future time from configuration
+	uint32_t ft = configurationFile->getForecast().futureTime;
+
+	// extract pictocode
+	MeteobluePictocode pictocode = std::get<1>(ForecastFinder::getPictocodeMeteoblue(forecast, ft));
+
+	// get rainspot
+	std::string rainspot = std::get<1>(ForecastFinder::getRainSpotMeteoblue(forecast, ft));
+
+	out = parse(pictocode, rainspot);
 
 	return out;
 

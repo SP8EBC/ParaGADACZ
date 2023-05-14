@@ -67,34 +67,34 @@ std::tuple<
 	// playlist for audio samples
 	std::vector<std::string> playlist;
 
-	playlist.push_back(TIME);
+	playlist.push_back(GODZINA);
 
 	// get hours component
 	switch (hours) {
 	case 0: playlist.push_back(NUMBER_0); SPDLOG_DEBUG("playlist append: {}", NUMBER_0); break;
-	case 1: playlist.push_back(ONE_CLOCK); SPDLOG_DEBUG("playlist append: {}", ONE_CLOCK); break;
-	case 2: playlist.push_back(TWO_CLOCK); SPDLOG_DEBUG("playlist append: {}", TWO_CLOCK); break;
-	case 3: playlist.push_back(THREE_CLOCK); SPDLOG_DEBUG("playlist append: {}", THREE_CLOCK); break;
-	case 4: playlist.push_back(FOUR_CLOCK); SPDLOG_DEBUG("playlist append: {}", FOUR_CLOCK); break;
-	case 5: playlist.push_back(FIVE_CLOCK); SPDLOG_DEBUG("playlist append: {}", FIVE_CLOCK); break;
-	case 6: playlist.push_back(SIX_CLOCK); SPDLOG_DEBUG("playlist append: {}", SIX_CLOCK); break;
-	case 7: playlist.push_back(SEVEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", SEVEN_CLOCK); break;
-	case 8: playlist.push_back(EIGHT_CLOCK); SPDLOG_DEBUG("playlist append: {}", EIGHT_CLOCK); break;
-	case 9: playlist.push_back(NINE_CLOCK); SPDLOG_DEBUG("playlist append: {}", NINE_CLOCK); break;
-	case 10: playlist.push_back(TEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", TEN_CLOCK); break;
-	case 11: playlist.push_back(ELEVEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", ELEVEN_CLOCK); break;
-	case 12: playlist.push_back(TWELVE_CLOCK); SPDLOG_DEBUG("playlist append: {}", TWELVE_CLOCK); break;
-	case 13: playlist.push_back(THIRTEEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", THIRTEEN_CLOCK); break;
-	case 14: playlist.push_back(FOURTEEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", FOURTEEN_CLOCK); break;
-	case 15: playlist.push_back(FIFVETEEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", FIFVETEEN_CLOCK); break;
-	case 16: playlist.push_back(SIXTEEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", SIXTEEN_CLOCK); break;
-	case 17: playlist.push_back(SEVENTEEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", SEVENTEEN_CLOCK); break;
-	case 18: playlist.push_back(EIGHTEEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", EIGHTEEN_CLOCK); break;
-	case 19: playlist.push_back(NINETEEN_CLOCK); SPDLOG_DEBUG("playlist append: {}", NINETEEN_CLOCK); break;
-	case 20: playlist.push_back(TWENTY_CLOCK); SPDLOG_DEBUG("playlist append: {}", TWENTY_CLOCK); break;
-	case 21: playlist.push_back(TWENTY_CLOCK); playlist.push_back(ONE_CLOCK); break;
-	case 22: playlist.push_back(TWENTY_CLOCK); playlist.push_back(TWO_CLOCK); break;
-	case 23: playlist.push_back(TWENTY_CLOCK); playlist.push_back(THREE_CLOCK); break;
+	case 1: playlist.push_back(PIERWSZA); SPDLOG_DEBUG("playlist append: {}", PIERWSZA); break;
+	case 2: playlist.push_back(DRUGA); SPDLOG_DEBUG("playlist append: {}", DRUGA); break;
+	case 3: playlist.push_back(TRZECIA); SPDLOG_DEBUG("playlist append: {}", TRZECIA); break;
+	case 4: playlist.push_back(CZWARTA); SPDLOG_DEBUG("playlist append: {}", CZWARTA); break;
+	case 5: playlist.push_back(PIATA); SPDLOG_DEBUG("playlist append: {}", PIATA); break;
+	case 6: playlist.push_back(SZOSTA); SPDLOG_DEBUG("playlist append: {}", SZOSTA); break;
+	case 7: playlist.push_back(SIODMA); SPDLOG_DEBUG("playlist append: {}", SIODMA); break;
+	case 8: playlist.push_back(OSMA); SPDLOG_DEBUG("playlist append: {}", OSMA); break;
+	case 9: playlist.push_back(DZIEWIATA); SPDLOG_DEBUG("playlist append: {}", DZIEWIATA); break;
+	case 10: playlist.push_back(DZIESIATA); SPDLOG_DEBUG("playlist append: {}", DZIESIATA); break;
+	case 11: playlist.push_back(JEDENASTA); SPDLOG_DEBUG("playlist append: {}", JEDENASTA); break;
+	case 12: playlist.push_back(DWUNASTA); SPDLOG_DEBUG("playlist append: {}", DWUNASTA); break;
+	case 13: playlist.push_back(TRZYNASTA); SPDLOG_DEBUG("playlist append: {}", TRZYNASTA); break;
+	case 14: playlist.push_back(CZTERNASTA); SPDLOG_DEBUG("playlist append: {}", CZTERNASTA); break;
+	case 15: playlist.push_back(PIETNASTA); SPDLOG_DEBUG("playlist append: {}", PIETNASTA); break;
+	case 16: playlist.push_back(SZESNASTA); SPDLOG_DEBUG("playlist append: {}", SZESNASTA); break;
+	case 17: playlist.push_back(SIEDEMNASTA); SPDLOG_DEBUG("playlist append: {}", SIEDEMNASTA); break;
+	case 18: playlist.push_back(OSIEMNASTA); SPDLOG_DEBUG("playlist append: {}", OSIEMNASTA); break;
+	case 19: playlist.push_back(DZIEWIETNASTA); SPDLOG_DEBUG("playlist append: {}", DZIEWIETNASTA); break;
+	case 20: playlist.push_back(DWUDZIESTA); SPDLOG_DEBUG("playlist append: {}", DWUDZIESTA); break;
+	case 21: playlist.push_back(DWUDZIESTA); playlist.push_back(PIERWSZA); break;
+	case 22: playlist.push_back(DWUDZIESTA); playlist.push_back(DRUGA); break;
+	case 23: playlist.push_back(DWUDZIESTA); playlist.push_back(TRZECIA); break;
 	}
 
 	// get minutes into separate vector
@@ -105,7 +105,7 @@ std::tuple<
 		playlist.insert(playlist.end(), minutes_playlist.begin(), minutes_playlist.end());
 
 		// append the end
-		playlist.push_back(UTC);
+		playlist.push_back(UNIWERSALNEGO);
 	}
 
 	std::tuple<std::vector<std::string>, boost::posix_time::ptime> out = std::make_tuple(playlist, current);
@@ -139,9 +139,9 @@ std::optional<
 		std::vector<std::string> out;
 
 		// "prognoza pogody na nastepne"
-		out.push_back(FCAST);
+		out.push_back(PROGNOZA);
 
-		out.push_back(FOR_NEXT);
+		out.push_back(NA_NASTEPNE);
 
 		switch ((int)(minutes / 60)) {
 		case 1: out.push_back(NUMBER_1); out.push_back(HOUR_ONE); break;
@@ -233,7 +233,7 @@ std::vector<
 	//SPDLOG_DEBUG("one_tens: {}, helper: {}", one_tens, helper);
 
 	if (is_negative) {
-		 out.push_back(NEGAITVE);
+		 out.push_back(MINUS);
 	}
 
 	// now select files
@@ -327,7 +327,7 @@ std::vector<
 
 	// if there is any decimal part
 	if (one_tens > 0) {
-		out.push_back(DECIMAL);
+		out.push_back(KROPKA);
 
 		switch (one_tens) {
 		case 1: out.push_back(NUMBER_1); break;
@@ -479,7 +479,7 @@ std::vector<
 	//SPDLOG_DEBUG("units: {}", units);
 
 	if (is_negative) {
-		 out.push_back(NEGAITVE);
+		 out.push_back(MINUS);
 	}
 
 	// now select files
@@ -600,25 +600,28 @@ std::string PlaylistSamplerPL::getAudioFromUnit(PlaylistSampler_Unit unit, int v
 	else {
 		if ( value == 1) {
 			switch (unit) {
-			case PlaylistSampler_Unit::KNOTS:	out = KNOT_ONE; 		break;
-			case PlaylistSampler_Unit::MS:		out = MS_ONE;			break;
-			case PlaylistSampler_Unit::DEG:		out = DEGREE_ONE;		break;
+			case PlaylistSampler_Unit::KNOTS:		out = KNOT_ONE; 		break;
+			case PlaylistSampler_Unit::MS:			out = MS_ONE;			break;
+			case PlaylistSampler_Unit::DEG:			out = DEGREE_ONE;		break;
+			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_ONE;	break;
 			default: break;
 			}
 		}
 		else if ( value == 2 || value == 3 || value == 4) {
 			switch (unit) {
-			case PlaylistSampler_Unit::KNOTS:	out = KNOT_TWO_FOUR; 		break;
-			case PlaylistSampler_Unit::MS:		out = MS_TWO_FOUR;			break;
-			case PlaylistSampler_Unit::DEG:		out = DEGREE_TWO_FOUR;		break;
+			case PlaylistSampler_Unit::KNOTS:		out = KNOT_TWO_FOUR; 		break;
+			case PlaylistSampler_Unit::MS:			out = MS_TWO_FOUR;			break;
+			case PlaylistSampler_Unit::DEG:			out = DEGREE_TWO_FOUR;		break;
+			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_TWO_FOUR;	break;
 			default: break;
 			}
 		}
 		else {
 			switch (unit) {
-			case PlaylistSampler_Unit::KNOTS:	out = KNOT_FOUR; 		break;
-			case PlaylistSampler_Unit::MS:		out = MS_FOUR;			break;
-			case PlaylistSampler_Unit::DEG:		out = DEGREE_FOUR;		break;
+			case PlaylistSampler_Unit::KNOTS:		out = KNOT_FOUR; 		break;
+			case PlaylistSampler_Unit::MS:			out = MS_FOUR;			break;
+			case PlaylistSampler_Unit::DEG:			out = DEGREE_FOUR;		break;
+			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_FOUR;	break;
 			default: break;
 			}
 		}
@@ -639,22 +642,30 @@ std::optional<
 		PlaylistSampler_ConstanElement element) {
 
 	switch (element) {
-	case PlaylistSampler_ConstanElement::CURRENT_TIME:	return TIME;			//!< "godzina"
-	case PlaylistSampler_ConstanElement::CURRENT_WEATHER:	return WEATHER;		//!< "Aktualne Warunki"
-	case PlaylistSampler_ConstanElement::REGIONAL_QNH: 		return QNH_REGIONAL;//!< "Ciśnienie atmosferyczne w regionie"
-	case PlaylistSampler_ConstanElement::FORECAST:		return FCAST;			//!< "Prognoza na nastepne"
-	case PlaylistSampler_ConstanElement::HOURS:			return HOUR_TWO_FOUR;	//!< "hours"
-	case PlaylistSampler_ConstanElement::WIND: 			return DIRECTION;		//!< "wiatr"
-	case PlaylistSampler_ConstanElement::TEMPERATURE: 	return TMPRATURE;
-	case PlaylistSampler_ConstanElement::HUMIDITY:		return HMIDITY;
-	case PlaylistSampler_ConstanElement::WIND_GUSTS:		return WINDGUSTS;
-	case PlaylistSampler_ConstanElement::AVALANCHE_WARNING:	return AVALNCHE_WR;
-	case PlaylistSampler_ConstanElement::DANGEROUS_EXPOSITION: return EXPOSITION;
-	case PlaylistSampler_ConstanElement::FIRST_LEVEL:	return FIRST_LVL;
-	case PlaylistSampler_ConstanElement::SECOND_LEVEL:	return SECOND_LVL;
-	case PlaylistSampler_ConstanElement::THIRD_LEVEL:	return THIRD_LVL;
-	case PlaylistSampler_ConstanElement::FOURTH_LEVEL:	return FOURTH_LVL;
-	case PlaylistSampler_ConstanElement::ALSO:			return _ALSO;
+	case PlaylistSampler_ConstanElement::CURRENT_TIME:		return GODZINA;			//!< "godzina"
+	case PlaylistSampler_ConstanElement::CURRENT_WEATHER:	return AKTUALNE_WARUNKI;		//!< "Aktualne Warunki"
+	case PlaylistSampler_ConstanElement::REGIONAL_QNH: 		return CISNIENIE_REG;//!< "Ciśnienie atmosferyczne w regionie"
+	case PlaylistSampler_ConstanElement::FORECAST:			return PROGNOZA;			//!< "Prognoza na nastepne"
+	case PlaylistSampler_ConstanElement::HOURS:				return HOUR_TWO_FOUR;	//!< "hours"
+	case PlaylistSampler_ConstanElement::WIND: 				return KIERUNEK_WIATRU;		//!< "wiatr"
+	case PlaylistSampler_ConstanElement::TEMPERATURE: 		return TEMPERATURA;
+	case PlaylistSampler_ConstanElement::HUMIDITY:			return WILGOTNOSC;
+	case PlaylistSampler_ConstanElement::WIND_GUSTS:		return PORYWY_WIATRU;
+	case PlaylistSampler_ConstanElement::PRECIPATION:		return OPADY;
+	case PlaylistSampler_ConstanElement::INTERMITTENT:		return PRZELOTNE_OPAD;
+	case PlaylistSampler_ConstanElement::LOCAL:				return LOKALNE;
+	case PlaylistSampler_ConstanElement::RAIN:				return DESZCZU;
+	case PlaylistSampler_ConstanElement::SNOW:				return SNIEGU;
+	case PlaylistSampler_ConstanElement::UO_TO:				return DO;
+	case PlaylistSampler_ConstanElement::ABOVE:				return POWYZEJ;
+	case PlaylistSampler_ConstanElement::INTENSE:			return INTENSYWNE;
+	case PlaylistSampler_ConstanElement::AVALANCHE_WARNING:	return ZAGROZENIELAWINOWE;
+	case PlaylistSampler_ConstanElement::DANGEROUS_EXPOSITION: return ESKPOZYCJA;
+	case PlaylistSampler_ConstanElement::FIRST_LEVEL:		return PIERWSZY_ST;
+	case PlaylistSampler_ConstanElement::SECOND_LEVEL:		return DRUGI_ST;
+	case PlaylistSampler_ConstanElement::THIRD_LEVEL:		return TRZECI_ST;
+	case PlaylistSampler_ConstanElement::FOURTH_LEVEL:		return CZWARTY_ST;
+	case PlaylistSampler_ConstanElement::ALSO:				return ORAZ;
 	}
 
 	SPDLOG_ERROR("Unknown element: {}", element);
