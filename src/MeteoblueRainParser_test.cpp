@@ -53,5 +53,15 @@ BOOST_AUTO_TEST_CASE(first)
 
 	MeteoblueRainParser::MeteoblueRainParser_PrecipType value = Test::parse(pict, input);
 
-	BOOST_CHECK_EQUAL(MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_HEAVY_RAIN, value);
+	BOOST_CHECK_EQUAL(MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_MEDIUM_RAIN, value);
+}
+
+BOOST_AUTO_TEST_CASE(second)
+{
+	const std::string input = "0011211222211123331120012211100031110001131000222";
+	const MeteobluePictocode pict = MeteobluePictocode::LIGHT_RAIN_THUNDERSTORMS_LIKELY;
+
+	MeteoblueRainParser::MeteoblueRainParser_PrecipType value = Test::parse(pict, input);
+
+	BOOST_CHECK_EQUAL(MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_THUNDERSTORM, value);
 }

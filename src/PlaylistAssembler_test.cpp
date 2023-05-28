@@ -17,6 +17,9 @@
 #include "ConfigurationFile.h"
 #include "AvalancheWarnings.h"
 
+#include "TimeTools.h"
+#include "QualityFactor.h"
+
 #include "PlaylistSamplerPL_files.h"
 
 std::shared_ptr<ConfigurationFile> configuration_file_first; //("./test_input/configuration_playlist_assembler_first.conf");
@@ -144,8 +147,8 @@ BOOST_AUTO_TEST_CASE(meteoblue) {
 
 	//////////////////////////////////// checks for playlist content starts here
 	BOOST_CHECK_EQUAL("ident.mp3", playlist[i++]);
-	BOOST_CHECK_EQUAL(FCAST, playlist[i++]);
-	BOOST_CHECK_EQUAL(FOR_NEXT, playlist[i++]);
+	BOOST_CHECK_EQUAL(PROGNOZA, playlist[i++]);
+	BOOST_CHECK_EQUAL(NA_NASTEPNE, playlist[i++]);
 	switch (future_time / 60) {
 	case 1: BOOST_CHECK_EQUAL(NUMBER_1, playlist[i++]); 	BOOST_CHECK_EQUAL(HOUR_ONE, playlist[i++]);break;
 	case 2:	BOOST_CHECK_EQUAL(NUMBER_2_, playlist[i++]);	BOOST_CHECK_EQUAL(HOUR_TWO_FOUR, playlist[i++]);break;
@@ -161,7 +164,7 @@ BOOST_AUTO_TEST_CASE(meteoblue) {
 	BOOST_CHECK_EQUAL(configuration_file_second->getForecast().locations[0].nameIdent, playlist[i++]);
 	BOOST_TEST_MESSAGE(configuration_file_second->getForecast().locations[0].nameIdent);
 	if (configuration_file_second->getForecast().locations[0].sayWind) {
-		BOOST_CHECK_EQUAL(DIRECTION, playlist[i++]);
+		BOOST_CHECK_EQUAL(KIERUNEK_WIATRU, playlist[i++]);
 		if ((expected_winddrection <= 11 && expected_winddrection >= 0) || (expected_winddrection > 349 && expected_winddrection < 360))
 			BOOST_CHECK_EQUAL(DIRECTION_N, playlist[i++]);
 		else if (expected_winddrection <= 34 && expected_winddrection > 11)
@@ -198,10 +201,11 @@ BOOST_AUTO_TEST_CASE(meteoblue) {
 			BOOST_TEST_MESSAGE(elem);
 			BOOST_CHECK_EQUAL(elem, playlist[i++]);
 		}
+		BOOST_CHECK_EQUAL(MS_ONE, playlist[i++]);
 	}
 
 	if (configuration_file_second->getForecast().locations[0].sayTemperature) {
-		BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
+		BOOST_CHECK_EQUAL(TEMPERATURA, playlist[i++]);
 		for (std::string elem : playlist_expected_temperature) {
 			BOOST_TEST_MESSAGE(elem);
 			BOOST_CHECK_EQUAL(elem, playlist[i++]);
@@ -212,17 +216,27 @@ BOOST_AUTO_TEST_CASE(meteoblue) {
 
 BOOST_AUTO_TEST_CASE(current_weather_first) {
 
+	std::shared_ptr<org::openapitools::client::model::QualityFactor> value = std::make_shared<org::openapitools::client::model::QualityFactor>();
+	value->setValue(org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_);
+
 	org::openapitools::client::model::Summary summary;
 	summary.setHumidity(12);
 	summary.setGusts(7.67f);
 	summary.setAverageSpeed(4.00f);
 	summary.setDirection(90);
 	summary.setAvgTemperature(23.0f);
+	summary.setLastTimestamp(TimeTools::getEpoch());
+	summary.setTemperatureQf(value);
+	summary.setHumidityQf(value);
+	summary.setWindQf(value);
+	summary.setQnhQf(value);
 
 	auto pair = std::make_pair("skrzyczne", std::make_shared<org::openapitools::client::model::Summary>(summary));
 
 	std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> vector_of_pairs;
 	vector_of_pairs.push_back(pair);
+
+	std::vector<std::tuple<std::string, AprsWXData>> weatherlink;
 
 	AprsWXData wx_data;
 	wx_data.call = "SR9WXM";
@@ -232,6 +246,8 @@ BOOST_AUTO_TEST_CASE(current_weather_first) {
 	wx_data.usePressure = true;
 	wx_data.useTemperature = true;
 	wx_data.useWind = true;
+	wx_data.packetAgeInSecondsLocal = 5;
+	wx_data.packetAgeInSecondsUtc = 5;
 	std::vector<AprsWXData> vector_of_wx_data = {wx_data};
 
 	PlaylistAssembler assembler(playlist_sampler, configuration_file_first);
@@ -239,7 +255,7 @@ BOOST_AUTO_TEST_CASE(current_weather_first) {
 	try {
 		assembler.start();
 
-		assembler.currentWeather(vector_of_pairs, vector_of_wx_data);
+		assembler.currentWeather(vector_of_pairs, vector_of_wx_data, weatherlink);
 	}
 	catch (...) {
 		BOOST_CHECK(false);
@@ -251,44 +267,48 @@ BOOST_AUTO_TEST_CASE(current_weather_first) {
 	int i = 0;
 
 	BOOST_CHECK_EQUAL("ident.mp3", playlist[i++]);
-	BOOST_CHECK_EQUAL(WEATHER, playlist[i++]);
+	BOOST_CHECK_EQUAL(AKTUALNE_WARUNKI, playlist[i++]);
 	BOOST_CHECK_EQUAL("magurka.mp3", playlist[i++]);
-	BOOST_CHECK_EQUAL(DIRECTION, playlist[i++]);
+	BOOST_CHECK_EQUAL(KIERUNEK_WIATRU, playlist[i++]);
 	BOOST_CHECK_EQUAL(DIRECTION_N, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(MS_FOUR, playlist[i++]);
-	BOOST_CHECK_EQUAL(WINDGUSTS, playlist[i++]);
+	BOOST_CHECK_EQUAL(PORYWY_WIATRU, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(MS_FOUR, playlist[i++]);
-	BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
+	BOOST_CHECK_EQUAL(TEMPERATURA, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(DEGREE_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(CELSIUSS, playlist[i++]);
-	BOOST_CHECK_EQUAL(HMIDITY, playlist[i++]);
+	BOOST_CHECK_EQUAL(WILGOTNOSC, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(PERCENTS, playlist[i++]);
 	BOOST_CHECK_EQUAL("skrzyczne.mp3", playlist[i++]);
-	BOOST_CHECK_EQUAL(DIRECTION, playlist[i++]);
+	BOOST_CHECK_EQUAL(KIERUNEK_WIATRU, playlist[i++]);
 	BOOST_CHECK_EQUAL(DIRECTION_E, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_4, playlist[i++]);
 	BOOST_CHECK_EQUAL(MS_TWO_FOUR, playlist[i++]);
-	BOOST_CHECK_EQUAL(WINDGUSTS, playlist[i++]);
+	BOOST_CHECK_EQUAL(PORYWY_WIATRU, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_7, playlist[i++]);
-	BOOST_CHECK_EQUAL(DECIMAL, playlist[i++]);
+	BOOST_CHECK_EQUAL(KROPKA, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_6, playlist[i++]);
 	BOOST_CHECK_EQUAL(MS_FOUR, playlist[i++]);
-	BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
+	BOOST_CHECK_EQUAL(TEMPERATURA, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_20, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_3, playlist[i++]);
 	BOOST_CHECK_EQUAL(DEGREE_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(CELSIUSS, playlist[i++]);
-	BOOST_CHECK_EQUAL(HMIDITY, playlist[i++]);
+	BOOST_CHECK_EQUAL(WILGOTNOSC, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_12, playlist[i++]);
 	BOOST_CHECK_EQUAL(PERCENTS, playlist[i++]);//PERCENTS
 
 }
 
 BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
+
+	std::shared_ptr<org::openapitools::client::model::QualityFactor> value = std::make_shared<org::openapitools::client::model::QualityFactor>();
+	value->setValue(org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_);
+
 
 	org::openapitools::client::model::Summary summary;
 	summary.setHumidity(12);
@@ -297,11 +317,18 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 	summary.setDirection(90);
 	summary.setAvgTemperature(23.0f);
 	summary.setQnh(999);
+	summary.setLastTimestamp(TimeTools::getEpoch());
+	summary.setTemperatureQf(value);
+	summary.setHumidityQf(value);
+	summary.setWindQf(value);
+	summary.setQnhQf(value);
 
 	auto pair = std::make_pair("skrzyczne", std::make_shared<org::openapitools::client::model::Summary>(summary));
 
 	std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> vector_of_pairs;
 	vector_of_pairs.push_back(pair);
+
+	std::vector<std::tuple<std::string, AprsWXData>> weatherlink;
 
 	AprsWXData wx_data;
 	wx_data.call = "SR9WXM";
@@ -311,6 +338,8 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 	wx_data.usePressure = true;
 	wx_data.useTemperature = true;
 	wx_data.useWind = true;
+	wx_data.packetAgeInSecondsLocal = 5;
+	wx_data.packetAgeInSecondsUtc = 5;
 	std::vector<AprsWXData> vector_of_wx_data = {wx_data};
 //	std::vector<AprsWXData> vector_of_wx_data;
 //	vector_of_wx_data.push_back(wx_data);
@@ -324,7 +353,7 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 
 		assembler.regionalPressure(summary.getQnh());
 
-		assembler.currentWeather(vector_of_pairs, vector_of_wx_data);
+		assembler.currentWeather(vector_of_pairs, vector_of_wx_data, weatherlink);
 	}
 	catch (...) {
 		BOOST_CHECK(false);
@@ -340,43 +369,43 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 	BOOST_CHECK_EQUAL("pre_first.mp3", playlist[i++]);
 	BOOST_CHECK_EQUAL("pre_second.mp3", playlist[i++]);
 	BOOST_CHECK_EQUAL("pre_third.mp3", playlist[i++]);
-	BOOST_CHECK_EQUAL(QNH_REGIONAL, playlist[i++]);
+	BOOST_CHECK_EQUAL(CISNIENIE_REG, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_900, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_90, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_9, playlist[i++]);
 	BOOST_CHECK_EQUAL(HECTOPASCALS, playlist[i++]);
-	BOOST_CHECK_EQUAL(WEATHER, playlist[i++]);
+	BOOST_CHECK_EQUAL(AKTUALNE_WARUNKI, playlist[i++]);
 	BOOST_CHECK_EQUAL("skrzyczne.mp3", playlist[i++]);
-	BOOST_CHECK_EQUAL(DIRECTION, playlist[i++]);
+	BOOST_CHECK_EQUAL(KIERUNEK_WIATRU, playlist[i++]);
 	BOOST_CHECK_EQUAL(DIRECTION_E, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_4, playlist[i++]);
 	BOOST_CHECK_EQUAL(MS_TWO_FOUR, playlist[i++]);
-	BOOST_CHECK_EQUAL(WINDGUSTS, playlist[i++]);
+	BOOST_CHECK_EQUAL(PORYWY_WIATRU, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_7, playlist[i++]);
-	BOOST_CHECK_EQUAL(DECIMAL, playlist[i++]);
+	BOOST_CHECK_EQUAL(KROPKA, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_6, playlist[i++]);
 	BOOST_CHECK_EQUAL(MS_FOUR, playlist[i++]);
-	BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
+	BOOST_CHECK_EQUAL(TEMPERATURA, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_20, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_3, playlist[i++]);
 	BOOST_CHECK_EQUAL(DEGREE_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(CELSIUSS, playlist[i++]);
-	BOOST_CHECK_EQUAL(HMIDITY, playlist[i++]);
+	BOOST_CHECK_EQUAL(WILGOTNOSC, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_12, playlist[i++]);
 	BOOST_CHECK_EQUAL(PERCENTS, playlist[i++]);//PERCENTS
 	BOOST_CHECK_EQUAL("magurka.mp3", playlist[i++]);
-	BOOST_CHECK_EQUAL(DIRECTION, playlist[i++]);
+	BOOST_CHECK_EQUAL(KIERUNEK_WIATRU, playlist[i++]);
 	BOOST_CHECK_EQUAL(DIRECTION_N, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(MS_FOUR, playlist[i++]);
-	BOOST_CHECK_EQUAL(WINDGUSTS, playlist[i++]);
+	BOOST_CHECK_EQUAL(PORYWY_WIATRU, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(MS_FOUR, playlist[i++]);
-	BOOST_CHECK_EQUAL(TMPRATURE, playlist[i++]);
+	BOOST_CHECK_EQUAL(TEMPERATURA, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(DEGREE_FOUR, playlist[i++]);
 	BOOST_CHECK_EQUAL(CELSIUSS, playlist[i++]);
-	BOOST_CHECK_EQUAL(HMIDITY, playlist[i++]);
+	BOOST_CHECK_EQUAL(WILGOTNOSC, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(PERCENTS, playlist[i++]);
 }
@@ -406,12 +435,12 @@ BOOST_AUTO_TEST_CASE(gopr_avalanche_levels) {
 	int i = 0;
 
 	BOOST_CHECK_EQUAL("ident.mp3", playlist[i++]);
-	BOOST_CHECK_EQUAL(AVALNCHE_WR, playlist[i++]);
+	BOOST_CHECK_EQUAL(ZAGROZENIELAWINOWE, playlist[i++]);
 	BOOST_CHECK_EQUAL(BABIA, playlist[i++]);
-	BOOST_CHECK_EQUAL(THIRD_LVL, playlist[i++]);
-	BOOST_CHECK_EQUAL(EXPOSITION, playlist[i++]);
+	BOOST_CHECK_EQUAL(TRZECI_ST, playlist[i++]);
+	BOOST_CHECK_EQUAL(ESKPOZYCJA, playlist[i++]);
 	BOOST_CHECK_EQUAL(DIRECTION_N, playlist[i++]);
-	BOOST_CHECK_EQUAL(_ALSO, playlist[i++]);
+	BOOST_CHECK_EQUAL(ORAZ, playlist[i++]);
 	BOOST_CHECK_EQUAL(DIRECTION_E, playlist[i++]);
 
 }

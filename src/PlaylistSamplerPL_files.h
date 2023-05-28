@@ -55,6 +55,8 @@
 #define POWYZEJ			"powyzej.ogg"
 #define INTENSYWNE		"intensywne.ogg"
 #define LOKALNE			"lokalne.ogg"
+#define MOZLIWE			"mozliwe.ogg"
+#define BURZE			"burze.ogg"
 #define ZAGROZENIELAWINOWE "zagrozenie_lawinowe.ogg"
 #define ESKPOZYCJA	"niebezpieczna_wystawa.ogg"
 #define PIERWSZY_ST	"stopien_pierwszy.ogg"

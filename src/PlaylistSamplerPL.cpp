@@ -644,21 +644,24 @@ std::optional<
 	switch (element) {
 	case PlaylistSampler_ConstanElement::CURRENT_TIME:		return GODZINA;			//!< "godzina"
 	case PlaylistSampler_ConstanElement::CURRENT_WEATHER:	return AKTUALNE_WARUNKI;		//!< "Aktualne Warunki"
-	case PlaylistSampler_ConstanElement::REGIONAL_QNH: 		return CISNIENIE_REG;//!< "Ciśnienie atmosferyczne w regionie"
 	case PlaylistSampler_ConstanElement::FORECAST:			return PROGNOZA;			//!< "Prognoza na nastepne"
+	case PlaylistSampler_ConstanElement::QNH:				return CISNIENIE;
+	case PlaylistSampler_ConstanElement::REGIONAL_QNH: 		return CISNIENIE_REG;//!< "Ciśnienie atmosferyczne w regionie"
 	case PlaylistSampler_ConstanElement::HOURS:				return HOUR_TWO_FOUR;	//!< "hours"
 	case PlaylistSampler_ConstanElement::WIND: 				return KIERUNEK_WIATRU;		//!< "wiatr"
+	case PlaylistSampler_ConstanElement::WIND_GUSTS:		return PORYWY_WIATRU;
 	case PlaylistSampler_ConstanElement::TEMPERATURE: 		return TEMPERATURA;
 	case PlaylistSampler_ConstanElement::HUMIDITY:			return WILGOTNOSC;
-	case PlaylistSampler_ConstanElement::WIND_GUSTS:		return PORYWY_WIATRU;
 	case PlaylistSampler_ConstanElement::PRECIPATION:		return OPADY;
 	case PlaylistSampler_ConstanElement::INTERMITTENT:		return PRZELOTNE_OPAD;
-	case PlaylistSampler_ConstanElement::LOCAL:				return LOKALNE;
 	case PlaylistSampler_ConstanElement::RAIN:				return DESZCZU;
 	case PlaylistSampler_ConstanElement::SNOW:				return SNIEGU;
+	case PlaylistSampler_ConstanElement::THUNDERSTORM:		return BURZE;
 	case PlaylistSampler_ConstanElement::UO_TO:				return DO;
 	case PlaylistSampler_ConstanElement::ABOVE:				return POWYZEJ;
 	case PlaylistSampler_ConstanElement::INTENSE:			return INTENSYWNE;
+	case PlaylistSampler_ConstanElement::LOCAL:				return LOKALNE;
+	case PlaylistSampler_ConstanElement::POSSIBLE:				return MOZLIWE;
 	case PlaylistSampler_ConstanElement::AVALANCHE_WARNING:	return ZAGROZENIELAWINOWE;
 	case PlaylistSampler_ConstanElement::DANGEROUS_EXPOSITION: return ESKPOZYCJA;
 	case PlaylistSampler_ConstanElement::FIRST_LEVEL:		return PIERWSZY_ST;

@@ -1,0 +1,9 @@
+Running 2 test cases...
+Entering test module "MeteoblueRainParser_test"
+../src/MeteoblueRainParser_test.cpp(49): Entering test case "first"
+../src/MeteoblueRainParser_test.cpp(56): info: check MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_MEDIUM_RAIN == value has passed
+../src/MeteoblueRainParser_test.cpp(49): Leaving test case "first"; testing time: 79us
+../src/MeteoblueRainParser_test.cpp(59): Entering test case "second"
+../src/MeteoblueRainParser_test.cpp(66): info: check MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_THUNDERSTORM == value has passed
+../src/MeteoblueRainParser_test.cpp(59): Leaving test case "second"; testing time: 72us
+Leaving test module "MeteoblueRainParser_test"; testing time: 172us

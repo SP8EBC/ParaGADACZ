@@ -40,6 +40,7 @@ enum PlaylistSampler_ConstanElement {
 	CURRENT_TIME,	//!< like "Current time is"
 	CURRENT_WEATHER,//!< "Current weather conditions"
 	FORECAST,		//!< "Forecast for next"
+	QNH,
 	REGIONAL_QNH,	//!< "Regional pressure"
 	HOURS,			//!< "hours"
 	WIND,			//!< "wind"
@@ -50,10 +51,12 @@ enum PlaylistSampler_ConstanElement {
 	INTERMITTENT,	//!<
 	RAIN,
 	SNOW,
+	THUNDERSTORM,
 	UO_TO,			//!< "up to xxx"
 	ABOVE,			//!< "more than xxx" / "above xxx"
 	INTENSE,
 	LOCAL,			//!< "local"
+	POSSIBLE,		//!< "possibility" of something
 	AVALANCHE_WARNING,
 	DANGEROUS_EXPOSITION,
 	FIRST_LEVEL,	//!< avalanche warning level
