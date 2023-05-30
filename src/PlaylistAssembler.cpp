@@ -39,7 +39,7 @@ struct Checker
 constexpr Checker checker{};
 
 /**
- * Used to extract string represending station name from different kinds of results got from different sources
+ * Used to extract string representing station name from different kinds of results got from different sources
  */
 struct PlaylistAssembler_WxStationNameToString {
 

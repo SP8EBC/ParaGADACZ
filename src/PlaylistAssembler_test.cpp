@@ -16,6 +16,7 @@
 #include "PlaylistAssembler.h"
 #include "ConfigurationFile.h"
 #include "AvalancheWarnings.h"
+#include "ForecastDownloader.h"
 
 #include "TimeTools.h"
 #include "QualityFactor.h"
@@ -24,6 +25,7 @@
 
 std::shared_ptr<ConfigurationFile> configuration_file_first; //("./test_input/configuration_playlist_assembler_first.conf");
 std::shared_ptr<ConfigurationFile> configuration_file_second; //("./test_input/configuration_playlist_assembler_second.conf");
+std::shared_ptr<ConfigurationFile> configuration_file_cached_meteoblue; // configuration with cached meteoblue forecast
 std::shared_ptr<PlaylistSampler> playlist_sampler;
 
 struct MyConfig
@@ -35,9 +37,11 @@ struct MyConfig
 
     configuration_file_first = std::make_shared<ConfigurationFile>("./test_input/configuration_playlist_assembler_first.conf");
     configuration_file_second = std::make_shared<ConfigurationFile>("./test_input/configuration_playlist_assembler_second.conf");
+    configuration_file_cached_meteoblue = std::make_shared<ConfigurationFile>("./test_input/configuration_forecast_downloader_save_cache.conf");
 
     configuration_file_first->parse();
     configuration_file_second->parse();
+    configuration_file_cached_meteoblue->parse();
     playlist_sampler = std::make_shared<PlaylistSamplerPL>(configuration_file_first); 	// used for 'getAudioForStationName' and
     																					// 'getAudioForForecast' name
   }
@@ -408,6 +412,179 @@ BOOST_AUTO_TEST_CASE(current_weather_second_with_preanouncement) {
 	BOOST_CHECK_EQUAL(WILGOTNOSC, playlist[i++]);
 	BOOST_CHECK_EQUAL(NUMBER_0, playlist[i++]);
 	BOOST_CHECK_EQUAL(PERCENTS, playlist[i++]);
+}
+
+BOOST_AUTO_TEST_CASE(current_weather_second_with_forecast_with_rain) {
+	ForecastDownloader downloader(configuration_file_cached_meteoblue);
+	PlaylistAssembler assembler(playlist_sampler, configuration_file_cached_meteoblue);
+
+	std::shared_ptr<org::openapitools::client::model::QualityFactor> value = std::make_shared<org::openapitools::client::model::QualityFactor>();
+	value->setValue(org::openapitools::client::model::QualityFactor::eQualityFactor::QualityFactor_FULL_);
+
+	org::openapitools::client::model::Summary summary;
+	summary.setHumidity(12);
+	summary.setGusts(7.67f);
+	summary.setAverageSpeed(4.00f);
+	summary.setDirection(90);
+	summary.setAvgTemperature(23.0f);
+	summary.setQnh(999);
+	summary.setLastTimestamp(TimeTools::getEpoch());
+	summary.setTemperatureQf(value);
+	summary.setHumidityQf(value);
+	summary.setWindQf(value);
+	summary.setQnhQf(value);
+
+	auto pair = std::make_pair("skrzyczne", std::make_shared<org::openapitools::client::model::Summary>(summary));
+
+	std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> vector_of_pairs;
+	vector_of_pairs.push_back(pair);
+
+	std::vector<std::tuple<std::string, AprsWXData>> weatherlink;
+
+	AprsWXData wx_data;
+	wx_data.call = "SR9WXM";
+	wx_data.is_primary = true;
+	wx_data.valid = true;
+	wx_data.useHumidity = true;
+	wx_data.usePressure = true;
+	wx_data.useTemperature = true;
+	wx_data.useWind = true;
+	wx_data.packetAgeInSecondsLocal = 5;
+	wx_data.packetAgeInSecondsUtc = 5;
+	std::vector<AprsWXData> vector_of_wx_data = {wx_data};
+
+	downloader.downloadAllMeteoblue();
+
+	// extract rainspot from this forecast
+	auto forecasts = downloader.getAllForecast();
+	std::shared_ptr<org::openapitools::client::model::Data_3h> skrzyczneForecast3h = std::get<1>(forecasts.at(0))->getData3h();
+	std::vector<utility::string_t>& rainspot = skrzyczneForecast3h->getRainspot();
+
+	// get number of forecast point
+	const int rainspot_size = rainspot.size();
+
+	// clear everything
+	rainspot.clear();
+
+	// create artificial rain forecast as the presence of any precipation controls if this part
+	// of anouncement is even present
+	rainspot.insert(rainspot.begin(), rainspot_size, "0011211222211122221120012211100021110001121000222");
+
+	try {
+		assembler.start();
+
+		assembler.currentWeather(vector_of_pairs, vector_of_wx_data, weatherlink);
+
+		assembler.forecastMeteoblue(forecasts);
+	}
+	catch (...) {
+		BOOST_CHECK(false);
+	}
+
+	std::shared_ptr<std::vector<std::string>> playlist_ptr = assembler.getPlaylist();
+	std::vector<std::string> playlist = *playlist_ptr;
+	int i = 0;
+
+	std::vector<std::string>::const_iterator it = playlist.cbegin();
+
+	BOOST_CHECK_EQUAL("intro.ogg", *it++);
+	BOOST_CHECK_EQUAL("intro2.ogg", *it++);
+	BOOST_CHECK_EQUAL("intro3.ogg", *it++);
+	BOOST_CHECK_EQUAL(AKTUALNE_WARUNKI, *it++);
+	BOOST_CHECK_EQUAL("magurka.mp3", *it++);
+	BOOST_CHECK_EQUAL(KIERUNEK_WIATRU, *it++);
+	BOOST_CHECK_EQUAL(DIRECTION_N, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_0, *it++);
+	BOOST_CHECK_EQUAL(MS_FOUR, *it++);
+	BOOST_CHECK_EQUAL(PORYWY_WIATRU, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_0, *it++);
+	BOOST_CHECK_EQUAL(MS_FOUR, *it++);
+	BOOST_CHECK_EQUAL(TEMPERATURA, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_0, *it++);
+	BOOST_CHECK_EQUAL(DEGREE_FOUR, *it++);
+	BOOST_CHECK_EQUAL(CELSIUSS, *it++);
+	BOOST_CHECK_EQUAL(WILGOTNOSC, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_0, *it++);
+	BOOST_CHECK_EQUAL(PERCENTS, *it++);
+	BOOST_CHECK_EQUAL("skrzyczne.mp3", *it++);
+	BOOST_CHECK_EQUAL(KIERUNEK_WIATRU, *it++);
+	BOOST_CHECK_EQUAL(DIRECTION_E, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_4, *it++);
+	BOOST_CHECK_EQUAL(MS_TWO_FOUR, *it++);
+	BOOST_CHECK_EQUAL(PORYWY_WIATRU, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_7, *it++);
+	BOOST_CHECK_EQUAL(KROPKA, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_6, *it++);
+	BOOST_CHECK_EQUAL(MS_FOUR, *it++);
+	BOOST_CHECK_EQUAL(TEMPERATURA, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_20, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_3, *it++);
+	BOOST_CHECK_EQUAL(DEGREE_FOUR, *it++);
+	BOOST_CHECK_EQUAL(CELSIUSS, *it++);
+	BOOST_CHECK_EQUAL(WILGOTNOSC, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_12, *it++);
+	BOOST_CHECK_EQUAL(PERCENTS, *it++);//PERCENTS
+	BOOST_CHECK_EQUAL(PROGNOZA, *it++);
+	BOOST_CHECK_EQUAL(NA_NASTEPNE, *it++);
+	BOOST_CHECK_EQUAL(NUMBER_3, *it++);
+	BOOST_CHECK_EQUAL(HOUR_TWO_FOUR, *it++);
+	BOOST_CHECK_EQUAL("costam.mp3", *it++);
+	BOOST_CHECK_EQUAL(KIERUNEK_WIATRU, *it++);
+
+	// then check if forecast was assembled correctly
+
+	// check if this is any wind direction
+	if (*it == DIRECTION_N ||
+			*it == DIRECTION_NNE ||
+			*it == DIRECTION_NE ||
+			*it == DIRECTION_ENE ||
+			*it == DIRECTION_E ||
+			*it == DIRECTION_ESE ||
+			*it == DIRECTION_SE ||
+			*it == DIRECTION_SSE ||
+			*it == DIRECTION_S ||
+			*it == DIRECTION_SSW ||
+			*it == DIRECTION_SW ||
+			*it == DIRECTION_W ||
+			*it == DIRECTION_WNW ||
+			*it == DIRECTION_NW ||
+			*it == DIRECTION_NNW)
+	{
+		BOOST_CHECK(true);
+	}
+	else
+	{
+		BOOST_CHECK(false);
+	}
+
+	bool ms_found = false;
+	bool temperature_found = false;
+	int rain_found = 0;
+
+	// rewind until 'meter per second' will be found
+	while (it++ != playlist.cend()) {
+		if (*it == MS_ONE || *it == MS_TWO_FOUR || *it == MS_FOUR) {
+			ms_found = true;
+		}
+		if (*it == TEMPERATURA) {
+			temperature_found = true;
+		}
+
+		if (*it == PRZELOTNE_OPAD) {
+			rain_found++;
+		}
+		if (*it == OPADY) {
+			rain_found++;
+		}
+		if (*it == LOKALNE) {
+			rain_found++;
+		}
+	}
+
+	BOOST_CHECK(ms_found);
+	BOOST_CHECK(temperature_found);
+	BOOST_CHECK(rain_found == 3);
+
 }
 
 BOOST_AUTO_TEST_CASE(gopr_avalanche_levels) {
