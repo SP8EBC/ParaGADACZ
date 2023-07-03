@@ -11,9 +11,6 @@
 #include <string>
 #include <cstdint>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-
 enum AvalancheWarnings_Location {
 	BABIA_GORA
 };
