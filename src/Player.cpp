@@ -19,16 +19,30 @@ Player::Player() {
     /* Load the VLC engine */
     inst = libvlc_new (0, NULL);
 
-    mp = libvlc_media_player_new(inst);
+    if (inst != NULL) {
+        mp = libvlc_media_player_new(inst);
 
-    evm = libvlc_media_player_event_manager(mp);
+        evm = libvlc_media_player_event_manager(mp);
 
-    m = NULL;
+        m = NULL;
 
-    SPDLOG_INFO("Initializing player");
+        SPDLOG_INFO("Initializing player");
 
-    // set a callback called after each audio file ends (something like Auto-Cue)
-    libvlc_event_attach(evm, libvlc_MediaPlayerStopped, &Player::plainStaticCallback, static_cast<void*>(this));
+        // set a callback called after each audio file ends (something like Auto-Cue)
+        libvlc_event_attach(evm, libvlc_MediaPlayerStopped, &Player::plainStaticCallback, static_cast<void*>(this));
+    }
+    else {
+        SPDLOG_ERROR("Cannot initialize libVLC!!!");
+        const char * error_message = libvlc_errmsg();
+
+        if (error_message != NULL) {
+        	const std::string str_error_message = std::string(error_message);
+            SPDLOG_ERROR(str_error_message);
+
+        }
+
+    }
+
 
 #ifdef NDEBUG
 

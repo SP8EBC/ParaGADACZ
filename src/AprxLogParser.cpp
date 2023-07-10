@@ -13,8 +13,14 @@
 #include <sstream>
 #include <exception>
 
+#pragma push_macro("U")
+#undef U
+// pragma required as a workaround of possible conflict with cpprestsdk.
+// more info here: https://github.com/fmtlib/fmt/issues/3330
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#pragma pop_macro("U")
+
 
 #define SOURCE_OFFSET		24
 #define RTD_OFFSET			34

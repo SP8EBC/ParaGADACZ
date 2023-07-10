@@ -17,9 +17,8 @@
 
 #include <myhtml/token.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/fmt/bin_to_hex.h"
+//#include "spdlog/spdlog.h"
+//#include "spdlog/sinks/stdout_color_sinks.h"
 
 #include "curl/curl.h"
 
@@ -32,6 +31,7 @@
 // more info here: https://github.com/fmtlib/fmt/issues/3330
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/fmt/bin_to_hex.h"
 #pragma pop_macro("U")
 
 #define MINIMUM_VALID_HTML_LENGHT	100
