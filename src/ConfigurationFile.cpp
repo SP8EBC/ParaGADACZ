@@ -25,8 +25,8 @@ ConfigurationFile::ConfigurationFile(std::string fileName) {
 	inhibitor.http.enable = false;
 	inhibitor.exec.enable = false;
 
-	pttControl.preDelay = 200;
-	pttControl.postDelay = 0;
+	pttControl.preAnounmntDelay = 200;
+	pttControl.postAnounmntDelay = 0;
 
 	pogodaCc.ignoreHumidityQf = false;
 	pogodaCc.ignorePressureQf = false;
@@ -180,9 +180,9 @@ bool ConfigurationFile::parse() {
 	try {
 		libconfig::Setting &pttControl = root["PttControl"];
 
-		pttControl.lookupValue("Port", this->pttControl.port);
-		pttControl.lookupValue("DelayPre", this->pttControl.preDelay);
-		pttControl.lookupValue("DelayPost", this->pttControl.postDelay);
+		pttControl.lookupValue("Port", this->pttControl.serialportPtt);
+		pttControl.lookupValue("DelayPre", this->pttControl.preAnounmntDelay);
+		pttControl.lookupValue("DelayPost", this->pttControl.postAnounmntDelay);
 
 
 	}
