@@ -127,9 +127,9 @@ bool InhibitorAndPttControl::setConfigAndCheckPort(
 
 	int mode = IEEE1284_MODE_BYTE;
 
-	if (configurationFile.parportDevice.size() > 0) {
+	if (configurationFile.pttParportDevice.size() > 0) {
 		// try open parallel port
-		const int parportfd = open(configurationFile.parportDevice.c_str(), O_RDWR);
+		const int parportfd = open(configurationFile.pttParportDevice.c_str(), O_RDWR);
 
 		if (parportfd > 0) {
 			const int exclusiveResult = ioctl(parportfd, PPEXCL);
@@ -143,10 +143,10 @@ bool InhibitorAndPttControl::setConfigAndCheckPort(
 
 					if (modeSetResult == 0) {
 						parallelConfigured = true;
-						parallelPins = configurationFile.parportLinesSelector;
+						parallelPins = (uint8_t)(configurationFile.pttParportLinesSelector & 0xFFu);
 						parallelPortFd = parportfd;
 						out = true;
-						SPDLOG_INFO("Parallel port {} configured successfully", configurationFile.parportDevice);
+						SPDLOG_INFO("Parallel port {} configured successfully", configurationFile.pttParportDevice);
 					}
 					else {
 						SPDLOG_ERROR("Cannot switch parallel port to IEEE1284_MODE_BYTE");
@@ -161,7 +161,7 @@ bool InhibitorAndPttControl::setConfigAndCheckPort(
 			}
 		}
 		else {
-			SPDLOG_ERROR("Parallel port file {} cannot be opened", configurationFile.parportDevice);
+			SPDLOG_ERROR("Parallel port file {} cannot be opened", configurationFile.pttParportDevice);
 		}
 	}
 	else {
@@ -169,14 +169,14 @@ bool InhibitorAndPttControl::setConfigAndCheckPort(
 	}
 
 #endif
-	if (configurationFile.serialportPtt.size() > 0) {
+	if (configurationFile.pttSerialportDevice.size() > 0) {
 		// create an instance of serial port library
 		serial = std::make_shared<serial::Serial>();
 
-		SPDLOG_INFO("Checking serial port {}", configurationFile.serialportPtt);
+		SPDLOG_INFO("Checking serial port {}", configurationFile.pttSerialportDevice);
 
 		try {
-			serial->setPort(configurationFile.serialportPtt);
+			serial->setPort(configurationFile.pttSerialportDevice);
 
 			// try to open serial port
 			serial->open();

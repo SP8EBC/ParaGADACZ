@@ -53,6 +53,10 @@ class InhibitorAndPttControl {
 	 */
 	int parallelPortFd;
 
+	/**
+	 * Bitmask which controls which output data pins are pulled high (+3.3V or +5V)
+	 * using call to ioctl when PTT is keyed.
+	 */
 	uint8_t parallelPins;
 #endif
 

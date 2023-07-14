@@ -131,14 +131,13 @@ struct ConfigurationFile_Inhibitor {
 };
 
 struct ConfigurationFile_PttControl {
-	std::string serialportPtt;	// !< Port which will be used to control PTT line
-	uint32_t preAnounmntDelay;	// !< Delay in miliseconds after keying PTT (pulling RTS down) and playback start
-	uint32_t postAnounmntDelay;	// !< Delay after the end of anouncement and dekeying a transceiver
+	std::string pttSerialportDevice;	// !< Port which will be used to control PTT line
+	uint32_t preAnounmntDelay;			// !< Delay in miliseconds after keying PTT (pulling RTS down) and playback start
+	uint32_t postAnounmntDelay;			// !< Delay after the end of anouncement and dekeying a transceiver
 
 #ifdef __linux__
-	bool parportPtt;			// !< Set to true if PTT is controlled using paralel port. This is very linux specific
-	uint8_t parportLinesSelector;	// !< This is a bitmask which selects which parallel port lines are used
-	std::string parportDevice;	// !< String to device entry in /dev directory representing parallel port
+	uint32_t pttParportLinesSelector;	// !< This is a bitmask which selects which parallel port lines are used
+	std::string pttParportDevice;		// !< String to device entry in /dev directory representing parallel port
 #endif
 };
 

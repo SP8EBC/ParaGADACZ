@@ -1,0 +1,115 @@
+Normally pulse audio server is started per user basis as user daemon. This makes it inpossible to use PA in embedded systems where certain apps might be started from cron, or from systemd as another system service. In both cases application would be start from non-login session. Pulse Audio must be reconfigured to work as system wide daemon. More information can be found here: https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/SystemWide/
+
+Command are:
+
+root@skrzyczne-radio:/home/lubeckim# systemctl --global disable pulseaudio
+
+
+root@skrzyczne-radio:/home/lubeckim# cat /lib/systemd/system/pulseaudio-syswide.service 
+[Unit]
+Description=PulseAudio Daemon
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+PIDFile=/run/pulseaudio.pid
+StandardOutput=file:/var/log/pulseaudio_stdout
+StandardError=file:/var/log/pulseaudio_stderr
+PrivateTmp=true
+RestartSec=2
+User=root
+Group=staff
+ExecStart=/usr/bin/pulseaudio --system --realtime --disallow-exit --no-cpu-limit 
+root@skrzyczne-radio:/home/lubeckim# 
+
+root@skrzyczne-radio:/home/lubeckim# systemctl status pulseaudio-syswide
+● pulseaudio-syswide.service - PulseAudio Daemon
+     Loaded: loaded (/lib/systemd/system/pulseaudio-syswide.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2023-07-10 17:25:50 CEST; 1 day 2h ago
+   Main PID: 527 (pulseaudio)
+      Tasks: 2 (limit: 4366)
+     Memory: 49.3M
+        CPU: 55min 23.383s
+     CGroup: /system.slice/pulseaudio-syswide.service
+             └─527 /usr/bin/pulseaudio --system --realtime --disallow-exit --no-cpu-limit
+
+Jul 10 17:25:50 skrzyczne-radio systemd[1]: Started pulseaudio-syswide.service - PulseAudio Daemon.
+root@skrzyczne-radio:/home/lubeckim# 
+
+
+
+
+root@skrzyczne-radio:/home/lubeckim# systemctl status pulseaudio-enable-autospawn
+○ pulseaudio-enable-autospawn.service
+     Loaded: masked (Reason: Unit pulseaudio-enable-autospawn.service is masked.)
+     Active: inactive (dead)
+root@skrzyczne-radio:/home/lubeckim# 
+
+!!!!! There is also one fix which must be done in the configuration to allow plaing audio
+https://unix.stackexchange.com/questions/338687/pulseaudio-as-system-wide-systemd-service
+!!!! Change in system.pa configuration file is in line 93.
+
+
+root@skrzyczne-radio:/home/lubeckim# cat /etc/pulse/system.pa
+#!/usr/bin/pulseaudio -nF
+#
+# This file is part of PulseAudio.
+#
+# PulseAudio is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# PulseAudio is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with PulseAudio; if not, see <http://www.gnu.org/licenses/>.
+
+# This startup script is used only if PulseAudio is started in system
+# mode.
+
+### Automatically restore the volume of streams and devices
+load-module module-device-restore
+load-module module-stream-restore
+load-module module-card-restore
+
+### Automatically load driver modules depending on the hardware available
+.ifexists module-udev-detect.so
+load-module module-udev-detect
+.else
+### Use the static hardware detection module (for systems that lack udev/hal support)
+load-module module-detect
+.endif
+
+### Load several protocols
+.ifexists module-esound-protocol-unix.so
+load-module module-esound-protocol-unix
+.endif
+load-module module-native-protocol-unix auth-anonymous=1
+
+### Automatically restore the default sink/source when changed by the user
+### during runtime
+### NOTE: This should be loaded as early as possible so that subsequent modules
+### that look up the default sink/source get the right value
+load-module module-default-device-restore
+
+### Make sure we always have a sink around, even if it is a null sink.
+load-module module-always-sink
+
+### Automatically suspend sinks/sources that become idle for too long
+load-module module-suspend-on-idle
+
+### Enable positioned event sounds
+load-module module-position-event-sounds
+
+### Allow including a system.pa.d directory, which if present, can be used
+### for additional configuration snippets.
+### Note that those snippet files must have a .pa file extension, not .conf
+.nofail
+.include /etc/pulse/system.pa.d
+root@skrzyczne-radio:/home/lubeckim# 

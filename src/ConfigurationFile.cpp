@@ -152,7 +152,7 @@ bool ConfigurationFile::parse() {
 
 		inhibitorSerial.lookupValue("Enable", this->inhibitor.serial.enable);
 		inhibitorSerial.lookupValue("OkActiveLevel", this->inhibitor.serial.okActiveLevel);
-		inhibitorSerial.lookupValue("Port", this->inhibitor.serial.port);
+		inhibitorSerial.lookupValue("SerialPort", this->inhibitor.serial.port);
 
 		inhibitorExec.lookupValue("Enable", this->inhibitor.exec.enable);
 		inhibitorExec.lookupValue("OkRetval", this->inhibitor.exec.okRetval);
@@ -180,9 +180,13 @@ bool ConfigurationFile::parse() {
 	try {
 		libconfig::Setting &pttControl = root["PttControl"];
 
-		pttControl.lookupValue("Port", this->pttControl.serialportPtt);
+		pttControl.lookupValue("SerialPort", this->pttControl.pttSerialportDevice);
 		pttControl.lookupValue("DelayPre", this->pttControl.preAnounmntDelay);
 		pttControl.lookupValue("DelayPost", this->pttControl.postAnounmntDelay);
+
+		// parallel port
+		pttControl.lookupValue("ParallelPort", 	this->pttControl.pttParportDevice);
+		pttControl.lookupValue("ParallelLines", this->pttControl.pttParportLinesSelector);
 
 
 	}
