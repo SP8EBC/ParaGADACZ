@@ -1,0 +1,15 @@
+libboost1.74
+libcpprest
+libspdlog1.10
+libcurl3-gnutls
+libconfig++
+libconfig
+libvlc
+libvlc-bin
+libvlc-dev
+libvlc5    // ??
+libvlccore
+vlc-bin
+vlc-data
+vlc-plugin-base
+vlc-plugin-access-extra

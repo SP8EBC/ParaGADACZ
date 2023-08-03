@@ -1,10 +1,12 @@
-Normally pulse audio server is started per user basis as user daemon. This makes it inpossible to use PA in embedded systems where certain apps might be started from cron, or from systemd as another system service. In both cases application would be start from non-login session. Pulse Audio must be reconfigured to work as system wide daemon. More information can be found here: https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/SystemWide/
+Normally pulse audio server is started per user basis as user daemon. This makes it inpossible to use PA in embedded systems where certain apps might be started from cron or from systemd as another system service. In both cases application would be start from non-login session. Pulse Audio must be reconfigured to work as system wide daemon. More information can be found here: https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/SystemWide/
 
 Command are:
 
+# do not start pulse-audio per user
 root@skrzyczne-radio:/home/lubeckim# systemctl --global disable pulseaudio
 
 
+# then create this systemd service to start pulseaudio as system wide
 root@skrzyczne-radio:/home/lubeckim# cat /lib/systemd/system/pulseaudio-syswide.service 
 [Unit]
 Description=PulseAudio Daemon
@@ -24,6 +26,7 @@ Group=staff
 ExecStart=/usr/bin/pulseaudio --system --realtime --disallow-exit --no-cpu-limit 
 root@skrzyczne-radio:/home/lubeckim# 
 
+# start this new systemwide sercice
 root@skrzyczne-radio:/home/lubeckim# systemctl status pulseaudio-syswide
 ● pulseaudio-syswide.service - PulseAudio Daemon
      Loaded: loaded (/lib/systemd/system/pulseaudio-syswide.service; enabled; preset: enabled)
@@ -47,9 +50,9 @@ root@skrzyczne-radio:/home/lubeckim# systemctl status pulseaudio-enable-autospaw
      Active: inactive (dead)
 root@skrzyczne-radio:/home/lubeckim# 
 
-!!!!! There is also one fix which must be done in the configuration to allow plaing audio
-https://unix.stackexchange.com/questions/338687/pulseaudio-as-system-wide-systemd-service
-!!!! Change in system.pa configuration file is in line 93.
+##### !!!!! There is also one fix which must be done in the configuration to allow plaing audio
+##### https://unix.stackexchange.com/questions/338687/pulseaudio-as-system-wide-systemd-service
+##### !!!! Change in system.pa configuration file is in line 93.
 
 
 root@skrzyczne-radio:/home/lubeckim# cat /etc/pulse/system.pa
@@ -113,3 +116,209 @@ load-module module-position-event-sounds
 .nofail
 .include /etc/pulse/system.pa.d
 root@skrzyczne-radio:/home/lubeckim# 
+
+
+# if you are using SVXLINK to something plese also remember to add a user svxlink
+# work as to 'pulse' and 'pulse-access' groups
+
+lubeckim@skrzyczne-radio:/var/log$ cat /etc/group
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:svxlink
+fax:x:21:
+voice:x:22:
+cdrom:x:24:lubeckim
+floppy:x:25:lubeckim
+tape:x:26:
+sudo:x:27:
+audio:x:29:lubeckim,pulse,svxlink
+dip:x:30:lubeckim
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+shadow:x:42:
+utmp:x:43:
+video:x:44:lubeckim
+sasl:x:45:
+plugdev:x:46:lubeckim
+staff:x:50:
+games:x:60:
+users:x:100:lubeckim
+nogroup:x:65534:
+systemd-journal:x:999:
+systemd-network:x:998:
+crontab:x:101:
+input:x:102:
+sgx:x:103:
+kvm:x:104:
+render:x:105:
+netdev:x:106:lubeckim
+systemd-timesync:x:997:
+messagebus:x:107:
+_ssh:x:108:
+lubeckim:x:1000:
+rdma:x:109:
+pulse:x:110:svxlink
+pulse-access:x:111:svxlink
+polkitd:x:996:
+rtkit:x:112:
+svxlink:x:113:
+lubeckim@skrzyczne-radio:/var/log$ 
+
+
+## at the end it is good to set default sink and source 
+## to be sure that an audio will be played through right line-out
+## and captured from correct line-in
+
+lubeckim@skrzyczne-radio:/var/log$ pactl list
+###### (...) some output has been cut
+
+Sink #0
+	State: SUSPENDED
+	Name: alsa_output.pci-0000_00_0e.0.analog-stereo
+	Description: Built-in Audio Analog Stereo
+	Driver: module-alsa-card.c
+	Sample Specification: s16le 2ch 44100Hz
+	Channel Map: front-left,front-right
+	Owner Module: 4
+	Mute: no
+	Volume: front-left: 52057 /  79% / -6.00 dB,   front-right: 52057 /  79% / -6.00 dB
+	        balance 0.00
+	Base Volume: 65536 / 100% / 0.00 dB
+	Monitor Source: alsa_output.pci-0000_00_0e.0.analog-stereo.monitor
+	Latency: 0 usec, configured 0 usec
+	Flags: HARDWARE HW_MUTE_CTRL HW_VOLUME_CTRL DECIBEL_VOLUME LATENCY 
+	Properties:
+		alsa.resolution_bits = "16"
+		device.api = "alsa"
+		device.class = "sound"
+		alsa.class = "generic"
+		alsa.subclass = "generic-mix"
+		alsa.name = "ALC671 Analog"
+		alsa.id = "ALC671 Analog"
+		alsa.subdevice = "0"
+		alsa.subdevice_name = "subdevice #0"
+		alsa.device = "0"
+		alsa.card = "0"
+		alsa.card_name = "HDA Intel PCH"
+		alsa.long_card_name = "HDA Intel PCH at 0xa1210000 irq 132"
+		alsa.driver_name = "snd_hda_intel"
+		device.bus_path = "pci-0000:00:0e.0"
+		sysfs.path = "/devices/pci0000:00/0000:00:0e.0/sound/card0"
+		device.bus = "pci"
+		device.vendor.id = "8086"
+		device.vendor.name = "Intel Corporation"
+		device.product.id = "3198"
+		device.product.name = "Celeron/Pentium Silver Processor High Definition Audio"
+		device.form_factor = "internal"
+		device.string = "front:0"
+		device.buffering.buffer_size = "352800"
+		device.buffering.fragment_size = "176400"
+		device.access_mode = "mmap+timer"
+		device.profile.name = "analog-stereo"
+		device.profile.description = "Analog Stereo"
+		device.description = "Built-in Audio Analog Stereo"
+		module-udev-detect.discovered = "1"
+		device.icon_name = "audio-card-pci"
+	Ports:
+		analog-output-lineout: Line Out (type: Line, priority: 9000, available)
+		analog-output-speaker: Speakers (type: Speaker, priority: 10000, not available)
+		analog-output-headphones: Headphones (type: Headphones, priority: 9900, not available)
+	Active Port: analog-output-lineout
+	Formats:
+		pcm
+
+###### (...) some output has been cut
+
+Source #1
+	State: RUNNING
+	Name: alsa_input.pci-0000_00_0e.0.analog-stereo
+	Description: Built-in Audio Analog Stereo
+	Driver: module-alsa-card.c
+	Sample Specification: s16le 2ch 48000Hz
+	Channel Map: front-left,front-right
+	Owner Module: 4
+	Mute: no
+	Volume: front-left: 13852 /  21% / -40.50 dB,   front-right: 13852 /  21% / -40.50 dB
+	        balance 0.00
+	Base Volume: 5206 /   8% / -66.00 dB
+	Monitor of Sink: n/a
+	Latency: 171 usec, configured 21333 usec
+	Flags: HARDWARE HW_MUTE_CTRL HW_VOLUME_CTRL DECIBEL_VOLUME LATENCY 
+	Properties:
+		alsa.resolution_bits = "16"
+		device.api = "alsa"
+		device.class = "sound"
+		alsa.class = "generic"
+		alsa.subclass = "generic-mix"
+		alsa.name = "ALC671 Analog"
+		alsa.id = "ALC671 Analog"
+		alsa.subdevice = "0"
+		alsa.subdevice_name = "subdevice #0"
+		alsa.device = "0"
+		alsa.card = "0"
+		alsa.card_name = "HDA Intel PCH"
+		alsa.long_card_name = "HDA Intel PCH at 0xa1210000 irq 132"
+		alsa.driver_name = "snd_hda_intel"
+		device.bus_path = "pci-0000:00:0e.0"
+		sysfs.path = "/devices/pci0000:00/0000:00:0e.0/sound/card0"
+		device.bus = "pci"
+		device.vendor.id = "8086"
+		device.vendor.name = "Intel Corporation"
+		device.product.id = "3198"
+		device.product.name = "Celeron/Pentium Silver Processor High Definition Audio"
+		device.form_factor = "internal"
+		device.string = "front:0"
+		device.buffering.buffer_size = "352800"
+		device.buffering.fragment_size = "176400"
+		device.access_mode = "mmap+timer"
+		device.profile.name = "analog-stereo"
+		device.profile.description = "Analog Stereo"
+		device.description = "Built-in Audio Analog Stereo"
+		module-udev-detect.discovered = "1"
+		device.icon_name = "audio-card-pci"
+	Ports:
+		analog-input-mic: Microphone (type: Mic, priority: 8700, not available)
+		analog-input-linein: Line In (type: Line, priority: 8100, available)
+	Active Port: analog-input-linein
+	Formats:
+		pcm
+
+lubeckim@skrzyczne-radio:/etc/pulse$ cat default.pa
+###### (...) some output has been cut
+
+### Make some devices default
+set-default-sink alsa_output.pci-0000_00_0e.0.analog-stereo
+set-default-source alsa_input.pci-0000_00_0e.0.analog-stereo
+
+lubeckim@skrzyczne-radio:/etc/pulse$ pactl info
+Server String: /var/run/pulse/native
+Library Protocol Version: 35
+Server Protocol Version: 35
+Is Local: yes
+Client Index: 8
+Tile Size: 65472
+User Name: pulse
+Host Name: skrzyczne-radio
+Server Name: pulseaudio
+Server Version: 16.1
+Default Sample Specification: s16le 2ch 44100Hz
+Default Channel Map: front-left,front-right
+Default Sink: alsa_output.pci-0000_00_0e.0.analog-stereo
+Default Source: alsa_input.pci-0000_00_0e.0.analog-stereo
+Cookie: 7be3:7cdc
