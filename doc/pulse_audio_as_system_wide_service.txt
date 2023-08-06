@@ -322,3 +322,10 @@ Default Channel Map: front-left,front-right
 Default Sink: alsa_output.pci-0000_00_0e.0.analog-stereo
 Default Source: alsa_input.pci-0000_00_0e.0.analog-stereo
 Cookie: 7be3:7cdc
+
+
+lubeckim@skrzyczne-radio:~$ pactl set-default-source alsa_input.pci-0000_00_0e.0.analog-stereo
+
+
+lubeckim@skrzyczne-radio:~$ pactl set-source-port alsa_input.pci-0000_00_0e.0.analog-stereo analog-input-linein
+

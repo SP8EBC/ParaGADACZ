@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
 		configFn = std::string(argv[1]);
 	}
 	else {
-		configFn = "paragadacz.conf";
+		configFn = "/etc/paragadacz.conf";
 	}
 
 	SPDLOG_INFO("Using configuration file: {}", configFn);

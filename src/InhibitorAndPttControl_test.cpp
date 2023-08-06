@@ -29,17 +29,17 @@ struct MyConfig
 	//spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
 
-	config_parport.serialportPtt = "";
-	config_parport.parportDevice = "/dev/parport0";
-	config_parport.parportLinesSelector = 0xCCu;
-	config_parport.parportPtt = true;
+	config_parport.pttSerialportDevice = "";
+	config_parport.pttParportDevice = "/dev/parport0";
+	config_parport.pttParportLinesSelector = 0xCCu;
+	//config_parport.parportPtt = true;
 	config_parport.postAnounmntDelay = 4444;
 	config_parport.preAnounmntDelay = 4444;
 
-	config_lp.serialportPtt = "";
-	config_lp.parportDevice = "/dev/lp0";
-	config_lp.parportLinesSelector = 0xCCu;
-	config_lp.parportPtt = true;
+	config_lp.pttSerialportDevice = "";
+	config_lp.pttParportDevice = "/dev/lp0";
+	config_lp.pttParportLinesSelector = 0xCCu;
+	//config_lp.parportPtt = true;
 	config_lp.preAnounmntDelay = 4444;
 
   }

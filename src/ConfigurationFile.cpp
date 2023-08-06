@@ -121,7 +121,7 @@ bool ConfigurationFile::parse() {
 
 	// get log output
 	if (!root.lookupValue("LogOutput", this->logOutput)) {
-		this->logOutput = "paragadacz.log";
+		this->logOutput = "/var/log/paragadacz.log";
 	}
 
 	// get audio base path
