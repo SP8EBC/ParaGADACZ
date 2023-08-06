@@ -110,6 +110,10 @@ bool ConfigurationFile::parse() {
 		SPDLOG_ERROR("libconfig::FileIOException has been trown: {}", e.what());
 		return false;
 	}
+	catch (libconfig::ParseException & e) {
+		SPDLOG_ERROR("libconfig::ParseException, line: {}, error: {}", e.getLine(), e.getError());
+		return false;
+	}
 
 	// get root of a configuration tree
 	libconfig::Setting& root = config.getRoot();
