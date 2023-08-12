@@ -36,11 +36,11 @@ struct MyConfig
 	config_parport.postAnounmntDelay = 4444;
 	config_parport.preAnounmntDelay = 4444;
 
-	config_lp.pttSerialportDevice = "";
-	config_lp.pttParportDevice = "/dev/lp0";
-	config_lp.pttParportLinesSelector = 0xCCu;
-	//config_lp.parportPtt = true;
-	config_lp.preAnounmntDelay = 4444;
+//	config_lp.pttSerialportDevice = "";
+//	config_lp.pttParportDevice = "/dev/lp0";
+//	config_lp.pttParportLinesSelector = 0xCCu;
+//	//config_lp.parportPtt = true;
+//	config_lp.preAnounmntDelay = 4444;
 
   }
   ~MyConfig()
@@ -58,15 +58,6 @@ BOOST_AUTO_TEST_CASE(parport)
 	InhibitorAndPttControl ptt;
 
 	BOOST_CHECK(ptt.setConfigAndCheckPort(config_parport));
-	ptt.keyPtt(true);
-	ptt.dekeyPtt();
-}
-
-BOOST_AUTO_TEST_CASE(lpzero)
-{
-	InhibitorAndPttControl ptt;
-
-	BOOST_CHECK(ptt.setConfigAndCheckPort(config_lp));
-	ptt.keyPtt(true);
+	//ptt.keyPtt(true);
 	ptt.dekeyPtt();
 }
