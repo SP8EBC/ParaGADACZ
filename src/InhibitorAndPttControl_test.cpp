@@ -16,7 +16,7 @@
 #include "InhibitorAndPttControl.h"
 #include "ConfigurationFile.h"
 
-ConfigurationFile_PttControl config_parport, config_lp;
+ConfigurationFile_PttControl config_parport;
 
 struct MyConfig
 {

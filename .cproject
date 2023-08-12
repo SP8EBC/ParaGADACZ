@@ -101,7 +101,7 @@
 					<sourceEntries>
 						<entry excluding="pogodacc|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pogodacc"/>
-						<entry excluding="main.cpp|InhibitorAndPttControl_test.cpp|PlaylistAssembler_test.cpp|MeteoblueRainParser_test.cpp|ForecastDownloader_test_index.cpp|AprxLogParser_test.cpp|WeatherlinkDownloader_test.cpp|PogodaccDownloader_test.cpp|PlaylistCreatorPL_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="ConfigurationFile_test.cpp|main.cpp|PlaylistAssembler_test.cpp|MeteoblueRainParser_test.cpp|ForecastDownloader_test_index.cpp|AprxLogParser_test.cpp|WeatherlinkDownloader_test.cpp|PogodaccDownloader_test.cpp|PlaylistCreatorPL_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -205,7 +205,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="main.cpp|InhibitorAndPttControl_test.cpp|PlaylistAssembler_test.cpp|MeteoblueRainParser_test.cpp|ForecastDownloader_test_index.cpp|AprxLogParser_test.cpp|WeatherlinkDownloader_test.cpp|PogodaccDownloader_test.cpp|PlaylistCreatorPL_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="ConfigurationFile_test.cpp|main.cpp|PlaylistAssembler_test.cpp|MeteoblueRainParser_test.cpp|ForecastDownloader_test_index.cpp|AprxLogParser_test.cpp|WeatherlinkDownloader_test.cpp|PogodaccDownloader_test.cpp|PlaylistCreatorPL_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
