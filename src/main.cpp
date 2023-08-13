@@ -48,7 +48,6 @@
 #include <string_view>
 #include "CurrentConditionsDownloader.h"
 
-
 //constexpr std::string_view pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
 const utility::string_t pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
 const utility::string_t meteoblue_base_url = "http://my.meteoblue.com/packages/";
@@ -99,6 +98,15 @@ std::shared_ptr<PlaylistSampler> playlistSampler;
 //!< Assembly complete playlist
 std::shared_ptr<PlaylistAssembler> playlistAssembler;
 
+#ifdef __linux__
+#include <signal.h>
+
+void intHandler(int dummy) {
+	// dekey PTT
+	inhibitAndPtt.dekeyPtt();
+}
+#endif
+
 int main(int argc, char **argv) {
 
 	int downloadParseResult = 0;
@@ -115,7 +123,7 @@ int main(int argc, char **argv) {
 		configFn = std::string(argv[1]);
 	}
 	else {
-		configFn = "/etc/paragadacz.conf";
+		configFn = "paragadacz.conf";
 	}
 
 	SPDLOG_INFO("Using configuration file: {}", configFn);
@@ -282,6 +290,11 @@ int main(int argc, char **argv) {
 	}
 
 	inhibitAndPtt.setConfigAndCheckPort(configurationFile);
+
+#ifdef __linux__
+    signal(SIGINT, intHandler);
+    signal(SIGTERM, intHandler);
+#endif
 
 	try {
 		// key ptt

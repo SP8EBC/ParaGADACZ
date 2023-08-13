@@ -119,6 +119,27 @@ BOOST_AUTO_TEST_CASE (cieszyn_convert_to_wxdata)
 	BOOST_CHECK(result->wind_direction == 45);
 }
 
+// 2023-08-13 17:49:29.598 SR9NSK-4  R SR9WXZ>AKLPRZ:!4943.43N/01912.10E_296/002g003t065r...p...P...b00000h00
+BOOST_AUTO_TEST_CASE (jezioro_zywieckie_convert_to_wxdata)
+{
+	const std::string expected = "2023-08-13 17:49:29.598 SR9NSK-4  R SR9WXZ>AKLPRZ:!4943.43N/01912.10E_296/002g003t065r...p...P...b00000h00";
+
+	BOOST_TEST_MESSAGE(expected);
+
+
+	AprxLogParser parser("./test_input/aprx-rf.log");
+
+	parser.openFile();
+	parser.rewindFile();
+
+	const std::optional<AprsWXData> result = parser.getLastPacketForStation("SR9WXZ", 0);
+
+	BOOST_CHECK(result.has_value());
+	BOOST_CHECK(result->valid);
+	BOOST_CHECK_EQUAL(result->call, "SR9WXZ");
+	BOOST_CHECK(result->wind_direction == 296);
+}
+
 // 2022-12-03 14:27:29.321 SR9NSK    R SP9UVG-13>APMI06,SR9GM-2*,SP9DLM*,WIDE2*:@031427z5010.48N/01913.46E_000/007g007t030r000p000P...h91b10213 WX Myslowice
 BOOST_AUTO_TEST_CASE (myslowice_convert_to_wxdata)
 {
@@ -232,4 +253,3 @@ BOOST_AUTO_TEST_CASE (parse) {
 	//BOOST_CHECK_EQUAL(result.value(), expected);
 
 }
-

@@ -12,6 +12,8 @@
 #include <boost/algorithm/string.hpp>
 #include <sstream>
 #include <exception>
+#include <numeric>
+#include <algorithm>
 
 #pragma push_macro("U")
 #undef U
@@ -79,10 +81,14 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 
 	AprsWXData out;
 
-	// line from parser
+	const std::string r = "R";
+
+	std::string aprsFrame;
+
+	// value returned from method which looks across a log for next entry for given station
 	std::optional<std::string> line;
 
-	// last good line returned by parser
+	// the last log entry for given station
 	std::string lastLine;
 
 	// line separated by space to timestamp and rest of things
@@ -105,12 +111,41 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 		// parse line
 		boost::split(seprated, lastLine, boost::is_any_of(" "));
 
-		if (seprated.size() > 7) {
-			// element at index 7 should consist frame
-			lastLine = std::move(seprated.at(7));
+		if (seprated.size() > 4) {
+
+			// look for 'R' across all results
+			for (unsigned long i = 0; i < seprated.size(); i++) {
+
+				// get current element
+				const std::string & elem = seprated.at(i);
+
+				if (elem == r) {
+					// check if this is the before-last element
+					if (i == seprated.size() - 2) {
+						aprsFrame = std::move(seprated.at(i + 1));
+					}
+					else {
+						// there are more elements of APRS frame separated by space
+
+						// glue all segments together
+						aprsFrame = std::accumulate(seprated.begin() + i + 1, seprated.end(), std::string(""), [](std::string a, std::string b) {
+										return std::move(a) + ' ' + std::move(b);
+									});
+
+						// trim any leading and trailing whitespaces inplace
+						boost::algorithm::trim(aprsFrame);
+
+					}
+
+					break;
+				}
+			}
+
+			// last element should consist frame
+			lastLine = std::move(seprated.at(seprated.size() - 1));
 
 			// try convert this do APRSpacket
-			const int result = AprsPacket::ParseAPRSISData(lastLine.c_str(), lastLine.size(), &aprsPacket);
+			const int result = AprsPacket::ParseAPRSISData(aprsFrame.c_str(), aprsFrame.size(), &aprsPacket);
 
 			if (result == OK) {
 				// get frame timestamp

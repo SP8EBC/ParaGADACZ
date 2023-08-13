@@ -81,8 +81,8 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 
 				anyGood = true;
 			}
-			catch (std::exception & e) {
-				SPDLOG_WARN(e.what());
+			catch (ForecastInCacheTooOldEx & e) {
+				SPDLOG_WARN(e.message());
 
 				// if forecast cannot be loaded from cache, download this from the API
 				downloadMeteoblue(location);
@@ -176,9 +176,14 @@ std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastD
 		// get an element itself
 		ForecastDownloader_CacheIndexElem elementFromIndex = idxIterator->second;
 
+		const long currentEpochTime = TimeTools::getEpoch();
+
+		// maximum allowed age of weather data in seconds from now
+		const long cacheTimestampAgeLimit = this->configurationFile->getForecast().cacheAgeLimit * 60;
+
 		// check if data isn't too old
 		if (elementFromIndex.timestamp == 1 ||
-			elementFromIndex.timestamp + this->configurationFile->getForecast().cacheAgeLimit * 60 > TimeTools::getEpoch()) {
+			elementFromIndex.timestamp + cacheTimestampAgeLimit > currentEpochTime) {
 
 			// path to cache file
 			boost::filesystem::path file(this->configurationFile->getForecast().cacheDirectory + "/" + elementFromIndex.filename);
@@ -211,7 +216,7 @@ std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastD
 			}
 		}
 		else {
-			throw ForecastInCacheTooOldEx();
+			throw ForecastInCacheTooOldEx(name, currentEpochTime - elementFromIndex.timestamp);
 		}
 	}
 	else {
@@ -253,6 +258,8 @@ bool ForecastDownloader::saveInCache(std::string &data, std::string &name) {
 			cacheIndexElement.filename = name + ".json";
 			cacheIndexElement.locationName = name;
 			cacheIndexElement.timestamp = TimeTools::getEpoch();
+
+			this->cacheIndex.erase(cacheIndexElement.locationName);
 
 			// put element on the map
 			this->cacheIndex.insert(std::pair{cacheIndexElement.locationName, cacheIndexElement});
@@ -309,6 +316,8 @@ bool ForecastDownloader::loadCacheIndex() {
 				// read all content
 				inputFile.read(inputBuffer.data(), inputBuffer.size());
 
+				inputFile.close();
+
 				// try to parse JSON read from file
 				nlohmann::basic_json json = nlohmann::json::parse(inputBuffer, nullptr, false);
 
@@ -356,7 +365,6 @@ bool ForecastDownloader::loadCacheIndex() {
 				else {
 					SPDLOG_ERROR("Cache index doesn't contain valid JSON data");
 				}
-
 			}
 			else {
 				SPDLOG_ERROR("Error has happened during opening!!");
