@@ -291,6 +291,11 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	if (configurationFile->isOnlyAssemblePlaylist()) {
+		SPDLOG_WARN("Configured to exit w/o playing anything");
+		return 0;
+	}
+
 	inhibitAndPtt.setConfigAndCheckPort(configurationFile);
 
 #ifdef __linux__

@@ -8,6 +8,7 @@
 #include "MeteoblueRainParser.h"
 #include "ForecastFinder.h"
 
+
 MeteoblueRainParser::MeteoblueRainParser() {
 	// TODO Auto-generated constructor stub
 
@@ -102,6 +103,9 @@ MeteoblueRainParser::MeteoblueRainParser_PrecipType MeteoblueRainParser::parse(
 			// is something in the neighborhood.
 			if (sum >= NO_RAIN) {
 				out = RAIN_TYPE_LOCAL_INTERMITTEND;
+			}
+			else {
+				out = RAIN_TYPE_NO_PRECIPATION;
 			}
 			break;
 	}

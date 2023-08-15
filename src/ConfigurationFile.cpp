@@ -19,6 +19,7 @@ ConfigurationFile::ConfigurationFile(std::string fileName) {
 	hasPogodacc = false;
 	hasAprx = false;
 	debug = false;
+	onlyAssemblePlaylist = false;
 	maximumDataAgeInMinutes = 60;
 
 	inhibitor.serial.enable = false;
@@ -121,6 +122,11 @@ bool ConfigurationFile::parse() {
 	// get debug
 	if (!root.lookupValue("Debug", this->debug)) {
 		this->debug = false;
+	}
+
+	// get debug
+	if (!root.lookupValue("OnlyAssemblePlaylist", this->onlyAssemblePlaylist)) {
+		this->onlyAssemblePlaylist = false;
 	}
 
 	// get log output

@@ -498,7 +498,7 @@ void PlaylistAssembler::forecastMeteoblue(
 			std::tuple<int64_t, float> wind = ForecastFinder::getWindSpeedMeteoblue(foundForecast, configurationFile->getForecast().futureTime);
 			std::tuple<int64_t, float> windDirection = ForecastFinder::getWindDirectionMeteoblue(foundForecast, configurationFile->getForecast().futureTime);
 
-			SPDLOG_INFO("appending Meteoblue wind forecast, wind: {}, windDirection: {}", std::get<1>(wind), std::get<1>(windDirection));
+			SPDLOG_INFO("appending Meteoblue wind forecast, wind speed: {}, windDirection: {}", std::get<1>(wind), std::get<1>(windDirection));
 
 			// "wind"
 			playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::WIND).value());
@@ -528,7 +528,7 @@ void PlaylistAssembler::forecastMeteoblue(
 
 			auto _temperature = std::get<1>(temperature);
 
-			SPDLOG_INFO("appending wind forecast, temperature: {}", _temperature);
+			SPDLOG_INFO("appending Meteoblue temperature forecast, temperature: {}", _temperature);
 			// convert temperature to playlist
 			auto temperatureAudioFile = playlistSampler->getAudioListFromNumber(_temperature);
 
@@ -543,6 +543,8 @@ void PlaylistAssembler::forecastMeteoblue(
 
 		if (location.sayPrecipation) {
 			MeteoblueRainParser::MeteoblueRainParser_PrecipType precipation = MeteoblueRainParser::getRainForecastFromMeteoblue(foundForecast, configurationFile);
+
+			SPDLOG_INFO("appending Meteoblue precipation forecast, precipation: {}", (int)precipation);
 
 			switch (precipation) {
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_NO_PRECIPATION:	//!<< No rain or snow at all
@@ -607,6 +609,11 @@ void PlaylistAssembler::forecastMeteoblue(
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::POSSIBLE).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::THUNDERSTORM).value());
 					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_UNKNOWN:		//!<< thunderstorm possible
+					SPDLOG_WARN("Weird rain forecast data!");
+					break;
+				default:
+					SPDLOG_ERROR("Unknown and unusable rain forecast data!");
 			}
 
 

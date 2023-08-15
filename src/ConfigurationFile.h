@@ -163,6 +163,7 @@ class ConfigurationFile {
 	std::string fn;				//!< Path to filename with input configuration
 
 	bool debug;
+	bool onlyAssemblePlaylist;	//!< Only for debug/development. Assembles playlist of an anoyuncement w/o playing it
 
 	std::string audioBasePath;	//!< Base path do directory where all audio files are put
 	std::string logOutput;		//!< Path to created log file
@@ -287,6 +288,10 @@ public:
 
 	const ConfigurationFile_Pogodacc& getPogodaCc() const {
 		return pogodaCc;
+	}
+
+	bool isOnlyAssemblePlaylist() const {
+		return onlyAssemblePlaylist;
 	}
 };
 
