@@ -360,6 +360,10 @@ bool ConfigurationFile::parse() {
 				currentWeather[i].lookupValue("SayTemperature", c.sayTemperature);
 				currentWeather[i].lookupValue("RegionalPressure", c.regionalPressure);
 
+				if (!currentWeather[i].lookupValue("RegionalPressure", c.doesntSayWinddir)) {
+					c.doesntSayWinddir = false;
+				}
+
 				// don't say any local pressure if regional pressure will be sayed
 				if(this->intro.sayRegionalPressure) {
 					c.sayPressure = false;

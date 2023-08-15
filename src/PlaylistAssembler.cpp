@@ -350,13 +350,18 @@ void PlaylistAssembler::currentWeather(
 
 		// put wind if it is configured
 		if (w.sayWind) {
-			SPDLOG_INFO("appending wind speed {} for station: {}", wind_speed, w.name);
+			SPDLOG_INFO("appending wind speed {} and wind gusts {} for station: {}", wind_speed, wind_gusts, w.name);
 
 			// say "wind" or "kierunek"
 			playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::WIND).value_or(checker));
 
-			// say wind direction as name like 'east' or 'north' (not degrees)
-			playlist->push_back(playlistSampler->getAudioForWindDirection(direction));
+			if (w.doesntSayWinddir) {
+				SPDLOG_DEBUG("Wind direction anouncement will not be appended to playlist!");
+			}
+			else {
+				// say wind direction as name like 'east' or 'north' (not degrees)
+				playlist->push_back(playlistSampler->getAudioForWindDirection(direction));
+			}
 
 			// say wind speed in m/s
 			intermediate = playlistSampler->getAudioListFromNumber(wind_speed);
@@ -541,7 +546,7 @@ void PlaylistAssembler::forecastMeteoblue(
 
 			switch (precipation) {
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_NO_PRECIPATION:	//!<< No rain or snow at all
-					// say nothing and go ahead
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::NO_PRECIPATION).value());
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_LOCAL_INTERMITTEND:	//!<< Some precipations in vicinity
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::INTERMITTENT).value());

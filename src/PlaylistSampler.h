@@ -47,6 +47,7 @@ enum PlaylistSampler_ConstanElement {
 	WIND_GUSTS,		//!< "gusts"
 	TEMPERATURE,	//!< "temperature"
 	HUMIDITY,		//!< "humidity
+	NO_PRECIPATION,
 	PRECIPATION,	//!< "precipation"
 	INTERMITTENT,	//!<
 	RAIN,

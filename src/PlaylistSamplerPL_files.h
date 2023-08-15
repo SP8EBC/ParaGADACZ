@@ -40,6 +40,13 @@
 #define PROGNOZA			"prognoza_pogody.ogg"
 #define NA_NASTEPNE			"na_nastepne.ogg"
 
+#define BRAK_ZMIAN		"brak_zmian.ogg"
+#define PRZEZ			"przez.ogg"
+#define SPADEK			"spadek.ogg"
+#define WZROST			"wzrost.ogg"
+#define OSTATNIE		"ostatnie.ogg"
+#define O				"o.ogg"
+
 #define PREDKOSC_WIATRU	"predkosc_wiatru.ogg"
 #define PORYWY_WIATRU	"porywy.ogg"
 #define KIERUNEK_WIATRU	"wiatr.ogg"
@@ -48,6 +55,7 @@
 #define CISNIENIE_REG	"cisnienie_w_regionie.ogg"
 #define WILGOTNOSC		"wilgotnosc.ogg"
 #define OPADY			"opady.ogg"
+#define BRAK_OPADOW		"brak_opadow.ogg"
 #define	PRZELOTNE_OPAD  "przelotne.ogg"
 #define DESZCZU			"deszczu.ogg"
 #define SNIEGU			"sniegu.ogg"

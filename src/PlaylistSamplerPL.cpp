@@ -184,7 +184,7 @@ std::vector<
 
 	std::vector<std::string> out;
 
-	SPDLOG_INFO("decimal: {}", decimal);
+	//SPDLOG_INFO("decimal: {}", decimal);
 
 	// check if this number is negative
 	const bool is_negative = (decimal < 0) ? true : false;
@@ -439,7 +439,7 @@ std::vector<
 
 	std::vector<std::string> out;
 
-	SPDLOG_INFO("integer: {}", integer);
+	//SPDLOG_INFO("integer: {}", integer);
 
 	float helper = 0.0f;
 
@@ -653,6 +653,7 @@ std::optional<
 	case PlaylistSampler_ConstanElement::TEMPERATURE: 		return TEMPERATURA;
 	case PlaylistSampler_ConstanElement::HUMIDITY:			return WILGOTNOSC;
 	case PlaylistSampler_ConstanElement::PRECIPATION:		return OPADY;
+	case PlaylistSampler_ConstanElement::NO_PRECIPATION:	return BRAK_OPADOW;
 	case PlaylistSampler_ConstanElement::INTERMITTENT:		return PRZELOTNE_OPAD;
 	case PlaylistSampler_ConstanElement::RAIN:				return DESZCZU;
 	case PlaylistSampler_ConstanElement::SNOW:				return SNIEGU;

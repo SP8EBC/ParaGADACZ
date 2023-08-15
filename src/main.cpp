@@ -104,6 +104,8 @@ std::shared_ptr<PlaylistAssembler> playlistAssembler;
 void intHandler(int dummy) {
 	// dekey PTT
 	inhibitAndPtt.dekeyPtt();
+
+	exit(-1);
 }
 #endif
 

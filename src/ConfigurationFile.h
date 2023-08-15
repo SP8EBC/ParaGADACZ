@@ -76,13 +76,14 @@ struct ConfigurationFile_Intro {
  */
 struct ConfigurationFile_CurrentWeather {
 	ConfigurationFile_CurrentWeatherType type;	//!< Source type
-	std::string	name;	//!< Weather station name or its callsign in case of APRX source
-	std::string fnIdent;	//<! Name of audio file with station announcement.
-	bool sayTemperature;	//<! Say temperature from that station
-	bool sayWind;		//<! Say wind speed, direction and gusts
-	bool sayHumidy;		//<! Say humidity for that station
-	bool regionalPressure;	//<! Use that station as regional pressure source, only one station can have set this
-	bool sayPressure;	//<! Say pressure for that station, IF regionalPressure is not enabled
+	std::string	name;		//!< Weather station name or its callsign in case of APRX source
+	std::string fnIdent;	//!< Name of audio file with station announcement.
+	bool sayTemperature;	//!< Say temperature from that station
+	bool sayWind;			//!< Say wind speed, direction and gusts
+	bool doesntSayWinddir;	//!< Set to true if wind direction shall not be said
+	bool sayHumidy;			//!< Say humidity for that station
+	bool regionalPressure;	//!< Use that station as regional pressure source, only one station can have set this
+	bool sayPressure;		//!< Say pressure for that station, IF regionalPressure is not enabled
 };
 
 struct ConfigurationFile_ForecastMeteoblue_Locations {
