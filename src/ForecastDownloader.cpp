@@ -193,7 +193,7 @@ std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastD
 			cacheFile.open(file.generic_string(), std::ios::in);
 
 			if (cacheFile.is_open()) {
-				SPDLOG_DEBUG("Loading stored forecast for {} from cache file {}", elementFromIndex.locationName, file.generic_string());
+				SPDLOG_INFO("Loading stored forecast for {} from cache file {}", elementFromIndex.locationName, file.generic_string());
 
 				// reserve place for whole file file
 				cacheFile.seekg(0, std::ios::end);
@@ -297,7 +297,7 @@ bool ForecastDownloader::loadCacheIndex() {
 	if (boost::filesystem::is_directory(dir)) {
 		// check if index file exist
 		if (boost::filesystem::exists(index)) {
-			SPDLOG_INFO("Opening cache index file from: {}", index.generic_string());
+			SPDLOG_DEBUG("Opening cache index file from: {}", index.generic_string());
 
 			// open file from disk
 			std::fstream inputFile;

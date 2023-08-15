@@ -14,6 +14,15 @@
 
 #include "boost/date_time/posix_time/posix_time.hpp" //include all types plus i/o
 
+#include <cmath>
+
+#pragma push_macro("U")
+#undef U
+// pragma required as a workaround of possible conflict with cpprestsdk.
+// more info here: https://github.com/fmtlib/fmt/issues/3330
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+#pragma pop_macro("U")
 
 ForecastFinder::ForecastFinder() {
 
@@ -51,7 +60,14 @@ std::tuple<int64_t, float> ForecastFinder::getTemperatureMeteoblue(
 	for (int64_t tim : data->getTime()) {
 		// break on first poinr after
 		if (tim > (ts + minutesFromNow * 60)) {
-			out = std::make_tuple(tim, data->getTemperature().at(index));
+
+			const float foundTemp = data->getTemperature().at(index);
+
+			out = std::make_tuple(tim, foundTemp);
+
+			if (isnan(foundTemp)) {
+				SPDLOG_ERROR("Temperature is NaN!, index: {}, tim: {}", index, tim);
+			}
 
 			found = true;
 
@@ -96,7 +112,14 @@ std::tuple<int64_t, float> ForecastFinder::getWindSpeedMeteoblue(
 	for (int64_t tim : data->getTime()) {
 		// break on first poinr after
 		if (tim > (ts + minutesFromNow * 60)) {
-			out = std::make_tuple(tim, data->getWindspeed().at(index));
+
+			const float foundWs = data->getWindspeed().at(index);
+
+			out = std::make_tuple(tim, foundWs);
+
+			if (isnan(foundWs)) {
+				SPDLOG_ERROR("Wind speed is NaN!, index: {}, tim: {}", index, tim);
+			}
 
 			found = true;
 
