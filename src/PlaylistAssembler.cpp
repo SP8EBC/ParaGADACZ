@@ -604,6 +604,7 @@ void PlaylistAssembler::forecastMeteoblue(
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_THUNDERSTORM:		//!<< thunderstorm possible
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::INTERMITTENT).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::POSSIBLE).value());

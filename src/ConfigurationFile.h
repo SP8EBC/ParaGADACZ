@@ -86,6 +86,19 @@ struct ConfigurationFile_CurrentWeather {
 	bool sayPressure;		//!< Say pressure for that station, IF regionalPressure is not enabled
 };
 
+/**
+ * Additional trend announcement for all current weather configuration
+ */
+struct ConfigurationFile_Trend {
+	int trendLenghtInHours;
+	bool enabledTemperature;
+	bool enabledWindspeed;
+	int minimumTemperatureChange;	//!< Minimum percent change of temperature to treat as significant change;
+	int minimumWindChange;			//!< Minimum percent change of wind speed to treat as significant change;
+	bool shortNoChangeAnouncement;	//!< Just say "no change" if there is no change in trend
+	bool longNoChangeAnouncementl;	//!< Say "no chagne in last XX hours", this option has a priority
+};
+
 struct ConfigurationFile_ForecastMeteoblue_Locations {
 	std::string name;	//!< Name od this forecast point
 	float latitude;
@@ -186,6 +199,7 @@ class ConfigurationFile {
 	ConfigurationFile_Intro intro;
 
 	std::vector<ConfigurationFile_CurrentWeather> current;
+	ConfigurationFile_Trend trend;
 
 	ConfigurationFile_ForecastMeteoblue forecast;
 
@@ -292,6 +306,10 @@ public:
 
 	bool isOnlyAssemblePlaylist() const {
 		return onlyAssemblePlaylist;
+	}
+
+	const ConfigurationFile_Trend& getTrend() const {
+		return trend;
 	}
 };
 

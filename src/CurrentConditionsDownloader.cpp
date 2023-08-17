@@ -100,7 +100,7 @@ int CurrentConditionsDownloader::downloadParseCurrentCondotions(
 			// if result has been obtained successfully
 			if (weatherlinkResult) {
 				// convert it to uniersal format
-				auto wxdata = WeatherlinkDownloader::convertModelToWxData(weatherlinkResult);
+				std::tuple<std::string, AprsWXData> wxdata = WeatherlinkDownloader::convertModelToWxData(weatherlinkResult);
 
 				currentWeatherDavisWeatherlink.push_back(std::move(wxdata));
 			}
