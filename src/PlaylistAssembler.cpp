@@ -88,6 +88,24 @@ struct PlaylistAssembler_UnaryPredicate {
 	}
 };
 
+/**
+ * Used to look for matching trend data
+ */
+struct PlaylistAssembler_TrendUnaryPredicate {
+	std::string whatToLookFor;
+
+	PlaylistAssembler_TrendUnaryPredicate(std::string _whatToLookFor) : whatToLookFor(_whatToLookFor) {};
+
+	bool operator()(const TrendDownloader_Data & trend) {
+		if (trend.stationName == whatToLookFor) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+};
+
 PlaylistAssembler::PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config) : playlistSampler(sampler), configurationFile(config) {
 
 	this->playlist = std::make_shared<std::vector<std::string>>();
@@ -156,15 +174,24 @@ void PlaylistAssembler::regionalPressure(float pressure) {
 void PlaylistAssembler::currentWeather(
 		std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> & summary,
 		std::vector<AprsWXData> & result,
-		std::vector<std::tuple<std::string, AprsWXData>> & weatherlink) {
+		std::vector<std::tuple<std::string, AprsWXData>> & weatherlink,
+		std::optional<std::vector<TrendDownloader_Data>> & trend) {
+
+	bool includeTrend = false;
 
 	// add current weather anouncement
 	playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::CURRENT_WEATHER).value_or(checker));
+
+	// check if there is trend put as an input
+	if (trend.has_value()) {
+		includeTrend = true;
+	}
 
 	// iterate through configuration
 	for (ConfigurationFile_CurrentWeather w : configurationFile->getCurrent()) {
 
 		PlaylistAssembler_UnaryPredicate pred(w.name);
+		PlaylistAssembler_TrendUnaryPredicate trendPred(w.name);
 
 		SPDLOG_INFO("assembling announcement for source name: {}", w.name);
 
@@ -379,6 +406,24 @@ void PlaylistAssembler::currentWeather(
 
 			// unit
 			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MS, (int)wind_gusts));
+
+			// check if trend is enabled
+			if (includeTrend) {
+				// look for trend for this station
+				auto trendForStation = std::find_if(trend->begin(), trend->end(), trendPred);
+
+				if (trendForStation != trend->end()) {
+					// calculate a difference
+					float diff = ::abs(wind_speed - trendForStation->windspeedTrend);
+
+					// check if change of windspeed is big enought to include an anouncement
+
+				}
+				else {
+					SPDLOG_ERROR("No trend data has been found for station {}", w.name);
+				}
+
+			}
 
 		}
 

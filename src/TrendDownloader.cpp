@@ -31,6 +31,8 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 
 	int ret = 0;
 
+	bool goodData = false;
+
 	// get trend configuration
 	ConfigurationFile_Trend trendConfig = config.getTrend();
 
@@ -55,6 +57,8 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 			std::shared_ptr<org::openapitools::client::model::TrendData> temperatureTrend = trend->getTemperatureTrend();
 			std::shared_ptr<org::openapitools::client::model::TrendData> windspeedTrend = trend->getAverageWindSpeedTrend();
 
+			goodData = true;
+
 			// pogoda.cc backend returns trend for certain time windows.
 			switch (trendConfig.trendLenghtInHours) {
 			case 2:
@@ -78,15 +82,21 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 				SPDLOG_DEBUG("Eight hour trend for station {}, temperature: {}, wind: {}", current.name, temperatureTrendVal, windspeedTrendVal);
 				break;
 			default:
+				goodData = false;
 				SPDLOG_ERROR("pogoda.cc meteo backend provide trend data only for 2, 4, 6 and 8 hours timeframe");
 			}
-
 
 			break;
 		}
 		default:
 			SPDLOG_WARN("Current weather source of type {} is not supported yet", current.type);
 		}
+
+		if (goodData) {
+			ret++;
+			out.emplace_back(current.name, current.type, trendConfig.trendLenghtInHours, ::round(windspeedTrendVal), ::round(temperatureTrendVal));
+		}
+
 	}
 
 

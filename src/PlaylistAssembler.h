@@ -13,6 +13,7 @@
 #include <string>
 #include <utility>
 #include <memory>
+#include <optional>
 
 #include "PlaylistSampler.h"
 #include "Inline_response_200.h"
@@ -20,6 +21,7 @@
 #include "StationApi.h"
 #include "AprsWXData.h"
 #include "AvalancheWarnings.h"
+#include "TrendDownloader.h"
 
 class PlaylistAssembler {
 
@@ -57,7 +59,8 @@ public:
 	void currentWeather(
 			std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> & summary,
 			std::vector<AprsWXData> & result,
-			std::vector<std::tuple<std::string, AprsWXData>> & weatherlink);
+			std::vector<std::tuple<std::string, AprsWXData>> & weatherlink,
+			std::optional<std::vector<TrendDownloader_Data>> & trend);
 
 	/**
 	 * Appends meteoblue forecast

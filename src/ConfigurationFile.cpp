@@ -407,6 +407,35 @@ bool ConfigurationFile::parse() {
 	}
 
 	//
+	// 'Trend' configuration -
+	//
+	try{
+		::memset(&this->trend, 0x00, sizeof (ConfigurationFile_Trend));
+
+		libconfig::Setting & currentWeather = root["Trend"];
+
+		currentWeather.lookupValue("EnabledTemperature", this->trend.enabledTemperature);
+		currentWeather.lookupValue("EnabledWindspeed", this->trend.enabledWindspeed);
+		currentWeather.lookupValue("LongNoChangeAnouncement", this->trend.longNoChangeAnouncement);
+		currentWeather.lookupValue("ShortNoChangeAnouncement", this->trend.shortNoChangeAnouncement);
+		currentWeather.lookupValue("TrendLenghtInHours", this->trend.trendLenghtInHours);
+		currentWeather.lookupValue("MinimumTemperatureChange", this->trend.minimumTemperatureChange);
+		currentWeather.lookupValue("MinimumWindChange", this->trend.minimumWindChange);
+
+	}
+	catch (libconfig::SettingNotFoundException & e) {
+		SPDLOG_WARN("SettingNotFoundException during parsing 'Trend', e.getPath = {}", e.getPath());
+
+		this->trend.enabledTemperature = false;
+		this->trend.enabledWindspeed = false;
+	}
+	catch (libconfig::ParseException & e) {
+		SPDLOG_ERROR("ParseException during parsing 'Trend', e.getLine = {}, e.getError = {}", e.getLine(), e.getError());
+
+		out = false;
+	}
+
+	//
 	// Meteoblue forecast configuration 'ForecastMeteoblue'
 	//
 	try{

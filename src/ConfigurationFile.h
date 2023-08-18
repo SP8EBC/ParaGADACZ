@@ -96,7 +96,7 @@ struct ConfigurationFile_Trend {
 	int minimumTemperatureChange;	//!< Minimum percent change of temperature to treat as significant change;
 	int minimumWindChange;			//!< Minimum percent change of wind speed to treat as significant change;
 	bool shortNoChangeAnouncement;	//!< Just say "no change" if there is no change in trend
-	bool longNoChangeAnouncementl;	//!< Say "no chagne in last XX hours", this option has a priority
+	bool longNoChangeAnouncement;	//!< Say "no chagne in last XX hours", this option has a priority
 };
 
 struct ConfigurationFile_ForecastMeteoblue_Locations {

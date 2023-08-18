@@ -1,0 +1,6 @@
+Running 1 test case...
+Entering test module "TrendDownloader_test"
+../src/TrendDownloader_test.cpp(55): Entering test case "pogodacc_skrzyczne"
+Test case pogodacc_skrzyczne did not check any assertions
+../src/TrendDownloader_test.cpp(55): Leaving test case "pogodacc_skrzyczne"; testing time: 138018us
+Leaving test module "TrendDownloader_test"; testing time: 138118us
