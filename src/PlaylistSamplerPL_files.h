@@ -43,9 +43,7 @@
 #define BRAK_ZMIAN		"brak_zmian.ogg"
 #define PRZEZ			"przez.ogg"
 #define SPADEK			"spadek.ogg"
-#define WZROST			"wzrost.ogg"
-#define OSTATNIE		"ostatnie.ogg"
-#define O				"o.ogg"
+#define WZROST			"wzrpst.ogg"
 
 #define PREDKOSC_WIATRU	"predkosc_wiatru.ogg"
 #define PORYWY_WIATRU	"porywy.ogg"

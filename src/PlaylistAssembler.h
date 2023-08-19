@@ -60,7 +60,7 @@ public:
 			std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> & summary,
 			std::vector<AprsWXData> & result,
 			std::vector<std::tuple<std::string, AprsWXData>> & weatherlink,
-			std::optional<std::vector<TrendDownloader_Data>> & trend);
+			const std::optional<std::vector<TrendDownloader_Data>> & trend);
 
 	/**
 	 * Appends meteoblue forecast

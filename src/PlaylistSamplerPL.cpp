@@ -161,6 +161,12 @@ std::optional<
 
 }
 
+std::optional<std::vector<std::string>> getAudioForTrendAnouncement(int minutes) {
+	std::vector<std::string> out;
+
+	return out;
+}
+
 /**
  * Returns a list of audio files representing given floating point number.
  * Method always reduce precision to one digit after decimal point
@@ -645,6 +651,10 @@ std::optional<
 	case PlaylistSampler_ConstanElement::CURRENT_TIME:		return GODZINA;			//!< "godzina"
 	case PlaylistSampler_ConstanElement::CURRENT_WEATHER:	return AKTUALNE_WARUNKI;		//!< "Aktualne Warunki"
 	case PlaylistSampler_ConstanElement::FORECAST:			return PROGNOZA;			//!< "Prognoza na nastepne"
+	case PlaylistSampler_ConstanElement::NO_CHANGE:			return BRAK_ZMIAN;
+	case PlaylistSampler_ConstanElement::DURING:			return PRZEZ;
+	case PlaylistSampler_ConstanElement::INCREASE:			return WZROST;
+	case PlaylistSampler_ConstanElement::DROP:				return SPADEK;
 	case PlaylistSampler_ConstanElement::QNH:				return CISNIENIE;
 	case PlaylistSampler_ConstanElement::REGIONAL_QNH: 		return CISNIENIE_REG;//!< "Ciśnienie atmosferyczne w regionie"
 	case PlaylistSampler_ConstanElement::HOURS:				return HOUR_TWO_FOUR;	//!< "hours"

@@ -218,6 +218,8 @@ std::tuple<int64_t, utility::string_t> ForecastFinder::getRainSpotMeteoblue(
 		if (tim > (current_timestamp + minutesFromNow * 60)) {
 			out = std::make_tuple(tim, data->getRainspot().at(index));
 
+			SPDLOG_DEBUG("Found rain forecast data, rainspot: {}", data->getRainspot().at(index));
+
 			found = true;
 
 			break;
@@ -260,6 +262,8 @@ std::tuple<int64_t, MeteobluePictocode> ForecastFinder::getPictocodeMeteoblue(
 		if (tim > (current_timestamp + minutesFromNow * 60)) {
 			found_pictocode = data->getPictocode().at(index);
 			found_time = tim;
+
+			SPDLOG_DEBUG("Found rain forecast data, pictocode: {}, time: {}", found_pictocode, found_time);
 
 			found = true;
 

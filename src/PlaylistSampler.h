@@ -40,6 +40,10 @@ enum PlaylistSampler_ConstanElement {
 	CURRENT_TIME,	//!< like "Current time is"
 	CURRENT_WEATHER,//!< "Current weather conditions"
 	FORECAST,		//!< "Forecast for next"
+	NO_CHANGE,
+	DURING,
+	INCREASE,
+	DROP,
 	QNH,
 	REGIONAL_QNH,	//!< "Regional pressure"
 	HOURS,			//!< "hours"
@@ -132,6 +136,13 @@ public:
 	 * empty optional is returned
 	 */
 	virtual std::optional<std::vector<std::string>> getAudioForForecastAnouncement(int minutes) = 0;
+
+	/**
+	 *
+	 * @param minutes
+	 * @return
+	 */
+	virtual std::optional<std::vector<std::string>> getAudioForTrendAnouncement(int minutes) = 0;
 
 	/**
 	 * Returns an audio file with given station name. If the station is unknown

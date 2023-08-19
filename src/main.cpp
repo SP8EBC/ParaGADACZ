@@ -36,6 +36,7 @@
 #include "Player.h"
 #include "InhibitorAndPttControl.h"
 #include "AvalancheWarnings.h"
+#include "TrendDownloader.h"
 
 #pragma push_macro("U")
 #undef U
@@ -97,6 +98,10 @@ std::shared_ptr<PlaylistSampler> playlistSampler;
 
 //!< Assembly complete playlist
 std::shared_ptr<PlaylistAssembler> playlistAssembler;
+
+//!< Vector to hold trend data obtained by TrendDownloader
+std::vector<TrendDownloader_Data> trend;
+
 
 #ifdef __linux__
 #include <signal.h>
@@ -231,6 +236,9 @@ int main(int argc, char **argv) {
 								logParser,
 								weatherlinkDownloader);
 
+	// download trend data (a check if it is even enabled is done inside this method)
+	TrendDownloader::downloadTrendData(trend, *configurationFile, pogodaccDownloader->getStationApi(), logParser);
+
 	// exit on any error
 	if (downloadParseResult != 0) {
 		SPDLOG_ERROR("Exiting application! downloadParseResult: {}", downloadParseResult);
@@ -250,7 +258,7 @@ int main(int argc, char **argv) {
 	}
 
 	// insert current weather
-	playlistAssembler->currentWeather(currentWeatherMeteobackend, currentWeatherAprx, currentWeatherDavisWeatherlink);
+	playlistAssembler->currentWeather(currentWeatherMeteobackend, currentWeatherAprx, currentWeatherDavisWeatherlink, std::optional<std::vector<TrendDownloader_Data>>(std::move(trend)));
 
 	// insert weather forecast
 	if (configurationFile->getForecast().enable) {

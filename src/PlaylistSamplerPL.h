@@ -56,6 +56,14 @@ public:
 			int minutes);
 
 	/**
+	 *
+	 * @param minutes
+	 * @return
+	 */
+	virtual std::optional<std::vector<std::string>> getAudioForTrendAnouncement(int minutes);
+
+
+	/**
 	 * Returns a list of audio files representing given floating point number.
 	 * Method always reduce precision to one digit after decimal point
 	 * As an example, number -1.45 will return in English:

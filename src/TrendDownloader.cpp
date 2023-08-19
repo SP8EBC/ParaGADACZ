@@ -38,6 +38,7 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 
 	// return if no trend announcement are enabled
 	if (!trendConfig.enabledTemperature && !trendConfig.enabledWindspeed) {
+		SPDLOG_INFO("Trend data is disabled by configuration file");
 		return ret;
 	}
 
