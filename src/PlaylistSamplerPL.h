@@ -57,10 +57,12 @@ public:
 
 	/**
 	 *
-	 * @param minutes
+	 * @param hours
+	 * @param change
+	 * @param unit
 	 * @return
 	 */
-	virtual std::optional<std::vector<std::string>> getAudioForTrendAnouncement(int minutes);
+	virtual std::vector<std::string> getAudioForTrendAnouncement(int hours, float change, PlaylistSampler_Unit unit);
 
 
 	/**

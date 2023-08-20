@@ -161,8 +161,76 @@ std::optional<
 
 }
 
-std::optional<std::vector<std::string>> getAudioForTrendAnouncement(int minutes) {
+std::vector<std::string> PlaylistSamplerPL::getAudioForTrendAnouncement(int hours, float change, PlaylistSampler_Unit unit) {
+
 	std::vector<std::string> out;
+
+	// there is no change at all
+	if (change == 0.0f) {
+		if (config->getTrend().longNoChangeAnouncement) {
+			// and long announcement "no change in XX hours" should be played
+			out.push_back(BRAK_ZMIAN);
+			out.push_back(PRZEZ);
+			switch (hours) {
+				case 1: out.push_back(NUMBER_1); out.push_back(HOUR_ONE); break;
+				case 2: out.push_back(NUMBER_2_); out.push_back(HOUR_TWO_FOUR); break;
+				case 3: out.push_back(NUMBER_3); out.push_back(HOUR_TWO_FOUR);  break;
+				case 4: out.push_back(NUMBER_4); out.push_back(HOUR_TWO_FOUR);  break;
+				case 5: out.push_back(NUMBER_5); out.push_back(HOUR_FOUR);  break;
+				case 6: out.push_back(NUMBER_6); out.push_back(HOUR_FOUR);  break;
+				case 7: out.push_back(NUMBER_7); out.push_back(HOUR_FOUR);  break;
+				case 8: out.push_back(NUMBER_8); out.push_back(HOUR_FOUR);  break;
+				case 9: out.push_back(NUMBER_9); out.push_back(HOUR_FOUR);  break;
+				default: SPDLOG_ERROR("Currently trend anouncement could be generated for time no longer than 9 hours"); break;
+			}
+
+		}
+		else if (config->getTrend().shortNoChangeAnouncement) {
+			// and short anouncement "no change" should be played
+			out.push_back(BRAK_ZMIAN);
+		}
+		else {
+			;	// no change anouncement is not enabled at all
+		}
+	}
+	else {
+		// there is a change in trend
+
+		// get audio samples for amount of change
+		const std::vector<std::string> & intermediate = this->getAudioListFromNumber((int)::round(change));
+
+		if (change < 0.0f) {
+			// drop
+			out.push_back(SPADEK);
+		}
+		else {
+			// increase
+			out.push_back(WZROST);
+		}
+
+		// put amount of change
+		out.insert(out.end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
+
+		// put unit
+		out.push_back(this->getAudioFromUnit(unit, (int)::abs(change)));
+
+		// "przez ostatnie"
+		out.push_back(PRZEZ);
+
+		switch (hours) {
+			case 1: out.push_back(NUMBER_1); out.push_back(HOUR_ONE); break;
+			case 2: out.push_back(NUMBER_2_); out.push_back(HOUR_TWO_FOUR); break;
+			case 3: out.push_back(NUMBER_3); out.push_back(HOUR_TWO_FOUR);  break;
+			case 4: out.push_back(NUMBER_4); out.push_back(HOUR_TWO_FOUR);  break;
+			case 5: out.push_back(NUMBER_5); out.push_back(HOUR_FOUR);  break;
+			case 6: out.push_back(NUMBER_6); out.push_back(HOUR_FOUR);  break;
+			case 7: out.push_back(NUMBER_7); out.push_back(HOUR_FOUR);  break;
+			case 8: out.push_back(NUMBER_8); out.push_back(HOUR_FOUR);  break;
+			case 9: out.push_back(NUMBER_9); out.push_back(HOUR_FOUR);  break;
+			default: SPDLOG_ERROR("Currently trend anouncement could be generated for time no longer than 9 hours"); break;
+		}
+
+	}
 
 	return out;
 }

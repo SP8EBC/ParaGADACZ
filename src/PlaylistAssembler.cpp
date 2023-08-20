@@ -420,40 +420,17 @@ void PlaylistAssembler::currentWeather(
 					if (diff > ::abs(wind_speed) * (configurationFile->getTrend().minimumWindChange / 100.0f)) {
 						SPDLOG_INFO("appending wind speed trend {} for station: {}", diff, w.name);
 
-						// check if now the wind is slower than it was
-						if (diff < 0) {
-							playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::DROP).value_or(checker));
-						}
-						else {
-							playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::INCREASE).value_or(checker));
-						}
-
-						// append the change itself as
-						intermediate = playlistSampler->getAudioListFromNumber(::abs(wind_speed));
-						playlist->insert(playlist->end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
-
-						playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MS, (int)::abs(diff)));
+						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, diff, PlaylistSampler_Unit::MS);
 
 					}
 					else {
 						SPDLOG_DEBUG("Wind difference of {} is too low to include trend anouncement", diff);
 
-						if (configurationFile->getTrend().longNoChangeAnouncement) {
-							playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::NO_CHANGE).value_or(checker));
-							// and gust value
-							intermediate = playlistSampler->getAudioListFromNumber(configurationFile->getTrend().trendLenghtInHours);
-							playlist->insert(playlist->end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
-
-							playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MS, (int)::abs(diff)));
-						}
-						else if (configurationFile->getTrend().shortNoChangeAnouncement) {
-
-						}
-						else {
-							; // no anouncement at all
-						}
+						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, 0.0f, PlaylistSampler_Unit::MS);
 					}
 
+					// append samples to the main playlist
+					playlist->insert(playlist->end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
 				}
 				else {
 					SPDLOG_ERROR("No trend data has been found for station {}", w.name);
@@ -490,25 +467,17 @@ void PlaylistAssembler::currentWeather(
 					if (diff > ::abs(temperature) * (configurationFile->getTrend().minimumTemperatureChange / 100.0f)) {
 						SPDLOG_INFO("appending temperature trend {} for station: {}", diff, w.name);
 
-						// check if now the wind is slower than it was
-						if (diff < 0) {
-							playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::DROP).value_or(checker));
-						}
-						else {
-							playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::INCREASE).value_or(checker));
-						}
-
-						// append the change itself as
-						intermediate = playlistSampler->getAudioListFromNumber(::abs(wind_speed));
-						playlist->insert(playlist->end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
-
-						playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::DEG, (int)::abs(diff)));
-						playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::CELSIUS, (int)::abs(diff)));
+						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, diff, PlaylistSampler_Unit::CELSIUS);
 
 					}
 					else {
-						SPDLOG_DEBUG("Temperature difference of {} is too low to include trend anouncement", diff);
+						SPDLOG_DEBUG("Temperature of {} is too low to include trend anouncement", diff);
+
+						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, 0.0f, PlaylistSampler_Unit::CELSIUS);
 					}
+
+					// append samples to the main playlist
+					playlist->insert(playlist->end(), std::make_move_iterator(intermediate.begin()), std::make_move_iterator(intermediate.end()));
 
 				}
 				else {

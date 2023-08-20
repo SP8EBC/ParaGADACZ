@@ -139,10 +139,12 @@ public:
 
 	/**
 	 *
-	 * @param minutes
+	 * @param hours
+	 * @param change
+	 * @param unit
 	 * @return
 	 */
-	virtual std::optional<std::vector<std::string>> getAudioForTrendAnouncement(int minutes) = 0;
+	virtual std::vector<std::string> getAudioForTrendAnouncement(int hours, float change, PlaylistSampler_Unit unit) = 0;
 
 	/**
 	 * Returns an audio file with given station name. If the station is unknown
