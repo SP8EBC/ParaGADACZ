@@ -197,7 +197,7 @@ std::vector<std::string> PlaylistSamplerPL::getAudioForTrendAnouncement(int hour
 		// there is a change in trend
 
 		// get audio samples for amount of change
-		const std::vector<std::string> & intermediate = this->getAudioListFromNumber((int)::round(change));
+		const std::vector<std::string> & intermediate = this->getAudioListFromNumber((int)::abs(::round(change)));
 
 		if (change < 0.0f) {
 			// drop

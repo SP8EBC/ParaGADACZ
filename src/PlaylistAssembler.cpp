@@ -417,7 +417,7 @@ void PlaylistAssembler::currentWeather(
 					float diff = wind_speed - trendForStation->windspeedTrend;
 
 					// check if change of windspeed is big enought to include an anouncement
-					if (diff > ::abs(wind_speed) * (configurationFile->getTrend().minimumWindChange / 100.0f)) {
+					if (diff > ::abs(::round(wind_speed)) * (configurationFile->getTrend().minimumWindChange / 100.0f)) {
 						SPDLOG_INFO("appending wind speed trend {} for station: {}", diff, w.name);
 
 						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, diff, PlaylistSampler_Unit::MS);
@@ -464,7 +464,7 @@ void PlaylistAssembler::currentWeather(
 					float diff = temperature - trendForStation->temperatureTrend;
 
 					// check if change of windspeed is big enought to include an anouncement
-					if (diff > ::abs(temperature) * (configurationFile->getTrend().minimumTemperatureChange / 100.0f)) {
+					if (diff > ::abs(::round(temperature)) * (configurationFile->getTrend().minimumTemperatureChange / 100.0f)) {
 						SPDLOG_INFO("appending temperature trend {} for station: {}", diff, w.name);
 
 						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, diff, PlaylistSampler_Unit::CELSIUS);
