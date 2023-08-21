@@ -7,13 +7,12 @@
 
 #include "AprxLogParser.h"
 #include "ReturnValues.h"
+#include "TimeTools.h"
 
 
 #include <boost/algorithm/string.hpp>
 #include <sstream>
 #include <exception>
-#include <numeric>
-#include <algorithm>
 
 #pragma push_macro("U")
 #undef U
@@ -31,15 +30,6 @@
 
 #define SOURCE_LN			6
 
-const std::vector<std::locale> AprxLogParser::formats(
-	{
-	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%Y-%m-%d %H:%M:%S")),
-	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%Y/%m/%d %H:%M:%S")),
-	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%d.%m.%Y %H:%M:%S")),
-	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%Y-%m-%d"))
-	}
-);
-
 AprxLogParser::AprxLogParser(std::string fn) : fileName(fn), APRSIS("APRSIS") {
 	parsedLines = 0;
 }
@@ -49,41 +39,113 @@ AprxLogParser::AprxLogParser() : APRSIS("APRSIS") {
 
 }
 
-boost::posix_time::ptime AprxLogParser::convertToFrameTimestamp(
-		std::string &date, std::string &time)
-{
-	boost::posix_time::ptime out;
-
-	const std::string joined = date + " " + time;
-
-	for (auto format : formats)
-	{
-        std::istringstream is(joined);
-        is.imbue(format);
-        is >> out;
-        if (out != boost::posix_time::ptime()) {
-        	SPDLOG_DEBUG("parsed frame timestamp: {}", boost::posix_time::to_simple_string(out));
-
-        	break;
-        }
-	}
-
-	return out;
-
-}
-
 AprxLogParser::~AprxLogParser() {
 }
 
+std::vector<AprsWXData> AprxLogParser::getAllWeatherPacketsInTimerange(
+		boost::posix_time::ptime from, boost::posix_time::ptime to) {
+}
+
+std::vector<AprsWXData> AprxLogParser::getAllWeatherPacketsInTimerange(
+		int64_t epochFrom, int64_t epochTo) {
+
+	std::vector<AprsWXData> out;
+
+	// local buffer to extract data from log file
+	std::string localBuffer;
+
+	AprsPacket aprsPacket;
+
+	// single line of aprx rf log separated to components by space
+	std::vector<std::string> separated;
+
+	// if at least one line has been found
+	bool hasBeenFound = false;
+
+	if (file.is_open()) {
+
+		// read line by line
+		while (std::getline(file, localBuffer)) {
+
+			// parse line
+			boost::split(separated, localBuffer, boost::is_any_of(" "));
+
+			// check if result has a meaningfull size
+			if (separated.size() > 4) {
+
+				// get frame timestamp
+				boost::posix_time::ptime timestamp = AprxLogParser_StaticStuff::convertToFrameTimestamp(separated.at(0), separated.at(1));
+
+				// convert into epoch
+				const long epochTimestamp = TimeTools::getEpochFromPtime(timestamp);
+
+				// check if this line fits within given range
+				if (epochFrom < epochTimestamp && epochTo > epochTimestamp) {
+					try {
+						std::optional<AprsWXData> weatherFrame = AprxLogParser_StaticStuff::parseFrame(separated, aprsPacket);
+
+						// check if a weather data has been found in this line
+						if (weatherFrame.has_value()) {
+							// if yes add this to output vector
+							out.push_back(weatherFrame.value());
+
+							if (!hasBeenFound) {
+								SPDLOG_DEBUG("Range has begun");
+							}
+
+							// and set a flag that we have entered into a range
+							hasBeenFound = true;
+						}
+					}
+					catch (std::runtime_error & ex) {
+						SPDLOG_ERROR("Runtime error thrown during parsing APRX rf log entry");
+						SPDLOG_ERROR(localBuffer);
+					}
+
+				}
+				else {
+					// check if at least one frame has been found
+					if (hasBeenFound) {
+						break;	// exit the loop because we are after the range
+					}
+					else {
+						;	// continue further as
+					}
+				}
+			}
+		}
+
+	}
+	else {
+		SPDLOG_ERROR("APRX rf log file is not opened!");
+	}
+
+	return out;
+}
+
+std::vector<AprsWXData> AprxLogParser::getAllWeatherPacketsInTimerange(uint16_t agoFrom,
+		uint16_t agoTo, bool hoursOrMinutes) {
+
+	// get current epoch
+	const long currentEpoch = TimeTools::getEpoch();
+
+	// get time to look for packet from
+	const long epochFrom = currentEpoch - agoFrom * (hoursOrMinutes ? 60 : 3600);
+
+	// get time to look for packet to
+	const long epochTo = currentEpoch - agoTo * (hoursOrMinutes ? 60 : 3600);
+
+	SPDLOG_DEBUG("epochFrom: {}, epochTo: {}", epochFrom, epochTo);
+
+	return this->getAllWeatherPacketsInTimerange(epochFrom, epochTo);
+}
 
 std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string call,
 		uint8_t ssid) {
 
-	AprsWXData out;
+	std::optional<AprsWXData> out;
 
-	const std::string r = "R";
-
-	std::string aprsFrame;
+	AprsPacket packet;
 
 	// value returned from method which looks across a log for next entry for given station
 	std::optional<std::string> line;
@@ -93,9 +155,6 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 
 	// line separated by space to timestamp and rest of things
 	std::vector<std::string> seprated;
-
-	// packet data createf from long entry
-	AprsPacket aprsPacket;
 
 	// iterate through file
 	do {
@@ -113,63 +172,33 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 
 		if (seprated.size() > 4) {
 
-			// look for 'R' across all results
-			for (unsigned long i = 0; i < seprated.size(); i++) {
+			try {
+				// parse line read from aprx rf log
+				std::optional<AprsWXData> parsedFrame = AprxLogParser_StaticStuff::parseFrame(seprated, packet);
 
-				// get current element
-				const std::string & elem = seprated.at(i);
-
-				if (elem == r) {
-					// check if this is the before-last element
-					if (i == seprated.size() - 2) {
-						aprsFrame = std::move(seprated.at(i + 1));
-					}
-					else {
-						// there are more elements of APRS frame separated by space
-
-						// glue all segments together
-						aprsFrame = std::accumulate(seprated.begin() + i + 1, seprated.end(), std::string(""), [](std::string a, std::string b) {
-										return std::move(a) + ' ' + std::move(b);
-									});
-
-						// trim any leading and trailing whitespaces inplace
-						boost::algorithm::trim(aprsFrame);
-
-					}
-
-					break;
+				// check if this line contains valid WX data
+				if (parsedFrame.has_value()) {
+					// if yes return it
+					out = parsedFrame.value();
+				}
+				else {
+					// if not maybe this isn't
+					out = std::nullopt;
+					SPDLOG_WARN("APRX rf log doesn't contain any weather data for callsign {}", call);
 				}
 			}
-
-			// last element should consist frame
-			lastLine = std::move(seprated.at(seprated.size() - 1));
-
-			// try convert this do APRSpacket
-			const int result = AprsPacket::ParseAPRSISData(aprsFrame.c_str(), aprsFrame.size(), &aprsPacket);
-
-			if (result == OK) {
-				// get frame timestamp
-				boost::posix_time::ptime timestamp = AprxLogParser::convertToFrameTimestamp(seprated.at(0), seprated.at(1));
-
-				// copy it to output object
-				out.packetTimestmp = timestamp;
-
-				// calculate an age of this frame
-				boost::posix_time::time_duration ageUniversal = boost::posix_time::second_clock::universal_time() - timestamp;
-				boost::posix_time::time_duration ageLocal = boost::posix_time::second_clock::local_time() - timestamp;
-
-				out.packetAgeInSecondsLocal = ageLocal.total_seconds();
-				out.packetAgeInSecondsUtc = ageUniversal.total_seconds();
-
-				// extract WX data
-				const int resultWx = AprsWXData::ParseData(aprsPacket, &out);
+			catch (std::runtime_error & ex) {
+				SPDLOG_ERROR("Runtime error thrown during parsing APRX rf log entry");
+				SPDLOG_ERROR(lastLine);
 			}
 		}
 
 	}
 	else {
 		// nothing found for that callsign in that APRX log file
-		return std::nullopt;
+		out = std::nullopt;
+		SPDLOG_WARN("APRX rf log doesn't contain any weather data for callsign {}", call);
+
 	}
 
     return out;

@@ -9,6 +9,8 @@
 #define TIMETOOLS_H_
 
 #include <boost/date_time.hpp>
+#include <boost/date_time/local_time_adjustor.hpp>
+#include <boost/date_time/c_local_time_adjustor.hpp>
 
 
 class TimeTools {
@@ -23,6 +25,16 @@ public:
 
 		// timestamp
 		long ts = (current - epoch).total_seconds();
+
+		return ts;
+	}
+
+	static long getEpochFromPtime(boost::posix_time::ptime & in) {
+		// epoch
+		boost::posix_time::ptime epoch = boost::posix_time::ptime(boost::gregorian::date(1970, 1, 1), boost::posix_time::time_duration(0,0,0,0));
+
+		// timestamp
+		long ts = (in - epoch).total_seconds();
 
 		return ts;
 	}
