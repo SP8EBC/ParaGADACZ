@@ -64,6 +64,7 @@ std::optional<AprsWXData>  AprxLogParser_StaticStuff::parseFrame(std::vector<std
 	std::string lastLine;
 
 	const std::string r = "R";
+	const std::string d = "d";
 
 	// look for 'R' across all results
 	for (unsigned long i = 0; i < separatedLines.size(); i++) {
@@ -71,7 +72,7 @@ std::optional<AprsWXData>  AprxLogParser_StaticStuff::parseFrame(std::vector<std
 		// get current element
 		const std::string & elem = separatedLines.at(i);
 
-		if (elem == r) {
+		if (elem == r || elem == d) {
 			// check if this is the before-last element
 			if (i == separatedLines.size() - 2) {
 				aprsFrame = std::move(separatedLines.at(i + 1));

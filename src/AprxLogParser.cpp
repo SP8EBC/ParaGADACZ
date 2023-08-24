@@ -30,12 +30,13 @@
 
 #define SOURCE_LN			6
 
-AprxLogParser::AprxLogParser(std::string fn) : fileName(fn), APRSIS("APRSIS") {
+AprxLogParser::AprxLogParser(std::string fn, bool inLocal) : fileName(fn), APRSIS("APRSIS"), timestampsAreInLocal(inLocal) {
 	parsedLines = 0;
 }
 
 AprxLogParser::AprxLogParser() : APRSIS("APRSIS") {
 	parsedLines = 0;
+	timestampsAreInLocal = false;
 
 }
 
@@ -77,7 +78,7 @@ std::vector<AprsWXData> AprxLogParser::getAllWeatherPacketsInTimerange(
 				boost::posix_time::ptime timestamp = AprxLogParser_StaticStuff::convertToFrameTimestamp(separated.at(0), separated.at(1));
 
 				// convert into epoch
-				const long epochTimestamp = TimeTools::getEpochFromPtime(timestamp);
+				const long epochTimestamp = TimeTools::getEpochFromPtime(timestamp, timestampsAreInLocal);
 
 				// check if this line fits within given range
 				if (epochFrom < epochTimestamp && epochTo > epochTimestamp) {
@@ -237,7 +238,7 @@ std::optional<std::string> AprxLogParser::getNextLine(std::string call,
 				rtd = buffer.at(RTD_OFFSET);
 
 				// continue to next line if this is not received packet
-				if (rtd != 'R') {
+				if (rtd != 'R' && rtd != 'd') {
 					continue;
 				}
 
@@ -296,6 +297,11 @@ std::optional<std::string> AprxLogParser::getNextLine(std::string call,
 					else {
 						continue;	// this is not wx frame
 					}
+				}
+
+				// check ig callsign contains '*' at the begining
+				if (bufCallsign.at(0) == '*') {
+					bufCallsign.erase(0, 1);
 				}
 
 				// continue to next line if this is not a callsign we're looking for

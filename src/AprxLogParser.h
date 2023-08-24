@@ -28,6 +28,8 @@ class AprxLogParser {
 
 	const std::string APRSIS;
 
+	bool timestampsAreInLocal;
+
 public:
 
 	void openFile();
@@ -45,7 +47,7 @@ public:
 	std::vector<AprsWXData> getAllWeatherPacketsInTimerange(uint16_t agoFrom, uint16_t agoTo, bool hoursOrMinutes);
 
 	AprxLogParser();
-	AprxLogParser(std::string fn);
+	AprxLogParser(std::string fn, bool inLocal);
 	virtual ~AprxLogParser();
 
 	void setFileName(const std::string &fileName) {

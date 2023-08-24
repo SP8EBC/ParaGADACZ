@@ -120,7 +120,7 @@ void AprsPacket::PrintPacketData() {
 int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPacket* cTarget) {
 
 	// simple regex to match most of callsign systems
-	boost::regex callsignPattern("^[A-Z1-9]{3}[A-Z]{1,3}", boost::regex::icase);
+	boost::regex callsignPattern("^[A-Z0-9]{3}[A-Z]{1,3}", boost::regex::icase);
 
 	// q-construct regex
 	boost::regex qc("q[A-Z]{2}");
@@ -149,6 +149,8 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 	// vector which will hold source call separated from the rest of frame
 	std::vector<std::string> sepratedBySource;
 
+	std::vector<std::string> pathAndData;
+
 	// vector to keep separated path elements
 	std::vector<std::string> pathElements;
 
@@ -174,6 +176,8 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 	// status message which is identified by '>' character before it. All in all the APRS2RRD
 	// is focused to work on wx frames, so we can just ignore everything after second element.
 	std::string path = sepratedBySource.at(1);
+
+	boost::split(pathAndData, path, boost::is_any_of(":"));
 
 	// splitting path elements and the frame payload
 	boost::split(pathElements, path, boost::is_any_of(",:"));
