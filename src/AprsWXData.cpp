@@ -83,6 +83,15 @@ int AprsWXData::ParseData(AprsPacket& input, AprsWXData* output) {
     output->rain_day = 0;
     output->valid = false;
 
+    /**
+     * APRS Protocol Reference — APRS Protocol Version 1.0
+     * Document Version 1.0.1: 29 August 2000
+     *
+     * Note: The weather report must include at least the MDHM date/timestamp,
+	 * wind direction, wind speed, gust and temperature, but the remaining
+	 * parameters may be in a different order (or may not even exist).
+     */
+
     //i++;    // przeskoczenie na pierwszy znak danych meteo
     if (AprsWXData::CopyConvert('/',wxData,conv_temp,i) == 0)   // kierunek    this->wind_direction = conv_temp;
     	output->wind_direction = conv_temp;
@@ -101,23 +110,27 @@ int AprsWXData::ParseData(AprsPacket& input, AprsWXData* output) {
     i++;
     if (AprsWXData::CopyConvert('r',wxData,conv_temp,i) == 0)   // temperatura
     	output->temperature = ((float)conv_temp - 32) / 9 * 5;
-	else
-		return -1;
+	else {
+		if (AprsWXData::CopyConvert((unsigned)3,wxData,conv_temp,i) == 0)   // temperatura
+		    	output->temperature = ((float)conv_temp - 32) / 9 * 5;
+		else
+			return -1;
+	}
     i++;
     if (AprsWXData::CopyConvert('p',wxData,conv_temp,i) == 0)   // deszcz przez ostania godzine
     	output->rain60 = conv_temp;
 	else
-		return -1;
+		output->rain60 = APRSWXDATA_MISSING_PARAMETER;
 	i++;
     if (AprsWXData::CopyConvert('P',wxData,conv_temp,i) == 0)   // deszcz przez ostania godzine
     	output->rain24 = conv_temp;
 	else
-		return -1;
+		output->rain24 = APRSWXDATA_MISSING_PARAMETER;
 	i++;
     if (AprsWXData::CopyConvert('b',wxData,conv_temp,i) == 0)   // deszcz przez ostania godzine
     	output->rain_day = conv_temp;
 	else
-		return -1;
+		output->rain_day = APRSWXDATA_MISSING_PARAMETER;
 	i++;
     if (AprsWXData::CopyConvert((unsigned)5,wxData,conv_temp,i) == 0)   // ciśnienie
     	output->pressure = conv_temp / 10;

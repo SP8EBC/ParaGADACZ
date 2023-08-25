@@ -149,6 +149,7 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 	// vector which will hold source call separated from the rest of frame
 	std::vector<std::string> sepratedBySource;
 
+	// vector to keep path elements separated from data (frame payload)
 	std::vector<std::string> pathAndData;
 
 	// vector to keep separated path elements
@@ -177,13 +178,14 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 	// is focused to work on wx frames, so we can just ignore everything after second element.
 	std::string path = sepratedBySource.at(1);
 
+	// split path and data, assuming that data doesn't contain any ':'
 	boost::split(pathAndData, path, boost::is_any_of(":"));
 
 	// splitting path elements and the frame payload
-	boost::split(pathElements, path, boost::is_any_of(",:"));
+	boost::split(pathElements, pathAndData.at(0), boost::is_any_of(","));
 
 	// checking if after splitting there are enough elements to thread this as valid frame
-	if (pathElements.size() < 2)
+	if (pathElements.size() == 0)
 		return NOT_VALID_APRS_PACKET;
 
 	// checking if source identifier is valid
@@ -196,7 +198,7 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 	pathElements.erase(pathElements.begin());
 
 	// splitting
-	for (size_t i = 0; i < pathElements.size() - 1; i++) {
+	for (size_t i = 0; i < pathElements.size(); i++) {
 
 		std::string e = pathElements.at(i);
 
@@ -231,7 +233,7 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 
 	// copying the payload to the output object. There is no need to check the lenght of
 	// payload due to 'buff_len > 1000' check done just at the begining of this method
-	cTarget->DataAsStr = std::move(pathElements.at(pathElements.size() - 1));
+	cTarget->DataAsStr = std::move(pathAndData.at(1));
 
 	//cTarget->DataAsStr = std::string(cTarget->Data);
 

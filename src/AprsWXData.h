@@ -9,6 +9,8 @@
 
 #include <boost/date_time.hpp>
 
+#define APRSWXDATA_MISSING_PARAMETER	-1
+
 enum class WXDataSource {
 	APRSIS,
 	SERIAL,
