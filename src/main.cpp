@@ -37,6 +37,7 @@
 #include "InhibitorAndPttControl.h"
 #include "AvalancheWarnings.h"
 #include "TrendDownloader.h"
+#include "TimeTools.h"
 
 #pragma push_macro("U")
 #undef U
@@ -237,7 +238,7 @@ int main(int argc, char **argv) {
 								weatherlinkDownloader);
 
 	// download trend data (a check if it is even enabled is done inside this method)
-	TrendDownloader::downloadTrendData(trend, *configurationFile, pogodaccDownloader->getStationApi(), logParser);
+	TrendDownloader::downloadTrendData(trend, *configurationFile, pogodaccDownloader->getStationApi(), logParser, TimeTools::getEpoch());
 
 	// exit on any error
 	if (downloadParseResult != 0) {

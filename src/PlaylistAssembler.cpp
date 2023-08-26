@@ -408,7 +408,7 @@ void PlaylistAssembler::currentWeather(
 			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MS, (int)wind_gusts));
 
 			// check if trend is enabled
-			if (includeTrend && configurationFile->getTrend().enabledWindspeed) {
+			if (w.sayTrend && includeTrend && configurationFile->getTrend().enabledWindspeed) {
 				// look for trend for this station
 				auto trendForStation = std::find_if(trend->begin(), trend->end(), trendPred);
 
@@ -455,7 +455,7 @@ void PlaylistAssembler::currentWeather(
 			playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::CELSIUS, (int)temperature));
 
 			// check if trend is enabled
-			if (includeTrend && configurationFile->getTrend().enabledTemperature) {
+			if (w.sayTrend && includeTrend && configurationFile->getTrend().enabledTemperature) {
 				// look for trend for this station
 				auto trendForStation = std::find_if(trend->begin(), trend->end(), trendPred);
 
