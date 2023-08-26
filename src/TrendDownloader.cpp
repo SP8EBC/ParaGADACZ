@@ -77,28 +77,36 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 				// filter packets
 				std::vector<AprsWXData> filteredPackets = AprxLogParser::filterPacketsPerCallsign(current.name, 0, packets);
 
-				SPDLOG_DEBUG("{} packets have been found in APRX rf log file, {} remained after filtering", packets.size(), filteredPackets.size());
-				SPDLOG_DEBUG("Oldest packet to be used: {}, Newest packet to be used: {}",
-																						boost::posix_time::to_simple_string(filteredPackets.at(0).packetTimestmp),
-																						boost::posix_time::to_simple_string(filteredPackets.at(filteredPackets.size() - 1).packetTimestmp));
+				if (filteredPackets.size() == 0) {
+					SPDLOG_WARN("No archival data in APRX log file between {} and {}", trendBegin, trendEnd);
 
-				// sum values from all packets obtained
-				average = std::accumulate(filteredPackets.begin(), filteredPackets.end(), average, [] (AprsWXData & accumulator, AprsWXData & element) {
+					goodData = false;
+				}
+				else {
 
-					// set use flag to make '+' operator working
-					element.useTemperature = true;
-					element.useWind = true;
+					SPDLOG_DEBUG("{} packets have been found in APRX rf log file, {} remained after filtering", packets.size(), filteredPackets.size());
+					SPDLOG_DEBUG("Oldest packet to be used: {}, Newest packet to be used: {}",
+																							boost::posix_time::to_simple_string(filteredPackets.at(0).packetTimestmp),
+																							boost::posix_time::to_simple_string(filteredPackets.at(filteredPackets.size() - 1).packetTimestmp));
 
-					return std::move(accumulator) + element;
-				});
+					// sum values from all packets obtained
+					average = std::accumulate(filteredPackets.begin(), filteredPackets.end(), average, [] (AprsWXData & accumulator, AprsWXData & element) {
 
-				// calculate average itself
-				windspeedArchivalAverage = average.wind_speed / filteredPackets.size();
-				temperatureArchivalAverage = average.temperature / filteredPackets.size();
+						// set use flag to make '+' operator working
+						element.useTemperature = true;
+						element.useWind = true;
 
-				SPDLOG_DEBUG("Average from {} hours ago for station {}, temperature: {}, wind: {}", trendConfig.trendLenghtInHours, current.name, temperatureArchivalAverage, windspeedArchivalAverage);
+						return std::move(accumulator) + element;
+					});
 
-				goodData = true;
+					// calculate average itself
+					windspeedArchivalAverage = average.wind_speed / filteredPackets.size();
+					temperatureArchivalAverage = average.temperature / filteredPackets.size();
+
+					SPDLOG_DEBUG("Average from {} hours ago for station {}, temperature: {}, wind: {}", trendConfig.trendLenghtInHours, current.name, temperatureArchivalAverage, windspeedArchivalAverage);
+
+					goodData = true;
+				}
 			}
 
 			break;

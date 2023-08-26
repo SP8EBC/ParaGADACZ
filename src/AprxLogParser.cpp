@@ -117,8 +117,8 @@ std::vector<AprsWXData> AprxLogParser::getAllWeatherPacketsInTimerange(
 						}
 					}
 					catch (std::runtime_error & ex) {
-						SPDLOG_ERROR("Runtime error thrown during parsing APRX rf log entry");
-						SPDLOG_ERROR(localBuffer);
+						SPDLOG_WARN("Runtime error thrown during parsing APRX rf log entry");
+						SPDLOG_WARN(localBuffer);
 					}
 
 				}
@@ -217,8 +217,8 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 				}
 			}
 			catch (std::runtime_error & ex) {
-				SPDLOG_ERROR("Runtime error thrown during parsing APRX rf log entry");
-				SPDLOG_ERROR(lastLine);
+				SPDLOG_WARN("Runtime error thrown during parsing APRX rf log entry");
+				SPDLOG_WARN(lastLine);
 			}
 		}
 

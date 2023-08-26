@@ -417,14 +417,14 @@ void PlaylistAssembler::currentWeather(
 					float diff = wind_speed - trendForStation->windspeedTrend;
 
 					// check if change of windspeed is big enought to include an anouncement
-					if (diff > ::abs(::round(wind_speed)) * (configurationFile->getTrend().minimumWindChange / 100.0f)) {
+					if (::abs(diff) > ::abs(::round(wind_speed)) * (configurationFile->getTrend().minimumWindChange / 100.0f)) {
 						SPDLOG_INFO("appending wind speed trend {} for station: {}", diff, w.name);
 
 						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, diff, PlaylistSampler_Unit::MS);
 
 					}
 					else {
-						SPDLOG_DEBUG("Wind difference of {} is too low to include trend anouncement", diff);
+						SPDLOG_INFO("Wind difference of {} is too low to include trend anouncement", diff);
 
 						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, 0.0f, PlaylistSampler_Unit::MS);
 					}
@@ -467,14 +467,14 @@ void PlaylistAssembler::currentWeather(
 					float diff = temperature - trendForStation->temperatureTrend;
 
 					// check if change of windspeed is big enought to include an anouncement
-					if (diff > ::abs(::round(temperature)) * (configurationFile->getTrend().minimumTemperatureChange / 100.0f)) {
+					if (::abs(diff) > ::abs(::round(temperature)) * (configurationFile->getTrend().minimumTemperatureChange / 100.0f)) {
 						SPDLOG_INFO("appending temperature trend {} for station: {}", diff, w.name);
 
 						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, diff, PlaylistSampler_Unit::CELSIUS);
 
 					}
 					else {
-						SPDLOG_DEBUG("Temperature of {} is too low to include trend anouncement", diff);
+						SPDLOG_INFO("Temperature of {} is too low to include trend anouncement", diff);
 
 						intermediate = playlistSampler->getAudioForTrendAnouncement(configurationFile->getTrend().trendLenghtInHours, 0.0f, PlaylistSampler_Unit::CELSIUS);
 					}

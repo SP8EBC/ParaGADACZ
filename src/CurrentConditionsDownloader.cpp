@@ -70,7 +70,7 @@ int CurrentConditionsDownloader::downloadParseCurrentCondotions(
 					}
 				}
 
-				SPDLOG_INFO("Adding current weather conditions from APRX for station: {}", current.name);
+				SPDLOG_INFO("Adding current weather from APRX for station: {}, windpseed: {}, temperature: {}", current.name, packet->wind_speed, packet->temperature);
 
 				// add this to the vector of current weather
 				currentWeatherAprx.push_back(std::move(*packet));
@@ -126,7 +126,7 @@ int CurrentConditionsDownloader::downloadParseCurrentCondotions(
 				// get summary for that station
 				std::shared_ptr<org::openapitools::client::model::Summary> summary = stationApi->stationStationNameSummaryGet((*forecast)->getName()).get();
 
-				SPDLOG_INFO("Adding current weather conditions from meteo_backend for station: {}", current.name);
+				SPDLOG_INFO("Adding current weather from meteo_backend for station: {}", current.name);
 				SPDLOG_DEBUG("last_timestamp: {}, temperature: {}, wind_speed: {}", summary->getLastTimestamp(), summary->getAvgTemperature(), summary->getAverageSpeed());
 
 				// add this result to
