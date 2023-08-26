@@ -47,8 +47,10 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 	// iterate through all configured sources of current conditions
 	for (ConfigurationFile_CurrentWeather current : config.getCurrent()) {
 
-		float temperatureTrendVal = 0.0f;
-		float windspeedTrendVal = 0.0f;
+		SPDLOG_INFO("Looking for trend archival data for station {}", current.name);
+
+		float temperatureArchivalAverage = 0.0f;
+		float windspeedArchivalAverage = 0.0f;
 
 		// different source types require different handling
 		switch (current.type) {
@@ -76,6 +78,9 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 				std::vector<AprsWXData> filteredPackets = AprxLogParser::filterPacketsPerCallsign(current.name, 0, packets);
 
 				SPDLOG_DEBUG("{} packets have been found in APRX rf log file, {} remained after filtering", packets.size(), filteredPackets.size());
+				SPDLOG_DEBUG("Oldest packet to be used: {}, Newest packet to be used: {}",
+																						boost::posix_time::to_simple_string(filteredPackets.at(0).packetTimestmp),
+																						boost::posix_time::to_simple_string(filteredPackets.at(filteredPackets.size() - 1).packetTimestmp));
 
 				// sum values from all packets obtained
 				average = std::accumulate(filteredPackets.begin(), filteredPackets.end(), average, [] (AprsWXData & accumulator, AprsWXData & element) {
@@ -88,10 +93,10 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 				});
 
 				// calculate average itself
-				windspeedTrendVal = average.wind_speed / filteredPackets.size();
-				temperatureTrendVal = average.temperature / filteredPackets.size();
+				windspeedArchivalAverage = average.wind_speed / filteredPackets.size();
+				temperatureArchivalAverage = average.temperature / filteredPackets.size();
 
-				SPDLOG_DEBUG("{} hours trend for station {}, temperature: {}, wind: {}", trendConfig.trendLenghtInHours, current.name, temperatureTrendVal, windspeedTrendVal);
+				SPDLOG_DEBUG("Average from {} hours ago for station {}, temperature: {}, wind: {}", trendConfig.trendLenghtInHours, current.name, temperatureArchivalAverage, windspeedArchivalAverage);
 
 				goodData = true;
 			}
@@ -111,24 +116,24 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 			// pogoda.cc backend returns trend for certain time windows.
 			switch (trendConfig.trendLenghtInHours) {
 			case 2:
-				temperatureTrendVal = temperatureTrend->getTwoHoursValue();
-				windspeedTrendVal = windspeedTrend->getTwoHoursValue();
-				SPDLOG_DEBUG("Two hour trend for station {}, temperature: {}, wind: {}", current.name, temperatureTrendVal, windspeedTrendVal);
+				temperatureArchivalAverage = temperatureTrend->getTwoHoursValue();
+				windspeedArchivalAverage = windspeedTrend->getTwoHoursValue();
+				SPDLOG_DEBUG("Average from two hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
 				break;
 			case 4:
-				temperatureTrendVal = temperatureTrend->getFourHoursValue();
-				windspeedTrendVal = windspeedTrend->getFourHoursValue();
-				SPDLOG_DEBUG("Four hour trend for station {}, temperature: {}, wind: {}", current.name, temperatureTrendVal, windspeedTrendVal);
+				temperatureArchivalAverage = temperatureTrend->getFourHoursValue();
+				windspeedArchivalAverage = windspeedTrend->getFourHoursValue();
+				SPDLOG_DEBUG("Average from four hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
 				break;
 			case 6:
-				temperatureTrendVal = temperatureTrend->getSixHoursValue();
-				windspeedTrendVal = windspeedTrend->getSixHoursValue();
-				SPDLOG_DEBUG("Six hour trend for station {}, temperature: {}, wind: {}", current.name, temperatureTrendVal, windspeedTrendVal);
+				temperatureArchivalAverage = temperatureTrend->getSixHoursValue();
+				windspeedArchivalAverage = windspeedTrend->getSixHoursValue();
+				SPDLOG_DEBUG("Average from six hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
 				break;
 			case 8:
-				temperatureTrendVal = temperatureTrend->getEightHoursValue();
-				windspeedTrendVal = windspeedTrend->getEightHoursValue();
-				SPDLOG_DEBUG("Eight hour trend for station {}, temperature: {}, wind: {}", current.name, temperatureTrendVal, windspeedTrendVal);
+				temperatureArchivalAverage = temperatureTrend->getEightHoursValue();
+				windspeedArchivalAverage = windspeedTrend->getEightHoursValue();
+				SPDLOG_DEBUG("Average from eight hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
 				break;
 			default:
 				goodData = false;
@@ -143,7 +148,7 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 
 		if (goodData) {
 			ret++;
-			out.emplace_back(current.name, current.type, trendConfig.trendLenghtInHours, ::round(windspeedTrendVal), ::round(temperatureTrendVal));
+			out.emplace_back(current.name, current.type, trendConfig.trendLenghtInHours, ::round(windspeedArchivalAverage), ::round(temperatureArchivalAverage));
 		}
 
 	}

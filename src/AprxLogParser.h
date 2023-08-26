@@ -34,6 +34,8 @@ public:
 
 	void openFile();
 
+	void closeFile();
+
 	void rewindFile();
 
 	std::optional<std::string> getNextLine(std::string call, uint8_t ssid, bool wxOnly);
@@ -65,6 +67,10 @@ public:
 		}
 
 		return output;
+	}
+
+	void setTimestampsAreInLocal(bool timestampsAreInLocal) {
+		this->timestampsAreInLocal = timestampsAreInLocal;
 	}
 };
 

@@ -437,6 +437,9 @@ void PlaylistAssembler::currentWeather(
 				}
 
 			}
+			else {
+				SPDLOG_DEBUG("Windspeed trend is not configured, w.sayTrend: {}, includeTrend: {}, enabledTemperature: {}", w.sayTrend, includeTrend, configurationFile->getTrend().enabledWindspeed);
+			}
 
 		}
 
@@ -485,6 +488,9 @@ void PlaylistAssembler::currentWeather(
 				}
 
 			}
+			else {
+				SPDLOG_DEBUG("Temeprature trend is not configured, w.sayTrend: {}, includeTrend: {}, enabledTemperature: {}", w.sayTrend, includeTrend, configurationFile->getTrend().enabledTemperature);
+			}
 
 		}
 
@@ -522,6 +528,11 @@ void PlaylistAssembler::currentWeather(
 
 void PlaylistAssembler::forecastMeteoblue(
 		std::vector<std::tuple<std::string, std::shared_ptr<org::openapitools::client::model::Inline_response_200>>> & forecasts) {
+
+
+	std::vector<std::string> listOne = playlistSampler->getAudioListFromNumber(1);
+	std::vector<std::string> listThree = playlistSampler->getAudioListFromNumber(3);
+	std::vector<std::string> listFive = playlistSampler->getAudioListFromNumber(5);
 
 	// generate forecast anouncement
 	std::optional<std::vector<std::string>> intermediate = playlistSampler->getAudioForForecastAnouncement(configurationFile->getForecast().futureTime);
@@ -649,54 +660,63 @@ void PlaylistAssembler::forecastMeteoblue(
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->insert(playlist->end(), listOne.begin(),  listOne.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)1));
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_SHOWERS_SNOW:		//!<< snow up to one milimeter
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::SNOW).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->insert(playlist->end(), listOne.begin(),  listOne.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)1));
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_LIGHT_RAIN:			//!<< rain up to 3mm
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->insert(playlist->end(), listThree.begin(),  listThree.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)3));
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_LIGHT_SNOW:			//!<< snow up to 3mm
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::SNOW).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->insert(playlist->end(), listThree.begin(),  listThree.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)3));
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_MEDIUM_RAIN:		//!<< rain up to 5mm
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->insert(playlist->end(), listFive.begin(),  listFive.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_MEDIUM_SNOW:		//!<< snow up to 5mm
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::SNOW).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->insert(playlist->end(), listFive.begin(),  listFive.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_HEAVY_RAIN:			//!<< heavy rainfall
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ABOVE).value());
+					playlist->insert(playlist->end(), listFive.begin(),  listFive.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_HEAVY_SNOWFALL:		//!<< heavy snowfall
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::SNOW).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ABOVE).value());
+					playlist->insert(playlist->end(), listFive.begin(),  listFive.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
 					break;
 				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_LIGHT_RAIN_THUNDER: //!<< rain up to 3mm + thunderstorm possible
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->insert(playlist->end(), listThree.begin(),  listThree.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)3));
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::POSSIBLE).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::THUNDERSTORM).value());
@@ -705,6 +725,7 @@ void PlaylistAssembler::forecastMeteoblue(
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->insert(playlist->end(), listFive.begin(),  listFive.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::POSSIBLE).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::THUNDERSTORM).value());
@@ -713,6 +734,7 @@ void PlaylistAssembler::forecastMeteoblue(
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ABOVE).value());
+					playlist->insert(playlist->end(), listFive.begin(),  listFive.end());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::POSSIBLE).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::THUNDERSTORM).value());

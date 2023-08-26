@@ -220,6 +220,8 @@ int main(int argc, char **argv) {
 
 		// and fast forward it to the middle
 		logParser.rewindFile();
+
+		logParser.setTimestampsAreInLocal(configurationFile->getAprxConfig().aprxRfLogTimeInLocal);
 	}
 
 	// get configuration for current weather conditions. this is mandatory and is always enabled
