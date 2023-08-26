@@ -280,8 +280,15 @@ std::optional<std::string> AprxLogParser::getNextLine(std::string call,
 						it++;
 					}
 
-					// and convert to integer
-					_ssid = std::stoi(bufSSID);
+					try {
+						// and convert to integer
+						_ssid = std::stoi(bufSSID);
+					}
+					catch(std::invalid_argument & ex) {
+						SPDLOG_ERROR("std::invalid_argument thrown while pasing source SSID");
+						SPDLOG_ERROR(buffer);
+						continue;
+					}
 				}
 				else {
 					_ssid = 0;

@@ -94,7 +94,7 @@ std::tuple<std::string, unsigned> ConfigurationFile::splitCallsign(
 }
 
 ConfigurationFile::~ConfigurationFile() {
-	SPDLOG_DEBUG("");
+	//SPDLOG_DEBUG("");
 }
 
 bool ConfigurationFile::parse() {
