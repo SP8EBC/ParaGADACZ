@@ -64,10 +64,16 @@ class AprsWXData
         AprsWXData(AprsWXData&& in);
 
         // assigment operator
+        AprsWXData& operator= (AprsWXData);
+
+        // assigment operator
         AprsWXData& operator= (AprsWXData&);
 
         // subtraction operator
         AprsWXData& operator-(AprsWXData&);
+
+        // add
+        AprsWXData& operator+(AprsWXData&);
 
         ~AprsWXData();
 

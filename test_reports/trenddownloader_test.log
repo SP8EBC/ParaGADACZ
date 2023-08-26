@@ -1,6 +1,8 @@
 Running 1 test case...
 Entering test module "TrendDownloader_test"
-../src/TrendDownloader_test.cpp(55): Entering test case "pogodacc_skrzyczne"
-Test case pogodacc_skrzyczne did not check any assertions
-../src/TrendDownloader_test.cpp(55): Leaving test case "pogodacc_skrzyczne"; testing time: 138018us
-Leaving test module "TrendDownloader_test"; testing time: 138118us
+../src/TrendDownloader_test.cpp(74): Entering test case "aprx_log_1"
+../src/TrendDownloader_test.cpp(111): info: check 1 == stations has passed
+../src/TrendDownloader_test.cpp(112): info: check 1 == trend.size() has passed
+../src/TrendDownloader_test.cpp(116): info: check 2 == trendElement.windspeedTrend has passed
+../src/TrendDownloader_test.cpp(74): Leaving test case "aprx_log_1"; testing time: 105515us
+Leaving test module "TrendDownloader_test"; testing time: 105528us

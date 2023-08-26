@@ -59,7 +59,19 @@ MeteoblueRainParser::MeteoblueRainParser_PrecipType MeteoblueRainParser::parse(
 		case HEAVY_RAIN_THUNDERSTORMS_LIKELY:
 		case LIGHT_RAIN_THUNDERSTORMS_LIKELY:
 		case RAIN_THUNDERSTORMS_LIKELY:
-			out = RAIN_TYPE_THUNDERSTORM;
+			// rain
+			if (sum >= 0 && sum < NO_RAIN) {
+				out = RAIN_TYPE_LOCAL_THUNDERSTORM;
+			}
+			else if (sum >= NO_RAIN && sum < LIGHT_RAIN) {
+				out = RAIN_TYPE_LIGHT_RAIN_THUNDER;
+			}
+			else if (sum >= LIGHT_RAIN && sum < MEDIUM_RAIN) {
+				out = RAIN_TYPE_MEDIUM_RAIN_THUNDER;
+			}
+			else if (sum >= MEDIUM_RAIN) {
+				out = RAIN_TYPE_HEAVY_RAIN_THUNDER;
+			}
 			break;
 		case OVERCAST_WITH_MIXTURE_OF_SNOW_AND_RAIN:
 		case OVERCAST_WITH_LIGHT_SNOW:

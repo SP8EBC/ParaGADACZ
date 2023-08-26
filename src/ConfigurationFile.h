@@ -84,6 +84,7 @@ struct ConfigurationFile_CurrentWeather {
 	bool sayHumidy;			//!< Say humidity for that station
 	bool regionalPressure;	//!< Use that station as regional pressure source, only one station can have set this
 	bool sayPressure;		//!< Say pressure for that station, IF regionalPressure is not enabled
+	 bool sayTrend;			//!< If trend shall be say for this place
 };
 
 /**

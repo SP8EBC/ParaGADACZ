@@ -6,6 +6,7 @@
  */
 
 #include "TrendDownloader.h"
+#include "TimeTools.h"
 
 #pragma push_macro("U")
 #undef U
@@ -27,7 +28,8 @@ TrendDownloader::~TrendDownloader() {
 int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 		const ConfigurationFile &config,
 		std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,
-		AprxLogParser &logParser) {
+		AprxLogParser &logParser,
+		int64_t currentEpoch) {
 
 	int ret = 0;
 
@@ -50,6 +52,52 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 
 		// different source types require different handling
 		switch (current.type) {
+		case APRX: {
+			if (trendConfig.trendLenghtInHours == 0) {
+				SPDLOG_WARN("Trend lenght shall be set to minimum 1 hour");
+				goodData = false;
+			}
+			else {
+				AprsWXData average;
+				average.useTemperature = true;
+				average.useWind = true;
+
+				// get current time
+				const long time = currentEpoch;
+
+				// configured trend length is a center time for calculation
+				const int trendBegin = time - (trendConfig.trendLenghtInHours * 3600) - 1200;
+				const int trendEnd = time - (trendConfig.trendLenghtInHours * 3600) + 1200;
+
+				// get all weather packets between given time
+				std::vector<AprsWXData> packets = logParser.getAllWeatherPacketsInTimerange(trendBegin, trendEnd);
+
+				// filter packets
+				std::vector<AprsWXData> filteredPackets = AprxLogParser::filterPacketsPerCallsign(current.name, 0, packets);
+
+				SPDLOG_DEBUG("{} packets have been found in APRX rf log file, {} remained after filtering", packets.size(), filteredPackets.size());
+
+				// sum values from all packets obtained
+				average = std::accumulate(filteredPackets.begin(), filteredPackets.end(), average, [] (AprsWXData & accumulator, AprsWXData & element) {
+
+					// set use flag to make '+' operator working
+					element.useTemperature = true;
+					element.useWind = true;
+
+					return std::move(accumulator) + element;
+				});
+
+				// calculate average itself
+				windspeedTrendVal = average.wind_speed / filteredPackets.size();
+				temperatureTrendVal = average.temperature / filteredPackets.size();
+
+				SPDLOG_DEBUG("{} hours trend for station {}, temperature: {}, wind: {}", trendConfig.trendLenghtInHours, current.name, temperatureTrendVal, windspeedTrendVal);
+
+				goodData = true;
+			}
+
+			break;
+		}
 		case POGODA_CC: {
 			// get trend data for currently processed station
 			std::shared_ptr<org::openapitools::client::model::Trend> trend = stationApi->stationStationNameTrendGet(current.name).get();

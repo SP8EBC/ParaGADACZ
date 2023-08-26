@@ -14,6 +14,14 @@
 
 #include <vector>
 
+template<typename Time>
+class TrendDownloader_GetTime {
+public:
+
+	int64_t getTime() {
+		return Time::getEpoch();
+	}
+};
 
 class TrendDownloader_Data {
 public:
@@ -49,7 +57,8 @@ public:
 	static int downloadTrendData(std::vector<TrendDownloader_Data> & out,
 								const ConfigurationFile & config,
 								std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,
-								AprxLogParser & logParser);
+								AprxLogParser & logParser,
+								int64_t currentEpoch);
 };
 
 #endif /* TRENDDOWNLOADER_H_ */

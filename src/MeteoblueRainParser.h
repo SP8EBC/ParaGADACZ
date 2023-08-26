@@ -49,7 +49,10 @@ public:
 		RAIN_TYPE_MEDIUM_SNOW,			//!<< snow up to 5mm
 		RAIN_TYPE_HEAVY_RAIN,			//!<< heavy rainfall
 		RAIN_TYPE_HEAVY_SNOWFALL,		//!<< heavy snowfall
-		RAIN_TYPE_THUNDERSTORM,			//!<< thunderstorm possible
+		RAIN_TYPE_LIGHT_RAIN_THUNDER,	//!<< rain up to 3mm + thunderstorm possible
+		RAIN_TYPE_MEDIUM_RAIN_THUNDER,	//!<< rain up to 5mm + thunderstorm possible
+		RAIN_TYPE_HEAVY_RAIN_THUNDER,	//!<< heavy rainfall + thunderstorm possible
+		RAIN_TYPE_LOCAL_THUNDERSTORM,	//!<< Some precipations in vicinity + thunderstorm possible
 		RAIN_TYPE_UNKNOWN
 	};
 

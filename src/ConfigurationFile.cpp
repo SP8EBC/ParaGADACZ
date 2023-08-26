@@ -366,6 +366,10 @@ bool ConfigurationFile::parse() {
 				currentWeather[i].lookupValue("SayTemperature", c.sayTemperature);
 				currentWeather[i].lookupValue("RegionalPressure", c.regionalPressure);
 
+				if (!currentWeather[i].lookupValue("SayTrend", c.doesntSayWinddir)) {
+					c.sayTrend = false;
+				}
+
 				if (!currentWeather[i].lookupValue("DoesntSayWindDirection", c.doesntSayWinddir)) {
 					c.doesntSayWinddir = false;
 				}

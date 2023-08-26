@@ -170,12 +170,12 @@ int AprsWXData::CopyConvert(char sign, std::string& input, int& output, int& cou
     	output = boost::lexical_cast<int>(valueToConv);
     }
     catch (const boost::bad_lexical_cast& ex) {
-    	std::cout << ex.what() << std::endl;
+    	//std::cout << ex.what() << std::endl;
     	output = 0;
     	//return -1;
     }
     catch (const std::bad_cast& ex) {
-    	std::cout << ex.what() << std::endl;
+    	//std::cout << ex.what() << std::endl;
     	output = 0;
     	//return -1;
     }
@@ -217,11 +217,11 @@ int AprsWXData::CopyConvert(unsigned num, std::string& input, int& output, int& 
     	output = boost::lexical_cast<int>(valueToConv);
     }
     catch (const boost::bad_lexical_cast& ex) {
-    	std::cout << ex.what() << std::endl;
+    	//std::cout << ex.what() << std::endl;
     	output = 0;
     }
     catch (const std::bad_cast& ex) {
-    	std::cout << ex.what() << std::endl;
+    	//std::cout << ex.what() << std::endl;
     	output = 0;
     }
 
@@ -323,6 +323,66 @@ AprsWXData& AprsWXData::operator =(AprsWXData& _in) {
 
 	return * this;
 }
+
+AprsWXData& AprsWXData::operator +(AprsWXData& _in) {
+
+	// scalar values are subtracted directly
+	if (_in.humidity && this->humidity) {
+
+		this->humidity = ::abs(this->humidity + _in.humidity);
+	}
+
+	if (_in.useTemperature && this->useTemperature) {
+
+		this->temperature += _in.temperature;
+	}
+
+	if (_in.usePressure && this->usePressure) {
+
+		this->pressure = ::abs(this->pressure + _in.pressure);
+	}
+
+
+	if (_in.useWind && this->useWind) {
+
+		// wind speed is scalar value
+		this->wind_speed += _in.wind_speed;
+		this->wind_gusts += _in.wind_gusts;
+
+	}
+
+
+	return * this;
+
+}
+
+AprsWXData& AprsWXData::operator =(AprsWXData aprsWXData) {
+	this->humidity = aprsWXData.humidity;
+	this->pressure = aprsWXData.pressure;
+	this->rain24 = aprsWXData.rain24;
+	this->rain60 = aprsWXData.rain60;
+	this->rain_day = aprsWXData.rain_day;
+	this->temperature = aprsWXData.temperature;
+	this->wind_direction = aprsWXData.wind_direction;
+	this->wind_gusts = aprsWXData.wind_gusts;
+	this->wind_speed = aprsWXData.wind_speed;
+
+	this->valid = aprsWXData.valid;
+
+	this->useHumidity = aprsWXData.useHumidity;
+	this->usePressure = aprsWXData.usePressure;
+	this->useWind = aprsWXData.useWind;
+	this->useTemperature = aprsWXData.useTemperature;
+
+	this->is_primary = aprsWXData.is_primary;
+	this->is_secondary = aprsWXData.is_secondary;
+
+	this->call = aprsWXData.call;
+	this->ssid = aprsWXData.ssid;
+
+	return * this;
+}
+
 
 AprsWXData& AprsWXData::operator -(AprsWXData& _in) {
 	int diff1 = 0, diff2;

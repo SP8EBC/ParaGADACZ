@@ -693,7 +693,31 @@ void PlaylistAssembler::forecastMeteoblue(
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ABOVE).value());
 					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
 					break;
-				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_THUNDERSTORM:		//!<< thunderstorm possible
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_LIGHT_RAIN_THUNDER: //!<< rain up to 3mm + thunderstorm possible
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)3));
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::POSSIBLE).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::THUNDERSTORM).value());
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_MEDIUM_RAIN_THUNDER: //!<< rain up to 5mm + thunderstorm possible
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::POSSIBLE).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::THUNDERSTORM).value());
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_HEAVY_RAIN_THUNDER: //!<< rain up to 3mm + thunderstorm possible
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::ABOVE).value());
+					playlist->push_back(playlistSampler->getAudioFromUnit(PlaylistSampler_Unit::MILIMETER, (int)5));
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::POSSIBLE).value());
+					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::THUNDERSTORM).value());
+					break;
+				case MeteoblueRainParser::MeteoblueRainParser_PrecipType::RAIN_TYPE_LOCAL_THUNDERSTORM:	//!<< thunderstorm possible
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::INTERMITTENT).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::PRECIPATION).value());
 					playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::RAIN).value());

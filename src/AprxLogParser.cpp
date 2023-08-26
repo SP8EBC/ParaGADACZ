@@ -45,6 +45,12 @@ AprxLogParser::~AprxLogParser() {
 
 std::vector<AprsWXData> AprxLogParser::getAllWeatherPacketsInTimerange(
 		boost::posix_time::ptime from, boost::posix_time::ptime to) {
+
+	// convert to epoch
+	const long fromEpoch = TimeTools::getEpochFromPtime(from, timestampsAreInLocal);
+	const long toEpoch = TimeTools::getEpochFromPtime(to, timestampsAreInLocal);
+
+	return this->getAllWeatherPacketsInTimerange(fromEpoch, toEpoch);
 }
 
 std::vector<AprsWXData> AprxLogParser::getAllWeatherPacketsInTimerange(

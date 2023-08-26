@@ -53,6 +53,19 @@ public:
 	void setFileName(const std::string &fileName) {
 		this->fileName = fileName;
 	}
+
+	static std::vector<AprsWXData> filterPacketsPerCallsign(std::string call, uint8_t ssid, std::vector<AprsWXData> & input) {
+
+		std::vector<AprsWXData> output;
+
+		for (AprsWXData & packet : input) {
+			if (packet.call == call && packet.ssid == ssid) {
+				output.push_back(packet);
+			}
+		}
+
+		return output;
+	}
 };
 
 #endif /* APRXLOGPARSER_H_ */
