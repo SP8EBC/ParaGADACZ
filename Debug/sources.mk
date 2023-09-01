@@ -23,6 +23,7 @@ OBJS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+lib/karastojko_mailio_0_23_0/src \
 lib/lexborisov_myhtml/source/mycore \
 lib/lexborisov_myhtml/source/mycore/utils \
 lib/lexborisov_myhtml/source/myencoding \
