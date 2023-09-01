@@ -773,7 +773,7 @@ std::optional<std::string> PlaylistSamplerPL::getAudioForAvalancheWarningLocatio
  */
 std::string PlaylistSamplerPL::getAudioForWindDirection(int direction) {
 
-	if ((direction <= 11 && direction >= 0) || (direction > 349 && direction < 360))
+	if ((direction <= 11 && direction >= 0) || (direction > 349 && direction <= 360))
 		return DIRECTION_N;
 	else if (direction <= 34 && direction > 11)
 		return DIRECTION_NNE;

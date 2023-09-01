@@ -627,11 +627,11 @@ void PlaylistAssembler::forecastMeteoblue(
 			// "temperature"
 			playlist->push_back(playlistSampler->getConstantElement(PlaylistSampler_ConstanElement::TEMPERATURE).value());
 
-			auto _temperature = std::get<1>(temperature);
+			float _temperature = ::round(std::get<1>(temperature));
 
-			SPDLOG_INFO("appending Meteoblue temperature forecast, temperature: {}", _temperature);
+			SPDLOG_INFO("appending Meteoblue temperature forecast, temperature: {}", (int)_temperature);
 			// convert temperature to playlist
-			auto temperatureAudioFile = playlistSampler->getAudioListFromNumber(_temperature);
+			auto temperatureAudioFile = playlistSampler->getAudioListFromNumber((int)_temperature);
 
 			// and append that to main playlist
 			playlist->insert(playlist->end(), std::make_move_iterator(temperatureAudioFile.begin()), std::make_move_iterator(temperatureAudioFile.end()));
