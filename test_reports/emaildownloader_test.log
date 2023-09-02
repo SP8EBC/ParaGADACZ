@@ -1,0 +1,3 @@
+Running 1 test case...
+Entering test module "EmailDownloader_test"
+../src/EmailDownloader_test.cpp(47): Entering test case "first"

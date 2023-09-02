@@ -160,6 +160,35 @@ struct ConfigurationFile_Avalanche {
 	bool goprBabiaGora;
 };
 
+/**
+ * Configuration of a server emails will be downloaded from
+ */
+struct ConfigurationFile_Email_Server {
+	std::string pop3Address;
+	int pop3Port;
+	std::string imapAddress;
+	int imapPort;
+	std::string username;		//!< Username aka e-mail address
+	std::string password;
+	bool startTls;				//!< Set to false to select auth_method_t::LOGIN, true for auth_method_t::START_TLS
+};
+
+/**
+ *	Element of a list of senders allowed to send an email with anouncement
+ */
+struct ConfigurationFile_Email_AllowedSender {
+	std::string emailAddress;	//!< Email address which is allowed to be a source
+	bool singleAnnouncement;	//!< if this sender can send single announcement
+	bool eodAnnouncement;		//!< If this sender can send announcement for whole day
+	bool timedAnnouncement;		//!< If this sender can send timed announcement, which will
+	bool defaultAnnouncement;
+};
+
+struct ConfigurationFile_Email {
+
+	ConfigurationFile_Email_Server serverConfig;
+};
+
 class ConfigurationFile {
 
 	libconfig::Config config;	//!< parsed configuration and its parser
@@ -205,6 +234,8 @@ class ConfigurationFile {
 	ConfigurationFile_ForecastMeteoblue forecast;
 
 	ConfigurationFile_Avalanche	avalancheWarning;
+
+	ConfigurationFile_Email	emailAnnonuncements;
 
 	std::vector<std::string> recordedSpecialAnnouncementPost;
 	std::vector<std::string> textSpecialAnnouncementPost;
@@ -311,6 +342,10 @@ public:
 
 	const ConfigurationFile_Trend& getTrend() const {
 		return trend;
+	}
+
+	const ConfigurationFile_Email& getEmailAnnonuncements() const {
+		return emailAnnonuncements;
 	}
 };
 
