@@ -1,3 +1,6 @@
+This is a list of packages which must be installed to compile and use ParaGADACZ,
+at least in Xubuntu 22.04.1 and Debian 12
+
 libboost1.74
 libcpprest
 libspdlog1.10
