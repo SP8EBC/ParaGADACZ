@@ -23,7 +23,31 @@ OBJS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-lib/karastojko_mailio_0_23_0/src \
+lib/kisli_vmime_c6b9ad3c/vmime \
+lib/kisli_vmime_c6b9ad3c/vmime/mdn \
+lib/kisli_vmime_c6b9ad3c/vmime/misc \
+lib/kisli_vmime_c6b9ad3c/vmime/net \
+lib/kisli_vmime_c6b9ad3c/vmime/net/imap \
+lib/kisli_vmime_c6b9ad3c/vmime/net/maildir/format \
+lib/kisli_vmime_c6b9ad3c/vmime/net/maildir \
+lib/kisli_vmime_c6b9ad3c/vmime/net/pop3 \
+lib/kisli_vmime_c6b9ad3c/vmime/net/sendmail \
+lib/kisli_vmime_c6b9ad3c/vmime/net/smtp \
+lib/kisli_vmime_c6b9ad3c/vmime/net/tls \
+lib/kisli_vmime_c6b9ad3c/vmime/net/tls/openssl \
+lib/kisli_vmime_c6b9ad3c/vmime/platforms/posix \
+lib/kisli_vmime_c6b9ad3c/vmime/platforms/windows \
+lib/kisli_vmime_c6b9ad3c/vmime/security/cert \
+lib/kisli_vmime_c6b9ad3c/vmime/security/cert/gnutls \
+lib/kisli_vmime_c6b9ad3c/vmime/security/cert/openssl \
+lib/kisli_vmime_c6b9ad3c/vmime/security \
+lib/kisli_vmime_c6b9ad3c/vmime/security/digest/md5 \
+lib/kisli_vmime_c6b9ad3c/vmime/security/digest \
+lib/kisli_vmime_c6b9ad3c/vmime/security/digest/sha1 \
+lib/kisli_vmime_c6b9ad3c/vmime/security/sasl \
+lib/kisli_vmime_c6b9ad3c/vmime/utility \
+lib/kisli_vmime_c6b9ad3c/vmime/utility/encoder \
+lib/kisli_vmime_c6b9ad3c/vmime/utility/sync \
 lib/lexborisov_myhtml/source/mycore \
 lib/lexborisov_myhtml/source/mycore/utils \
 lib/lexborisov_myhtml/source/myencoding \

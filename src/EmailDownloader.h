@@ -13,14 +13,10 @@
 #include <memory>
 #include <vector>
 
-#include <mailio/message.hpp>
 
 class EmailDownloader {
 
 	const ConfigurationFile_Email &config;
-
-	std::vector<mailio::message> downloadedMessages;
-
 
 public:
 	int downloadAllEmailsPop3();

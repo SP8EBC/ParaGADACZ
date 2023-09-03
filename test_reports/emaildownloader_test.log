@@ -1,3 +1,6 @@
 Running 1 test case...
 Entering test module "EmailDownloader_test"
 ../src/EmailDownloader_test.cpp(47): Entering test case "first"
+../src/EmailDownloader_test.cpp(51): error: in "first": check downloader.downloadAllEmailsImap() > 0 has failed
+../src/EmailDownloader_test.cpp(47): Leaving test case "first"; testing time: 2116968us
+Leaving test module "EmailDownloader_test"; testing time: 2116980us
