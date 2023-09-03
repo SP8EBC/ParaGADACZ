@@ -13,3 +13,13 @@ vlc-bin
 vlc-data
 vlc-plugin-base
 vlc-plugin-access-extra
+
+libgsasl7
+libgsasl7-dev
+libgsasl-dev
+gsasl
+gsasl-common
+	
+libicu-dev
+libicu70
+

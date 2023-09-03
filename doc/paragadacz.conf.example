@@ -1,0 +1,145 @@
+# This is an example configuration for ParaGADACZ. 
+# In this case this is the configuration for Skrzyczne Radio shore station
+
+Debug = true;
+AudioBasePath = "/var/local/skrzyczneradio/audio/";
+LogOutput = "gadacz.log";
+
+OnlyAssemblePlaylist = true;
+
+@include "secret.cfg"
+
+Inhibitor = {
+    Serial = {
+        Enable = true;
+        Port = "/dev/ttyUSB0";
+        OkActiveLevel = false;
+    },
+    Exec = {
+        Enable = true;
+        Path = "/bin/more";
+        OkRetval = 0;
+    },
+    Http = {
+        Enable = true;
+        Url = "http://pogoda.cc";
+        IgnoreNoAnswer = true;
+    }
+}
+
+PttControl = {
+    SerialPort = "";
+    DelayPre = 200;
+    DelayPost = 200;
+	ParallelPort = "/dev/parport0";
+	ParallelLines = 0xCC;
+}
+
+Aprx = {
+    LogPath = "aprx-rf.log";
+    LogTimeInLocal = true;
+}
+
+Pogodacc = {
+    IgnoreTemperatureQf = false;
+    IgnoreWindQf = false;
+    IgnoreHumidityQf = false;
+    IgnorePressureQf = false;
+}
+
+MaximumDataAge = 60;
+
+Intro = {
+    Ident = ["intro.ogg", "intro2.ogg", "intro3.ogg"]
+    SayCurrentTime = true;
+    SayRegionalPressure = true;
+}
+
+# RecordedSpecialAnnouncementPre = ["first.mp3", "second.mp3", "third.mp3"]
+# TextSpecialAnnouncementPre = ["first.txt", "second.txt", "third.txt"]
+
+
+CurrentWeather = (
+    {
+        Type = "APRX";
+        Name = "SR9WXZ";
+        NameIdent = "_jezioro_zywieckie.ogg";
+        SayTemperature = false;
+        SayWind = true;
+		DoesntSayWindDirection = true;
+        SayHumidity = false;
+        RegionalPressure = false;
+        SayPressure = false;
+		SayTrend = true;
+    },
+    {
+        Type = "POGODACC";
+        Name = "Skrzyczne";
+        NameIdent = "_skrzyczne.ogg";
+        SayTemperature = true;
+        SayWind = true;
+        SayHumidity = true;
+        RegionalPressure = true;
+        SayPressure = false;
+		SayTrend = true;
+    },
+    {
+        Type = "POGODACC";
+        Name = "Zar";
+        NameIdent = "_jezioro_miedzybrodzkie.ogg";
+        SayTemperature = true;
+        SayWind = true;
+        SayHumidity = false;
+        RegionalPressure = false;
+        SayPressure = false;
+		SayTrend = true;
+    }
+
+
+)
+
+Trend = {
+	EnabledTemperature = false;
+	EnabledWindspeed = true;
+	LongNoChangeAnouncement = true;
+	ShortNoChangeAnouncement = false;
+	TrendLenghtInHours = 2;
+	MinimumTemperatureChange = 20;
+	MinimumWindChange = 20;
+}
+
+ForecastMeteoblue = {
+    Enable = true;
+    FutureTime = 180;
+    SkipAnouncementIfAnyIsMissing = true;
+    Locations = (
+        {
+            Name = "Skrzyczne"
+            Longitude = 19.0301;
+            Latitude = 49.6845;
+            NameIdent = "_skrzyczne.ogg";
+            SayWind = true;
+            SayTemperature = true;
+            SayPrecipation = true;
+        },
+        {
+            Name = "Jezioro"
+            Longitude = 19.1892;
+            Latitude = 49.7211;
+            NameIdent = "_jezioro_zywieckie.ogg";
+            SayWind = true;
+            SayTemperature = true;
+            SayPrecipation = true;
+        }
+    )
+    Cache = true;
+    CacheDirectory = "/var/ramdrive";
+    MaximumCacheAgeMins = 180;
+}
+
+AvalancheWarning = {
+    GoprBabiaGora = false;
+}
+
+RecordedSpecialAnnouncementPost = ["outro.ogg"]
+# TextSpecialAnnouncementPost = ["first.txt", "second.txt", "third.txt"]
