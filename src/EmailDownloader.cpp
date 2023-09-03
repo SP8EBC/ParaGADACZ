@@ -89,7 +89,11 @@ int EmailDownloader::downloadAllEmailsImap() {
 		SPDLOG_DEBUG("{} emails was fetched", allMessages.size());
 
 		for (vmime::shared_ptr <vmime::net::message> msg : allMessages) {
-			SPDLOG_DEBUG("Email sent by: {}", msg->getHeader()->From()->generate());
+			vmime::mailbox emailAddr;
+			std::shared_ptr<vmime::headerFieldValue> _from = msg->getHeader()->findField("From")->getValue();
+			emailAddr.copyFrom(*_from);
+			SPDLOG_DEBUG("Email sent by: {}", emailAddr.getEmail().toString());
+			//SPDLOG_DEBUG("Email sent by: {}", msg->getHeader()->From()->generate());
 		}
 	}
 	catch (const std::exception& e)
