@@ -7,8 +7,11 @@
 
 #include "EmailDownloader.h"
 
+#include "vmime/constants.hpp"
 #include "vmime/vmime.hpp"
 #include "vmime/platforms/posix/posixHandler.hpp"
+
+#include <sstream>
 
 #pragma push_macro("U")
 #undef U
@@ -90,11 +93,41 @@ int EmailDownloader::downloadAllEmailsImap() {
 
 		for (vmime::shared_ptr <vmime::net::message> msg : allMessages) {
 			vmime::mailbox emailAddr;
+			vmime::text emailSubject;
+
 			std::shared_ptr<vmime::headerFieldValue> _from = msg->getHeader()->findField("From")->getValue();
 			emailAddr.copyFrom(*_from);
-			SPDLOG_DEBUG("Email sent by: {}", emailAddr.getEmail().toString());
+
+			std::shared_ptr<vmime::headerFieldValue> _subject = msg->getHeader()->findField("Subject")->getValue();
+			emailSubject.copyFrom(*_subject);
+
+			SPDLOG_DEBUG("Email sent by: {}, topic: \"{}\"",
+					emailAddr.getEmail().toString(),
+					emailSubject.getConvertedText(
+							vmime::charset(vmime::charsets::UTF_8)
+							)
+				);
 			//SPDLOG_DEBUG("Email sent by: {}", msg->getHeader()->From()->generate());
 		}
+
+		vmime::shared_ptr<vmime::net::message> singleMessage = allMessages.at(1);
+
+		vmime::shared_ptr<vmime::message> parsedMessage = singleMessage->getParsedMessage();
+
+		vmime::shared_ptr<vmime::body> body = parsedMessage->getBody();
+
+		std::stringstream ss;
+
+		vmime::utility::outputStreamAdapter stream(ss);
+
+		body->getContents()->extract(stream);
+
+		SPDLOG_DEBUG("=====");
+		SPDLOG_DEBUG("Email content {}", parsedMessage->getHeader()->From()->generate());
+		SPDLOG_DEBUG(ss.str());
+
+		return allMessages.size();
+
 	}
 	catch (const std::exception& e)
 	{
