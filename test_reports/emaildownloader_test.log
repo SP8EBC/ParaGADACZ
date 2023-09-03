@@ -1,6 +1,6 @@
 Running 1 test case...
 Entering test module "EmailDownloader_test"
-../src/EmailDownloader_test.cpp(47): Entering test case "first"
-../src/EmailDownloader_test.cpp(51): info: check downloader.downloadAllEmailsImap() > 0 has passed
-../src/EmailDownloader_test.cpp(47): Leaving test case "first"; testing time: 1891558us
-Leaving test module "EmailDownloader_test"; testing time: 1891589us
+../src/EmailDownloader_test.cpp(51): Entering test case "first"
+../src/EmailDownloader_test.cpp(55): info: check downloader.downloadAllEmailsImap() > 0 has passed
+../src/EmailDownloader_test.cpp(51): Leaving test case "first"; testing time: 1917900us
+Leaving test module "EmailDownloader_test"; testing time: 1917933us

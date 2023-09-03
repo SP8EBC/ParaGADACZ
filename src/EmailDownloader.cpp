@@ -11,6 +11,9 @@
 #include "vmime/vmime.hpp"
 #include "vmime/platforms/posix/posixHandler.hpp"
 
+#include <time.h>
+#include "TimeTools.h"
+
 #include <sstream>
 
 #pragma push_macro("U")
@@ -31,6 +34,7 @@ public:
 
    }
 };
+
 
 
 EmailDownloader::EmailDownloader(std::shared_ptr<ConfigurationFile> _config) : config(_config->getEmailAnnonuncements()) {
@@ -70,6 +74,8 @@ int EmailDownloader::downloadAllEmailsImap() {
 
 	st->setCertificateVerifier(vmime::make_shared<myCertVerifier>());
 
+	tm datetime;
+
 	try {
 		st->connect();
 
@@ -94,6 +100,7 @@ int EmailDownloader::downloadAllEmailsImap() {
 		for (vmime::shared_ptr <vmime::net::message> msg : allMessages) {
 			vmime::mailbox emailAddr;
 			vmime::text emailSubject;
+			vmime::datetime emailDate;
 
 			std::shared_ptr<vmime::headerFieldValue> _from = msg->getHeader()->findField("From")->getValue();
 			emailAddr.copyFrom(*_from);
@@ -101,8 +108,26 @@ int EmailDownloader::downloadAllEmailsImap() {
 			std::shared_ptr<vmime::headerFieldValue> _subject = msg->getHeader()->findField("Subject")->getValue();
 			emailSubject.copyFrom(*_subject);
 
-			SPDLOG_DEBUG("Email sent by: {}, topic: \"{}\"",
+			std::shared_ptr<vmime::headerFieldValue> _datetime = msg->getHeader()->findField("Date")->getValue();
+			emailDate.copyFrom(*_datetime);
+
+			datetime.tm_year = emailDate.getYear();
+			datetime.tm_mon = emailDate.getMonth();
+			datetime.tm_mday = emailDate.getDay();
+			datetime.tm_hour = emailDate.getHour();
+			datetime.tm_min = emailDate.getMinute();
+			datetime.tm_sec = emailDate.getSecond();
+
+			boost::local_time::local_date_time emailBoostDate =
+					TimeTools::getLocalTimeFromTmStructAndTzOffset(datetime, true, emailDate.getZone());
+
+			long epoch = TimeTools::getEpochFromBoostLocalTime(emailBoostDate);
+
+			SPDLOG_DEBUG("Email sent by: {}, datetime: {}, emailBoostDate: {}, epoch: {}, topic: \"{}\"",
 					emailAddr.getEmail().toString(),
+					emailDate.generate(),
+					emailBoostDate.to_string(),
+					epoch,
 					emailSubject.getConvertedText(
 							vmime::charset(vmime::charsets::UTF_8)
 							)

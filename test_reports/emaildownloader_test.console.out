@@ -1,0 +1,45 @@
+[2023-09-03 12:47:06.958] [debug] [EmailDownloader.cpp:87] amount of emails in folder 10382
+[2023-09-03 12:47:07.149] [debug] [EmailDownloader.cpp:98] 11 emails was fetched
+[2023-09-03 12:47:07.149] [debug] [EmailDownloader.cpp:126] Email sent by: notifications@github.com, datetime: Tue, 29 Aug 2023 12:42:47 -0700, emailBoostDate: 2023-Aug-29 12:42:47 UTC-7, epoch: 1693338167, topic: "Re: [anthwlock/untrunc] Error: no 'moov' atom found (Issue #146)"
+[2023-09-03 12:47:07.150] [debug] [EmailDownloader.cpp:126] Email sent by: maciej.brylski@corporatenexus.pl, datetime: Wed, 30 Aug 2023 07:40:26 +0000, emailBoostDate: 2023-Aug-30 07:40:26 UTC, epoch: 1693381226, topic: "Środki dla firm pod saldo z terminala"
+[2023-09-03 12:47:07.150] [debug] [EmailDownloader.cpp:126] Email sent by: powiadomienia@yanosik.pl, datetime: Wed, 30 Aug 2023 13:31:37 +0000, emailBoostDate: 2023-Aug-30 13:31:37 UTC, epoch: 1693402297, topic: "Nowy Yanosik RS ❗ Kup teraz 🛒"
+[2023-09-03 12:47:07.150] [debug] [EmailDownloader.cpp:126] Email sent by: no-reply@justjoin.it, datetime: Thu, 31 Aug 2023 07:00:19 +0000, emailBoostDate: 2023-Aug-31 07:00:19 UTC, epoch: 1693465219, topic: "We found 10 new job offers matching your criteria"
+[2023-09-03 12:47:07.151] [debug] [EmailDownloader.cpp:126] Email sent by: powiadomienia@pz.gov.pl, datetime: Fri, 1 Sep 2023 08:05:24 +0200, emailBoostDate: 2023-Sep-01 08:05:24 UTC+2, epoch: 1693548324, topic: "Twój dokument został podpisany"
+[2023-09-03 12:47:07.151] [debug] [EmailDownloader.cpp:126] Email sent by: sklep@sportowysklep.pl, datetime: Fri, 1 Sep 2023 07:54:12 +0000, emailBoostDate: 2023-Sep-01 07:54:12 UTC, epoch: 1693554852, topic: "Zgarnij rabat 50% na wybrane produkty!"
+[2023-09-03 12:47:07.151] [debug] [EmailDownloader.cpp:126] Email sent by: sklep@8a.pl, datetime: Fri, 1 Sep 2023 11:31:00 +0200, emailBoostDate: 2023-Sep-01 11:31:00 UTC+2, epoch: 1693560660, topic: "[8a.pl] Obecnie dostępna ilość [BOK~182019]"
+[2023-09-03 12:47:07.151] [debug] [EmailDownloader.cpp:126] Email sent by: noreply@espago.com, datetime: Fri, 1 Sep 2023 11:33:27 +0200, emailBoostDate: 2023-Sep-01 11:33:27 UTC+2, epoch: 1693560807, topic: "Twoja karta płatnicza została obciążona"
+[2023-09-03 12:47:07.152] [debug] [EmailDownloader.cpp:126] Email sent by: serwis@uniqa.pl, datetime: Sat, 2 Sep 2023 06:10:51 +0200, emailBoostDate: 2023-Sep-02 06:10:51 UTC+2, epoch: 1693627851, topic: "Ubezpieczenie nieruchomości - bliski termin płatności składki"
+[2023-09-03 12:47:07.152] [debug] [EmailDownloader.cpp:126] Email sent by: noreply@bandcamp.com, datetime: Sat, 2 Sep 2023 09:04:16 +0000, emailBoostDate: 2023-Sep-02 09:04:16 UTC, epoch: 1693645456, topic: "New message from Unique Leader Records"
+[2023-09-03 12:47:07.152] [debug] [EmailDownloader.cpp:126] Email sent by: bok@firma.interia.pl, datetime: Sat, 2 Sep 2023 20:24:25 +0200, emailBoostDate: 2023-Sep-02 20:24:25 UTC+2, epoch: 1693679065, topic: "Logowanie z nowego urządzenia"
+[2023-09-03 12:47:07.376] [debug] [EmailDownloader.cpp:150] =====
+[2023-09-03 12:47:07.376] [debug] [EmailDownloader.cpp:151] Email content From: "Maciej Brylski" <maciej.brylski@corporatenexus.pl>
+[2023-09-03 12:47:07.376] [debug] [EmailDownloader.cpp:152] Dzień dobry,
+
+
+
+czy interesują Państwa dodatkowe środki na zakup towaru, nowych urządzeń lub na bieżącą działalność?
+
+
+
+Prowadząc firmę od m.in. roku i generując obroty na terminalu płatniczym od 6 miesięcy (co najmniej 7500 zł), mogą Państwo uzyskać nawet 500 000 zł na dowolny cel.
+
+
+
+Gwarantujemy minimum formalności, nie wymagamy zaświadczeń, PIT i KPiR. Cały proces odbywa się online, a spłata jest automatyczna.
+
+
+
+Jeśli chcą Państwo poznać indywidualną ofertę z propozycją kwoty i spłaty, proszę o wiadomość.
+
+
+
+
+
+Pozdrawiam
+
+Maciej Brylski
+
+
+
+[1;32;49m*** No errors detected
+[0;39;49m

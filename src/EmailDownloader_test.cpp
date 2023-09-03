@@ -8,6 +8,8 @@
 #include "EmailDownloader.h"
 #include "EmailDownloader_test_secret.h"
 
+#include "TimeTools.h"
+
 #define BOOST_TEST_MODULE EmailDownloader_test
 #include <boost/test/included/unit_test.hpp>
 
@@ -32,6 +34,8 @@ struct MyConfig
     configEmail.serverConfig.username = USERNAME;
     configEmail.serverConfig.password = PASSWD;
     configEmail.serverConfig.startTls = false;
+
+    TimeTools::initBoostTimezones();
 
   }
   ~MyConfig()
