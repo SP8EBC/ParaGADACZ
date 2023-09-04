@@ -13,6 +13,8 @@ CPP_SRCS += \
 ../src/ConfigurationFile.cpp \
 ../src/CurrentConditionsDownloader.cpp \
 ../src/EmailDownloader.cpp \
+../src/EmailDownloaderMessage.cpp \
+../src/EmailDownloaderMessage_test.cpp \
 ../src/EmailDownloader_test.cpp \
 ../src/ForecastDownloader.cpp \
 ../src/ForecastFinder.cpp \
@@ -37,6 +39,8 @@ CPP_DEPS += \
 ./src/ConfigurationFile.d \
 ./src/CurrentConditionsDownloader.d \
 ./src/EmailDownloader.d \
+./src/EmailDownloaderMessage.d \
+./src/EmailDownloaderMessage_test.d \
 ./src/EmailDownloader_test.d \
 ./src/ForecastDownloader.d \
 ./src/ForecastFinder.d \
@@ -61,6 +65,8 @@ OBJS += \
 ./src/ConfigurationFile.o \
 ./src/CurrentConditionsDownloader.o \
 ./src/EmailDownloader.o \
+./src/EmailDownloaderMessage.o \
+./src/EmailDownloaderMessage_test.o \
 ./src/EmailDownloader_test.o \
 ./src/ForecastDownloader.o \
 ./src/ForecastFinder.o \
@@ -88,7 +94,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AprxLogParserStaticStuff.d ./src/AprxLogParserStaticStuff.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/EmailDownloader.d ./src/EmailDownloader.o ./src/EmailDownloader_test.d ./src/EmailDownloader_test.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/MeteobluePictocode.d ./src/MeteobluePictocode.o ./src/MeteoblueRainParser.d ./src/MeteoblueRainParser.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/TimeTools.d ./src/TimeTools.o ./src/TrendDownloader.d ./src/TrendDownloader.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o
+	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AprxLogParserStaticStuff.d ./src/AprxLogParserStaticStuff.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/EmailDownloader.d ./src/EmailDownloader.o ./src/EmailDownloaderMessage.d ./src/EmailDownloaderMessage.o ./src/EmailDownloaderMessage_test.d ./src/EmailDownloaderMessage_test.o ./src/EmailDownloader_test.d ./src/EmailDownloader_test.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/MeteobluePictocode.d ./src/MeteobluePictocode.o ./src/MeteoblueRainParser.d ./src/MeteoblueRainParser.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/TimeTools.d ./src/TimeTools.o ./src/TrendDownloader.d ./src/TrendDownloader.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o
 
 .PHONY: clean-src
 

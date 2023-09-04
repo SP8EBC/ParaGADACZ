@@ -104,7 +104,7 @@ public:
 		return ts;
 	}
 
-	static long getEpochFromBoostLocalTime(boost::local_time::local_date_time & in) {
+	static long getEpochFromBoostLocalTime(const boost::local_time::local_date_time & in) {
 
 		boost::posix_time::ptime utc = in.utc_time();
 
@@ -113,6 +113,18 @@ public:
 		return ts;
 	}
 
+	/**
+	 * Converts time from 'tm' structure type into boost local_date_time, taking into account sone offset. 'tm' could contains
+	 * either local or utc time. Boost c++ assumes internally that ptime given as a parameter to local_date_time constructors
+	 * contains UTC time (hence ptime name), so if 'date' contains local time an adjustment is done internally by this method
+	 * to obtain correct date and time with matching timezone. To work correctly this require custom date_time_zonespec.csv
+	 * file be present in ParaGADACZ working directory. Please remember that this methog operates on UTC offset, not a timezone
+	 * so it may not handle DST correctly.
+	 * @param date
+	 * @param dateIsLocalTime The default assumption is that 'date' contains UTC time, set this to true if this is local one
+	 * @param offsetInMinsFromUtc Offset in minutes from UTC
+	 * @return
+	 */
 	static boost::local_time::local_date_time getLocalTimeFromTmStructAndTzOffset(tm & date, bool dateIsLocalTime, int offsetInMinsFromUtc) {
 
 		boost::local_time::local_date_time out(boost::local_time::pos_infin);

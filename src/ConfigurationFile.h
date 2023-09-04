@@ -187,6 +187,8 @@ struct ConfigurationFile_Email_AllowedSender {
 struct ConfigurationFile_Email {
 
 	ConfigurationFile_Email_Server serverConfig;
+
+	std::vector<ConfigurationFile_Email_AllowedSender> allowedSendersList;
 };
 
 class ConfigurationFile {

@@ -9,6 +9,7 @@
 #define EMAILDOWNLOADER_H_
 
 #include "ConfigurationFile.h"
+#include "EmailDownloaderMessage.h"
 
 #include <memory>
 #include <vector>
@@ -21,7 +22,7 @@ class EmailDownloader {
 public:
 	int downloadAllEmailsPop3();
 
-	int downloadAllEmailsImap();
+	int downloadAllEmailsImap(std::vector<EmailDownloaderMessage> & messages);
 
 	EmailDownloader(ConfigurationFile_Email & _config);
 	EmailDownloader(std::shared_ptr<ConfigurationFile> _config);

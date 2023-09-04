@@ -27,6 +27,11 @@ struct MyConfig
 
 	spdlog::set_level(spdlog::level::debug);
 
+	ConfigurationFile_Email_AllowedSender sender, sender2;
+	sender.emailAddress = "sklep@8a.pl";
+	sender2.emailAddress = "maciej.brylski@corporatenexus.pl";
+
+
     configEmail.serverConfig.pop3Address = "poczta.interia.pl";
     configEmail.serverConfig.pop3Port = 995;
     configEmail.serverConfig.imapAddress = "poczta.interia.pl";
@@ -34,6 +39,9 @@ struct MyConfig
     configEmail.serverConfig.username = USERNAME;
     configEmail.serverConfig.password = PASSWD;
     configEmail.serverConfig.startTls = false;
+
+    configEmail.allowedSendersList.push_back(sender);
+    configEmail.allowedSendersList.push_back(sender2);
 
     TimeTools::initBoostTimezones();
 
@@ -50,8 +58,21 @@ BOOST_GLOBAL_FIXTURE (MyConfig);
 
 BOOST_AUTO_TEST_CASE(first)
 {
-	EmailDownloader downloader(configEmail);
+	/**
+	 * 	Default:"------=_Part_17674_772542156.1693548324914\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: quoted-printable\r\n\r\nDokument zosta=C5=82 podpisany 01.09.2023 roku o godzinie 08:04 prze"...
+	 *
+	 *
+	 *
+	 */
 
-	BOOST_CHECK(downloader.downloadAllEmailsImap() > 0);
+	EmailDownloader downloader(configEmail);
+	std::vector<EmailDownloaderMessage> messages;
+
+	BOOST_CHECK(downloader.downloadAllEmailsImap(messages) > 0);
+	BOOST_CHECK_GT(messages.size(), 0);
+
+	for (EmailDownloaderMessage msg : messages) {
+		BOOST_TEST_MESSAGE(msg.getContent());
+	}
 }
 
