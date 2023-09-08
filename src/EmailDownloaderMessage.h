@@ -65,11 +65,19 @@ private:
 	std::string contentQutedPrintableDecoded;
 
 	/**
-	 *
+	 * original encoding this email will be sent with (like quoted-printable)
 	 */
 	std::string originalEncoding;
 
+	/**
+	 * Original charset like US-ASCII or UTF-8 or anytghing like that
+	 */
 	std::string originalCharset;
+
+	/**
+	 * This is a flag set to true if this email
+	 */
+	bool validated;
 
 public:
 	EmailDownloaderMessage(
@@ -88,6 +96,10 @@ public:
 
 	const std::string& getContent() const {
 		return content;
+	}
+
+	const std::string& getEmailAddress() const {
+		return emailAddress;
 	}
 };
 

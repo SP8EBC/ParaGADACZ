@@ -41,6 +41,15 @@ public:
    }
 };
 
+const std::vector<std::locale> EmailDownloader::formats(
+	{
+	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%m/%d/%Y %H:%M")),
+	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%m/%d/%Y %I:%M%p")),
+	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%b %d, %Y %I:%M%p")),
+	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%B %d, %Y"))
+	}
+);
+
 // https://www.ia.pw.edu.pl/~jurek/js/kody/
 
 EmailDownloader::EmailDownloader(std::shared_ptr<ConfigurationFile> _config) : config(_config->getEmailAnnonuncements()) {
@@ -54,7 +63,7 @@ int EmailDownloader::downloadAllEmailsPop3() {
 
 }
 
-int EmailDownloader::downloadAllEmailsImap(std::vector<EmailDownloaderMessage> & messages) {
+int EmailDownloader::downloadAllEmailsImap() {
 
 	// Global session object
 	vmime::shared_ptr <vmime::net::session> vmimeSession = vmime::net::session::create();
@@ -242,7 +251,112 @@ int EmailDownloader::downloadAllEmailsImap(std::vector<EmailDownloaderMessage> &
 	return 0;
 }
 
+bool EmailDownloader::validateEmailSubject(std::string &subject,
+		ConfigurationFile_Email_AllowedSender &sender) {
+
+	// possible subjects:
+	// single
+	// until tommorrow
+	// until mm/dd/yyyy HH:MM
+
+	boost::posix_time::ptime dateTimeFromSubject;
+
+	uint64_t timestampFromSubject;
+
+	// remove any consecutive spaces from subject
+	std::string::iterator newEnd = std::unique(subject.begin(), subject.end(), [](char const &lhs, char const &rhs) {
+		if (lhs == rhs) {
+			if (lhs == ' ') {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		return false;
+	});
+
+	// create a new string after removing all neccessary (double) spaces
+	std::string newSubject (subject.begin(), newEnd);
+
+	// convert string to lowercase
+	std::transform(newSubject.begin(), newSubject.end(), newSubject.begin(), [](char c) {return std::tolower(c);});
+
+	// vector for tokens extracted from topic
+	std::vector<std::string> tokens;
+
+	// split string per spaces
+	boost::split(tokens, newSubject, boost::is_any_of(" "));
+
+	// check the first token
+	if (tokens.at(0) == "single") {
+
+	}
+	else if (tokens.at(0) == "until") {
+		if (tokens.at(1) == "tommorow") {
+
+		}
+		else {
+			// look for first position of space character
+			size_t firstSpacePos = newSubject.find_first_of(' ');
+
+			// extract supposed date - time into separate string
+			std::string dateTime(newSubject, firstSpacePos + 1, newSubject.size());
+
+				for (auto format : formats)
+				{
+					std::istringstream is(dateTime);
+					is.imbue(format);
+					is >> dateTimeFromSubject;
+					if (dateTimeFromSubject != boost::posix_time::ptime()) {
+						timestampFromSubject = TimeTools::getEpochFromPtime(dateTimeFromSubject, false);
+						break;
+					}
+				}
+		}
+	}
+
+	return true;
+
+//	const std::string joined = date + " " + time;
+//
+//	for (auto format : formats)
+//	{
+//		std::istringstream is(joined);
+//		is.imbue(format);
+//		is >> out;
+//		if (out != boost::posix_time::ptime()) {
+//			break;
+//		}
+//	}
+}
+
 EmailDownloader::EmailDownloader(ConfigurationFile_Email &_config) : config(_config) {
+}
+
+int EmailDownloader::validateEmailAgainstPrivileges() {
+	return this->validateEmailAgainstPrivileges(messages);
+}
+
+int EmailDownloader::validateEmailAgainstPrivileges(
+		std::vector<EmailDownloaderMessage> messages) {
+
+	// iterate through all downloaded messages
+	for (EmailDownloaderMessage msg : messages) {
+
+		// check this email against a configuration of allowed senders
+		std::find_if(config.allowedSendersList.begin(), config.allowedSendersList.end(), [&msg](const ConfigurationFile_Email_AllowedSender & sender) {
+			if (sender.emailAddress == msg.getEmailAddress()) {
+				// the sender has been found
+
+				// so now check if it is allowed to send such anonuncement
+			}
+			else {
+				// this is an unknown sender
+				return false;
+			}
+		});
+	}
 }
 
 EmailDownloader::~EmailDownloader() {
