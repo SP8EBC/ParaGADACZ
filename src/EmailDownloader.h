@@ -31,6 +31,8 @@ public:
 
 	static bool validateEmailSubject(std::string & subject, ConfigurationFile_Email_AllowedSender & sender);
 
+	static uint64_t decodeTimestampFromSubject(std::string & dateTime);
+
 	int downloadAllEmailsPop3();
 
 	int downloadAllEmailsImap();

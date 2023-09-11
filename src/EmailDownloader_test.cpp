@@ -29,6 +29,9 @@ struct MyConfig
 
 	ConfigurationFile_Email_AllowedSender sender, sender2;
 	sender.emailAddress = "sklep@8a.pl";
+	sender.eodAnnouncement = true;
+	sender.singleAnnouncement = true;
+	sender.timedAnnouncement = true;
 	sender2.emailAddress = "maciej.brylski@corporatenexus.pl";
 
 
@@ -91,9 +94,11 @@ BOOST_AUTO_TEST_CASE(second)
 	 */
 
 		std::string test = "until October 23, 2023 11:22";
+		std::string test2 = "until 09/09/2023 11:22";
 
 		// 1698019200
 
-		BOOST_CHECK(EmailDownloader::validateEmailSubject(test, configEmail.allowedSendersList.at(0)));
+		BOOST_CHECK(EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(0)));
+		BOOST_CHECK(EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(1)) == false);
 
 }

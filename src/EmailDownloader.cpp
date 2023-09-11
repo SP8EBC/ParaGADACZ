@@ -259,9 +259,11 @@ bool EmailDownloader::validateEmailSubject(std::string &subject,
 	// until tommorrow
 	// until mm/dd/yyyy HH:MM
 
+	bool out = false;
+
 	boost::posix_time::ptime dateTimeFromSubject;
 
-	uint64_t timestampFromSubject;
+	uint64_t timestampFromSubject = 0u;
 
 	// remove any consecutive spaces from subject
 	std::string::iterator newEnd = std::unique(subject.begin(), subject.end(), [](char const &lhs, char const &rhs) {
@@ -290,11 +292,23 @@ bool EmailDownloader::validateEmailSubject(std::string &subject,
 
 	// check the first token
 	if (tokens.at(0) == "single") {
-
-	}
+		// check if single announcement is allowed for this sender
+		if (sender.singleAnnouncement) {
+			out = true;
+		}
+		else {
+			SPDLOG_WARN("sender {} is not allowed to send single anouncement", sender.emailAddress);
+		}
+	}// check if timed announcements are allowed
 	else if (tokens.at(0) == "until") {
-		if (tokens.at(1) == "tommorow") {
-
+		// check if until EOD anouncements are allowed
+		if (tokens.at(1) == "today") {
+			if (sender.eodAnnouncement) {
+				out = true;
+			}
+			else {
+				SPDLOG_WARN("sender {} is not allowed to send end-of-day anouncement", sender.emailAddress);
+			}
 		}
 		else {
 			// look for first position of space character
@@ -303,32 +317,47 @@ bool EmailDownloader::validateEmailSubject(std::string &subject,
 			// extract supposed date - time into separate string
 			std::string dateTime(newSubject, firstSpacePos + 1, newSubject.size());
 
-				for (auto format : formats)
-				{
-					std::istringstream is(dateTime);
-					is.imbue(format);
-					is >> dateTimeFromSubject;
-					if (dateTimeFromSubject != boost::posix_time::ptime()) {
-						timestampFromSubject = TimeTools::getEpochFromPtime(dateTimeFromSubject, false);
-						break;
-					}
+			// try to decode timestamp from this subject
+			timestampFromSubject = EmailDownloader::decodeTimestampFromSubject(dateTime);
+
+			// check if any timestamp has been decoded
+			if (timestampFromSubject != 0) {
+				// check if sender is allowed to send timed anonuncement
+				if (sender.timedAnnouncement) {
+					out = true;
 				}
+				else {
+					SPDLOG_WARN("sender {} is not allowed to send timed anouncement", sender.emailAddress);
+				}
+			}
+			else {
+				SPDLOG_ERROR("No timestamp was decoded while checking subject {}", subject);
+			}
 		}
 	}
 
-	return true;
+	return out;
+}
 
-//	const std::string joined = date + " " + time;
-//
-//	for (auto format : formats)
-//	{
-//		std::istringstream is(joined);
-//		is.imbue(format);
-//		is >> out;
-//		if (out != boost::posix_time::ptime()) {
-//			break;
-//		}
-//	}
+uint64_t EmailDownloader::decodeTimestampFromSubject(std::string &dateTime) {
+
+	uint64_t out = 0u;
+
+	boost::posix_time::ptime dateTimeFromSubject;
+
+	// iterate through configured date/time formats
+	for (auto format : formats)
+	{
+		std::istringstream is(dateTime);
+		is.imbue(format);
+		is >> dateTimeFromSubject;
+		if (dateTimeFromSubject != boost::posix_time::ptime()) {
+			out = TimeTools::getEpochFromPtime(dateTimeFromSubject, false);
+			break;
+		}
+	}
+
+	return out;
 }
 
 EmailDownloader::EmailDownloader(ConfigurationFile_Email &_config) : config(_config) {
