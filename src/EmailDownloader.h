@@ -13,11 +13,12 @@
 
 #include <memory>
 #include <vector>
+#include <optional>
 
 /**
  * This class downloads emails from either IMAP or POP3 although currently
  * only IMAP is supported. This internally filter emails from inbox to fetch
- * only those senders which are allowed to send anouncement
+ * only those senders which are allowed to send announcements
  */
 class EmailDownloader {
 
@@ -29,8 +30,13 @@ class EmailDownloader {
 
 public:
 
-	static bool validateEmailSubject(std::string & subject, ConfigurationFile_Email_AllowedSender & sender);
+	static std::tuple<bool, std::optional<uint64_t>> validateEmailSubject(const std::string & subject, const ConfigurationFile_Email_AllowedSender & sender);
 
+	/**
+	 * Decode timestamp from email subject into unix
+	 * @param dateTime
+	 * @return epoch unix timestamp or zero if nothing was decoded
+	 */
 	static uint64_t decodeTimestampFromSubject(std::string & dateTime);
 
 	int downloadAllEmailsPop3();
@@ -38,7 +44,8 @@ public:
 	int downloadAllEmailsImap();
 
 	/**
-	 *
+	 * Validate all emails retrieved from inbox agains a configuration who is allowed
+	 * to send what kind of announcement
 	 * @return amount of emails which were validated
 	 */
 	int validateEmailAgainstPrivileges();
@@ -48,7 +55,13 @@ public:
 	 * @param messages
 	 * @return
 	 */
-	int validateEmailAgainstPrivileges(std::vector<EmailDownloaderMessage> messages);
+	int validateEmailAgainstPrivileges(std::vector<EmailDownloaderMessage> & messages);
+
+	/**
+	 * Copy only emails which are validated to be spoken as an anouncement
+	 * @param _in vector where all validated emails will be copied into
+	 */
+	void copyOnlyValidatedEmails(std::vector<EmailDownloaderMessage> _in);
 
 	EmailDownloader(ConfigurationFile_Email & _config);
 	EmailDownloader(std::shared_ptr<ConfigurationFile> _config);
@@ -57,6 +70,7 @@ public:
 	const std::vector<EmailDownloaderMessage>& getMessages() const {
 		return messages;
 	}
+
 };
 
 #endif /* EMAILDOWNLOADER_H_ */

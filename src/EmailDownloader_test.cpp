@@ -27,13 +27,15 @@ struct MyConfig
 
 	spdlog::set_level(spdlog::level::debug);
 
-	ConfigurationFile_Email_AllowedSender sender, sender2;
+	ConfigurationFile_Email_AllowedSender sender, sender2, sender3;
 	sender.emailAddress = "sklep@8a.pl";
 	sender.eodAnnouncement = true;
 	sender.singleAnnouncement = true;
 	sender.timedAnnouncement = true;
-	sender2.emailAddress = "maciej.brylski@corporatenexus.pl";
-
+	sender2.emailAddress = "noreply@bandcamp.com";
+	sender2.timedAnnouncement = true;
+	sender3.emailAddress = "maciej.brylski@corporatenexus.pl";
+	sender3.timedAnnouncement = false;
 
     configEmail.serverConfig.pop3Address = "poczta.interia.pl";
     configEmail.serverConfig.pop3Port = 995;
@@ -45,6 +47,7 @@ struct MyConfig
 
     configEmail.allowedSendersList.push_back(sender);
     configEmail.allowedSendersList.push_back(sender2);
+    configEmail.allowedSendersList.push_back(sender3);
 
     TimeTools::initBoostTimezones();
 
@@ -80,7 +83,7 @@ BOOST_GLOBAL_FIXTURE (MyConfig);
 //	}
 //}
 
-BOOST_AUTO_TEST_CASE(second)
+BOOST_AUTO_TEST_CASE(validateEmailSubject)
 {
 	/**
 	 *
@@ -98,7 +101,75 @@ BOOST_AUTO_TEST_CASE(second)
 
 		// 1698019200
 
-		BOOST_CHECK(EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(0)));
-		BOOST_CHECK(EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(1)) == false);
+		BOOST_CHECK(std::get<0>(EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(0))));
+		BOOST_CHECK(std::get<0>(EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(2))) == false);
+
+}
+
+
+BOOST_AUTO_TEST_CASE(validateEmailAgainstPrivileges)
+{
+	std::string address2("noreply@bandcamp.com");
+	std::string address("sklep@8a.pl");
+	std::string topic2 = "until 09/09/2023 11:22";
+	std::string emailDispatchDateTime = "Wed, 6 Sep 2023 13:56:31 +0000";
+	uint64_t emailDispatchUtcTimestamp = 1694008591ULL;
+	uint64_t emailReceiveUtcTimestmp = 1694533288ULL;
+	std::string originalEncoding = "7bit";
+	std::string originalCharset = "us-ascii";
+
+	tm datetime;
+
+	// copy date time into tm structure
+	datetime.tm_year = 2023;
+	datetime.tm_mon = 9;
+	datetime.tm_mday = 6;
+	datetime.tm_hour = 13;
+	datetime.tm_min = 56;
+	datetime.tm_sec = 31;
+
+	// convert that tm to have dispatch time&date in boost local_date_time format
+	boost::local_time::local_date_time emailDispatchBoostDate =
+			TimeTools::getLocalTimeFromTmStructAndTzOffset(datetime, true, GMT);
+
+	EmailDownloaderMessage msg1(
+							address,
+							topic2,
+							emailDispatchDateTime,
+							emailDispatchBoostDate,
+							0,
+							emailDispatchUtcTimestamp,
+							emailReceiveUtcTimestmp,
+							"123",
+							"123",
+							originalEncoding,
+							originalCharset);
+
+	EmailDownloaderMessage msg2(
+							address2,
+							topic2,
+							emailDispatchDateTime,
+							emailDispatchBoostDate,
+							0,
+							emailDispatchUtcTimestamp,
+							emailReceiveUtcTimestmp,
+							"123",
+							"123",
+							originalEncoding,
+							originalCharset);
+
+	EmailDownloader downloader(configEmail);
+
+	std::vector<EmailDownloaderMessage> messages;
+	messages.push_back(msg1);
+	messages.push_back(msg2);
+
+	downloader.validateEmailAgainstPrivileges(messages);
+
+	BOOST_CHECK(messages.at(0).isValidated());
+	BOOST_CHECK(messages.at(1).isValidated());
+
+	BOOST_CHECK_EQUAL(1694258520ULL, messages.at(0).getValidUntil());
+	BOOST_CHECK_EQUAL(1694258520ULL, messages.at(1).getValidUntil());
 
 }

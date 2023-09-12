@@ -16,6 +16,15 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+BOOST_AUTO_TEST_CASE(loadIndex)
+{
+	SpeechSynthesisResponsivevoice synth("kvfbSITh");
+
+	std::string index_filename = "./test_input/";
+
+	BOOST_CHECK(synth.readIndex(index_filename));
+}
+
 BOOST_AUTO_TEST_CASE(second)
 {
 	SpeechSynthesisResponsivevoice synth("kvfbSITh");

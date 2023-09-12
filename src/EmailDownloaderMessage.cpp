@@ -30,6 +30,7 @@ EmailDownloaderMessage::EmailDownloaderMessage(
 	contentQutedPrintableDecoded = _contentQpDecoded;
 	originalEncoding = _encoding;
 	originalCharset = _charset;
+	validated = false;
 }
 
 EmailDownloaderMessage::~EmailDownloaderMessage() {

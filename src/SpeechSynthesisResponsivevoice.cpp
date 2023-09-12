@@ -8,7 +8,9 @@
 #include "SpeechSynthesisResponsivevoice.h"
 
 #include <sstream>
+#include <fstream>
 #include <array>
+#include <iterator>
 
 #include "curl/curl.h"
 #include "curl_code_to_str.h"
@@ -27,6 +29,7 @@
 
 SpeechSynthesisResponsivevoice::SpeechSynthesisResponsivevoice(std::string apiKey) : key(apiKey) {
 	// TODO Auto-generated constructor stub
+	ptr = this;
 
 }
 
@@ -49,7 +52,7 @@ void SpeechSynthesisResponsivevoice::writeCallback(char *data,
 
 	const uint8_t * ptr = reinterpret_cast<uint8_t*> (data);
 
-	for (int i = 0; i < data_size; i++) {
+	for (size_t i = 0; i < data_size; i++) {
 		this->audiofile.push_back(ptr[i]);
 	}
 
@@ -64,6 +67,8 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
 	std::stringstream urlStream;
 
     std::array<char, 128> header_string;
+
+    const char * header_string_pointer = header_string.data();
 
     char* effectiveUrl;
     long response_code;
@@ -112,11 +117,10 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);			// maximum HTTP transaction timeout in seconds
     curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000L);		// the same but in miliseconds ???? why doubled ??
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-    curl_easy_setopt(curl, CURLOPT_HEADER, 0);
+    curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
 
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &SpeechSynthesisResponsivevoice::staticWriteCallback);	// needs to be bind
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
-    curl_easy_setopt(curl, CURLOPT_HEADERDATA, header_string.data());
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)ptr);
 
     // send HTTP request and wait for response
     result = curl_easy_perform(curl);
@@ -134,5 +138,22 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
     // deinitialize cURL
     curl_easy_cleanup(curl);
     curl = NULL;
+
+    if (response_code == 200) {
+        // store data into a file
+        std::fstream file(outputFilename, std::ios_base::binary | std::ios_base::out);
+
+        if (file.is_open()) {
+        	std::copy(audiofile.begin(), audiofile.end(), std::ostream_iterator<uint8_t>(file));
+
+        	file.sync();
+
+        	file.close();
+        }
+        else {
+        	SPDLOG_ERROR("Something happend while output file was opening");
+        }
+
+    }
 
 }

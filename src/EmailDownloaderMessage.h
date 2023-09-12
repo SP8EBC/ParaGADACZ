@@ -79,6 +79,13 @@ private:
 	 */
 	bool validated;
 
+	/**
+	 * This is an epoch timestamp until this email is valid to be spoken as an
+	 * anouncement. If validated flag is set to one, but validUntil is set to
+	 * zero this is one shot announcement which don't need to be stored
+	 */
+	uint64_t validUntil;
+
 public:
 	EmailDownloaderMessage(
 			const std::string & _emailAddress,
@@ -100,6 +107,26 @@ public:
 
 	const std::string& getEmailAddress() const {
 		return emailAddress;
+	}
+
+	const std::string& getEmailTopic() const {
+		return emailTopic;
+	}
+
+	bool isValidated() const {
+		return validated;
+	}
+
+	void setValidated() {
+		this->validated = true;
+	}
+
+	uint64_t getValidUntil() const {
+		return validUntil;
+	}
+
+	void setValidUntil(uint64_t validUntil) {
+		this->validUntil = validUntil;
 	}
 };
 

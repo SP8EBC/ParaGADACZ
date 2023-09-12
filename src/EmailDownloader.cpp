@@ -251,8 +251,8 @@ int EmailDownloader::downloadAllEmailsImap() {
 	return 0;
 }
 
-bool EmailDownloader::validateEmailSubject(std::string &subject,
-		ConfigurationFile_Email_AllowedSender &sender) {
+std::tuple<bool, std::optional<uint64_t>> EmailDownloader::validateEmailSubject(const std::string &subject,
+		const ConfigurationFile_Email_AllowedSender &sender) {
 
 	// possible subjects:
 	// single
@@ -261,12 +261,14 @@ bool EmailDownloader::validateEmailSubject(std::string &subject,
 
 	bool out = false;
 
+	std::string nonConstSubject(subject);
+
 	boost::posix_time::ptime dateTimeFromSubject;
 
 	uint64_t timestampFromSubject = 0u;
 
 	// remove any consecutive spaces from subject
-	std::string::iterator newEnd = std::unique(subject.begin(), subject.end(), [](char const &lhs, char const &rhs) {
+	std::string::iterator newEnd = std::unique(nonConstSubject.begin(), nonConstSubject.end(), [](char const &lhs, char const &rhs) {
 		if (lhs == rhs) {
 			if (lhs == ' ') {
 				return true;
@@ -279,7 +281,7 @@ bool EmailDownloader::validateEmailSubject(std::string &subject,
 	});
 
 	// create a new string after removing all neccessary (double) spaces
-	std::string newSubject (subject.begin(), newEnd);
+	std::string newSubject (nonConstSubject.begin(), newEnd);
 
 	// convert string to lowercase
 	std::transform(newSubject.begin(), newSubject.end(), newSubject.begin(), [](char c) {return std::tolower(c);});
@@ -336,7 +338,14 @@ bool EmailDownloader::validateEmailSubject(std::string &subject,
 		}
 	}
 
-	return out;
+	if (timestampFromSubject != 0) {
+		return std::make_tuple(out, std::make_optional<uint64_t>(timestampFromSubject));
+	}
+	else {
+		return std::make_tuple(out, std::make_optional<uint64_t>());
+
+	}
+	//return out;
 }
 
 uint64_t EmailDownloader::decodeTimestampFromSubject(std::string &dateTime) {
@@ -360,35 +369,73 @@ uint64_t EmailDownloader::decodeTimestampFromSubject(std::string &dateTime) {
 	return out;
 }
 
-EmailDownloader::EmailDownloader(ConfigurationFile_Email &_config) : config(_config) {
-}
-
 int EmailDownloader::validateEmailAgainstPrivileges() {
 	return this->validateEmailAgainstPrivileges(messages);
 }
 
 int EmailDownloader::validateEmailAgainstPrivileges(
-		std::vector<EmailDownloaderMessage> messages) {
+		std::vector<EmailDownloaderMessage> & messages) {
+
+	int out = 0;
 
 	// iterate through all downloaded messages
-	for (EmailDownloaderMessage msg : messages) {
+	for (EmailDownloaderMessage & msg : messages) {
 
 		// check this email against a configuration of allowed senders
-		std::find_if(config.allowedSendersList.begin(), config.allowedSendersList.end(), [&msg](const ConfigurationFile_Email_AllowedSender & sender) {
-			if (sender.emailAddress == msg.getEmailAddress()) {
-				// the sender has been found
+		std::vector<ConfigurationFile_Email_AllowedSender>::const_iterator found =
+				std::find_if(
+							config.allowedSendersList.begin(),
+							config.allowedSendersList.end(),
+							[&msg](const ConfigurationFile_Email_AllowedSender & sender) {
+								if (sender.emailAddress == msg.getEmailAddress()) {
+									// the sender has been found
 
-				// so now check if it is allowed to send such anonuncement
-			}
-			else {
-				// this is an unknown sender
-				return false;
-			}
-		});
+									// so now check if it is allowed to send such anonuncement
+									const std::tuple<bool, std::optional<long unsigned int> > validationResult
+												= EmailDownloader::validateEmailSubject(msg.getEmailTopic(), sender);
+
+									// store valid until timestamp parsed from email subject
+									msg.setValidUntil(std::get<1>(validationResult).value_or(0));
+
+									return std::get<0>(validationResult);
+								}
+								else {
+									// this is an unknown sender
+									return false;
+								}
+							}
+		);
+
+		// if a sender of this email has been found on
+		if (found != config.allowedSendersList.end()) {
+			SPDLOG_INFO("Email sender {} found and validated", msg.getEmailAddress());
+			msg.setValidated();
+
+			out++;
+		}
+		else {
+			SPDLOG_DEBUG("Email sender {} hasn't been found on allowed sender list", msg.getEmailAddress());
+		}
+	}
+
+	return out;
+}
+
+void EmailDownloader::copyOnlyValidatedEmails(
+		std::vector<EmailDownloaderMessage> _in) {
+
+	for (EmailDownloaderMessage msg : messages) {
+		if (msg.isValidated()) {
+			_in.push_back(msg);
+		}
 	}
 }
+
+
+EmailDownloader::EmailDownloader(ConfigurationFile_Email &_config) : config(_config) {
+}
+
 
 EmailDownloader::~EmailDownloader() {
 	// TODO Auto-generated destructor stub
 }
-

@@ -31,6 +31,8 @@ class SpeechSynthesisResponsivevoice: public SpeechSynthesis {
 	 */
 	std::vector<uint8_t> audiofile;
 
+	SpeechSynthesisResponsivevoice * ptr;
+
 public:
 	SpeechSynthesisResponsivevoice(std::string apiKey);
 	virtual ~SpeechSynthesisResponsivevoice();

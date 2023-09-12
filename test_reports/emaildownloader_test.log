@@ -1,7 +1,13 @@
-Running 1 test case...
+Running 2 test cases...
 Entering test module "EmailDownloader_test"
-../src/EmailDownloader_test.cpp(83): Entering test case "second"
-../src/EmailDownloader_test.cpp(101): info: check EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(0)) has passed
-../src/EmailDownloader_test.cpp(102): info: check EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(1)) == false has passed
-../src/EmailDownloader_test.cpp(83): Leaving test case "second"; testing time: 721us
-Leaving test module "EmailDownloader_test"; testing time: 777us
+../src/EmailDownloader_test.cpp(86): Entering test case "validateEmailSubject"
+../src/EmailDownloader_test.cpp(104): info: check std::get<0>(EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(0))) has passed
+../src/EmailDownloader_test.cpp(105): info: check std::get<0>(EmailDownloader::validateEmailSubject(test2, configEmail.allowedSendersList.at(2))) == false has passed
+../src/EmailDownloader_test.cpp(86): Leaving test case "validateEmailSubject"; testing time: 417us
+../src/EmailDownloader_test.cpp(110): Entering test case "validateEmailAgainstPrivileges"
+../src/EmailDownloader_test.cpp(169): info: check messages.at(0).isValidated() has passed
+../src/EmailDownloader_test.cpp(170): info: check messages.at(1).isValidated() has passed
+../src/EmailDownloader_test.cpp(172): info: check 1694258520ULL == messages.at(0).getValidUntil() has passed
+../src/EmailDownloader_test.cpp(173): info: check 1694258520ULL == messages.at(1).getValidUntil() has passed
+../src/EmailDownloader_test.cpp(110): Leaving test case "validateEmailAgainstPrivileges"; testing time: 362us
+Leaving test module "EmailDownloader_test"; testing time: 837us
