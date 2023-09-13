@@ -128,6 +128,14 @@ public:
 	void setValidUntil(uint64_t validUntil) {
 		this->validUntil = validUntil;
 	}
+
+	long getEmailDispatchUtcTimestamp() const {
+		return emailDispatchUtcTimestamp;
+	}
+
+	const std::string& getContentQutedPrintableDecoded() const {
+		return contentQutedPrintableDecoded;
+	}
 };
 
 #endif /* EMAILDOWNLOADERMESSAGE_H_ */

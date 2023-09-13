@@ -30,10 +30,18 @@ class EmailDownloader {
 
 public:
 
+	/**
+	 * Validate email subject against privileges set for this sender. This is called
+	 * internally by @ref validateEmailAgainstPrivileges() after a sender configuration
+	 * was found for a email received from Inbox.
+	 * @param subject string with email subject to check
+	 * @param sender privileges configuration
+	 * @return a tuple with bool singliazing if
+	 */
 	static std::tuple<bool, std::optional<uint64_t>> validateEmailSubject(const std::string & subject, const ConfigurationFile_Email_AllowedSender & sender);
 
 	/**
-	 * Decode timestamp from email subject into unix
+	 * Decode timestamp from email subject into unix epoch
 	 * @param dateTime
 	 * @return epoch unix timestamp or zero if nothing was decoded
 	 */
@@ -44,8 +52,8 @@ public:
 	int downloadAllEmailsImap();
 
 	/**
-	 * Validate all emails retrieved from inbox agains a configuration who is allowed
-	 * to send what kind of announcement
+	 * Validate all emails retrieved from inbox against a configuration who is allowed
+	 * to send what kind of announcement.
 	 * @return amount of emails which were validated
 	 */
 	int validateEmailAgainstPrivileges();
