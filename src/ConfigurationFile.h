@@ -174,21 +174,40 @@ struct ConfigurationFile_Email_Server {
 };
 
 /**
- *	Element of a list of senders allowed to send an email with anouncement
+ * How an email with announcement should be preprocessed before converting
+ */
+struct ConfigurationFile_Email_AllowedSender_Preprocess {
+	// paragraph is count as a block of text separated with more
+	// than one newline
+	int startFromParagraph;	//!< First paragraph to be converted text to speech
+	int endOnParagraph;		//!< Last paragraph to be converted
+	bool inhibitSizeLimit;	//!<
+};
+
+
+/**
+ *	Element of a list of senders allowed to send an email with anouncement, which
+ *	will be converter from text to speech
  */
 struct ConfigurationFile_Email_AllowedSender {
 	std::string emailAddress;	//!< Email address which is allowed to be a source
 	bool singleAnnouncement;	//!< if this sender can send single announcement
 	bool eodAnnouncement;		//!< If this sender can send announcement for whole day
 	bool timedAnnouncement;		//!< If this sender can send timed announcement, which will
-	bool defaultAnnouncement;
+	bool defaultAnnouncement;	//!< If emails with non-specified subject should be allowed
+	int defaultAnnouncementLn;	//!< How long (in minutes) default announcement is valid since
+	ConfigurationFile_Email_AllowedSender_Preprocess preprocessing;
 };
 
+
+/**
+ * Email text to speech announcements configuration
+ */
 struct ConfigurationFile_Email {
 
 	ConfigurationFile_Email_Server serverConfig;
-
 	std::vector<ConfigurationFile_Email_AllowedSender> allowedSendersList;
+	int maximumLenghtInWords;	//!< Maximum size of one anouncement in words
 };
 
 class ConfigurationFile {

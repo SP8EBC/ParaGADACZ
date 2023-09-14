@@ -76,7 +76,7 @@ public:
 	int getValidAnouncements(std::vector<std::string> & playlist);
 
 	/**
-	 * Takes a vector with emails taken from inbox, checks if they have been already
+	 * Takes a vector with emails downloaded from inbox, checks if they have been already
 	 * converted to speech and does that conversion if it is neccessary.
 	 * @param msgs vector of emails from inbox
 	 * @param ignoreOlderThan if set to non zero all emails older than this amount of minutes will
@@ -89,6 +89,10 @@ public:
 
 	SpeechSynthesis();
 	virtual ~SpeechSynthesis();
+
+	const std::list<SpeechSynthesis_MessageIndexElem>& getIndexContent() const {
+		return indexContent;
+	}
 };
 
 #endif /* SPEECHSYNTHESIS_H_ */

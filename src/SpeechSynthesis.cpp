@@ -25,6 +25,7 @@
 
 #include <fstream>
 #include <exception>
+#include <iterator>
 
 constexpr SpeechSynthesis_FindValidAnouncements_UnaryPredicate SpeechSynthesis_getValidAnouncements_pred;
 
@@ -57,84 +58,98 @@ bool SpeechSynthesis::readIndex(std::string &indexFn) {
 	// check if index file exists
 	if (boost::filesystem::exists(index)) {
 
-		// open file from disk
-		std::fstream inputFile;
-		inputFile.open(index.generic_string(), std::ios::in);
+		// check if this is a regular file or not
+		if (boost::filesystem::is_regular_file(index)) {
 
-		// check if input file has been opened
-		if (inputFile.is_open()) {
+			// open file from disk
+			std::fstream inputFile;
+			inputFile.open(index.generic_string(), std::ios::in);
 
-			SPDLOG_INFO("Loading speech synthesis index file {}", index.generic_string());
+			// check if input file has been opened
+			if (inputFile.is_open()) {
 
-			// reserve place for whole index file
-			inputFile.seekg(0, std::ios::end);
-			inputBuffer.resize(inputFile.tellg());
+				SPDLOG_INFO("Loading speech synthesis index file {}", index.generic_string());
 
-			// and rewind back to the begining
-			inputFile.seekg(0);
+				try {
+					// reserve place for whole index file
+					inputFile.seekg(0, std::ios::end);
+					inputBuffer.resize(inputFile.tellg());
+				}
+				catch (std::length_error & er) {
+					SPDLOG_ERROR("std::length_error has been thrown while resizing string buffer for loading");
+					SPDLOG_ERROR(er.what());
+				}
 
-			// read all content
-			inputFile.read(inputBuffer.data(), inputBuffer.size());
+				// and rewind back to the begining
+				inputFile.seekg(0);
 
-			// close input file as it is not needed anymore
-			inputFile.close();
+				// read all content
+				inputFile.read(inputBuffer.data(), inputBuffer.size());
 
-			// try to parse JSON read from file
-			nlohmann::basic_json json = nlohmann::json::parse(inputBuffer, nullptr, false);
+				// close input file as it is not needed anymore
+				inputFile.close();
 
-			// check if parsing was successfull
-			if (nlohmann::json::value_t::discarded != json) {
+				// try to parse JSON read from file
+				nlohmann::basic_json json = nlohmann::json::parse(inputBuffer, nullptr, false);
 
-				// store a filename
-				indexFilename = indexFn;
+				// check if parsing was successfull
+				if (nlohmann::json::value_t::discarded != json) {
 
-				// index is a root label for the content
-				if (json.contains("announcements")) {
-					nlohmann::json array = json["announcements"];
+					// store a filename
+					indexFilename = indexFn;
 
-					// get number of elements
-					nlohmann::json::size_type elemNumbers = array.size();
+					// index is a root label for the content
+					if (json.contains("announcements")) {
+						nlohmann::json array = json["announcements"];
 
-					for (unsigned i = 0 ; i < static_cast<unsigned>(elemNumbers); i++) {
+						// get number of elements
+						nlohmann::json::size_type elemNumbers = array.size();
 
-						// get element from index
-						nlohmann::json elem = array[i];
+						for (unsigned i = 0 ; i < static_cast<unsigned>(elemNumbers); i++) {
 
-						// each element shall consist exactly four elements
-						if (elem.size() == 4) {
-							// get all values from JSON
-							std::string _filename = elem["filename"];
-							uint64_t _sayUntil = elem["sayUntil"];
-							std::string _sender = elem["sender"];
-							uint64_t _receivedAt = elem["receivedAt"];
+							// get element from index
+							nlohmann::json elem = array[i];
 
-							// create index element
-							SpeechSynthesis_MessageIndexElem indexElement;
+							// each element shall consist exactly four elements
+							if (elem.size() == 4) {
+								// get all values from JSON
+								std::string _filename = elem["filename"];
+								uint64_t _sayUntil = elem["sayUntil"];
+								std::string _sender = elem["sender"];
+								uint64_t _receivedAt = elem["receivedAt"];
 
-							indexElement.filename = _filename;
-							indexElement.receivedAt = _receivedAt;
-							indexElement.sayUntil = _sayUntil;
-							indexElement.sender = _sender;
+								// create index element
+								SpeechSynthesis_MessageIndexElem indexElement;
 
-							// add new element to index vector
-							this->indexContent.push_back(indexElement);
+								indexElement.filename = _filename;
+								indexElement.receivedAt = _receivedAt;
+								indexElement.sayUntil = _sayUntil;
+								indexElement.sender = _sender;
+
+								// add new element to index vector
+								this->indexContent.push_back(indexElement);
+							}
 						}
-					}
 
-					//
-					out = true;
+						//
+						out = true;
+					}
+					else {
+						SPDLOG_ERROR("Speech synthesis index file has unknown structure");
+					}
 				}
 				else {
-					SPDLOG_ERROR("");
+					SPDLOG_ERROR("Speech synthesis index file contains a garbage which cannot be parsed by JSON library");
+					throw std::runtime_error("");
 				}
 			}
 			else {
-				SPDLOG_ERROR("Speech synthesis index file contains a garbage which cannot be parsed by JSON library");
+				SPDLOG_ERROR("Speech synthesis index file exists but cannot be opened for some reason");
 				throw std::runtime_error("");
 			}
 		}
 		else {
-			SPDLOG_ERROR("Speech synthesis index file exists but cannot be opened for some reason");
+			SPDLOG_ERROR("Path provided as an index file doesn't point to any valid file, maybe it is a directory os something else");
 			throw std::runtime_error("");
 		}
 	}
@@ -214,10 +229,21 @@ void SpeechSynthesis::convertEmailsToSpeech(
 	// initialize md5 context
 	MD5_Init(&md5_context);
 
-	std::array<uint8_t, MD5_DIGEST_LENGTH> md5_hash;
+	std::array<uint8_t, MD5_DIGEST_LENGTH> md5hashBinary;
+
+	SPDLOG_INFO("Converting {} emails from text to speech", msgs.size());
 
 	// go through all messages in vector
 	for (EmailDownloaderMessage msg : msgs) {
+
+		// index element to store information about currently processed email
+		SpeechSynthesis_MessageIndexElem indexElem;
+
+		// stream to store hash valie in
+		std::stringstream md5hash;
+
+		// output stream iterator to
+		std::ostream_iterator<char> md5hashIt(md5hash);
 
 		// if old messages should be skipped
 		if (ignoreOlderThan > 0) {
@@ -234,9 +260,14 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		MD5_Update(&md5_context, emailContent.data(), emailContent.size());
 
 		// finalize MD5 calculation
-		MD5_Final(md5_hash.data(), &md5_context);
+		MD5_Final(md5hashBinary.data(), &md5_context);
 
-		boost::algorithm::hex(md5_hash.begin(), md5_hash.end(), out)
+		boost::algorithm::hex(md5hashBinary.begin(), md5hashBinary.end(), md5hashIt);
+
+		indexElem.filename = md5hash.str();
+
+		this->indexContent.push_back(indexElem);
+
 	}
 }
 

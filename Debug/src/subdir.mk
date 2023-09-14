@@ -14,7 +14,6 @@ CPP_SRCS += \
 ../src/CurrentConditionsDownloader.cpp \
 ../src/EmailDownloader.cpp \
 ../src/EmailDownloaderMessage.cpp \
-../src/EmailDownloader_test.cpp \
 ../src/ForecastDownloader.cpp \
 ../src/ForecastFinder.cpp \
 ../src/InhibitorAndPttControl.cpp \
@@ -26,6 +25,8 @@ CPP_SRCS += \
 ../src/PogodaccDownloader.cpp \
 ../src/SpeechSynthesis.cpp \
 ../src/SpeechSynthesisResponsivevoice.cpp \
+../src/SpeechSynthesisStaticStuff.cpp \
+../src/SpeechSynthesisStaticStuff_test.cpp \
 ../src/TimeTools.cpp \
 ../src/TrendDownloader.cpp \
 ../src/WeatherlinkDownloader.cpp 
@@ -41,7 +42,6 @@ CPP_DEPS += \
 ./src/CurrentConditionsDownloader.d \
 ./src/EmailDownloader.d \
 ./src/EmailDownloaderMessage.d \
-./src/EmailDownloader_test.d \
 ./src/ForecastDownloader.d \
 ./src/ForecastFinder.d \
 ./src/InhibitorAndPttControl.d \
@@ -53,6 +53,8 @@ CPP_DEPS += \
 ./src/PogodaccDownloader.d \
 ./src/SpeechSynthesis.d \
 ./src/SpeechSynthesisResponsivevoice.d \
+./src/SpeechSynthesisStaticStuff.d \
+./src/SpeechSynthesisStaticStuff_test.d \
 ./src/TimeTools.d \
 ./src/TrendDownloader.d \
 ./src/WeatherlinkDownloader.d 
@@ -68,7 +70,6 @@ OBJS += \
 ./src/CurrentConditionsDownloader.o \
 ./src/EmailDownloader.o \
 ./src/EmailDownloaderMessage.o \
-./src/EmailDownloader_test.o \
 ./src/ForecastDownloader.o \
 ./src/ForecastFinder.o \
 ./src/InhibitorAndPttControl.o \
@@ -80,6 +81,8 @@ OBJS += \
 ./src/PogodaccDownloader.o \
 ./src/SpeechSynthesis.o \
 ./src/SpeechSynthesisResponsivevoice.o \
+./src/SpeechSynthesisStaticStuff.o \
+./src/SpeechSynthesisStaticStuff_test.o \
 ./src/TimeTools.o \
 ./src/TrendDownloader.o \
 ./src/WeatherlinkDownloader.o 
@@ -97,7 +100,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AprxLogParserStaticStuff.d ./src/AprxLogParserStaticStuff.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/EmailDownloader.d ./src/EmailDownloader.o ./src/EmailDownloaderMessage.d ./src/EmailDownloaderMessage.o ./src/EmailDownloader_test.d ./src/EmailDownloader_test.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/MeteobluePictocode.d ./src/MeteobluePictocode.o ./src/MeteoblueRainParser.d ./src/MeteoblueRainParser.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/SpeechSynthesis.d ./src/SpeechSynthesis.o ./src/SpeechSynthesisResponsivevoice.d ./src/SpeechSynthesisResponsivevoice.o ./src/TimeTools.d ./src/TimeTools.o ./src/TrendDownloader.d ./src/TrendDownloader.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o
+	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AprxLogParserStaticStuff.d ./src/AprxLogParserStaticStuff.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/EmailDownloader.d ./src/EmailDownloader.o ./src/EmailDownloaderMessage.d ./src/EmailDownloaderMessage.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/MeteobluePictocode.d ./src/MeteobluePictocode.o ./src/MeteoblueRainParser.d ./src/MeteoblueRainParser.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/SpeechSynthesis.d ./src/SpeechSynthesis.o ./src/SpeechSynthesisResponsivevoice.d ./src/SpeechSynthesisResponsivevoice.o ./src/SpeechSynthesisStaticStuff.d ./src/SpeechSynthesisStaticStuff.o ./src/SpeechSynthesisStaticStuff_test.d ./src/SpeechSynthesisStaticStuff_test.o ./src/TimeTools.d ./src/TimeTools.o ./src/TrendDownloader.d ./src/TrendDownloader.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o
 
 .PHONY: clean-src
 

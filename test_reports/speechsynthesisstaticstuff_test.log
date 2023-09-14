@@ -1,0 +1,6 @@
+Running 2 test cases...
+Entering test module "SpeechSynthesisStaticStuff_test"
+../src/SpeechSynthesisStaticStuff_test.cpp(38): Entering test case "cutParagraphsFromText_1"
+Test case cutParagraphsFromText_1 did not check any assertions
+../src/SpeechSynthesisStaticStuff_test.cpp(38): Leaving test case "cutParagraphsFromText_1"; testing time: 170us
+../src/SpeechSynthesisStaticStuff_test.cpp(49): Entering test case "cutParagraphsFromText_2"
