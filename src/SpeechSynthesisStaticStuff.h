@@ -17,7 +17,7 @@
 class SpeechSynthesisStaticStuff {
 public:
 
-	static std::string cutParagraphsFromText(ConfigurationFile_Email_AllowedSender_Preprocess & config, std::string & text);
+	static std::string cutParagraphsFromText(const ConfigurationFile_Email_AllowedSender_Preprocess & config, const std::string & text);
 
 	SpeechSynthesisStaticStuff();
 	virtual ~SpeechSynthesisStaticStuff();

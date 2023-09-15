@@ -6,6 +6,7 @@
  */
 
 #include "SpeechSynthesis.h"
+#include "SpeechSynthesisStaticStuff.h"
 #include "TimeTools.h"
 
 #pragma push_macro("U")
@@ -36,6 +37,10 @@ SpeechSynthesis::SpeechSynthesis() {
 
 SpeechSynthesis::~SpeechSynthesis() {
 	// TODO Auto-generated destructor stub
+}
+
+void SpeechSynthesis::createIndex(std::string &indexFn) {
+	indexFilename = indexFn;
 }
 
 /**
@@ -166,6 +171,15 @@ bool SpeechSynthesis::readIndex(std::string &indexFn) {
  * @param indexFn file where index will be written into, any existing content will be overwritten.
  */
 void SpeechSynthesis::storeIndex() {
+	if (indexFilename.length() < 3) {
+		throw std::runtime_error("Index file hasn't been opned yet");
+	}
+
+	if (indexContent.size() == 0) {
+		throw std::runtime_error("There is nothing to save an index for");
+	}
+
+
 }
 
 /**
@@ -219,9 +233,13 @@ int SpeechSynthesis::getValidAnouncements(std::vector<std::string> &playlist) {
  * 							to speech and if they require such conversion
  */
 void SpeechSynthesis::convertEmailsToSpeech(
-		std::vector<EmailDownloaderMessage> &msgs, const uint32_t ignoreOlderThan) {
+		std::vector<EmailDownloaderMessage> &msgs, const uint32_t ignoreOlderThan, const SpeechSynthesis_Language lang) {
 
 	const uint64_t currentTime = TimeTools::getEpoch();
+
+	int notValid = 0;
+	int tooOld = 0;
+	int converted = 0;
 
 	// context used for MD5
 	MD5_CTX md5_context;
@@ -236,6 +254,23 @@ void SpeechSynthesis::convertEmailsToSpeech(
 	// go through all messages in vector
 	for (EmailDownloaderMessage msg : msgs) {
 
+		// skip any message which is not validated
+		if (!msg.isValidated()) {
+			notValid++;
+
+			continue;
+		}
+
+		// if old messages should be skipped
+		if (ignoreOlderThan > 0) {
+			// if this message has been sent before given date
+			if (msg.getEmailDispatchUtcTimestamp() + (const uint64_t)ignoreOlderThan * 60ULL > currentTime) {
+				tooOld++;
+				// continue to next one
+				continue;
+			}
+		}
+
 		// index element to store information about currently processed email
 		SpeechSynthesis_MessageIndexElem indexElem;
 
@@ -245,15 +280,6 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// output stream iterator to
 		std::ostream_iterator<char> md5hashIt(md5hash);
 
-		// if old messages should be skipped
-		if (ignoreOlderThan > 0) {
-			// if this message has been sent before given date
-			if (msg.getEmailDispatchUtcTimestamp() + (const uint64_t)ignoreOlderThan * 60ULL > currentTime) {
-				// continue to next one
-				continue;
-			}
-		}
-
 		const std::string & emailContent = msg.getContent();
 
 		// calculate md5 hash of email content
@@ -262,13 +288,51 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// finalize MD5 calculation
 		MD5_Final(md5hashBinary.data(), &md5_context);
 
+		// convert MD5 into hex string
 		boost::algorithm::hex(md5hashBinary.begin(), md5hashBinary.end(), md5hashIt);
 
+		// store this hash
 		indexElem.filename = md5hash.str();
 
-		this->indexContent.push_back(indexElem);
+		// look for this hash on the index
+		std::list<SpeechSynthesis_MessageIndexElem>::const_iterator it =  std::find_if(indexContent.begin(), indexContent.end(), [&indexElem](SpeechSynthesis_MessageIndexElem & in) {
+			if (indexElem.filename == in.filename) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		});
+
+		// this message has been already converted
+		if (it != indexContent.end()) {
+			// no need for further action
+			continue;
+		}
+
+		// apply all text processing which is configured for that sender
+		std::string text = SpeechSynthesisStaticStuff::cutParagraphsFromText(msg.getPreprocess(), msg.getContent());
+
+		try {
+			// convert text to speech
+			this->convertTextToSpeech(text, indexElem.filename, lang);
+
+			indexElem.receivedAt = msg.getEmailReceiveUtcTimestmp();
+			indexElem.sayUntil = msg.getValidUntil();
+			indexElem.sender = msg.getEmailAddress();
+
+			this->indexContent.push_back(indexElem);
+
+			converted++;
+		}
+		catch (std::exception & ex) {
+			SPDLOG_ERROR("Exception was thrown while converting text to speech.");
+			SPDLOG_ERROR(ex.what());
+		}
 
 	}
+
+	SPDLOG_INFO("{} messsages converted, {} not valid, {} too old", converted, notValid, tooOld);
 }
 
 

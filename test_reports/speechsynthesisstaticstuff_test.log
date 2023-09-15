@@ -1,6 +1,18 @@
-Running 2 test cases...
+Running 5 test cases...
 Entering test module "SpeechSynthesisStaticStuff_test"
 ../src/SpeechSynthesisStaticStuff_test.cpp(38): Entering test case "cutParagraphsFromText_1"
-Test case cutParagraphsFromText_1 did not check any assertions
-../src/SpeechSynthesisStaticStuff_test.cpp(38): Leaving test case "cutParagraphsFromText_1"; testing time: 170us
-../src/SpeechSynthesisStaticStuff_test.cpp(49): Entering test case "cutParagraphsFromText_2"
+../src/SpeechSynthesisStaticStuff_test.cpp(52): info: check result == expected has passed
+../src/SpeechSynthesisStaticStuff_test.cpp(38): Leaving test case "cutParagraphsFromText_1"; testing time: 118us
+../src/SpeechSynthesisStaticStuff_test.cpp(55): Entering test case "cutParagraphsFromText_2"
+../src/SpeechSynthesisStaticStuff_test.cpp(69): info: check result == expected has passed
+../src/SpeechSynthesisStaticStuff_test.cpp(55): Leaving test case "cutParagraphsFromText_2"; testing time: 86us
+../src/SpeechSynthesisStaticStuff_test.cpp(73): Entering test case "cutParagraphsFromText_2_limitlower"
+../src/SpeechSynthesisStaticStuff_test.cpp(88): info: check result == expected has passed
+../src/SpeechSynthesisStaticStuff_test.cpp(73): Leaving test case "cutParagraphsFromText_2_limitlower"; testing time: 86us
+../src/SpeechSynthesisStaticStuff_test.cpp(92): Entering test case "cutParagraphsFromText_2_limitupper"
+../src/SpeechSynthesisStaticStuff_test.cpp(105): info: check result == expected has passed
+../src/SpeechSynthesisStaticStuff_test.cpp(92): Leaving test case "cutParagraphsFromText_2_limitupper"; testing time: 84us
+../src/SpeechSynthesisStaticStuff_test.cpp(109): Entering test case "cutParagraphsFromText_2_limitboth"
+../src/SpeechSynthesisStaticStuff_test.cpp(123): info: check result == expected has passed
+../src/SpeechSynthesisStaticStuff_test.cpp(109): Leaving test case "cutParagraphsFromText_2_limitboth"; testing time: 90us
+Leaving test module "SpeechSynthesisStaticStuff_test"; testing time: 510us

@@ -11,7 +11,7 @@
 #include <string>
 
 #include <boost/date_time.hpp>
-
+#include "ConfigurationFile.h"
 
 /**
  * Class to store email content and metadada obtained from IMAP server
@@ -86,6 +86,11 @@ private:
 	 */
 	uint64_t validUntil;
 
+	/**
+	 * Text preprocessing to be applied to this message
+	 */
+	ConfigurationFile_Email_AllowedSender_Preprocess preprocess;
+
 public:
 	EmailDownloaderMessage(
 			const std::string & _emailAddress,
@@ -135,6 +140,19 @@ public:
 
 	const std::string& getContentQutedPrintableDecoded() const {
 		return contentQutedPrintableDecoded;
+	}
+
+	const ConfigurationFile_Email_AllowedSender_Preprocess& getPreprocess() const {
+		return preprocess;
+	}
+
+	void setPreprocess(
+			const ConfigurationFile_Email_AllowedSender_Preprocess &preprocess) {
+		this->preprocess = preprocess;
+	}
+
+	long getEmailReceiveUtcTimestmp() const {
+		return emailReceiveUtcTimestmp;
 	}
 };
 

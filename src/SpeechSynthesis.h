@@ -52,7 +52,10 @@ private:
 	 */
 	std::string indexFilename;
 
+
 public:
+
+	void createIndex(std::string & indexFn);
 
 	/**
 	 * Opens and reads an index of announcements index
@@ -83,7 +86,7 @@ public:
 	 * 							be automatically ignored without checking if they are already converted
 	 * 							to speech and if they require such conversion
 	 */
-	void convertEmailsToSpeech(std::vector<EmailDownloaderMessage> & msgs, uint32_t ignoreOlderThan);
+	void convertEmailsToSpeech(std::vector<EmailDownloaderMessage> & msgs, uint32_t ignoreOlderThan, const SpeechSynthesis_Language lang);
 
 	virtual void convertTextToSpeech(std::string & text, std::string & outputFilename, SpeechSynthesis_Language lang) = 0;
 

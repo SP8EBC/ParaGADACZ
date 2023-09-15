@@ -43,7 +43,13 @@ BOOST_AUTO_TEST_CASE(cutParagraphsFromText_1)
 			"sdfdfdsfdf\r\n\r\n\r\n"
 			"sdfdfsdfsdfd\r\n";
 
-	SpeechSynthesisStaticStuff::cutParagraphsFromText(config, testinput);
+	std::string expected = "dsfdsfsd\r\n"
+			"sdfdfdsfdf\r\n"
+			"sdfdfsdfsdfd\r\n";
+
+	std::string result = SpeechSynthesisStaticStuff::cutParagraphsFromText(config, testinput);
+
+	BOOST_CHECK_EQUAL(result, expected);
 }
 
 BOOST_AUTO_TEST_CASE(cutParagraphsFromText_2)
@@ -54,6 +60,66 @@ BOOST_AUTO_TEST_CASE(cutParagraphsFromText_2)
 			"sdfdfdsfdf\r\r\r\r"
 			"sdfdfsdfsdfd\r";
 
-	SpeechSynthesisStaticStuff::cutParagraphsFromText(config, testinput);
+	std::string expected = "dsfdsfsd\r\n"
+			"sdfdfdsfdf\r\n"
+			"sdfdfsdfsdfd\r\n";
+
+	std::string result = SpeechSynthesisStaticStuff::cutParagraphsFromText(config, testinput);
+
+	BOOST_CHECK_EQUAL(result, expected);
+
 }
 
+BOOST_AUTO_TEST_CASE(cutParagraphsFromText_2_limitlower)
+{
+	ConfigurationFile_Email_AllowedSender_Preprocess config = {0u};
+	config.startFromParagraph = 1;
+
+	std::string testinput = "dsfdsfsd\r"
+			"sdfdfdsfdf\r\r\r\r"
+			"sdfdfsdfsdfd\r";
+
+	std::string expected =
+			"sdfdfdsfdf\r\n"
+			"sdfdfsdfsdfd\r\n";
+
+	std::string result = SpeechSynthesisStaticStuff::cutParagraphsFromText(config, testinput);
+
+	BOOST_CHECK_EQUAL(result, expected);
+
+}
+
+BOOST_AUTO_TEST_CASE(cutParagraphsFromText_2_limitupper)
+{
+	ConfigurationFile_Email_AllowedSender_Preprocess config = {0u};
+	config.endOnParagraph = 1;
+
+	std::string testinput = "dsfdsfsd\r"
+			"sdfdfdsfdf\r\r\r\r"
+			"sdfdfsdfsdfd\rrrrtttt444545";
+
+	std::string expected = "dsfdsfsd\r\n";
+
+	std::string result = SpeechSynthesisStaticStuff::cutParagraphsFromText(config, testinput);
+
+	BOOST_CHECK_EQUAL(result, expected);
+
+}
+
+BOOST_AUTO_TEST_CASE(cutParagraphsFromText_2_limitboth)
+{
+	ConfigurationFile_Email_AllowedSender_Preprocess config = {0u};
+	config.startFromParagraph = 2;
+	config.endOnParagraph = 5;
+
+	std::string testinput = "dsfdsfsd\r"
+			"sdfdfdsfdf\r\r\r\r"
+			"sdfdfsdfsdfd\rrrrtttt444545\r\n\r\nzxcvbnm\r\n111";
+
+	std::string expected = "sdfdfsdfsdfd\r\nrrrtttt444545\r\nzxcvbnm\r\n";
+
+	std::string result = SpeechSynthesisStaticStuff::cutParagraphsFromText(config, testinput);
+
+	BOOST_CHECK_EQUAL(result, expected);
+
+}

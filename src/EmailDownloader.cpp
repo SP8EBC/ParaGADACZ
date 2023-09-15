@@ -394,6 +394,9 @@ int EmailDownloader::validateEmailAgainstPrivileges(
 									const std::tuple<bool, std::optional<long unsigned int> > validationResult
 												= EmailDownloader::validateEmailSubject(msg.getEmailTopic(), sender);
 
+									// set text preprocessing which must be applied
+									msg.setPreprocess(sender.preprocessing);
+
 									// store valid until timestamp parsed from email subject
 									msg.setValidUntil(std::get<1>(validationResult).value_or(0));
 
