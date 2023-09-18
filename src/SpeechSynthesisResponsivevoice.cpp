@@ -131,9 +131,9 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
     curl_easy_getinfo(curl, CURLINFO_TOTAL_TIME, &elapsed);
     curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effectiveUrl);
 
-    SPDLOG_INFO("CURL response_code: {}", boost::lexical_cast<std::string>(response_code));
-    SPDLOG_INFO("CURL query elapsed time: {}", boost::lexical_cast<std::string>(elapsed));
-    SPDLOG_INFO("CURL result: {}", curlCodeToStr(result));
+    SPDLOG_DEBUG("CURL response_code: {}", boost::lexical_cast<std::string>(response_code));
+    SPDLOG_DEBUG("CURL query elapsed time: {}", boost::lexical_cast<std::string>(elapsed));
+    SPDLOG_DEBUG("CURL result: {}", curlCodeToStr(result));
 
     // deinitialize cURL
     curl_easy_cleanup(curl);
@@ -154,6 +154,9 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
         	SPDLOG_ERROR("Something happend while output file was opening");
         }
 
+    }
+    else {
+    	SPDLOG_ERROR("Error code {} received from API during TTS conversion", boost::lexical_cast<std::string>(response_code));
     }
 
 }

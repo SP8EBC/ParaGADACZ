@@ -1,0 +1,16 @@
+Running 1 test case...
+Entering test module "SpeechSynthesis_test"
+../src/SpeechSynthesis_test.cpp(39): Entering test case "readIndex"
+../src/SpeechSynthesis_test.cpp(47): info: check 'no exceptions thrown by result = synth.readIndex(fn)' has passed
+../src/SpeechSynthesis_test.cpp(48): info: check 2 == result has passed
+../src/SpeechSynthesis_test.cpp(53): info: check "test1.mp3" == it->filename has passed
+../src/SpeechSynthesis_test.cpp(54): info: check 12345 == it->sayUntil has passed
+../src/SpeechSynthesis_test.cpp(55): info: check "test@interia.pl" == it->sender has passed
+../src/SpeechSynthesis_test.cpp(56): info: check 12340 == it->receivedAt has passed
+../src/SpeechSynthesis_test.cpp(58): info: check 'no exceptions thrown by it++' has passed
+../src/SpeechSynthesis_test.cpp(60): info: check "test2.mp3" == it->filename has passed
+../src/SpeechSynthesis_test.cpp(61): info: check 54321 == it->sayUntil has passed
+../src/SpeechSynthesis_test.cpp(62): info: check "test@gmail.pl" == it->sender has passed
+../src/SpeechSynthesis_test.cpp(63): info: check 54300 == it->receivedAt has passed
+../src/SpeechSynthesis_test.cpp(39): Leaving test case "readIndex"; testing time: 255us
+Leaving test module "SpeechSynthesis_test"; testing time: 269us

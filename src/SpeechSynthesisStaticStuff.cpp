@@ -61,7 +61,7 @@ std::string SpeechSynthesisStaticStuff::cutParagraphsFromText(
 		paragraphs++;
 	}
 
-	SPDLOG_INFO("{} paragraphs have been added to an output, {} elements was skipped", paragraphs, missedParagraph);
+	SPDLOG_DEBUG("{} paragraphs have been added to an output, {} elements was skipped", paragraphs, missedParagraph);
 
 	return output.str();
 

@@ -63,9 +63,11 @@ BOOST_AUTO_TEST_CASE(convertToSpeech_checkMd5)
 							originalEncoding,
 							originalCharset);
 
+	msg1.setValidated();
+
 	msgs.push_back(msg1);
 
-	synth.convertEmailsToSpeech(msgs, 0u);
+	synth.convertEmailsToSpeech(msgs, 0u, SPEECH_POLISH);
 
 	auto indexElem = synth.getIndexContent().begin();
 

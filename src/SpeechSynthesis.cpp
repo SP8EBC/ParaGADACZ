@@ -39,7 +39,7 @@ SpeechSynthesis::~SpeechSynthesis() {
 	// TODO Auto-generated destructor stub
 }
 
-void SpeechSynthesis::createIndex(std::string &indexFn) {
+void SpeechSynthesis::createIndex(const std::string &indexFn) {
 	indexFilename = indexFn;
 }
 
@@ -49,10 +49,10 @@ void SpeechSynthesis::createIndex(std::string &indexFn) {
  * @return true if file was opened or false if doesn't exist
  * @throws
  */
-bool SpeechSynthesis::readIndex(std::string &indexFn) {
+int SpeechSynthesis::readIndex(const std::string &indexFn) {
 
-	// set to true if index has been read
-	bool out = false;
+	// how many entries has been read from index
+	int out = -1;
 
 	// input buffer for JSON data read from file
 	std::string inputBuffer;
@@ -110,6 +110,8 @@ bool SpeechSynthesis::readIndex(std::string &indexFn) {
 						// get number of elements
 						nlohmann::json::size_type elemNumbers = array.size();
 
+						out = 0;
+
 						for (unsigned i = 0 ; i < static_cast<unsigned>(elemNumbers); i++) {
 
 							// get element from index
@@ -133,11 +135,10 @@ bool SpeechSynthesis::readIndex(std::string &indexFn) {
 
 								// add new element to index vector
 								this->indexContent.push_back(indexElement);
+
+								out++;
 							}
 						}
-
-						//
-						out = true;
 					}
 					else {
 						SPDLOG_ERROR("Speech synthesis index file has unknown structure");
@@ -179,7 +180,55 @@ void SpeechSynthesis::storeIndex() {
 		throw std::runtime_error("There is nothing to save an index for");
 	}
 
+	// path to cache index in temporary directory
+	boost::filesystem::path index(this->indexFilename);
 
+	std::fstream indexStream;
+
+	// open a file with an index and truncate it's content
+	indexStream.open(index.generic_string(), std::ios::out | std::ios::trunc);
+
+	// check if index file has been opened for writing
+	if (indexStream.is_open()) {
+		// root of a document
+		nlohmann::json json = nlohmann::json::object();
+
+		// array with index elements
+		nlohmann::json arr = nlohmann::json::array();
+
+		for (const auto & elem : indexContent) {
+
+			// check if this is single shot anouncement
+			if (elem.sayUntil == 0) {
+				SPDLOG_DEBUG("This is single-shot anouncement which will be sayd only once. Not storing in the index");
+
+				continue;
+			}
+
+			// create single list object
+			nlohmann::basic_json _indexElementJson = nlohmann::json::object();
+
+			// fill it with data
+			_indexElementJson["filename"] = (elem.filename);
+			_indexElementJson["sayUntil"] = (elem.sayUntil);
+			_indexElementJson["sender"] = (elem.sender);
+			_indexElementJson["receivedAt"] = (elem.receivedAt);
+
+			// and add to the array
+			arr.push_back(_indexElementJson);
+		}
+
+		// insert array into JSON structure
+		json["announcements"] = arr;
+
+		// put JSON into file on disk
+		indexStream << json;
+
+		indexStream.close();
+	}
+	else {
+
+	}
 }
 
 /**
@@ -291,6 +340,9 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// convert MD5 into hex string
 		boost::algorithm::hex(md5hashBinary.begin(), md5hashBinary.end(), md5hashIt);
 
+		// append file extension
+		md5hash << ".mp3";
+
 		// store this hash
 		indexElem.filename = md5hash.str();
 
@@ -314,6 +366,8 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		std::string text = SpeechSynthesisStaticStuff::cutParagraphsFromText(msg.getPreprocess(), msg.getContent());
 
 		try {
+			SPDLOG_INFO("Converting message sent by {} to speech", msg.getEmailAddress());
+
 			// convert text to speech
 			this->convertTextToSpeech(text, indexElem.filename, lang);
 
@@ -331,6 +385,9 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		}
 
 	}
+
+	// all messages converted so now store the index back on disk
+	storeIndex();
 
 	SPDLOG_INFO("{} messsages converted, {} not valid, {} too old", converted, notValid, tooOld);
 }

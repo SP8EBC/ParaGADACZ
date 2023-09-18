@@ -421,7 +421,7 @@ bool ForecastDownloader::saveCacheIndex(
 				nlohmann::basic_json _indexElementJson = nlohmann::json::object();
 
 				// fill it with data
-				_indexElementJson["timestamp"] = (indexElem.timestamp);
+				_indexElementJson["filename"] = (indexElem.timestamp);
 				_indexElementJson["locationName"] = (indexElem.locationName);
 				_indexElementJson["filename"] = (indexElem.filename);
 

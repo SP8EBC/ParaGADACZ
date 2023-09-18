@@ -261,9 +261,9 @@ int AvalancheWarnings::download(AvalancheWarnings_Location location) {
     curl_easy_getinfo(curl, CURLINFO_TOTAL_TIME, &elapsed);
     curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effectiveUrl);
 
-    SPDLOG_INFO("CURL response_code: {}", boost::lexical_cast<std::string>(response_code));
-    SPDLOG_INFO("CURL query elapsed time: {}", boost::lexical_cast<std::string>(elapsed));
-    SPDLOG_INFO("CURL result: {}", curlCodeToStr(result));
+    SPDLOG_DEBUG("CURL response_code: {}", boost::lexical_cast<std::string>(response_code));
+    SPDLOG_DEBUG("CURL query elapsed time: {}", boost::lexical_cast<std::string>(elapsed));
+    SPDLOG_DEBUG("CURL result: {}", curlCodeToStr(result));
 
     // deinitialize cURL
     curl_easy_cleanup(curl);
@@ -271,6 +271,9 @@ int AvalancheWarnings::download(AvalancheWarnings_Location location) {
 
     if (response_code == 200) {
     	httpResponse = std::move(responseBuffer);
+    }
+    else {
+    	SPDLOG_ERROR("Error has happened while contacting with GOPR website, HTTP response code: {}, CURL result: {}", boost::lexical_cast<std::string>(response_code), curlCodeToStr(result));
     }
 
     return response_code;

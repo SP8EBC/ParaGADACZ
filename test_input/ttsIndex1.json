@@ -1,0 +1,16 @@
+{
+  "announcements": [
+    {
+      "filename": "test1.mp3",
+      "sayUntil": 12345,
+      "sender": "test@interia.pl",
+      "receivedAt": 12340
+    },
+    {
+      "filename": "test2.mp3",
+      "sayUntil": 54321,
+      "sender": "test@gmail.pl",
+      "receivedAt": 54300
+    }
+  ]
+}

@@ -55,14 +55,14 @@ private:
 
 public:
 
-	void createIndex(std::string & indexFn);
+	void createIndex(const std::string & indexFn);
 
 	/**
 	 * Opens and reads an index of announcements index
 	 * @param indexFn path + name of index JSON file
 	 * @return true if file was opened or false if doesn't exist
 	 */
-	bool readIndex(std::string & indexFn);
+	int readIndex(const std::string & indexFn);
 
 	/**
 	 * Writes index back into a JSON file.
