@@ -14,6 +14,12 @@
 #include "ConfigurationFile.h"
 
 /**
+ * Special value of validUntil within EmailDownloaderMessage to indicate single shot
+ * message. It must be stored on disk to block playback or any consecutive call
+ */
+#define EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT	(666ULL)
+
+/**
  * Class to store email content and metadada obtained from IMAP server
  */
 class EmailDownloaderMessage {

@@ -14,6 +14,7 @@
 #include <utility>
 #include <memory>
 #include <optional>
+#include <vector>
 
 #include "PlaylistSampler.h"
 #include "Inline_response_200.h"
@@ -22,6 +23,9 @@
 #include "AprsWXData.h"
 #include "AvalancheWarnings.h"
 #include "TrendDownloader.h"
+#include "EmailDownloaderMessage.h"
+#include "SpeechSynthesisResponsivevoice.h"
+
 
 class PlaylistAssembler {
 
@@ -32,6 +36,8 @@ class PlaylistAssembler {
 	std::shared_ptr<ConfigurationFile> & configurationFile;
 
 	static std::string throwOnEmptyOptional();
+
+	SpeechSynthesisResponsivevoice tts;
 
 public:
 	PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config);
@@ -76,6 +82,14 @@ public:
 	 * Appends prerecorded anouncement either at the begining or the end
 	 */
 	void recordedAnnouncement(bool preOrPost);
+
+	/**
+	 * Takes all downloaded & validated email messages, then converts them into speech
+	 * if it is necessary (if a message hasn't been converted yet) and append everything
+	 * into playlist
+	 * @param messages
+	 */
+	void textToSpeechAnnouncements(std::vector<EmailDownloaderMessage> & messages);
 
 	/**
 	 * Appends sign off message

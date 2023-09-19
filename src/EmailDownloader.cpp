@@ -297,6 +297,7 @@ std::tuple<bool, std::optional<uint64_t>> EmailDownloader::validateEmailSubject(
 		// check if single announcement is allowed for this sender
 		if (sender.singleAnnouncement) {
 			out = true;
+			timestampFromSubject = EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT;
 		}
 		else {
 			SPDLOG_WARN("sender {} is not allowed to send single anouncement", sender.emailAddress);
@@ -335,6 +336,17 @@ std::tuple<bool, std::optional<uint64_t>> EmailDownloader::validateEmailSubject(
 			else {
 				SPDLOG_ERROR("No timestamp was decoded while checking subject {}", subject);
 			}
+		}
+	}
+	else {
+		// default announcement
+		if (sender.defaultAnnouncement) {
+			// user is allowed to send 'default' announcement without any specific
+			// email subject, so calculate how long this will be valid
+			timestampFromSubject = TimeTools::getEpoch() + sender.defaultAnnouncementLn * 60;
+		}
+		else {
+			SPDLOG_WARN("sender {} is not allowed to send default announcement, without explicitly specified valid timestamp");
 		}
 	}
 

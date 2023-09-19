@@ -41,6 +41,42 @@ SpeechSynthesis::~SpeechSynthesis() {
 
 void SpeechSynthesis::createIndex(const std::string &indexFn) {
 	indexFilename = indexFn;
+
+	// root of a document
+	nlohmann::json json = nlohmann::json::object();
+
+	// array with index elements
+	nlohmann::json arr = nlohmann::json::array();
+
+	// create single list object
+	nlohmann::basic_json _indexElementJson = nlohmann::json::object();
+
+	// fill it with data
+	_indexElementJson["filename"] = "dummy";
+	_indexElementJson["sayUntil"] = 0;
+	_indexElementJson["sender"] = "dummy";
+	_indexElementJson["receivedAt"] = 0;
+
+	// and add to the array
+	arr.push_back(_indexElementJson);
+
+	// path to cache index in temporary directory
+	boost::filesystem::path index(indexFilename);
+
+	// remove index file if it has been creaeted
+	const bool existed = boost::filesystem::remove(index);
+
+	std::fstream indexStream;
+
+	// open a file with an index and truncate it's content
+	indexStream.open(index.generic_string(), std::ios::out | std::ios::trunc);
+
+	// put JSON into file on disk
+	indexStream << json;
+
+	indexStream.close();
+
+	indexContent = std::list<SpeechSynthesis_MessageIndexElem>();
 }
 
 /**
@@ -125,6 +161,16 @@ int SpeechSynthesis::readIndex(const std::string &indexFn) {
 								std::string _sender = elem["sender"];
 								uint64_t _receivedAt = elem["receivedAt"];
 
+								// check if this is dummy entry
+								if (_sayUntil == 0 && _receivedAt == 0) {
+									continue;	// ignore it
+								}
+
+								// check if it was single shot announcement played in the past
+								if (_sayUntil == EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT) {
+
+								}
+
 								// create index element
 								SpeechSynthesis_MessageIndexElem indexElement;
 
@@ -156,7 +202,7 @@ int SpeechSynthesis::readIndex(const std::string &indexFn) {
 		}
 		else {
 			SPDLOG_ERROR("Path provided as an index file doesn't point to any valid file, maybe it is a directory os something else");
-			throw std::runtime_error("");
+			throw std::invalid_argument("");
 		}
 	}
 	else {
@@ -173,7 +219,7 @@ int SpeechSynthesis::readIndex(const std::string &indexFn) {
  */
 void SpeechSynthesis::storeIndex() {
 	if (indexFilename.length() < 3) {
-		throw std::runtime_error("Index file hasn't been opned yet");
+		throw std::runtime_error("Index file hasn't been opened yet");
 	}
 
 	if (indexContent.size() == 0) {
@@ -195,6 +241,8 @@ void SpeechSynthesis::storeIndex() {
 
 		// array with index elements
 		nlohmann::json arr = nlohmann::json::array();
+
+		SPDLOG_INFO("Writing index into a file {}", index.generic_string());
 
 		for (const auto & elem : indexContent) {
 

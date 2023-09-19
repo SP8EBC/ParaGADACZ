@@ -106,7 +106,7 @@ struct PlaylistAssembler_TrendUnaryPredicate {
 	}
 };
 
-PlaylistAssembler::PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config) : playlistSampler(sampler), configurationFile(config) {
+PlaylistAssembler::PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config) : playlistSampler(sampler), configurationFile(config), tts("kvfbSITh") {
 
 	this->playlist = std::make_shared<std::vector<std::string>>();
 }
@@ -115,12 +115,12 @@ PlaylistAssembler::~PlaylistAssembler() {
 	// TODO Auto-generated destructor stub
 }
 
-PlaylistAssembler::PlaylistAssembler(const PlaylistAssembler &other) : playlistSampler(other.playlistSampler), configurationFile(other.configurationFile) {
+PlaylistAssembler::PlaylistAssembler(const PlaylistAssembler &other) : playlistSampler(other.playlistSampler), configurationFile(other.configurationFile), tts("kvfbSITh") {
 	// TODO Auto-generated constructor stub
 
 }
 
-PlaylistAssembler::PlaylistAssembler(PlaylistAssembler &&other) : playlistSampler(other.playlistSampler), configurationFile(other.configurationFile) {
+PlaylistAssembler::PlaylistAssembler(PlaylistAssembler &&other) : playlistSampler(other.playlistSampler), configurationFile(other.configurationFile), tts("kvfbSITh") {
 	// TODO Auto-generated constructor stub
 
 }
@@ -888,3 +888,53 @@ void PlaylistAssembler::signOff() {
 
 }
 
+void PlaylistAssembler::textToSpeechAnnouncements(
+		std::vector<EmailDownloaderMessage> &messages) {
+
+	const std::string indexFilename = "";
+	const uint32_t ignoreOlderThan = 240;
+	const SpeechSynthesis_Language lang = SPEECH_ENGLISH;
+
+	const uint64_t currentTime = TimeTools::getEpoch();
+
+	try {
+		// try to read an index
+		const int readResult = tts.readIndex(indexFilename);
+
+		// index hasn't een created yet
+		if (readResult == -1) {
+			// create new file, it will be opened automatically
+			tts.createIndex(indexFilename);
+		}
+	}
+	catch (std::runtime_error & ex) {
+		// something went wrong while loading text-to-speech results
+		// so reainitialize cache index
+		tts.createIndex(indexFilename);
+	}
+	catch (std::invalid_argument & ex) {
+		// path used as an index file is incorrect. maybe it points to a directory
+		// or devide, not to regular file
+		SPDLOG_ERROR("Text-to-speech conversion cannot continue");
+		throw ex; // bail out
+	}
+
+	// convert all emails into speech
+	tts.convertEmailsToSpeech(messages, ignoreOlderThan, lang);
+
+	// get an index after conversion, all messages should be here
+	const std::list<SpeechSynthesis_MessageIndexElem>& index = tts.getIndexContent();
+
+	// go through emails
+	for (SpeechSynthesis_MessageIndexElem elem : index) {
+		// check if this announcement can still be played
+		if (elem.sayUntil < currentTime) {
+			continue;	// this is too old, so skip it
+		}
+
+		// append this file
+		playlist->push_back(elem.filename);
+	}
+
+
+}
