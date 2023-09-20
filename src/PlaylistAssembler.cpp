@@ -927,9 +927,19 @@ void PlaylistAssembler::textToSpeechAnnouncements(
 
 	// go through emails
 	for (SpeechSynthesis_MessageIndexElem elem : index) {
-		// check if this announcement can still be played
-		if (elem.sayUntil < currentTime) {
-			continue;	// this is too old, so skip it
+		// check if this is not single shot message
+		if (elem.sayUntil != EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT) {
+			// check if this announcement can still be played
+			if (elem.sayUntil < currentTime) {
+				continue;	// this is too old, so skip it
+			}
+		}
+		else {
+			// if this is a single shot message check if it has been read before
+			if (elem.receivedAt == 0) {
+				continue;
+			}
+
 		}
 
 		// append this file

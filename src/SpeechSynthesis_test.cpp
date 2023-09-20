@@ -9,6 +9,8 @@
  */
 
 #include "SpeechSynthesisResponsivevoice.h"
+#include "EmailDownloader.h"
+#include "TimeTools.h"
 
 #define BOOST_TEST_MODULE SpeechSynthesis_test
 #include <boost/test/included/unit_test.hpp>
@@ -62,3 +64,103 @@ BOOST_AUTO_TEST_CASE(readIndex)
 	BOOST_CHECK_EQUAL("test@gmail.pl", it->sender);
 	BOOST_CHECK_EQUAL(54300, it->receivedAt);
 }
+
+BOOST_AUTO_TEST_CASE(validateSingleShot)
+{
+	ConfigurationFile_Email configEmail;
+
+	ConfigurationFile_Email_AllowedSender sender, sender2, sender3;
+	sender.emailAddress = "sklep@8a.pl";
+	sender.eodAnnouncement = true;
+	sender.singleAnnouncement = true;
+	sender.timedAnnouncement = true;
+	sender2.emailAddress = "noreply@bandcamp.com";
+	sender2.timedAnnouncement = true;
+	sender3.emailAddress = "maciej.brylski@corporatenexus.pl";
+	sender3.timedAnnouncement = false;
+
+    configEmail.serverConfig.pop3Address = "poczta.interia.pl";
+    configEmail.serverConfig.pop3Port = 995;
+    configEmail.serverConfig.imapAddress = "poczta.interia.pl";
+    configEmail.serverConfig.imapPort = 993;
+    configEmail.serverConfig.username = "dupa";
+    configEmail.serverConfig.password = "dupa123";
+    configEmail.serverConfig.startTls = false;
+
+    configEmail.allowedSendersList.push_back(sender);
+    configEmail.allowedSendersList.push_back(sender2);
+    configEmail.allowedSendersList.push_back(sender3);
+
+    TimeTools::initBoostTimezones();
+
+	std::string address2("noreply@bandcamp.com");
+	std::string address(sender.emailAddress);
+	std::string topic2 = "single";
+	std::string emailDispatchDateTime = "Wed, 6 Sep 2023 13:56:31 +0000";
+	uint64_t emailDispatchUtcTimestamp = 1694008591ULL;
+	uint64_t emailReceiveUtcTimestmp = 1694533288ULL;
+	std::string originalEncoding = "7bit";
+	std::string originalCharset = "us-ascii";
+
+	tm datetime;
+
+	// copy date time into tm structure
+	datetime.tm_year = 2023;
+	datetime.tm_mon = 9;
+	datetime.tm_mday = 20;
+	datetime.tm_hour = 13;
+	datetime.tm_min = 56;
+	datetime.tm_sec = 31;
+
+	// convert that tm to have dispatch time&date in boost local_date_time format
+	boost::local_time::local_date_time emailDispatchBoostDate =
+			TimeTools::getLocalTimeFromTmStructAndTzOffset(datetime, true, GMT);
+
+	EmailDownloaderMessage msg1(
+							address,
+							topic2,
+							emailDispatchDateTime,
+							emailDispatchBoostDate,
+							0,
+							emailDispatchUtcTimestamp,
+							emailReceiveUtcTimestmp,
+							"123",
+							"123",
+							originalEncoding,
+							originalCharset);
+
+	EmailDownloader downloader(configEmail);
+
+	std::vector<EmailDownloaderMessage> messages;
+	messages.push_back(msg1);
+
+	const int amountEmailsValidated = downloader.validateEmailAgainstPrivileges(messages);
+	BOOST_CHECK_EQUAL(amountEmailsValidated, 1);
+
+	BOOST_CHECK_EQUAL(messages.at(0).getValidUntil(), 666ULL);
+	BOOST_CHECK_EQUAL(messages.at(0).getEmailReceiveUtcTimestmp(), emailReceiveUtcTimestmp);
+
+	SpeechSynthesisResponsivevoice synth("kvfbSITh");
+
+	const std::string fn = "./test_input/ttsIndex2.json";
+
+	BOOST_CHECK_NO_THROW(synth.createIndex(fn));
+	BOOST_CHECK_EQUAL(synth.getIndexContent().size(), 0);
+
+	synth.convertEmailsToSpeech(messages, 0, SPEECH_POLISH);
+	BOOST_CHECK_EQUAL(synth.getIndexContent().size(), 1);
+
+	BOOST_CHECK_NO_THROW(synth.storeIndex());
+
+	SpeechSynthesisResponsivevoice synthRead("xxxxx2");
+	BOOST_CHECK_NO_THROW(synthRead.readIndex(fn));
+	BOOST_CHECK_EQUAL(synthRead.getIndexContent().size(), 1);
+
+	const std::list<SpeechSynthesis_MessageIndexElem>::const_iterator index = synthRead.getIndexContent().begin();
+	const SpeechSynthesis_MessageIndexElem & firstElem = *index;
+
+	BOOST_CHECK_EQUAL(firstElem.sayUntil, 666ULL);
+	BOOST_CHECK_EQUAL(firstElem.sender, sender.emailAddress);
+	BOOST_CHECK_EQUAL(firstElem.receivedAt, emailReceiveUtcTimestmp);
+}
+

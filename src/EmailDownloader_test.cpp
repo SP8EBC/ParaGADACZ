@@ -173,3 +173,54 @@ BOOST_AUTO_TEST_CASE(validateEmailAgainstPrivileges)
 	BOOST_CHECK_EQUAL(1694258520ULL, messages.at(1).getValidUntil());
 
 }
+
+BOOST_AUTO_TEST_CASE(validateSingleShot)
+{
+	std::string address2("noreply@bandcamp.com");
+	std::string address("sklep@8a.pl");
+	std::string topic2 = "single";
+	std::string emailDispatchDateTime = "Wed, 6 Sep 2023 13:56:31 +0000";
+	uint64_t emailDispatchUtcTimestamp = 1694008591ULL;
+	uint64_t emailReceiveUtcTimestmp = 1694533288ULL;
+	std::string originalEncoding = "7bit";
+	std::string originalCharset = "us-ascii";
+
+	tm datetime;
+
+	// copy date time into tm structure
+	datetime.tm_year = 2023;
+	datetime.tm_mon = 9;
+	datetime.tm_mday = 20;
+	datetime.tm_hour = 13;
+	datetime.tm_min = 56;
+	datetime.tm_sec = 31;
+
+	// convert that tm to have dispatch time&date in boost local_date_time format
+	boost::local_time::local_date_time emailDispatchBoostDate =
+			TimeTools::getLocalTimeFromTmStructAndTzOffset(datetime, true, GMT);
+
+	EmailDownloaderMessage msg1(
+							address,
+							topic2,
+							emailDispatchDateTime,
+							emailDispatchBoostDate,
+							0,
+							emailDispatchUtcTimestamp,
+							emailReceiveUtcTimestmp,
+							"123",
+							"123",
+							originalEncoding,
+							originalCharset);
+
+	EmailDownloader downloader(configEmail);
+
+	std::vector<EmailDownloaderMessage> messages;
+	messages.push_back(msg1);
+
+	const int amountEmailsValidated = downloader.validateEmailAgainstPrivileges(messages);
+	BOOST_CHECK_EQUAL(amountEmailsValidated, 1);
+
+	BOOST_CHECK_EQUAL(messages.at(0).getValidUntil(), 666ULL);
+	BOOST_CHECK_EQUAL(messages.at(0).getEmailReceiveUtcTimestmp(), emailReceiveUtcTimestmp);
+
+}

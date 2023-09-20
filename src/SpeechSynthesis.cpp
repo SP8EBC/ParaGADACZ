@@ -168,7 +168,12 @@ int SpeechSynthesis::readIndex(const std::string &indexFn) {
 
 								// check if it was single shot announcement played in the past
 								if (_sayUntil == EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT) {
-
+									// if yes overwrite receivedAt timestamp
+									// to indicate that this is a single shot
+									// message read before.
+									// PlaylistSampler works in the way that it
+									// ignores everything with _receivedAt set to 0
+									_receivedAt = 0;
 								}
 
 								// create index element
@@ -247,10 +252,8 @@ void SpeechSynthesis::storeIndex() {
 		for (const auto & elem : indexContent) {
 
 			// check if this is single shot anouncement
-			if (elem.sayUntil == 0) {
-				SPDLOG_DEBUG("This is single-shot anouncement which will be sayd only once. Not storing in the index");
-
-				continue;
+			if (elem.sayUntil == EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT) {
+				SPDLOG_DEBUG("This is single-shot anouncement which will be sayd only once.");
 			}
 
 			// create single list object
