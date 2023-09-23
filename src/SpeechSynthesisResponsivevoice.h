@@ -37,7 +37,7 @@ public:
 	SpeechSynthesisResponsivevoice(std::string apiKey);
 	virtual ~SpeechSynthesisResponsivevoice();
 	virtual void convertTextToSpeech(std::string &text,
-			std::string &outputFilename, SpeechSynthesis_Language lang);
+			std::string &outputFilename, ConfigurationFile_Language lang);
 };
 
 #endif /* SPEECHSYNTHESISRESPONSIVEVOICE_H_ */

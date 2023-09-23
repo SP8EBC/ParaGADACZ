@@ -59,7 +59,7 @@ void SpeechSynthesisResponsivevoice::writeCallback(char *data,
 }
 
 void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
-		std::string &outputFilename, SpeechSynthesis_Language lang) {
+		std::string &outputFilename, ConfigurationFile_Language lang) {
 
 	CURLcode result = CURLcode::CURLE_OBSOLETE50;
 

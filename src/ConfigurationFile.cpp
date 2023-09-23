@@ -13,6 +13,8 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <exception>
+
 
 ConfigurationFile::ConfigurationFile(std::string fileName) {
 	fn = fileName;
@@ -576,11 +578,96 @@ bool ConfigurationFile::parse() {
 			}
 		}
 
-		SPDLOG_INFO("{1} text special pre=anouncement has been parsed", size);
+		SPDLOG_INFO("{1} text special preanouncement has been parsed", size);
 	}
 	catch (...) {
 		; // this section is not mandatory, so do nothing if it doesn't exist
 	}
+
+	//
+	// get 'EmailConfig'
+	//
+	try {
+		bool emailPop3LookupResult = true;
+		bool emailImapLookupResult = true;
+
+		// clear configuration
+		::memset(&emailAnnonuncements.serverConfig, 0x00, sizeof(ConfigurationFile_Email_Server));
+
+		// get prerecorded special announcement (Post -> at the end but before sign-off/outro)
+		libconfig::Setting &email = root["EmailSpecialAnnouncement"];
+		libconfig::Setting &emailServer = email["ServerConfig"];
+		libconfig::Setting &allowedSenders = email["AllowedSenders"];
+
+		email.lookupValue("MaximumLenghtInWords", emailAnnonuncements.maximumLenghtInWords);
+
+		// how many allowed senders are configured
+		size_t allowedSendersSize = allowedSenders.getLength();
+
+		// at least one allowed sender must be configured
+		if (allowedSendersSize == 0) {
+			SPDLOG_ERROR("At least one allowed sender must be configured in EmailSpecialAnnouncement::AllowedSenders");
+			throw std::runtime_error("");
+		}
+
+		// email server configuration
+		emailPop3LookupResult = emailServer.lookupValue("Pop3Address", emailAnnonuncements.serverConfig.pop3Address) ? emailPop3LookupResult : false;
+		emailPop3LookupResult = emailServer.lookupValue("Pop3Port", emailAnnonuncements.serverConfig.pop3Port) ? emailPop3LookupResult : false;
+		emailImapLookupResult = emailServer.lookupValue("ImapAddress", emailAnnonuncements.serverConfig.imapAddress) ? emailImapLookupResult : false;
+		emailImapLookupResult = emailServer.lookupValue("ImapPort", emailAnnonuncements.serverConfig.imapPort) ? emailImapLookupResult : false;
+
+		if (!emailPop3LookupResult && !emailImapLookupResult) {
+			SPDLOG_ERROR("Neighter IMAP and POP3 server is configured in EmailSpecialAnnouncement::ServerConfig");
+			throw std::runtime_error("");
+		}
+
+		if (!emailServer.lookupValue("Username", emailAnnonuncements.serverConfig.username)) {
+			SPDLOG_ERROR("You must specify an email address to get announcements from!");
+			throw std::runtime_error("");
+		}
+
+		emailServer.lookupValue("StartTls", emailAnnonuncements.serverConfig.startTls);
+
+		for (size_t i = 0; i < allowedSendersSize; i++) {
+			ConfigurationFile_Email_AllowedSender sender;
+			sender.defaultAnnouncementLn = 240;
+
+			allowedSenders[i].lookupValue("EmailAddress", sender.emailAddress);
+			allowedSenders[i].lookupValue("SingleAnnouncement", sender.singleAnnouncement);
+			allowedSenders[i].lookupValue("EodAnnouncement", sender.eodAnnouncement);
+			allowedSenders[i].lookupValue("TimedAnnouncement", sender.timedAnnouncement);
+			allowedSenders[i].lookupValue("DefaultAnnouncement", sender.defaultAnnouncement);
+			allowedSenders[i].lookupValue("DefaultAnnouncementLn", sender.defaultAnnouncementLn);
+
+			try {
+				libconfig::Setting &prep = allowedSenders[i]["Preprocessing"];
+				prep.lookupValue("StartFromParagraph", sender.preprocessing.startFromParagraph);
+				prep.lookupValue("EndOnParagraph", sender.preprocessing.endOnParagraph);
+				prep.lookupValue("InhibitSizeLimit", sender.preprocessing.inhibitSizeLimit);
+
+			}
+			catch (...) {
+				// set some default values if there is something from with content of configuration file
+			}
+
+			// add parsed sender to list
+			emailAnnonuncements.allowedSendersList.push_back(sender);
+
+			SPDLOG_DEBUG("Configuration for sender {}, single: {}, eod: {}, timed: {}",
+					sender.emailAddress,
+					sender.singleAnnouncement,
+					sender.eodAnnouncement,
+					sender.timedAnnouncement);
+		}
+	}
+	catch (...) {
+		emailAnnonuncements.enabled = false;
+		; // this section is not mandatory, so do nothing if it doesn't exist
+	}
+
+	//
+	// get 'SpeechSynthesis'
+	//
 
 	return out;
 }

@@ -26,6 +26,11 @@ enum ConfigurationFile_CurrentWeatherType {
 	UNSET
 };
 
+enum ConfigurationFile_Language {
+	SPEECH_POLISH,
+	SPEECH_ENGLISH
+};
+
 /**
  * APRX rf-log parser configuration
  */
@@ -51,6 +56,7 @@ struct ConfigurationFile_Secret {
 	std::string meteoblueKey;
 	std::string weatherlinkPassword;
 	std::string weatherlinkToken;
+	std::string responsiveVoiceApiKey;
 };
 
 /**
@@ -164,12 +170,12 @@ struct ConfigurationFile_Avalanche {
  * Configuration of a server emails will be downloaded from
  */
 struct ConfigurationFile_Email_Server {
-	std::string pop3Address;
-	int pop3Port;
-	std::string imapAddress;
-	int imapPort;
+	std::string pop3Address;	//!< POP3 server address
+	int pop3Port;				//!< TCP port to use for POP3 connection
+	std::string imapAddress;	//!< IMAP server address
+	int imapPort;				//!< TCP post to use for IMAP connection
 	std::string username;		//!< Username aka e-mail address
-	std::string password;
+	std::string password;		//!< Password for this e-mail address
 	bool startTls;				//!< Set to false to select auth_method_t::LOGIN, true for auth_method_t::START_TLS
 };
 
@@ -181,7 +187,7 @@ struct ConfigurationFile_Email_AllowedSender_Preprocess {
 	// than one newline
 	int startFromParagraph;	//!< First paragraph to be converted text to speech
 	int endOnParagraph;		//!< Last paragraph to be converted
-	bool inhibitSizeLimit;	//!<
+	bool inhibitSizeLimit;	//!< This sender should obey global announcement lenght limit
 };
 
 
@@ -204,10 +210,19 @@ struct ConfigurationFile_Email_AllowedSender {
  * Email text to speech announcements configuration
  */
 struct ConfigurationFile_Email {
-
+	bool enabled;
 	ConfigurationFile_Email_Server serverConfig;
 	std::vector<ConfigurationFile_Email_AllowedSender> allowedSendersList;
-	int maximumLenghtInWords;	//!< Maximum size of one anouncement in words
+	int maximumLenghtInWords;	//!< Maximum size of one announcement in words
+};
+
+/**
+ * Configuration of SpeechSynthesis, including
+ */
+struct ConfigurationFile_SpeechSynthesis {
+	std::string indexFilePath;	//!< Path to JSON file with an index
+	int ignoreOlderThan;		//!< Automatically ignore email messages older than xx minutes
+	ConfigurationFile_Language language;	//!< Language to use for TSS conversion
 };
 
 class ConfigurationFile {
@@ -257,6 +272,7 @@ class ConfigurationFile {
 	ConfigurationFile_Avalanche	avalancheWarning;
 
 	ConfigurationFile_Email	emailAnnonuncements;
+	ConfigurationFile_SpeechSynthesis speechSynthesis;
 
 	std::vector<std::string> recordedSpecialAnnouncementPost;
 	std::vector<std::string> textSpecialAnnouncementPost;
@@ -367,6 +383,10 @@ public:
 
 	const ConfigurationFile_Email& getEmailAnnonuncements() const {
 		return emailAnnonuncements;
+	}
+
+	const ConfigurationFile_SpeechSynthesis& getSpeechSynthesis() const {
+		return speechSynthesis;
 	}
 };
 

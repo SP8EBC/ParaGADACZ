@@ -26,6 +26,12 @@
 #include "EmailDownloaderMessage.h"
 #include "SpeechSynthesisResponsivevoice.h"
 
+struct PlaylistAssembler_TextToSpeechAnnouncement_Stats {
+	uint32_t added;
+	uint32_t addedSingleShot;
+	uint32_t tooOld;
+	uint32_t singleShotReadBefore;
+};
 
 class PlaylistAssembler {
 
@@ -89,7 +95,7 @@ public:
 	 * into playlist
 	 * @param messages
 	 */
-	void textToSpeechAnnouncements(std::vector<EmailDownloaderMessage> & messages);
+	PlaylistAssembler_TextToSpeechAnnouncement_Stats textToSpeechAnnouncements(std::vector<EmailDownloaderMessage> & messages);
 
 	/**
 	 * Appends sign off message

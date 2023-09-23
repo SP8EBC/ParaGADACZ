@@ -1,30 +1,39 @@
 Running 2 test cases...
 Entering test module "SpeechSynthesis_test"
-../src/SpeechSynthesis_test.cpp(41): Entering test case "readIndex"
-../src/SpeechSynthesis_test.cpp(49): info: check 'no exceptions thrown by result = synth.readIndex(fn)' has passed
-../src/SpeechSynthesis_test.cpp(50): info: check 2 == result has passed
-../src/SpeechSynthesis_test.cpp(55): info: check "test1.mp3" == it->filename has passed
-../src/SpeechSynthesis_test.cpp(56): info: check 12345 == it->sayUntil has passed
-../src/SpeechSynthesis_test.cpp(57): info: check "test@interia.pl" == it->sender has passed
-../src/SpeechSynthesis_test.cpp(58): info: check 12340 == it->receivedAt has passed
-../src/SpeechSynthesis_test.cpp(60): info: check 'no exceptions thrown by it++' has passed
-../src/SpeechSynthesis_test.cpp(62): info: check "test2.mp3" == it->filename has passed
-../src/SpeechSynthesis_test.cpp(63): info: check 54321 == it->sayUntil has passed
-../src/SpeechSynthesis_test.cpp(64): info: check "test@gmail.pl" == it->sender has passed
-../src/SpeechSynthesis_test.cpp(65): info: check 54300 == it->receivedAt has passed
-../src/SpeechSynthesis_test.cpp(41): Leaving test case "readIndex"; testing time: 315us
-../src/SpeechSynthesis_test.cpp(68): Entering test case "validateSingleShot"
-../src/SpeechSynthesis_test.cpp(138): info: check amountEmailsValidated == 1 has passed
-../src/SpeechSynthesis_test.cpp(140): info: check messages.at(0).getValidUntil() == 666ULL has passed
-../src/SpeechSynthesis_test.cpp(141): info: check messages.at(0).getEmailReceiveUtcTimestmp() == emailReceiveUtcTimestmp has passed
-../src/SpeechSynthesis_test.cpp(147): info: check 'no exceptions thrown by synth.createIndex(fn)' has passed
-../src/SpeechSynthesis_test.cpp(148): info: check synth.getIndexContent().size() == 0 has passed
-../src/SpeechSynthesis_test.cpp(151): info: check synth.getIndexContent().size() == 1 has passed
-../src/SpeechSynthesis_test.cpp(153): info: check 'no exceptions thrown by synth.storeIndex()' has passed
-../src/SpeechSynthesis_test.cpp(156): info: check 'no exceptions thrown by synthRead.readIndex(fn)' has passed
-../src/SpeechSynthesis_test.cpp(157): info: check synthRead.getIndexContent().size() == 1 has passed
-../src/SpeechSynthesis_test.cpp(162): info: check firstElem.sayUntil == 666ULL has passed
-../src/SpeechSynthesis_test.cpp(163): info: check firstElem.sender == sender.emailAddress has passed
-../src/SpeechSynthesis_test.cpp(164): error: in "validateSingleShot": check firstElem.receivedAt == emailReceiveUtcTimestmp has failed [0 != 1694533288]
-../src/SpeechSynthesis_test.cpp(68): Leaving test case "validateSingleShot"; testing time: 133312us
-Leaving test module "SpeechSynthesis_test"; testing time: 133670us
+../src/SpeechSynthesis_test.cpp(80): Entering test case "readIndex"
+../src/SpeechSynthesis_test.cpp(88): info: check 'no exceptions thrown by result = synth.readIndex(fn)' has passed
+../src/SpeechSynthesis_test.cpp(89): info: check 2 == result has passed
+../src/SpeechSynthesis_test.cpp(94): info: check "test1.mp3" == it->filename has passed
+../src/SpeechSynthesis_test.cpp(95): info: check 12345 == it->sayUntil has passed
+../src/SpeechSynthesis_test.cpp(96): info: check "test@interia.pl" == it->sender has passed
+../src/SpeechSynthesis_test.cpp(97): info: check 12340 == it->receivedAt has passed
+../src/SpeechSynthesis_test.cpp(99): info: check 'no exceptions thrown by it++' has passed
+../src/SpeechSynthesis_test.cpp(101): info: check "test2.mp3" == it->filename has passed
+../src/SpeechSynthesis_test.cpp(102): info: check 54321 == it->sayUntil has passed
+../src/SpeechSynthesis_test.cpp(103): info: check "test@gmail.pl" == it->sender has passed
+../src/SpeechSynthesis_test.cpp(104): info: check 54300 == it->receivedAt has passed
+../src/SpeechSynthesis_test.cpp(80): Leaving test case "readIndex"; testing time: 47171us
+../src/SpeechSynthesis_test.cpp(107): Entering test case "validateSingleShot"
+../src/SpeechSynthesis_test.cpp(152): info: check amountEmailsValidated == 1 has passed
+../src/SpeechSynthesis_test.cpp(154): info: check messages.at(0).getValidUntil() == 666ULL has passed
+../src/SpeechSynthesis_test.cpp(155): info: check messages.at(0).getEmailReceiveUtcTimestmp() == emailReceiveUtcTimestmp has passed
+../src/SpeechSynthesis_test.cpp(161): info: check 'no exceptions thrown by synth.createIndex(fn)' has passed
+../src/SpeechSynthesis_test.cpp(162): info: check synth.getIndexContent().size() == 0 has passed
+../src/SpeechSynthesis_test.cpp(165): info: check synth.getIndexContent().size() == 1 has passed
+../src/SpeechSynthesis_test.cpp(167): info: check 'no exceptions thrown by synth.storeIndex()' has passed
+../src/SpeechSynthesis_test.cpp(170): info: check 'no exceptions thrown by synthRead.readIndex(fn)' has passed
+../src/SpeechSynthesis_test.cpp(171): info: check synthRead.getIndexContent().size() == 1 has passed
+../src/SpeechSynthesis_test.cpp(180): info: check firstElem.sayUntil == 666ULL has passed
+../src/SpeechSynthesis_test.cpp(181): info: check firstElem.sender == sender.emailAddress has passed
+../src/SpeechSynthesis_test.cpp(182): info: check firstElem.receivedAt == 0 has passed
+../src/SpeechSynthesis_test.cpp(183): info: check firstElem.filename == "202CB962AC59075B964B07152D234B70.mp3" has passed
+../src/SpeechSynthesis_test.cpp(189): info: check 'no exceptions thrown by assembler.start()' has passed
+../src/SpeechSynthesis_test.cpp(190): error: in "validateSingleShot": unexpected exception thrown by stats = assembler.textToSpeechAnnouncements(messages)
+../src/SpeechSynthesis_test.cpp(195): error: in "validateSingleShot": check 2 == playlist_ptr->size() has failed [2 != 1]
+../src/SpeechSynthesis_test.cpp(196): info: check "ident.mp3" == playlist[i++] has passed
+unknown location(0): fatal error: in "validateSingleShot": memory access violation at address: 0x33706d2e: no mapping at fault address
+../src/SpeechSynthesis_test.cpp(197): last checkpoint
+Test is aborted
+../src/SpeechSynthesis_test.cpp(107): Leaving test case "validateSingleShot"; testing time: 197094us
+Test is aborted
+Leaving test module "SpeechSynthesis_test"; testing time: 47211us

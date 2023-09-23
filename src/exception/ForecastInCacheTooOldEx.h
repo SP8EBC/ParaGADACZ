@@ -18,7 +18,7 @@ class ForecastInCacheTooOldEx   : public std::exception  {
 
 public:
 
-	ForecastInCacheTooOldEx(std::string _name, int _secondsOld) : secondsOld(_secondsOld), name(_name) {
+	ForecastInCacheTooOldEx(std::string _name, int _secondsOld) : name(_name), secondsOld(_secondsOld) {
 
 	}
 

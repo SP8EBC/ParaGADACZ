@@ -888,12 +888,17 @@ void PlaylistAssembler::signOff() {
 
 }
 
-void PlaylistAssembler::textToSpeechAnnouncements(
+PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeechAnnouncements(
 		std::vector<EmailDownloaderMessage> &messages) {
 
-	const std::string indexFilename = "";
-	const uint32_t ignoreOlderThan = 240;
-	const SpeechSynthesis_Language lang = SPEECH_ENGLISH;
+	PlaylistAssembler_TextToSpeechAnnouncement_Stats out = {0u};
+
+	// configuration for TTS
+	ConfigurationFile_SpeechSynthesis configTts = configurationFile->getSpeechSynthesis();
+
+	const std::string indexFilename = configTts.indexFilePath;
+	const uint32_t ignoreOlderThan = configTts.ignoreOlderThan;
+	const ConfigurationFile_Language lang = configTts.language;
 
 	const uint64_t currentTime = TimeTools::getEpoch();
 
@@ -910,6 +915,7 @@ void PlaylistAssembler::textToSpeechAnnouncements(
 	catch (std::runtime_error & ex) {
 		// something went wrong while loading text-to-speech results
 		// so reainitialize cache index
+		SPDLOG_WARN("something went wrong while loading text-to-speech index, reinitializing it");
 		tts.createIndex(indexFilename);
 	}
 	catch (std::invalid_argument & ex) {
@@ -931,20 +937,27 @@ void PlaylistAssembler::textToSpeechAnnouncements(
 		if (elem.sayUntil != EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT) {
 			// check if this announcement can still be played
 			if (elem.sayUntil < currentTime) {
+				out.tooOld++;
 				continue;	// this is too old, so skip it
 			}
 		}
 		else {
 			// if this is a single shot message check if it has been read before
 			if (elem.receivedAt == 0) {
+				out.singleShotReadBefore++;
 				continue;
+			}
+			else {
+				out.addedSingleShot++;
 			}
 
 		}
 
 		// append this file
 		playlist->push_back(elem.filename);
+		out.added++;
 	}
 
+	return out;
 
 }

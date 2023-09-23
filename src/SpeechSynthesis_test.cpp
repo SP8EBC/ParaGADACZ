@@ -8,15 +8,27 @@
  *      Author: mateusz
  */
 
-#include "SpeechSynthesisResponsivevoice.h"
-#include "EmailDownloader.h"
-#include "TimeTools.h"
-
 #define BOOST_TEST_MODULE SpeechSynthesis_test
 #include <boost/test/included/unit_test.hpp>
 
+#include "SpeechSynthesisResponsivevoice.h"
+#include "EmailDownloader.h"
+#include "TimeTools.h"
+#include "PlaylistAssembler.h"
+
+#pragma push_macro("U")
+#undef U
+// pragma required as a workaround of possible conflict with cpprestsdk.
+// more info here: https://github.com/fmtlib/fmt/issues/3330
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#pragma pop_macro("U")
+
+ConfigurationFile_Email configEmail;
+ConfigurationFile_Email_AllowedSender sender, sender2, sender3;
+
+std::shared_ptr<PlaylistSampler> playlist_sampler;
+std::shared_ptr<ConfigurationFile> configuration_file_first; //("./test_input/configuration_playlist_assembler_first.conf");
 
 struct MyConfig
 {
@@ -26,6 +38,33 @@ struct MyConfig
     boost::unit_test::unit_test_log.set_threshold_level(boost::unit_test::log_level::log_successful_tests);
 
 	spdlog::set_level(spdlog::level::debug);
+
+	sender.emailAddress = "sklep@8a.pl";
+	sender.eodAnnouncement = true;
+	sender.singleAnnouncement = true;
+	sender.timedAnnouncement = true;
+	sender2.emailAddress = "noreply@bandcamp.com";
+	sender2.timedAnnouncement = true;
+	sender3.emailAddress = "maciej.brylski@corporatenexus.pl";
+	sender3.timedAnnouncement = false;
+
+    configEmail.serverConfig.pop3Address = "poczta.interia.pl";
+    configEmail.serverConfig.pop3Port = 995;
+    configEmail.serverConfig.imapAddress = "poczta.interia.pl";
+    configEmail.serverConfig.imapPort = 993;
+    configEmail.serverConfig.username = "dupa";
+    configEmail.serverConfig.password = "dupa123";
+    configEmail.serverConfig.startTls = false;
+
+    configEmail.allowedSendersList.push_back(sender);
+    configEmail.allowedSendersList.push_back(sender2);
+    configEmail.allowedSendersList.push_back(sender3);
+
+    TimeTools::initBoostTimezones();
+
+    configuration_file_first = std::make_shared<ConfigurationFile>("./test_input/configuration_playlist_assembler_first.conf");
+    configuration_file_first->parse();
+
 
   }
   ~MyConfig()
@@ -67,31 +106,6 @@ BOOST_AUTO_TEST_CASE(readIndex)
 
 BOOST_AUTO_TEST_CASE(validateSingleShot)
 {
-	ConfigurationFile_Email configEmail;
-
-	ConfigurationFile_Email_AllowedSender sender, sender2, sender3;
-	sender.emailAddress = "sklep@8a.pl";
-	sender.eodAnnouncement = true;
-	sender.singleAnnouncement = true;
-	sender.timedAnnouncement = true;
-	sender2.emailAddress = "noreply@bandcamp.com";
-	sender2.timedAnnouncement = true;
-	sender3.emailAddress = "maciej.brylski@corporatenexus.pl";
-	sender3.timedAnnouncement = false;
-
-    configEmail.serverConfig.pop3Address = "poczta.interia.pl";
-    configEmail.serverConfig.pop3Port = 995;
-    configEmail.serverConfig.imapAddress = "poczta.interia.pl";
-    configEmail.serverConfig.imapPort = 993;
-    configEmail.serverConfig.username = "dupa";
-    configEmail.serverConfig.password = "dupa123";
-    configEmail.serverConfig.startTls = false;
-
-    configEmail.allowedSendersList.push_back(sender);
-    configEmail.allowedSendersList.push_back(sender2);
-    configEmail.allowedSendersList.push_back(sender3);
-
-    TimeTools::initBoostTimezones();
 
 	std::string address2("noreply@bandcamp.com");
 	std::string address(sender.emailAddress);
@@ -159,8 +173,31 @@ BOOST_AUTO_TEST_CASE(validateSingleShot)
 	const std::list<SpeechSynthesis_MessageIndexElem>::const_iterator index = synthRead.getIndexContent().begin();
 	const SpeechSynthesis_MessageIndexElem & firstElem = *index;
 
+	// single shot message is saved in index with sayUntil value of 666 and receivedAt set
+	// to original timestamp. When this index is read receivedAt is overwritten with zero
+	// to indicate that this is single shot anouncement played before. When the index
+	// is written one more time this value is stored as zero
 	BOOST_CHECK_EQUAL(firstElem.sayUntil, 666ULL);
 	BOOST_CHECK_EQUAL(firstElem.sender, sender.emailAddress);
-	BOOST_CHECK_EQUAL(firstElem.receivedAt, emailReceiveUtcTimestmp);
+	BOOST_CHECK_EQUAL(firstElem.receivedAt, 0);
+	BOOST_CHECK_EQUAL(firstElem.filename, "202CB962AC59075B964B07152D234B70.mp3");
+
+	// assemble playlist with that announcement
+	PlaylistAssembler assembler(playlist_sampler, configuration_file_first);
+
+	PlaylistAssembler_TextToSpeechAnnouncement_Stats stats;
+	BOOST_CHECK_NO_THROW(assembler.start());
+	BOOST_CHECK_NO_THROW(stats = assembler.textToSpeechAnnouncements(messages));
+
+	std::shared_ptr<std::vector<std::string>> playlist_ptr = assembler.getPlaylist();
+	std::vector<std::string> playlist = *playlist_ptr;
+	int i = 0;
+	BOOST_CHECK_EQUAL(2, playlist_ptr->size());
+	BOOST_CHECK_EQUAL("ident.mp3", playlist[i++]);
+	BOOST_CHECK_EQUAL("202CB962AC59075B964B07152D234B70.mp3", playlist[i++]);
+	BOOST_CHECK_EQUAL(1, stats.added);
+	BOOST_CHECK_EQUAL(1, stats.addedSingleShot);
+
+
 }
 

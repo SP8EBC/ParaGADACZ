@@ -333,7 +333,7 @@ int SpeechSynthesis::getValidAnouncements(std::vector<std::string> &playlist) {
  * 							to speech and if they require such conversion
  */
 void SpeechSynthesis::convertEmailsToSpeech(
-		std::vector<EmailDownloaderMessage> &msgs, const uint32_t ignoreOlderThan, const SpeechSynthesis_Language lang) {
+		std::vector<EmailDownloaderMessage> &msgs, const uint32_t ignoreOlderThan, const ConfigurationFile_Language lang) {
 
 	const uint64_t currentTime = TimeTools::getEpoch();
 

@@ -13,17 +13,13 @@
 #include <list>
 
 #include "EmailDownloaderMessage.h"
+#include "ConfigurationFile.h"
 
 struct SpeechSynthesis_MessageIndexElem {
 	std::string filename;	//!< Filename with an synthesized announcement
 	uint64_t sayUntil;		//!< A timestamp after which this announcement will not be said
 	std::string sender;		//!< Sender of this message
 	uint64_t receivedAt;	//!< Time when this announcement was received
-};
-
-enum SpeechSynthesis_Language {
-	SPEECH_POLISH,
-	SPEECH_ENGLISH
 };
 
 class SpeechSynthesis_FindValidAnouncements_UnaryPredicate {
@@ -86,9 +82,9 @@ public:
 	 * 							be automatically ignored without checking if they are already converted
 	 * 							to speech and if they require such conversion
 	 */
-	void convertEmailsToSpeech(std::vector<EmailDownloaderMessage> & msgs, uint32_t ignoreOlderThan, const SpeechSynthesis_Language lang);
+	void convertEmailsToSpeech(std::vector<EmailDownloaderMessage> & msgs, uint32_t ignoreOlderThan, const ConfigurationFile_Language lang);
 
-	virtual void convertTextToSpeech(std::string & text, std::string & outputFilename, SpeechSynthesis_Language lang) = 0;
+	virtual void convertTextToSpeech(std::string & text, std::string & outputFilename, ConfigurationFile_Language lang) = 0;
 
 	SpeechSynthesis();
 	virtual ~SpeechSynthesis();
