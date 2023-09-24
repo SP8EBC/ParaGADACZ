@@ -1,25 +1,25 @@
-Running 5 test cases...
+Running 7 test cases...
 Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(36): Entering test case "split_callsign"
 ../src/ConfigurationFile_test.cpp(42): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(43): info: check std::get<unsigned>(result) == 11 has passed
-../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 82us
+../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 85us
 ../src/ConfigurationFile_test.cpp(46): Entering test case "split_callsign_no_ssid"
 ../src/ConfigurationFile_test.cpp(52): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(53): info: check std::get<unsigned>(result) == 0 has passed
-../src/ConfigurationFile_test.cpp(46): Leaving test case "split_callsign_no_ssid"; testing time: 74us
+../src/ConfigurationFile_test.cpp(46): Leaving test case "split_callsign_no_ssid"; testing time: 77us
 ../src/ConfigurationFile_test.cpp(56): Entering test case "inhibitor_parse"
 ../src/ConfigurationFile_test.cpp(62): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(65): info: check inhibitor.serial.enable == true has passed
 ../src/ConfigurationFile_test.cpp(66): info: check inhibitor.serial.okActiveLevel == false has passed
-../src/ConfigurationFile_test.cpp(67): error: in "inhibitor_parse": check inhibitor.serial.port == "/dev/ttyS0" has failed [ != /dev/ttyS0]
+../src/ConfigurationFile_test.cpp(67): info: check inhibitor.serial.port == "/dev/ttyS0" has passed
 ../src/ConfigurationFile_test.cpp(69): info: check inhibitor.http.enable == true has passed
 ../src/ConfigurationFile_test.cpp(70): info: check inhibitor.http.ignoreNoAnswer == true has passed
 ../src/ConfigurationFile_test.cpp(71): info: check inhibitor.http.url == "http://pogoda.cc" has passed
 ../src/ConfigurationFile_test.cpp(73): info: check inhibitor.exec.enable == true has passed
 ../src/ConfigurationFile_test.cpp(74): info: check inhibitor.exec.okRetval == 0 has passed
 ../src/ConfigurationFile_test.cpp(75): info: check inhibitor.exec.path == "/bin/more" has passed
-../src/ConfigurationFile_test.cpp(56): Leaving test case "inhibitor_parse"; testing time: 482us
+../src/ConfigurationFile_test.cpp(56): Leaving test case "inhibitor_parse"; testing time: 453us
 ../src/ConfigurationFile_test.cpp(81): Entering test case "simple_parse"
 ../src/ConfigurationFile_test.cpp(89): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(91): info: check configurationFile.getIntro().ident.at(0) == "intro.ogg" has passed
@@ -45,7 +45,7 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(114): info: check configurationFile.getForecast().locations.at(0).sayPrecipation == true has passed
 ../src/ConfigurationFile_test.cpp(115): info: check configurationFile.getForecast().locations.at(0).sayTemperature == true has passed
 ../src/ConfigurationFile_test.cpp(116): info: check configurationFile.getForecast().locations.at(0).sayWind == true has passed
-../src/ConfigurationFile_test.cpp(81): Leaving test case "simple_parse"; testing time: 324us
+../src/ConfigurationFile_test.cpp(81): Leaving test case "simple_parse"; testing time: 367us
 ../src/ConfigurationFile_test.cpp(121): Entering test case "parsing_pogodacc_config"
 ../src/ConfigurationFile_test.cpp(127): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(129): info: check configurationFile.getPogodaCc().baseUrl == "http://pogoda.cc:8080/meteo_backend" has passed
@@ -53,5 +53,30 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(131): info: check configurationFile.getPogodaCc().ignoreHumidityQf == true has passed
 ../src/ConfigurationFile_test.cpp(132): info: check configurationFile.getPogodaCc().ignorePressureQf == false has passed
 ../src/ConfigurationFile_test.cpp(133): info: check configurationFile.getPogodaCc().ignoreWindQf == false has passed
-../src/ConfigurationFile_test.cpp(121): Leaving test case "parsing_pogodacc_config"; testing time: 244us
-Leaving test module "ConfigurationFile_test"; testing time: 1275us
+../src/ConfigurationFile_test.cpp(121): Leaving test case "parsing_pogodacc_config"; testing time: 292us
+../src/ConfigurationFile_test.cpp(137): Entering test case "email_announcements"
+../src/ConfigurationFile_test.cpp(143): info: check result == true has passed
+../src/ConfigurationFile_test.cpp(147): info: check 0x100 == em.maximumLenghtInWords has passed
+../src/ConfigurationFile_test.cpp(148): info: check true == em.enabled has passed
+../src/ConfigurationFile_test.cpp(150): info: check "poczta.interia.pl" == em.serverConfig.imapAddress has passed
+../src/ConfigurationFile_test.cpp(151): info: check 995 == em.serverConfig.imapPort has passed
+../src/ConfigurationFile_test.cpp(152): info: check "sp8ebc@interia.pl" == em.serverConfig.username has passed
+../src/ConfigurationFile_test.cpp(153): info: check false == em.serverConfig.startTls has passed
+../src/ConfigurationFile_test.cpp(155): info: check 1 == em.allowedSendersList.size() has passed
+../src/ConfigurationFile_test.cpp(158): info: check "sklep@8a.pl" == sender.emailAddress has passed
+../src/ConfigurationFile_test.cpp(159): info: check true == sender.singleAnnouncement has passed
+../src/ConfigurationFile_test.cpp(160): info: check true == sender.eodAnnouncement has passed
+../src/ConfigurationFile_test.cpp(161): info: check false == sender.timedAnnouncement has passed
+../src/ConfigurationFile_test.cpp(162): info: check true == sender.defaultAnnouncement has passed
+../src/ConfigurationFile_test.cpp(163): info: check 88 == sender.defaultAnnouncementLn has passed
+../src/ConfigurationFile_test.cpp(165): info: check 1 == sender.preprocessing.startFromParagraph has passed
+../src/ConfigurationFile_test.cpp(166): info: check 3 == sender.preprocessing.endOnParagraph has passed
+../src/ConfigurationFile_test.cpp(167): info: check true == sender.preprocessing.inhibitSizeLimit has passed
+../src/ConfigurationFile_test.cpp(137): Leaving test case "email_announcements"; testing time: 392us
+../src/ConfigurationFile_test.cpp(171): Entering test case "tts"
+../src/ConfigurationFile_test.cpp(177): info: check result == true has passed
+../src/ConfigurationFile_test.cpp(178): info: check "./test_input/ttsIndex2.json" == configurationFile.getSpeechSynthesis().indexFilePath has passed
+../src/ConfigurationFile_test.cpp(179): info: check 180 == configurationFile.getSpeechSynthesis().ignoreOlderThan has passed
+../src/ConfigurationFile_test.cpp(180): info: check SPEECH_POLISH == configurationFile.getSpeechSynthesis().language has passed
+../src/ConfigurationFile_test.cpp(171): Leaving test case "tts"; testing time: 300us
+Leaving test module "ConfigurationFile_test"; testing time: 2039us

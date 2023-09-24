@@ -133,3 +133,50 @@ BOOST_AUTO_TEST_CASE (parsing_pogodacc_config)
 	BOOST_CHECK_EQUAL(configurationFile.getPogodaCc().ignoreWindQf, false);
 
 }
+
+BOOST_AUTO_TEST_CASE (email_announcements)
+{
+	ConfigurationFile configurationFile("./test_input/configuration_forecast_email_speech_synthesis.conf");
+
+	bool result = configurationFile.parse();
+
+	BOOST_CHECK_EQUAL(result, true);
+
+	const ConfigurationFile_Email& em = configurationFile.getEmailAnnonuncements();
+
+	BOOST_CHECK_EQUAL(0x100, em.maximumLenghtInWords);
+	BOOST_CHECK_EQUAL(true, em.enabled);
+
+	BOOST_CHECK_EQUAL("poczta.interia.pl", em.serverConfig.imapAddress);
+	BOOST_CHECK_EQUAL(995, em.serverConfig.imapPort);
+	BOOST_CHECK_EQUAL("sp8ebc@interia.pl", em.serverConfig.username);
+	BOOST_CHECK_EQUAL(false, em.serverConfig.startTls);
+
+	BOOST_CHECK_EQUAL(1, em.allowedSendersList.size());
+	ConfigurationFile_Email_AllowedSender sender = em.allowedSendersList.at(0);
+
+	BOOST_CHECK_EQUAL("sklep@8a.pl", sender.emailAddress);
+	BOOST_CHECK_EQUAL(true, sender.singleAnnouncement);
+	BOOST_CHECK_EQUAL(true, sender.eodAnnouncement);
+	BOOST_CHECK_EQUAL(false, sender.timedAnnouncement);
+	BOOST_CHECK_EQUAL(true, sender.defaultAnnouncement);
+	BOOST_CHECK_EQUAL(88, sender.defaultAnnouncementLn);
+
+	BOOST_CHECK_EQUAL(1, sender.preprocessing.startFromParagraph);
+	BOOST_CHECK_EQUAL(3, sender.preprocessing.endOnParagraph);
+	BOOST_CHECK_EQUAL(true, sender.preprocessing.inhibitSizeLimit);
+
+}
+
+BOOST_AUTO_TEST_CASE(tts)
+{
+	ConfigurationFile configurationFile("./test_input/configuration_forecast_email_speech_synthesis.conf");
+
+	bool result = configurationFile.parse();
+
+	BOOST_CHECK_EQUAL(result, true);
+	BOOST_CHECK_EQUAL("./test_input/ttsIndex2.json", configurationFile.getSpeechSynthesis().indexFilePath);
+	BOOST_CHECK_EQUAL(180, configurationFile.getSpeechSynthesis().ignoreOlderThan);
+	BOOST_CHECK_EQUAL(SPEECH_POLISH, configurationFile.getSpeechSynthesis().language);
+
+}

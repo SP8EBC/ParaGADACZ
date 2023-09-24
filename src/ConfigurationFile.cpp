@@ -148,6 +148,7 @@ bool ConfigurationFile::parse() {
 		secrets.lookupValue("MeteoblueKey", this->secrets.meteoblueKey);
 		secrets.lookupValue("WeatherlinkPassword", this->secrets.weatherlinkPassword);
 		secrets.lookupValue("WeatherlinkToken", this->secrets.weatherlinkToken);
+		secrets.lookupValue("EmailAnnouncementsPassword", this->emailAnnonuncements.serverConfig.password);
 
 	}
 	catch (...) {
@@ -591,14 +592,18 @@ bool ConfigurationFile::parse() {
 		bool emailPop3LookupResult = true;
 		bool emailImapLookupResult = true;
 
-		// clear configuration
-		::memset(&emailAnnonuncements.serverConfig, 0x00, sizeof(ConfigurationFile_Email_Server));
+		emailAnnonuncements.enabled = false;
+		emailAnnonuncements.maximumLenghtInWords = 999;
+		emailAnnonuncements.serverConfig.startTls = false;
+		emailAnnonuncements.serverConfig.pop3Port = 0;
+		emailAnnonuncements.serverConfig.imapPort = 0;
 
 		// get prerecorded special announcement (Post -> at the end but before sign-off/outro)
 		libconfig::Setting &email = root["EmailSpecialAnnouncement"];
 		libconfig::Setting &emailServer = email["ServerConfig"];
 		libconfig::Setting &allowedSenders = email["AllowedSenders"];
 
+		email.lookupValue("Enable", emailAnnonuncements.enabled);
 		email.lookupValue("MaximumLenghtInWords", emailAnnonuncements.maximumLenghtInWords);
 
 		// how many allowed senders are configured
@@ -626,18 +631,27 @@ bool ConfigurationFile::parse() {
 			throw std::runtime_error("");
 		}
 
+		SPDLOG_DEBUG("Email configuration, ImapAddress: {}, ImapPort: {}, Username: {}",
+						emailAnnonuncements.serverConfig.imapAddress,
+						emailAnnonuncements.serverConfig.imapPort,
+						emailAnnonuncements.serverConfig.username);
+
 		emailServer.lookupValue("StartTls", emailAnnonuncements.serverConfig.startTls);
 
 		for (size_t i = 0; i < allowedSendersSize; i++) {
 			ConfigurationFile_Email_AllowedSender sender;
-			sender.defaultAnnouncementLn = 240;
 
-			allowedSenders[i].lookupValue("EmailAddress", sender.emailAddress);
+			if (!allowedSenders[i].lookupValue("EmailAddress", sender.emailAddress)) {
+				SPDLOG_ERROR("Email address in EmailSpecialAnnouncement::AllowedSenders must be specified for an announcement sender. Skipping this entry.");
+				continue;
+			}
 			allowedSenders[i].lookupValue("SingleAnnouncement", sender.singleAnnouncement);
 			allowedSenders[i].lookupValue("EodAnnouncement", sender.eodAnnouncement);
 			allowedSenders[i].lookupValue("TimedAnnouncement", sender.timedAnnouncement);
 			allowedSenders[i].lookupValue("DefaultAnnouncement", sender.defaultAnnouncement);
-			allowedSenders[i].lookupValue("DefaultAnnouncementLn", sender.defaultAnnouncementLn);
+			if (!allowedSenders[i].lookupValue("DefaultAnnouncementLn", sender.defaultAnnouncementLn)) {
+				sender.defaultAnnouncementLn = 240;
+			}
 
 			try {
 				libconfig::Setting &prep = allowedSenders[i]["Preprocessing"];
@@ -648,6 +662,9 @@ bool ConfigurationFile::parse() {
 			}
 			catch (...) {
 				// set some default values if there is something from with content of configuration file
+				sender.preprocessing.startFromParagraph = 0;
+				sender.preprocessing.endOnParagraph = 0;
+				sender.preprocessing.inhibitSizeLimit = false;
 			}
 
 			// add parsed sender to list
@@ -668,6 +685,31 @@ bool ConfigurationFile::parse() {
 	//
 	// get 'SpeechSynthesis'
 	//
+	try {
+		libconfig::Setting &tts = root["SpeechSynthesis"];
+
+		tts.lookupValue("IndexFilePath", speechSynthesis.indexFilePath);
+		if (!tts.lookupValue("IgnoreOlderThan", speechSynthesis.ignoreOlderThan)) {
+			speechSynthesis.ignoreOlderThan = 0;
+		}
+
+		std::string language;
+		tts.lookupValue("Language", language);
+		boost::algorithm::to_upper(language);
+
+		if (language == "POLISH") {
+			speechSynthesis.language = SPEECH_POLISH;
+		}
+		else {
+			speechSynthesis.language = SPEECH_ENGLISH;
+		}
+
+	}
+	catch (...) {
+		speechSynthesis.indexFilePath = "ttsindex.json";
+		speechSynthesis.ignoreOlderThan = 0;
+		speechSynthesis.language = SPEECH_ENGLISH;
+	}
 
 	return out;
 }
