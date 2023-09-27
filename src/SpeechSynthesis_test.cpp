@@ -62,7 +62,7 @@ struct MyConfig
 
     TimeTools::initBoostTimezones();
 
-    configuration_file_first = std::make_shared<ConfigurationFile>("./test_input/configuration_playlist_assembler_first.conf");
+    configuration_file_first = std::make_shared<ConfigurationFile>("./test_input/configuration_forecast_email_speech_synthesis.conf");
     configuration_file_first->parse();
 
 
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(validateSingleShot)
 
 	SpeechSynthesisResponsivevoice synth("kvfbSITh");
 
-	const std::string fn = "./test_input/ttsIndex2.json";
+	const std::string fn = "./test_input/ttsIndex3.json";
 
 	BOOST_CHECK_NO_THROW(synth.createIndex(fn));
 	BOOST_CHECK_EQUAL(synth.getIndexContent().size(), 0);
@@ -182,6 +182,58 @@ BOOST_AUTO_TEST_CASE(validateSingleShot)
 	BOOST_CHECK_EQUAL(firstElem.receivedAt, 0);
 	BOOST_CHECK_EQUAL(firstElem.filename, "202CB962AC59075B964B07152D234B70.mp3");
 
+
+}
+
+BOOST_AUTO_TEST_CASE(playlisttAssemblerSingleShot)
+{
+	std::string address2("noreply@bandcamp.com");
+	std::string address(sender.emailAddress);
+	std::string topic2 = "single";
+	std::string emailDispatchDateTime = "Wed, 6 Sep 2023 13:56:31 +0000";
+	uint64_t emailDispatchUtcTimestamp = 1694008591ULL;
+	uint64_t emailReceiveUtcTimestmp = 1694533288ULL;
+	std::string originalEncoding = "7bit";
+	std::string originalCharset = "us-ascii";
+
+	tm datetime;
+
+	// copy date time into tm structure
+	datetime.tm_year = 2023;
+	datetime.tm_mon = 9;
+	datetime.tm_mday = 20;
+	datetime.tm_hour = 13;
+	datetime.tm_min = 56;
+	datetime.tm_sec = 31;
+
+	// convert that tm to have dispatch time&date in boost local_date_time format
+	boost::local_time::local_date_time emailDispatchBoostDate =
+			TimeTools::getLocalTimeFromTmStructAndTzOffset(datetime, true, GMT);
+
+	EmailDownloaderMessage msg1(
+							address,
+							topic2,
+							emailDispatchDateTime,
+							emailDispatchBoostDate,
+							0,
+							emailDispatchUtcTimestamp,
+							emailReceiveUtcTimestmp,
+							"123",
+							"123",
+							originalEncoding,
+							originalCharset);
+
+	msg1.setValidated();
+	msg1.setValidUntil(EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT);
+
+	std::vector<EmailDownloaderMessage> messages;
+	messages.push_back(msg1);
+
+	// used only to erase tts index, which also remove tts
+	SpeechSynthesisResponsivevoice synth("kvfbSITh");
+
+	BOOST_CHECK_NO_THROW(synth.createIndex(configuration_file_first->getSpeechSynthesis().indexFilePath));
+
 	// assemble playlist with that announcement
 	PlaylistAssembler assembler(playlist_sampler, configuration_file_first);
 
@@ -192,12 +244,20 @@ BOOST_AUTO_TEST_CASE(validateSingleShot)
 	std::shared_ptr<std::vector<std::string>> playlist_ptr = assembler.getPlaylist();
 	std::vector<std::string> playlist = *playlist_ptr;
 	int i = 0;
-	BOOST_CHECK_EQUAL(2, playlist_ptr->size());
-	BOOST_CHECK_EQUAL("ident.mp3", playlist[i++]);
-	BOOST_CHECK_EQUAL("202CB962AC59075B964B07152D234B70.mp3", playlist[i++]);
 	BOOST_CHECK_EQUAL(1, stats.added);
 	BOOST_CHECK_EQUAL(1, stats.addedSingleShot);
+	BOOST_CHECK_EQUAL(2, playlist_ptr->size());
+	BOOST_CHECK_EQUAL("intro.ogg", playlist[i++]);
+	BOOST_CHECK_EQUAL("202CB962AC59075B964B07152D234B70.mp3", playlist[i++]);
 
+	// reassemble playlist one more time to check if single shot is not added
+	BOOST_CHECK_NO_THROW(assembler.start());
+	BOOST_CHECK_NO_THROW(stats = assembler.textToSpeechAnnouncements(messages));
 
+	std::shared_ptr<std::vector<std::string>> playlist2_ptr = assembler.getPlaylist();
+	std::vector<std::string> playlist2 = *playlist2_ptr;
+
+	BOOST_CHECK_EQUAL(0, stats.added);
+	BOOST_CHECK_EQUAL(0, stats.addedSingleShot);
 }
 

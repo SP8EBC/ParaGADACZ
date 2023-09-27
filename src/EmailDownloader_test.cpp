@@ -62,26 +62,26 @@ struct MyConfig
 
 BOOST_GLOBAL_FIXTURE (MyConfig);
 
-//BOOST_AUTO_TEST_CASE(first)
-//{
-//	/**
-//	 * 	Default:"------=_Part_17674_772542156.1693548324914\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: quoted-printable\r\n\r\nDokument zosta=C5=82 podpisany 01.09.2023 roku o godzinie 08:04 prze"...
-//	 *
-//	 *
-//	 *
-//	 */
-//
-//	EmailDownloader downloader(configEmail);
-//
-//	BOOST_CHECK(downloader.downloadAllEmailsImap() > 0);
-//
-//	std::vector<EmailDownloaderMessage> messages = downloader.getMessages();
-//	BOOST_CHECK_GT(messages.size(), 0);
-//
-//	for (EmailDownloaderMessage msg : messages) {
-//		BOOST_TEST_MESSAGE(msg.getContent());
-//	}
-//}
+BOOST_AUTO_TEST_CASE(first)
+{
+	/**
+	 * 	Default:"------=_Part_17674_772542156.1693548324914\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: quoted-printable\r\n\r\nDokument zosta=C5=82 podpisany 01.09.2023 roku o godzinie 08:04 prze"...
+	 *
+	 *
+	 *
+	 */
+
+	EmailDownloader downloader(configEmail);
+
+	BOOST_CHECK(downloader.downloadAllEmailsImap() > 0);
+
+	std::vector<EmailDownloaderMessage> messages = downloader.getMessages();
+	BOOST_CHECK_GT(messages.size(), 0);
+
+	for (EmailDownloaderMessage msg : messages) {
+		BOOST_TEST_MESSAGE(msg.getContent());
+	}
+}
 
 BOOST_AUTO_TEST_CASE(validateEmailSubject)
 {

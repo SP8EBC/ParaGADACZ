@@ -71,7 +71,7 @@ public:
 	 */
 	void copyOnlyValidatedEmails(std::vector<EmailDownloaderMessage> _in);
 
-	EmailDownloader(ConfigurationFile_Email & _config);
+	EmailDownloader(const ConfigurationFile_Email & _config);
 	EmailDownloader(std::shared_ptr<ConfigurationFile> _config);
 	virtual ~EmailDownloader();
 

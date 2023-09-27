@@ -76,6 +76,8 @@ int EmailDownloader::downloadAllEmailsImap() {
 	vmimeSession->getProperties().setProperty("store.imaps.server.address", config.serverConfig.imapAddress);
 	vmimeSession->getProperties().setProperty("store.imaps.server.port", config.serverConfig.imapPort);
 
+	SPDLOG_INFO("Downloading emails for {} from IMAP server {}:{}", config.serverConfig.username, config.serverConfig.imapAddress, config.serverConfig.imapPort);
+
 	// create an URL to email account
 	vmime::utility::url url(
 					"imaps",
@@ -447,7 +449,7 @@ void EmailDownloader::copyOnlyValidatedEmails(
 }
 
 
-EmailDownloader::EmailDownloader(ConfigurationFile_Email &_config) : config(_config) {
+EmailDownloader::EmailDownloader(const ConfigurationFile_Email &_config) : config(_config) {
 }
 
 

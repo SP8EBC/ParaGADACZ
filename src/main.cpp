@@ -37,6 +37,8 @@
 #include "InhibitorAndPttControl.h"
 #include "AvalancheWarnings.h"
 #include "TrendDownloader.h"
+#include "EmailDownloader.h"
+#include "SpeechSynthesis.h"
 #include "TimeTools.h"
 
 #pragma push_macro("U")
@@ -103,6 +105,11 @@ std::shared_ptr<PlaylistAssembler> playlistAssembler;
 //!< Vector to hold trend data obtained by TrendDownloader
 std::vector<TrendDownloader_Data> trend;
 
+std::shared_ptr<EmailDownloader> emailDownloader;
+
+std::vector<EmailDownloaderMessage> validatedEmails;
+
+std::shared_ptr<SpeechSynthesis> speechSyntesis;
 
 #ifdef __linux__
 #include <signal.h>
@@ -189,6 +196,18 @@ int main(int argc, char **argv) {
 	// create playlist assembler instance which will use sampler to create playlist from weather data
 	playlistAssembler = std::make_shared<PlaylistAssembler>(playlistSampler, configurationFile);
 
+	emailDownloader = std::make_shared<EmailDownloader>(configurationFile->getEmailAnnonuncements());
+
+	speechSyntesis = std::make_shared<SpeechSynthesisResponsivevoice>(configurationFile->getSecrets().responsiveVoiceApiKey);
+
+	if (configurationFile->getEmailAnnonuncements().enabled) {
+		emailDownloader->downloadAllEmailsImap();
+
+		emailDownloader->validateEmailAgainstPrivileges();
+
+		emailDownloader->copyOnlyValidatedEmails(validatedEmails);
+	}
+
 	// check if meteoblue forecasts are enabled in a configuration file
 	if (configurationFile->getForecast().enable) {
 
@@ -247,6 +266,10 @@ int main(int argc, char **argv) {
 		SPDLOG_ERROR("Exiting application! downloadParseResult: {}", downloadParseResult);
 
 		return downloadParseResult;
+	}
+
+	if (configurationFile->getEmailAnnonuncements().enabled) {
+		speechSyntesis->convertEmailsToSpeech(validatedEmails, configurationFile->getSpeechSynthesis().ignoreOlderThan, configurationFile->getSpeechSynthesis().language);
 	}
 
 	// start to create playlist

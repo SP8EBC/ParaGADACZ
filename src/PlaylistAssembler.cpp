@@ -902,6 +902,8 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 
 	const uint64_t currentTime = TimeTools::getEpoch();
 
+	SPDLOG_INFO("Adding text-to-speech announcements for {} email messages", messages.size());
+
 	try {
 		// try to read an index
 		const int readResult = tts.readIndex(indexFilename);
@@ -930,6 +932,8 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 
 	// get an index after conversion, all messages should be here
 	const std::list<SpeechSynthesis_MessageIndexElem>& index = tts.getIndexContent();
+
+	SPDLOG_INFO("text-to-speech index contains {} messages which are converted", index.size());
 
 	// go through emails
 	for (SpeechSynthesis_MessageIndexElem elem : index) {

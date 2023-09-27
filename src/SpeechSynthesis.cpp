@@ -146,6 +146,9 @@ int SpeechSynthesis::readIndex(const std::string &indexFn) {
 						// get number of elements
 						nlohmann::json::size_type elemNumbers = array.size();
 
+						// clear existing index
+						indexContent.clear();
+
 						out = 0;
 
 						for (unsigned i = 0 ; i < static_cast<unsigned>(elemNumbers); i++) {
@@ -193,6 +196,7 @@ int SpeechSynthesis::readIndex(const std::string &indexFn) {
 					}
 					else {
 						SPDLOG_ERROR("Speech synthesis index file has unknown structure");
+						throw std::runtime_error("");
 					}
 				}
 				else {
@@ -410,6 +414,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// this message has been already converted
 		if (it != indexContent.end()) {
 			// no need for further action
+			SPDLOG_INFO("Message from {} has been converted tts before. No action needed", it->sender );
 			continue;
 		}
 
@@ -437,8 +442,10 @@ void SpeechSynthesis::convertEmailsToSpeech(
 
 	}
 
-	// all messages converted so now store the index back on disk
-	storeIndex();
+	if (converted > 0) {
+		// all messages converted so now store the index back on disk
+		storeIndex();
+	}
 
 	SPDLOG_INFO("{} messsages converted, {} not valid, {} too old", converted, notValid, tooOld);
 }

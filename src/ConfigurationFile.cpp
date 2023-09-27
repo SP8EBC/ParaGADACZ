@@ -397,20 +397,17 @@ bool ConfigurationFile::parse() {
 			SPDLOG_INFO("{} sources of current weather read", size);
 		}
 		else {
-			SPDLOG_ERROR("'CurrentWeather' section didn't find in the configuration file");
+			SPDLOG_WARN("'CurrentWeather' section didn't find in the configuration file");
 			// this section is mandatory. return fail if it is empty
-			out = false;
 		}
 	}
 	catch (libconfig::SettingNotFoundException & e) {
-		SPDLOG_ERROR("SettingNotFoundException during parsing 'CurrentWeather', e.getPath = {}", e.getPath());
-
-		out = false;
+		SPDLOG_WARN("SettingNotFoundException during parsing 'CurrentWeather', e.getPath = {}", e.getPath());
 	}
 	catch (libconfig::ParseException & e) {
 		SPDLOG_ERROR("ParseException during parsing 'CurrentWeather', e.getLine = {}, e.getError = {}", e.getLine(), e.getError());
-
 		out = false;
+
 	}
 
 	//
