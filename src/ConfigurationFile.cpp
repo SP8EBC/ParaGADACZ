@@ -148,7 +148,9 @@ bool ConfigurationFile::parse() {
 		secrets.lookupValue("MeteoblueKey", this->secrets.meteoblueKey);
 		secrets.lookupValue("WeatherlinkPassword", this->secrets.weatherlinkPassword);
 		secrets.lookupValue("WeatherlinkToken", this->secrets.weatherlinkToken);
+		secrets.lookupValue("ResponsiveVoiceApiKey", this->secrets.responsiveVoiceApiKey);
 		secrets.lookupValue("EmailAnnouncementsPassword", this->emailAnnonuncements.serverConfig.password);
+
 
 	}
 	catch (...) {

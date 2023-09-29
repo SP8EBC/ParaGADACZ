@@ -144,6 +144,8 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
         std::fstream file(outputFilename, std::ios_base::binary | std::ios_base::out);
 
         if (file.is_open()) {
+        	SPDLOG_DEBUG("Storing TTS audio file in {}", outputFilename);
+
         	std::copy(audiofile.begin(), audiofile.end(), std::ostream_iterator<uint8_t>(file));
 
         	file.sync();

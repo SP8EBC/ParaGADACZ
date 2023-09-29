@@ -220,7 +220,7 @@ int EmailDownloader::downloadAllEmailsImap() {
 				// in the body
 				enc->decode(in, out);
 
-				SPDLOG_DEBUG(qpDecodedBodyString);
+				//SPDLOG_DEBUG(qpDecodedBodyString);
 
 				EmailDownloaderMessage message(
 						emailAddr.getEmail().toString(),
@@ -346,6 +346,8 @@ std::tuple<bool, std::optional<uint64_t>> EmailDownloader::validateEmailSubject(
 			// user is allowed to send 'default' announcement without any specific
 			// email subject, so calculate how long this will be valid
 			timestampFromSubject = TimeTools::getEpoch() + sender.defaultAnnouncementLn * 60;
+
+			out = true;
 		}
 		else {
 			SPDLOG_WARN("sender {} is not allowed to send default announcement, without explicitly specified valid timestamp");
@@ -425,7 +427,7 @@ int EmailDownloader::validateEmailAgainstPrivileges(
 
 		// if a sender of this email has been found on
 		if (found != config.allowedSendersList.end()) {
-			SPDLOG_INFO("Email sender {} found and validated", msg.getEmailAddress());
+			SPDLOG_DEBUG("Email sender {} found and validated", msg.getEmailAddress());
 			msg.setValidated();
 
 			out++;
@@ -435,11 +437,13 @@ int EmailDownloader::validateEmailAgainstPrivileges(
 		}
 	}
 
+	SPDLOG_INFO("{} emails and theirs topics validated against configuration", out);
+
 	return out;
 }
 
 void EmailDownloader::copyOnlyValidatedEmails(
-		std::vector<EmailDownloaderMessage> _in) {
+		std::vector<EmailDownloaderMessage> & _in) {
 
 	for (EmailDownloaderMessage msg : messages) {
 		if (msg.isValidated()) {

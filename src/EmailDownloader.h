@@ -69,7 +69,7 @@ public:
 	 * Copy only emails which are validated to be spoken as an anouncement
 	 * @param _in vector where all validated emails will be copied into
 	 */
-	void copyOnlyValidatedEmails(std::vector<EmailDownloaderMessage> _in);
+	void copyOnlyValidatedEmails(std::vector<EmailDownloaderMessage> & _in);
 
 	EmailDownloader(const ConfigurationFile_Email & _config);
 	EmailDownloader(std::shared_ptr<ConfigurationFile> _config);

@@ -1,4 +1,4 @@
-Running 2 test cases...
+Running 3 test cases...
 Entering test module "SpeechSynthesis_test"
 ../src/SpeechSynthesis_test.cpp(80): Entering test case "readIndex"
 ../src/SpeechSynthesis_test.cpp(88): info: check 'no exceptions thrown by result = synth.readIndex(fn)' has passed
@@ -12,7 +12,7 @@ Entering test module "SpeechSynthesis_test"
 ../src/SpeechSynthesis_test.cpp(102): info: check 54321 == it->sayUntil has passed
 ../src/SpeechSynthesis_test.cpp(103): info: check "test@gmail.pl" == it->sender has passed
 ../src/SpeechSynthesis_test.cpp(104): info: check 54300 == it->receivedAt has passed
-../src/SpeechSynthesis_test.cpp(80): Leaving test case "readIndex"; testing time: 47171us
+../src/SpeechSynthesis_test.cpp(80): Leaving test case "readIndex"; testing time: 21814us
 ../src/SpeechSynthesis_test.cpp(107): Entering test case "validateSingleShot"
 ../src/SpeechSynthesis_test.cpp(152): info: check amountEmailsValidated == 1 has passed
 ../src/SpeechSynthesis_test.cpp(154): info: check messages.at(0).getValidUntil() == 666ULL has passed
@@ -27,13 +27,19 @@ Entering test module "SpeechSynthesis_test"
 ../src/SpeechSynthesis_test.cpp(181): info: check firstElem.sender == sender.emailAddress has passed
 ../src/SpeechSynthesis_test.cpp(182): info: check firstElem.receivedAt == 0 has passed
 ../src/SpeechSynthesis_test.cpp(183): info: check firstElem.filename == "202CB962AC59075B964B07152D234B70.mp3" has passed
-../src/SpeechSynthesis_test.cpp(189): info: check 'no exceptions thrown by assembler.start()' has passed
-../src/SpeechSynthesis_test.cpp(190): error: in "validateSingleShot": unexpected exception thrown by stats = assembler.textToSpeechAnnouncements(messages)
-../src/SpeechSynthesis_test.cpp(195): error: in "validateSingleShot": check 2 == playlist_ptr->size() has failed [2 != 1]
-../src/SpeechSynthesis_test.cpp(196): info: check "ident.mp3" == playlist[i++] has passed
-unknown location(0): fatal error: in "validateSingleShot": memory access violation at address: 0x33706d2e: no mapping at fault address
-../src/SpeechSynthesis_test.cpp(197): last checkpoint
-Test is aborted
-../src/SpeechSynthesis_test.cpp(107): Leaving test case "validateSingleShot"; testing time: 197094us
-Test is aborted
-Leaving test module "SpeechSynthesis_test"; testing time: 47211us
+../src/SpeechSynthesis_test.cpp(107): Leaving test case "validateSingleShot"; testing time: 731161us
+../src/SpeechSynthesis_test.cpp(188): Entering test case "playlisttAssemblerSingleShot"
+../src/SpeechSynthesis_test.cpp(235): info: check 'no exceptions thrown by synth.createIndex(configuration_file_first->getSpeechSynthesis().indexFilePath)' has passed
+../src/SpeechSynthesis_test.cpp(241): info: check 'no exceptions thrown by assembler.start()' has passed
+../src/SpeechSynthesis_test.cpp(242): info: check 'no exceptions thrown by stats = assembler.textToSpeechAnnouncements(messages)' has passed
+../src/SpeechSynthesis_test.cpp(247): info: check 1 == stats.added has passed
+../src/SpeechSynthesis_test.cpp(248): info: check 1 == stats.addedSingleShot has passed
+../src/SpeechSynthesis_test.cpp(249): info: check 2 == playlist_ptr->size() has passed
+../src/SpeechSynthesis_test.cpp(250): info: check "intro.ogg" == playlist[i++] has passed
+../src/SpeechSynthesis_test.cpp(251): info: check "202CB962AC59075B964B07152D234B70.mp3" == playlist[i++] has passed
+../src/SpeechSynthesis_test.cpp(254): info: check 'no exceptions thrown by assembler.start()' has passed
+../src/SpeechSynthesis_test.cpp(255): info: check 'no exceptions thrown by stats = assembler.textToSpeechAnnouncements(messages)' has passed
+../src/SpeechSynthesis_test.cpp(260): info: check 0 == stats.added has passed
+../src/SpeechSynthesis_test.cpp(261): info: check 0 == stats.addedSingleShot has passed
+../src/SpeechSynthesis_test.cpp(188): Leaving test case "playlisttAssemblerSingleShot"; testing time: 358158us
+Leaving test module "SpeechSynthesis_test"; testing time: 1111352us

@@ -183,6 +183,9 @@ public:
 			}
 
 		}
+		else {
+			throw std::runtime_error("Timezone data is not initialized! Call initBoostTimezones first! ");
+		}
 
 		return out;
 	}
