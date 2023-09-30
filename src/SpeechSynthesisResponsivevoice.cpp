@@ -6,14 +6,19 @@
  */
 
 #include "SpeechSynthesisResponsivevoice.h"
+#include "main.h"
 
 #include <sstream>
 #include <fstream>
 #include <array>
 #include <iterator>
+#include <exception>
 
 #include "curl/curl.h"
 #include "curl_code_to_str.h"
+
+#include "exception/SpeechSynthesisTimeoutEx.h"
+#include "exception/SpeechSynthesisHttpErrorCodeEx.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -27,9 +32,16 @@
 #include "spdlog/fmt/bin_to_hex.h"
 #pragma pop_macro("U")
 
-SpeechSynthesisResponsivevoice::SpeechSynthesisResponsivevoice(std::string apiKey) : key(apiKey) {
-	// TODO Auto-generated constructor stub
+SpeechSynthesisResponsivevoice::SpeechSynthesisResponsivevoice(std::string apiKey, float pitch, float rate) : key(apiKey) {
 	ptr = this;
+
+	std::stringstream stream;
+	stream << std::fixed << std::setprecision(1) << pitch;
+	this->pitch = stream.str();
+
+	stream.str("");
+	stream << std::fixed << std::setprecision(1) << rate;
+	this->rate = stream.str();
 
 }
 
@@ -58,6 +70,21 @@ void SpeechSynthesisResponsivevoice::writeCallback(char *data,
 
 }
 
+void SpeechSynthesisResponsivevoice::storeTextInFile(std::string &text,
+		std::string &filename) {
+
+    std::fstream file(filename + ".txt", std::ios_base::out);
+
+    if (file.is_open()) {
+    	file << text;
+
+    	file.sync();
+
+    	file.close();
+    }
+
+}
+
 void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
 		std::string &outputFilename, ConfigurationFile_Language lang) {
 
@@ -68,13 +95,20 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
 
     std::array<char, 128> header_string;
 
-    const char * header_string_pointer = header_string.data();
-
     char* effectiveUrl;
     long response_code;
 
 	// initialize cURL
     auto curl = curl_easy_init();
+
+    // clear vector where a response with an audio file will be stored
+    this->audiofile.clear();
+
+    SPDLOG_INFO("Conveting to speech text {} characters long", text.length());
+
+#ifdef MAIN_STORE_TEXT_FOR_SPEECH_SYNTHESIS
+    storeTextInFile(text, outputFilename);
+#endif
 
     // assembly URL
     urlStream << "https://texttospeech.responsivevoice.org/v1/text:synthesize?lang=";
@@ -90,7 +124,7 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
     }
 
     // append constant part
-    urlStream << "&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key=";
+    urlStream << "&engine=g1&name=&pitch=" << pitch << "&rate=" << rate << "&volume=1&key=";
 
     // append api key
     urlStream << key;
@@ -139,26 +173,33 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
     curl_easy_cleanup(curl);
     curl = NULL;
 
-    if (response_code == 200) {
-        // store data into a file
-        std::fstream file(outputFilename, std::ios_base::binary | std::ios_base::out);
+    if (result != CURLE_OPERATION_TIMEDOUT) {
+		if (response_code == 200) {
+			// store data into a file
+			std::fstream file(outputFilename, std::ios_base::binary | std::ios_base::out);
 
-        if (file.is_open()) {
-        	SPDLOG_DEBUG("Storing TTS audio file in {}", outputFilename);
+			if (file.is_open()) {
+				SPDLOG_DEBUG("Storing TTS audio file in {}", outputFilename);
 
-        	std::copy(audiofile.begin(), audiofile.end(), std::ostream_iterator<uint8_t>(file));
+				std::copy(audiofile.begin(), audiofile.end(), std::ostream_iterator<uint8_t>(file));
 
-        	file.sync();
+				file.sync();
 
-        	file.close();
-        }
-        else {
-        	SPDLOG_ERROR("Something happend while output file was opening");
-        }
+				file.close();
+			}
+			else {
+				SPDLOG_ERROR("Something happend while output file was opening");
+			}
 
+		}
+		else {
+			SPDLOG_ERROR("Error code {} received from API during TTS conversion", boost::lexical_cast<std::string>(response_code));
+			throw SpeechSynthesisHttpErrorCodeEx();
+		}
     }
     else {
-    	SPDLOG_ERROR("Error code {} received from API during TTS conversion", boost::lexical_cast<std::string>(response_code));
+		SPDLOG_ERROR("Communication with the API timed out during TTS conversion", boost::lexical_cast<std::string>(response_code));
+		throw SpeechSynthesisTimeoutEx();
     }
 
 }

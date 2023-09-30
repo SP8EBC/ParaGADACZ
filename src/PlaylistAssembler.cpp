@@ -106,7 +106,12 @@ struct PlaylistAssembler_TrendUnaryPredicate {
 	}
 };
 
-PlaylistAssembler::PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config) : playlistSampler(sampler), configurationFile(config), tts("kvfbSITh") {
+PlaylistAssembler::PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config) :
+												playlistSampler(sampler),
+												configurationFile(config),
+												tts(configurationFile->getSecrets().responsiveVoiceApiKey,
+														configurationFile->getSpeechSynthesis().pitch,
+														configurationFile->getSpeechSynthesis().rate) {
 
 	this->playlist = std::make_shared<std::vector<std::string>>();
 }
@@ -115,12 +120,22 @@ PlaylistAssembler::~PlaylistAssembler() {
 	// TODO Auto-generated destructor stub
 }
 
-PlaylistAssembler::PlaylistAssembler(const PlaylistAssembler &other) : playlistSampler(other.playlistSampler), configurationFile(other.configurationFile), tts("kvfbSITh") {
+PlaylistAssembler::PlaylistAssembler(const PlaylistAssembler &other) :
+										playlistSampler(other.playlistSampler),
+										configurationFile(other.configurationFile),
+										tts(configurationFile->getSecrets().responsiveVoiceApiKey,
+												configurationFile->getSpeechSynthesis().pitch,
+												configurationFile->getSpeechSynthesis().rate) {
 	// TODO Auto-generated constructor stub
 
 }
 
-PlaylistAssembler::PlaylistAssembler(PlaylistAssembler &&other) : playlistSampler(other.playlistSampler), configurationFile(other.configurationFile), tts("kvfbSITh") {
+PlaylistAssembler::PlaylistAssembler(PlaylistAssembler &&other) :
+												playlistSampler(other.playlistSampler),
+												configurationFile(other.configurationFile),
+												tts(configurationFile->getSecrets().responsiveVoiceApiKey,
+														configurationFile->getSpeechSynthesis().pitch,
+														configurationFile->getSpeechSynthesis().rate) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -902,7 +917,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 
 	const uint64_t currentTime = TimeTools::getEpoch();
 
-	SPDLOG_INFO("Adding text-to-speech announcements for {} email messages", messages.size());
+	SPDLOG_INFO("Creating text-to-speech announcements for {} email messages", messages.size());
 
 	try {
 		// try to read an index

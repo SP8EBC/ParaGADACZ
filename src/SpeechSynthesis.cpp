@@ -60,6 +60,8 @@ void SpeechSynthesis::createIndex(const std::string &indexFn) {
 	// and add to the array
 	arr.push_back(_indexElementJson);
 
+	json["announcements"] = arr;
+
 	// path to cache index in temporary directory
 	boost::filesystem::path index(indexFilename);
 
@@ -353,7 +355,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 
 	std::array<uint8_t, MD5_DIGEST_LENGTH> md5hashBinary;
 
-	SPDLOG_INFO("Converting {} emails from text to speech", msgs.size());
+	//SPDLOG_INFO("Trying to convert {} emails from text to speech", msgs.size());
 
 	// go through all messages in vector
 	for (EmailDownloaderMessage msg : msgs) {
@@ -367,8 +369,11 @@ void SpeechSynthesis::convertEmailsToSpeech(
 
 		// if old messages should be skipped
 		if (ignoreOlderThan > 0) {
+
+			const uint64_t emailDispatchTime = msg.getEmailDispatchUtcTimestamp();
+
 			// if this message has been sent before given date
-			if (msg.getEmailDispatchUtcTimestamp() + (const uint64_t)ignoreOlderThan * 60ULL > currentTime) {
+			if (emailDispatchTime + (const uint64_t)ignoreOlderThan * 60ULL > currentTime) {
 				tooOld++;
 				// continue to next one
 				continue;
@@ -414,7 +419,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// this message has been already converted
 		if (it != indexContent.end()) {
 			// no need for further action
-			SPDLOG_INFO("Message from {} has been converted tts before. No action needed", it->sender );
+			SPDLOG_INFO("Message from {} received at {} has been converted tts before. No action needed", it->sender, it->receivedAt );
 			continue;
 		}
 

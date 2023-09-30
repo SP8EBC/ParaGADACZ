@@ -15,5 +15,7 @@
 //!< Program will close if there will be an error during
 //#define MAIN_FAIL_ON_MISSING_FORECAST
 
+#define MAIN_STORE_TEXT_FOR_SPEECH_SYNTHESIS
+
 
 #endif /* MAIN_H_ */

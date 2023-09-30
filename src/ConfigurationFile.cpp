@@ -20,6 +20,7 @@ ConfigurationFile::ConfigurationFile(std::string fileName) {
 	fn = fileName;
 	hasPogodacc = false;
 	hasAprx = false;
+	hasWeatherlink = false;
 	debug = false;
 	onlyAssemblePlaylist = false;
 	maximumDataAgeInMinutes = 60;
@@ -394,6 +395,9 @@ bool ConfigurationFile::parse() {
 				else if (c.type == APRX) {
 					hasAprx = true;
 				}
+				else if (c.type == DAVIS) {
+					hasWeatherlink = true;
+				}
 			}
 
 			SPDLOG_INFO("{} sources of current weather read", size);
@@ -690,6 +694,14 @@ bool ConfigurationFile::parse() {
 		tts.lookupValue("IndexFilePath", speechSynthesis.indexFilePath);
 		if (!tts.lookupValue("IgnoreOlderThan", speechSynthesis.ignoreOlderThan)) {
 			speechSynthesis.ignoreOlderThan = 0;
+		}
+
+		if (!tts.lookupValue("Pitch", speechSynthesis.pitch)) {
+			speechSynthesis.pitch = 0.5f;
+		}
+
+		if (!tts.lookupValue("Rate", speechSynthesis.rate)) {
+			speechSynthesis.rate = 0.5f;
 		}
 
 		std::string language;

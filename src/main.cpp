@@ -151,6 +151,9 @@ int main(int argc, char **argv) {
 	// try parse the configuration file
 	const bool configParsingResult = configurationFile->parse();
 
+	const bool hasCurrentConditions = configurationFile->isHasPogodacc() ||
+			configurationFile->isHasAprx() || configurationFile->isHasWeatherlink();
+
 	// check parsing result
 	if (!configParsingResult) {
 		SPDLOG_ERROR("Configuration file hasn't been parsed correctly! Exiting application!");
@@ -200,7 +203,9 @@ int main(int argc, char **argv) {
 
 	emailDownloader = std::make_shared<EmailDownloader>(configurationFile->getEmailAnnonuncements());
 
-	speechSyntesis = std::make_shared<SpeechSynthesisResponsivevoice>(configurationFile->getSecrets().responsiveVoiceApiKey);
+	speechSyntesis = std::make_shared<SpeechSynthesisResponsivevoice>(configurationFile->getSecrets().responsiveVoiceApiKey,
+																		configurationFile->getSpeechSynthesis().pitch,
+																		configurationFile->getSpeechSynthesis().rate);
 
 	if (configurationFile->getEmailAnnonuncements().enabled) {
 		emailDownloader->downloadAllEmailsImap();
@@ -271,7 +276,11 @@ int main(int argc, char **argv) {
 	}
 
 	if (configurationFile->getEmailAnnonuncements().enabled) {
-		speechSyntesis->convertEmailsToSpeech(validatedEmails, configurationFile->getSpeechSynthesis().ignoreOlderThan, configurationFile->getSpeechSynthesis().language);
+		// try to open index file
+		if (speechSyntesis->readIndex(configurationFile->getSpeechSynthesis().indexFilePath) == -1) {
+			// create new one if it hasn't been created yet
+			speechSyntesis->createIndex(configurationFile->getSpeechSynthesis().indexFilePath);
+		}
 	}
 
 	// start to create playlist
@@ -280,13 +289,19 @@ int main(int argc, char **argv) {
 	// append pre announcement
 	playlistAssembler->recordedAnnouncement(false);
 
+	if (configurationFile->getEmailAnnonuncements().enabled) {
+		playlistAssembler->textToSpeechAnnouncements(validatedEmails);
+	}
+
 	// if there is regional pressure to say
 	if (regionalPressure.has_value()) {
 		playlistAssembler->regionalPressure(*regionalPressure);
 	}
 
-	// insert current weather
-	playlistAssembler->currentWeather(currentWeatherMeteobackend, currentWeatherAprx, currentWeatherDavisWeatherlink, std::optional<std::vector<TrendDownloader_Data>>(std::move(trend)));
+	if (hasCurrentConditions) {
+		// insert current weather
+		playlistAssembler->currentWeather(currentWeatherMeteobackend, currentWeatherAprx, currentWeatherDavisWeatherlink, std::optional<std::vector<TrendDownloader_Data>>(std::move(trend)));
+	}
 
 	// insert weather forecast
 	if (configurationFile->getForecast().enable) {

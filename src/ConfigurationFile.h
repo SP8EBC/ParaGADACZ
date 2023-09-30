@@ -223,6 +223,8 @@ struct ConfigurationFile_SpeechSynthesis {
 	std::string indexFilePath;	//!< Path to JSON file with an index
 	int ignoreOlderThan;		//!< Automatically ignore email messages older than xx minutes
 	ConfigurationFile_Language language;	//!< Language to use for TSS conversion
+	float pitch;
+	float rate;
 };
 
 class ConfigurationFile {
@@ -279,6 +281,7 @@ class ConfigurationFile {
 
 	bool hasPogodacc;
 	bool hasAprx;
+	bool hasWeatherlink;
 
 public:
 
@@ -387,6 +390,10 @@ public:
 
 	const ConfigurationFile_SpeechSynthesis& getSpeechSynthesis() const {
 		return speechSynthesis;
+	}
+
+	bool isHasWeatherlink() const {
+		return hasWeatherlink;
 	}
 };
 
