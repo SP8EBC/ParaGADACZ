@@ -11,6 +11,8 @@ secret*
 *.ogg
 /test_input/audio
 
+*.txt
+
 # Prerequisites
 *.d
 
