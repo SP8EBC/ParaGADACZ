@@ -147,8 +147,6 @@ int main(int argc, char **argv) {
 	// create an instance of configuration file
 	configurationFile = std::make_shared<ConfigurationFile>(configFn);
 
-	TimeTools::initBoostTimezones(configurationFile->getZoneSpecificationFilePath());
-
 	// try parse the configuration file
 	const bool configParsingResult = configurationFile->parse();
 
@@ -165,6 +163,8 @@ int main(int argc, char **argv) {
 	if (!configurationFile->isDebug()) {
 		spdlog::set_level(spdlog::level::info);
 	}
+
+	TimeTools::initBoostTimezones(configurationFile->getZoneSpecificationFilePath());
 
 	auto inhibitorConfig = configurationFile->getInhibitor();
 
