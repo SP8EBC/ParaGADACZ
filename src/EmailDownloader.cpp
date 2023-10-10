@@ -114,7 +114,7 @@ int EmailDownloader::downloadAllEmailsImap() {
 
 		// get a list of last 10 messages
 		std::vector <vmime::shared_ptr <vmime::net::message> > allMessages =
-		   folder->getMessages(vmime::net::messageSet::byNumber(emails - 10, emails));
+		   folder->getMessages(vmime::net::messageSet::byNumber(emails - config.inboxEmailFetchLenght, emails));
 
 		// fetch information about these 10 messages
 		folder->fetchMessages(

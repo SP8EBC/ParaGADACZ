@@ -214,6 +214,7 @@ struct ConfigurationFile_Email {
 	ConfigurationFile_Email_Server serverConfig;
 	std::vector<ConfigurationFile_Email_AllowedSender> allowedSendersList;
 	int maximumLenghtInWords;	//!< Maximum size of one announcement in words
+	int inboxEmailFetchLenght;	//!< How many emails should be downloaded from an inbox
 };
 
 /**

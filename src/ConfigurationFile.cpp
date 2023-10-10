@@ -617,6 +617,10 @@ bool ConfigurationFile::parse() {
 		// how many allowed senders are configured
 		size_t allowedSendersSize = allowedSenders.getLength();
 
+		// how many emails should be fetched from an inbox
+		emailAnnonuncements.inboxEmailFetchLenght = 10;
+		email.lookupValue("InboxEmailFetchLenght", emailAnnonuncements.inboxEmailFetchLenght);
+
 		// at least one allowed sender must be configured
 		if (allowedSendersSize == 0) {
 			SPDLOG_ERROR("At least one allowed sender must be configured in EmailSpecialAnnouncement::AllowedSenders");
