@@ -68,6 +68,8 @@ int EmailDownloader::downloadAllEmailsPop3() {
 
 int EmailDownloader::downloadAllEmailsImap() {
 
+	int fetchLen;
+
 	// Global session object
 	vmime::shared_ptr <vmime::net::session> vmimeSession = vmime::net::session::create();
 
@@ -103,18 +105,33 @@ int EmailDownloader::downloadAllEmailsImap() {
 		st->connect();
 
 		// get default mail folder, which in most case should be an inbox
-		vmime::shared_ptr<vmime::net::folder> folder = st->getDefaultFolder();
+		vmime::shared_ptr<vmime::net::folder> folder;
+
+		if (config.serverConfig.folder.size() < 3) {
+			folder = st->getDefaultFolder();
+		}
+		else {
+			folder = st->getFolder(vmime::utility::path(config.serverConfig.folder));
+			SPDLOG_INFO("Downloading emails from custom configured folder {}", folder->getName().getBuffer());
+		}
 
 		// open this folder read only, we only need to get email
 		folder->open(vmime::net::folder::MODE_READ_ONLY, true);
 
 		// how many emails are actually there
 		int emails = folder->getMessageCount();
-		SPDLOG_DEBUG("amount of emails in folder {}", emails);
+		SPDLOG_DEBUG("amount of emails in folder: {}", emails);
+
+		if (emails > config.inboxEmailFetchLenght) {
+			fetchLen = config.inboxEmailFetchLenght;
+		}
+		else {
+			fetchLen = emails - 1;
+		}
 
 		// get a list of last 10 messages
 		std::vector <vmime::shared_ptr <vmime::net::message> > allMessages =
-		   folder->getMessages(vmime::net::messageSet::byNumber(emails - config.inboxEmailFetchLenght, emails));
+		   folder->getMessages(vmime::net::messageSet::byNumber(emails - fetchLen, emails));
 
 		// fetch information about these 10 messages
 		folder->fetchMessages(
@@ -248,6 +265,18 @@ int EmailDownloader::downloadAllEmailsImap() {
 
 		return allMessages.size();
 
+	}
+	catch (const vmime::exceptions::illegal_state &e) {
+		SPDLOG_ERROR("illegal_state");
+		SPDLOG_ERROR(e.what());
+	}
+	catch (const vmime::exceptions::command_error &e) {
+		SPDLOG_ERROR("command_error");
+		SPDLOG_ERROR(e.what());
+	}
+	catch (const vmime::exceptions::net_exception &e) {
+		SPDLOG_ERROR("net_exception");
+		SPDLOG_ERROR(e.what());
 	}
 	catch (const std::exception& e)
 	{

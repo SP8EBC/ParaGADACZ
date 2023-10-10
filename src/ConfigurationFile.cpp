@@ -605,6 +605,7 @@ bool ConfigurationFile::parse() {
 		emailAnnonuncements.serverConfig.startTls = false;
 		emailAnnonuncements.serverConfig.pop3Port = 0;
 		emailAnnonuncements.serverConfig.imapPort = 0;
+		emailAnnonuncements.serverConfig.folder = "";
 
 		// get prerecorded special announcement (Post -> at the end but before sign-off/outro)
 		libconfig::Setting &email = root["EmailSpecialAnnouncement"];
@@ -649,6 +650,7 @@ bool ConfigurationFile::parse() {
 						emailAnnonuncements.serverConfig.username);
 
 		emailServer.lookupValue("StartTls", emailAnnonuncements.serverConfig.startTls);
+		emailServer.lookupValue("Folder", emailAnnonuncements.serverConfig.folder);
 
 //		ConfigurationFile_Email_AllowedSender deflt;
 //		deflt.emailAddress = "sp8ebc@interia.pl";

@@ -378,7 +378,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 			const uint64_t emailDispatchTime = msg.getEmailDispatchUtcTimestamp();
 
 			// if this message has been sent before given date
-			if (emailDispatchTime + (const uint64_t)ignoreOlderThan * 60ULL > currentTime) {
+			if (emailDispatchTime + (const uint64_t)ignoreOlderThan * 60ULL < currentTime) {
 				tooOld++;
 				// continue to next one
 				continue;

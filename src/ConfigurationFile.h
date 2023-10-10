@@ -177,6 +177,7 @@ struct ConfigurationFile_Email_Server {
 	std::string username;		//!< Username aka e-mail address
 	std::string password;		//!< Password for this e-mail address
 	bool startTls;				//!< Set to false to select auth_method_t::LOGIN, true for auth_method_t::START_TLS
+	std::string folder;
 };
 
 /**
