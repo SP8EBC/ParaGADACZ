@@ -137,6 +137,11 @@ bool ConfigurationFile::parse() {
 		this->logOutput = "/var/log/paragadacz.log";
 	}
 
+	// get log output
+	if (!root.lookupValue("ZoneSpecificationFilePath", this->zoneSpecificationFilePath)) {
+		this->zoneSpecificationFilePath = "/usr/local/share/paragadacz/date_time_zonespec.csv";
+	}
+
 	// get audio base path
 	if (!root.lookupValue("AudioBasePath", this->audioBasePath)) {
 		this->audioBasePath = "/usr/share/paragadacz";
@@ -640,6 +645,14 @@ bool ConfigurationFile::parse() {
 						emailAnnonuncements.serverConfig.username);
 
 		emailServer.lookupValue("StartTls", emailAnnonuncements.serverConfig.startTls);
+
+//		ConfigurationFile_Email_AllowedSender deflt;
+//		deflt.emailAddress = "sp8ebc@interia.pl";
+//		deflt.singleAnnouncement = false;
+//		deflt.timedAnnouncement = true;
+//		deflt.defaultAnnouncement = true;
+//		deflt.defaultAnnouncementLn = 123;
+//		emailAnnonuncements.allowedSendersList.push_back(deflt);
 
 		for (size_t i = 0; i < allowedSendersSize; i++) {
 			ConfigurationFile_Email_AllowedSender sender;

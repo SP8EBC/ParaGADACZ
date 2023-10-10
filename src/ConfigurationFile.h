@@ -249,6 +249,8 @@ class ConfigurationFile {
 	std::string audioBasePath;	//!< Base path do directory where all audio files are put
 	std::string logOutput;		//!< Path to created log file
 
+	std::string zoneSpecificationFilePath;	//!< Path to 'date_time_zonespec.csv' including filename itself
+
 	ConfigurationFile_Secret secrets;
 
 	ConfigurationFile_Inhibitor inhibitor;
@@ -394,6 +396,10 @@ public:
 
 	bool isHasWeatherlink() const {
 		return hasWeatherlink;
+	}
+
+	const std::string& getZoneSpecificationFilePath() const {
+		return zoneSpecificationFilePath;
 	}
 };
 

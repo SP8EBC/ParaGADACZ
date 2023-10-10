@@ -49,6 +49,10 @@ public:
 
 	int downloadAllEmailsPop3();
 
+	/**
+	 * Downloads last 10 emails from inbox using IMAP protocol
+	 * @return
+	 */
 	int downloadAllEmailsImap();
 
 	/**
@@ -59,9 +63,10 @@ public:
 	int validateEmailAgainstPrivileges();
 
 	/**
-	 * This method go through vector of messages and checks if
+	 * This method go through vector of messages and checks checks them against
+	 * a configuration who is allowed to send what kind of announcement.
 	 * @param messages
-	 * @return
+	 * @return amount of emails which were validated
 	 */
 	int validateEmailAgainstPrivileges(std::vector<EmailDownloaderMessage> & messages);
 
@@ -70,6 +75,12 @@ public:
 	 * @param _in vector where all validated emails will be copied into
 	 */
 	void copyOnlyValidatedEmails(std::vector<EmailDownloaderMessage> & _in);
+
+	/**
+	 * Checks if downloaded emails contains a configuration to be replaced
+	 * @param configFn path to filename where the configuration will be stored
+	 */
+	bool checkEmailConfig(std::string & configFn);
 
 	EmailDownloader(const ConfigurationFile_Email & _config);
 	EmailDownloader(std::shared_ptr<ConfigurationFile> _config);

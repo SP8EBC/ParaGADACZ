@@ -104,8 +104,6 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
     // clear vector where a response with an audio file will be stored
     this->audiofile.clear();
 
-    SPDLOG_INFO("Conveting to speech text {} characters long", text.length());
-
 #ifdef MAIN_STORE_TEXT_FOR_SPEECH_SYNTHESIS
     storeTextInFile(text, outputFilename);
 #endif
@@ -193,12 +191,12 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
 
 		}
 		else {
-			SPDLOG_ERROR("Error code {} received from API during TTS conversion", boost::lexical_cast<std::string>(response_code));
+			SPDLOG_ERROR("Error code {} received from API during TTS conversion for {}", boost::lexical_cast<std::string>(response_code), outputFilename);
 			throw SpeechSynthesisHttpErrorCodeEx();
 		}
     }
     else {
-		SPDLOG_ERROR("Communication with the API timed out during TTS conversion", boost::lexical_cast<std::string>(response_code));
+		SPDLOG_ERROR("Communication with the API timed out during TTS conversion for {}", outputFilename);
 		throw SpeechSynthesisTimeoutEx();
     }
 

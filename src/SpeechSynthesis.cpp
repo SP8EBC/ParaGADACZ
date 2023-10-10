@@ -9,6 +9,8 @@
 #include "SpeechSynthesisStaticStuff.h"
 #include "TimeTools.h"
 
+#include "exception/SpeechSynthesisTooMuchErrorsEx.h"
+
 #pragma push_macro("U")
 #undef U
 // pragma required as a workaround of possible conflict with cpprestsdk.
@@ -29,6 +31,8 @@
 #include <iterator>
 
 constexpr SpeechSynthesis_FindValidAnouncements_UnaryPredicate SpeechSynthesis_getValidAnouncements_pred;
+
+#define SPEECHSYNTHESIS_ERROR_REPETITIONS_LIMIT	5
 
 SpeechSynthesis::SpeechSynthesis() {
 	// TODO Auto-generated constructor stub
@@ -347,6 +351,9 @@ void SpeechSynthesis::convertEmailsToSpeech(
 	int tooOld = 0;
 	int converted = 0;
 
+	// counter of repetitions of
+	uint8_t repetitions = 0;
+
 	// context used for MD5
 	MD5_CTX md5_context;
 
@@ -354,8 +361,6 @@ void SpeechSynthesis::convertEmailsToSpeech(
 	MD5_Init(&md5_context);
 
 	std::array<uint8_t, MD5_DIGEST_LENGTH> md5hashBinary;
-
-	//SPDLOG_INFO("Trying to convert {} emails from text to speech", msgs.size());
 
 	// go through all messages in vector
 	for (EmailDownloaderMessage msg : msgs) {
@@ -426,23 +431,32 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// apply all text processing which is configured for that sender
 		std::string text = SpeechSynthesisStaticStuff::cutParagraphsFromText(msg.getPreprocess(), msg.getContent());
 
-		try {
-			SPDLOG_INFO("Converting message sent by {} to speech", msg.getEmailAddress());
+		while(repetitions < SPEECHSYNTHESIS_ERROR_REPETITIONS_LIMIT) {
+			try {
+				SPDLOG_INFO("Converting message sent by {} to speech", msg.getEmailAddress());
 
-			// convert text to speech
-			this->convertTextToSpeech(text, indexElem.filename, lang);
+				// convert text to speech
+				this->convertTextToSpeech(text, indexElem.filename, lang);
 
-			indexElem.receivedAt = msg.getEmailReceiveUtcTimestmp();
-			indexElem.sayUntil = msg.getValidUntil();
-			indexElem.sender = msg.getEmailAddress();
+				indexElem.receivedAt = msg.getEmailReceiveUtcTimestmp();
+				indexElem.sayUntil = msg.getValidUntil();
+				indexElem.sender = msg.getEmailAddress();
 
-			this->indexContent.push_back(indexElem);
+				this->indexContent.push_back(indexElem);
 
-			converted++;
-		}
-		catch (std::exception & ex) {
-			SPDLOG_ERROR("Exception was thrown while converting text to speech.");
-			SPDLOG_ERROR(ex.what());
+				converted++;
+
+				break;
+			}
+			catch (std::exception & ex) {
+				SPDLOG_ERROR("Exception was thrown while converting text to speech.");
+				SPDLOG_ERROR(ex.what());
+				repetitions++;
+
+				if (repetitions >= SPEECHSYNTHESIS_ERROR_REPETITIONS_LIMIT) {
+					throw SpeechSynthesisTooMuchErrorsEx();
+				}
+			}
 		}
 
 	}

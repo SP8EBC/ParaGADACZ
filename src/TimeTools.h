@@ -59,6 +59,13 @@ public:
 
 	}
 
+	static void initBoostTimezones(std::string fn) {
+		TimeTools::timezones.load_from_file(fn);
+
+		TimeTools::timezonesInit = true;
+
+	}
+
 	static long getEpoch() {
 		// get currrent timestamp
 		boost::posix_time::ptime current = boost::posix_time::second_clock::universal_time();

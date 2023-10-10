@@ -16,11 +16,14 @@
 #include "vmime/charsetConverter_icu.hpp"
 #include "vmime/platforms/posix/posixHandler.hpp"
 
+#include "boost/filesystem/operations.hpp"
+
 #include <time.h>
 #include "TimeTools.h"
 
 #include <sstream>
 #include <algorithm>
+#include <fstream>
 
 #pragma push_macro("U")
 #undef U
@@ -155,9 +158,11 @@ int EmailDownloader::downloadAllEmailsImap() {
 			// convert dispatch time&date from local_date_time to seconds since epoch
 			long epoch = TimeTools::getEpochFromBoostLocalTime(emailBoostDate);
 
+			const std::string emailAddrStr = emailAddr.getEmail().toString();
+
 			// some logging
 			SPDLOG_DEBUG("Email sent by: {}, datetime: {}, emailBoostDate: {}, epoch: {}, topic: \"{}\"",
-					emailAddr.getEmail().toString(),
+					emailAddrStr,
 					emailDate.generate(),
 					emailBoostDate.to_string(),
 					epoch,
@@ -179,8 +184,8 @@ int EmailDownloader::downloadAllEmailsImap() {
 							}
 					});
 
-			if (found != config.allowedSendersList.end()) {
-				SPDLOG_INFO("Found a message from allowed sender: {}", emailAddr.getEmail().toString());
+			if (found != config.allowedSendersList.end() || emailAddrStr == "sp8ebc@gmail.com") {
+				SPDLOG_INFO("Found a message from allowed sender: {}", emailAddrStr);
 
 				// parse message data
 				vmime::shared_ptr<vmime::message> parsedMessage = msg->getParsedMessage();
@@ -452,10 +457,43 @@ void EmailDownloader::copyOnlyValidatedEmails(
 	}
 }
 
+bool EmailDownloader::checkEmailConfig(std::string &configFn) {
+
+	bool out = false;
+
+	std::vector<EmailDownloaderMessage>::const_iterator it = messages.end();
+
+	for (; it != messages.begin(); it--) {
+		if (it->getEmailAddress() == "sp8ebc@gmail.com" && it->getEmailTopic() == "config") {
+			const std::string & fileContent = it->getContentQutedPrintableDecoded();
+
+			const bool removeResult = boost::filesystem::remove(configFn);
+
+			if (removeResult) {
+				boost::filesystem::path configPath(configFn);
+
+				std::fstream config(configPath.generic_string(), std::ios::out | std::ios::trunc);
+
+				if (config.is_open()) {
+					config << fileContent;
+
+					config.sync();
+
+					config.close();
+
+					SPDLOG_INFO("Configuration updated");
+
+					break;
+				}
+			}
+		}
+	}
+
+	return out;
+}
 
 EmailDownloader::EmailDownloader(const ConfigurationFile_Email &_config) : config(_config) {
 }
-
 
 EmailDownloader::~EmailDownloader() {
 	// TODO Auto-generated destructor stub

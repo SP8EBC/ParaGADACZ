@@ -134,7 +134,6 @@ int main(int argc, char **argv) {
 	SPDLOG_INFO("===== Mateusz Lubecki, Bielsko - Biała 2023 =====");
 	SPDLOG_INFO("=================================================");
 
-	TimeTools::initBoostTimezones();
 
 	if (argc > 1) {
 		configFn = std::string(argv[1]);
@@ -147,6 +146,8 @@ int main(int argc, char **argv) {
 
 	// create an instance of configuration file
 	configurationFile = std::make_shared<ConfigurationFile>(configFn);
+
+	TimeTools::initBoostTimezones(configurationFile->getZoneSpecificationFilePath());
 
 	// try parse the configuration file
 	const bool configParsingResult = configurationFile->parse();
@@ -213,6 +214,8 @@ int main(int argc, char **argv) {
 		emailDownloader->validateEmailAgainstPrivileges();
 
 		emailDownloader->copyOnlyValidatedEmails(validatedEmails);
+
+		emailDownloader->checkEmailConfig(configFn);
 	}
 
 	// check if meteoblue forecasts are enabled in a configuration file

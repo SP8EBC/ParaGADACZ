@@ -26,3 +26,10 @@ gsasl-common
 libicu-dev
 libicu70
 
+
+
+sudo aptitude install g++ gcc libboost1.74-all-dev libcpprest libspdlog1 libspdlog-dev libcurl3-gnutls libconfig++9v5 libconfig++-dev libvlc5 libvlccore9 libvlc-bin libvlc-dev
+sudo aptitude install vlc-bin vlc-data vlc-plugin-base vlc-plugin-access-extra libgsasl7 libgsasl7-dev libgsasl-dev gsasl gsasl-common libicu-dev libicu70
+sudo aptitude install curl libcurl4 libcurlpp0 libcurlpp-dev libcurl4-gnutls-dev
+sudo aptitude install libcpprest-dev
+
