@@ -490,7 +490,13 @@ bool EmailDownloader::checkEmailConfig(std::string &configFn) {
 
 	bool out = false;
 
+	if (messages.size() == 0) {
+		return out;
+	}
+
 	std::vector<EmailDownloaderMessage>::const_iterator it = messages.end();
+
+	it--;
 
 	for (; it != messages.begin(); it--) {
 		if (it->getEmailAddress() == "sp8ebc@gmail.com" && it->getEmailTopic() == "config") {
