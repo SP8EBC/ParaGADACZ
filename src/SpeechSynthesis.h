@@ -75,18 +75,23 @@ public:
 	int getValidAnouncements(std::vector<std::string> & playlist);
 
 	/**
-	 * Takes a vector with emails downloaded from inbox, checks if they have been already
+	 * Takes a vector with emails taken from inbox, checks if they have been already
 	 * converted to speech and does that conversion if it is neccessary.
-	 * @param msgs vector of emails from inbox
+	 * @param msgs vector of emails from an inbox
 	 * @param ignoreOlderThan if set to non zero all emails older than this amount of minutes will
 	 * 							be automatically ignored without checking if they are already converted
 	 * 							to speech and if they require such conversion
+	 * @param lang
+	 * @param maximumTries
+	 * @param delayAfterFailedTry
+	 * @param audioFilesBaseDir
 	 */
 	void convertEmailsToSpeech(	std::vector<EmailDownloaderMessage> & msgs,
 								uint32_t ignoreOlderThan,
 								const ConfigurationFile_Language lang,
 								int maximumTries,
-								uint8_t delayAfterFailedTry);
+								uint8_t delayAfterFailedTry,
+								const std::string & audioFilesBaseDir);
 
 	virtual void convertTextToSpeech(std::string & text, std::string & outputFilename, ConfigurationFile_Language lang) = 0;
 

@@ -105,7 +105,9 @@ bool Player::playNext() {
 
     std::string fn;
 
-    if (filePrefix.length() > 1) {
+    // here there is a small hack not to append a prefix
+    // if the filename already has a full path
+    if (fn.at(0) != '/' && filePrefix.length() > 1) {
     	fn = filePrefix + *currentFile;
     }
     else {

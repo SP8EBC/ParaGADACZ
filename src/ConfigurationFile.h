@@ -222,7 +222,9 @@ struct ConfigurationFile_Email {
  * Configuration of SpeechSynthesis, including
  */
 struct ConfigurationFile_SpeechSynthesis {
+	bool enabled;
 	std::string indexFilePath;	//!< Path to JSON file with an index
+	std::string audioBasePath;	//!<
 	int ignoreOlderThan;		//!< Automatically ignore email messages older than xx minutes
 	float maximumTimeout;		//!< Maximum timeout while converting from text to speed
 	int maximumTries;			//!< How many times the application will try to convert text to speech

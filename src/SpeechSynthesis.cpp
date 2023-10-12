@@ -341,13 +341,18 @@ int SpeechSynthesis::getValidAnouncements(std::vector<std::string> &playlist) {
  * @param ignoreOlderThan if set to non zero all emails older than this amount of minutes will
  * 							be automatically ignored without checking if they are already converted
  * 							to speech and if they require such conversion
+ * @param lang
+ * @param maximumTries
+ * @param delayAfterFailedTry
+ * @param audioFilesBaseDir
  */
 void SpeechSynthesis::convertEmailsToSpeech(
 										std::vector<EmailDownloaderMessage> & msgs,
 										uint32_t ignoreOlderThan,
 										const ConfigurationFile_Language lang,
 										int maximumTries,
-										uint8_t delayAfterFailedTry) {
+										uint8_t delayAfterFailedTry,
+										const std::string & audioFilesBaseDir) {
 
 	const uint64_t currentTime = TimeTools::getEpoch();
 
@@ -384,7 +389,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 			// if this message has been sent before given date
 			if (emailDispatchTime + (const uint64_t)ignoreOlderThan * 60ULL < currentTime) {
 
-				SPDLOG_DEBUG("Message from {} received at {} UTC is too old", msg.getEmailAddress(), boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(msg.getEmailDispatchUtcTimestamp())));
+				SPDLOG_DEBUG("Message from {} send at {} UTC is too old", msg.getEmailAddress(), boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(msg.getEmailDispatchUtcTimestamp())));
 
 				tooOld++;
 				// continue to next one
@@ -397,6 +402,10 @@ void SpeechSynthesis::convertEmailsToSpeech(
 
 		// stream to store hash valie in
 		std::stringstream md5hash;
+
+		if (audioFilesBaseDir.length() > 3) {
+			md5hash << audioFilesBaseDir;
+		}
 
 		// output stream iterator to
 		std::ostream_iterator<char> md5hashIt(md5hash);
@@ -431,7 +440,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// this message has been already converted
 		if (it != indexContent.end()) {
 			// no need for further action
-			SPDLOG_INFO("Message from {} received at {} has been converted tts before. No action needed", it->sender, it->receivedAt );
+			SPDLOG_INFO("Message from {} received at {} UTC has been converted tts before. No action needed", it->sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->receivedAt)) );
 			continue;
 		}
 
@@ -440,9 +449,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 
 		while(repetitions < maximumTries) {
 			try {
-				const uint64_t messageAge = TimeTools::getEpoch() - msg.getEmailDispatchUtcTimestamp();
-
-				SPDLOG_INFO("Converting to speech message sent by {} {} minutes ago", msg.getEmailAddress(), messageAge / 60);
+				SPDLOG_INFO("Converting to speech message sent by {} at {} UTC", msg.getEmailAddress(), boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(msg.getEmailDispatchUtcTimestamp())));
 
 				// convert text to speech
 				this->convertTextToSpeech(text, indexElem.filename, lang);

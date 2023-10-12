@@ -914,9 +914,9 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	const std::string indexFilename = configTts.indexFilePath;
 	const uint32_t ignoreOlderThan = configTts.ignoreOlderThan;
 	const ConfigurationFile_Language lang = configTts.language;
-	const float maximumTimeoutSec = configTts.maximumTimeout;
 	const int maximumTriesAfterFail = configTts.maximumTries;
 	const uint8_t delaySecondsAfterFail = configTts.delayAfterFailTry;
+	const std::string & baseDir = configTts.audioBasePath;
 
 	const uint64_t currentTime = TimeTools::getEpoch();
 
@@ -946,7 +946,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	}
 
 	// convert all emails into speech
-	tts.convertEmailsToSpeech(messages, ignoreOlderThan, lang, maximumTriesAfterFail, delaySecondsAfterFail);
+	tts.convertEmailsToSpeech(messages, ignoreOlderThan, lang, maximumTriesAfterFail, delaySecondsAfterFail, baseDir);
 
 	// get an index after conversion, all messages should be here
 	const std::list<SpeechSynthesis_MessageIndexElem>& index = tts.getIndexContent();

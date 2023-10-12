@@ -712,52 +712,65 @@ bool ConfigurationFile::parse() {
 
 		libconfig::Setting &tts = root["SpeechSynthesis"];
 
-		tts.lookupValue("IndexFilePath", speechSynthesis.indexFilePath);
-		if (!tts.lookupValue("IgnoreOlderThan", speechSynthesis.ignoreOlderThan)) {
-			speechSynthesis.ignoreOlderThan = 0;
-		}
+		tts.lookupValue("Enable", speechSynthesis.enabled);
 
-		if (!tts.lookupValue("Pitch", speechSynthesis.pitch)) {
-			speechSynthesis.pitch = 0.5f;
-		}
+		if (speechSynthesis.enabled) {
 
-		if (!tts.lookupValue("Rate", speechSynthesis.rate)) {
-			speechSynthesis.rate = 0.5f;
-		}
-
-		if (!tts.lookupValue("MaximumTimeout", speechSynthesis.maximumTimeout)) {
-			speechSynthesis.maximumTimeout = 5.0f;
-		}
-
-		if (!tts.lookupValue("MaximumTries", speechSynthesis.maximumTries)) {
-			speechSynthesis.maximumTries = 5;
-		}
-
-		if (!tts.lookupValue("DelayAfterFailTry", temp)) {
-			speechSynthesis.delayAfterFailTry = 0u;
-		}
-		else {
-			if (temp > 255 || temp < 0) {
-				speechSynthesis.delayAfterFailTry = 255u;
+			if (!tts.lookupValue("IndexFilePath", speechSynthesis.indexFilePath)) {
+				SPDLOG_ERROR("Path to index file files hasn't been specified!");
+				throw std::runtime_error("");
 			}
-		}
 
-		std::string language;
-		tts.lookupValue("Language", language);
-		boost::algorithm::to_upper(language);
+			if (!tts.lookupValue("AudioFilesDirectoryPath", speechSynthesis.audioBasePath)) {
+				SPDLOG_ERROR("Base directory for TTS audio files hasn't been specified!");
+				throw std::runtime_error("");
+			}
 
-		if (language == "POLISH") {
-			speechSynthesis.language = SPEECH_POLISH;
-		}
-		else {
-			speechSynthesis.language = SPEECH_ENGLISH;
+
+			if (!tts.lookupValue("IgnoreOlderThan", speechSynthesis.ignoreOlderThan)) {
+				speechSynthesis.ignoreOlderThan = 0;
+			}
+
+			if (!tts.lookupValue("Pitch", speechSynthesis.pitch)) {
+				speechSynthesis.pitch = 0.5f;
+			}
+
+			if (!tts.lookupValue("Rate", speechSynthesis.rate)) {
+				speechSynthesis.rate = 0.5f;
+			}
+
+			if (!tts.lookupValue("MaximumTimeout", speechSynthesis.maximumTimeout)) {
+				speechSynthesis.maximumTimeout = 5.0f;
+			}
+
+			if (!tts.lookupValue("MaximumTries", speechSynthesis.maximumTries)) {
+				speechSynthesis.maximumTries = 5;
+			}
+
+			if (!tts.lookupValue("DelayAfterFailTry", temp)) {
+				speechSynthesis.delayAfterFailTry = 0u;
+			}
+			else {
+				if (temp > 255 || temp < 0) {
+					speechSynthesis.delayAfterFailTry = 255u;
+				}
+			}
+
+			std::string language;
+			tts.lookupValue("Language", language);
+			boost::algorithm::to_upper(language);
+
+			if (language == "POLISH") {
+				speechSynthesis.language = SPEECH_POLISH;
+			}
+			else {
+				speechSynthesis.language = SPEECH_ENGLISH;
+			}
 		}
 
 	}
 	catch (...) {
-		speechSynthesis.indexFilePath = "ttsindex.json";
-		speechSynthesis.ignoreOlderThan = 0;
-		speechSynthesis.language = SPEECH_ENGLISH;
+		speechSynthesis.enabled = false;
 	}
 
 	return out;
