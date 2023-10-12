@@ -224,6 +224,9 @@ struct ConfigurationFile_Email {
 struct ConfigurationFile_SpeechSynthesis {
 	std::string indexFilePath;	//!< Path to JSON file with an index
 	int ignoreOlderThan;		//!< Automatically ignore email messages older than xx minutes
+	float maximumTimeout;		//!< Maximum timeout while converting from text to speed
+	int maximumTries;			//!< How many times the application will try to convert text to speech
+	uint8_t delayAfterFailTry;	//!< Delay in seconds between failed TTS conversion and next try
 	ConfigurationFile_Language language;	//!< Language to use for TSS conversion
 	float pitch;
 	float rate;

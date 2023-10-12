@@ -112,7 +112,7 @@ int EmailDownloader::downloadAllEmailsImap() {
 		}
 		else {
 			folder = st->getFolder(vmime::utility::path(config.serverConfig.folder));
-			SPDLOG_INFO("Downloading emails from custom configured folder {}", folder->getName().getBuffer());
+			SPDLOG_INFO("Downloading emails from custom configured folder: {}", folder->getName().getBuffer());
 		}
 
 		// open this folder read only, we only need to get email
@@ -178,10 +178,10 @@ int EmailDownloader::downloadAllEmailsImap() {
 			const std::string emailAddrStr = emailAddr.getEmail().toString();
 
 			// some logging
-			SPDLOG_DEBUG("Email sent by: {}, datetime: {}, emailBoostDate: {}, epoch: {}, topic: \"{}\"",
+			SPDLOG_DEBUG("Email sent by: {}, at time: {}, at UTC time: {}, epoch: {}, topic: \"{}\"",
 					emailAddrStr,
 					emailDate.generate(),
-					emailBoostDate.to_string(),
+					boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(epoch)),
 					epoch,
 					emailSubject.getConvertedText(
 							vmime::charset(vmime::charsets::UTF_8)

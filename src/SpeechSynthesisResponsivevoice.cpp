@@ -32,7 +32,7 @@
 #include "spdlog/fmt/bin_to_hex.h"
 #pragma pop_macro("U")
 
-SpeechSynthesisResponsivevoice::SpeechSynthesisResponsivevoice(std::string apiKey, float pitch, float rate) : key(apiKey) {
+SpeechSynthesisResponsivevoice::SpeechSynthesisResponsivevoice(std::string apiKey, float pitch, float rate, float httpTimeout) : key(apiKey) {
 	ptr = this;
 
 	std::stringstream stream;
@@ -42,6 +42,8 @@ SpeechSynthesisResponsivevoice::SpeechSynthesisResponsivevoice(std::string apiKe
 	stream.str("");
 	stream << std::fixed << std::setprecision(1) << rate;
 	this->rate = stream.str();
+
+	timeout = httpTimeout;
 
 }
 
@@ -146,8 +148,8 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.42.0");	// UserAgent identification
     curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 5L);			// how many HTTP redirects are allowed before cURL will gave up
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);			// maximum HTTP transaction timeout in seconds
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, 5000L);		// the same but in miliseconds ???? why doubled ??
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, (int)this->timeout);	// maximum HTTP transaction timeout in seconds
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, (int)(this->timeout * 1000.0f));				// the same but in miliseconds ???? why doubled ??
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
     curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
 

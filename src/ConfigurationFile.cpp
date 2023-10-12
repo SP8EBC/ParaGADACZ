@@ -708,6 +708,8 @@ bool ConfigurationFile::parse() {
 	// get 'SpeechSynthesis'
 	//
 	try {
+		int temp = 0;
+
 		libconfig::Setting &tts = root["SpeechSynthesis"];
 
 		tts.lookupValue("IndexFilePath", speechSynthesis.indexFilePath);
@@ -721,6 +723,23 @@ bool ConfigurationFile::parse() {
 
 		if (!tts.lookupValue("Rate", speechSynthesis.rate)) {
 			speechSynthesis.rate = 0.5f;
+		}
+
+		if (!tts.lookupValue("MaximumTimeout", speechSynthesis.maximumTimeout)) {
+			speechSynthesis.maximumTimeout = 5.0f;
+		}
+
+		if (!tts.lookupValue("MaximumTries", speechSynthesis.maximumTries)) {
+			speechSynthesis.maximumTries = 5;
+		}
+
+		if (!tts.lookupValue("DelayAfterFailTry", temp)) {
+			speechSynthesis.delayAfterFailTry = 0u;
+		}
+		else {
+			if (temp > 255 || temp < 0) {
+				speechSynthesis.delayAfterFailTry = 255u;
+			}
 		}
 
 		std::string language;

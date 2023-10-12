@@ -82,7 +82,11 @@ public:
 	 * 							be automatically ignored without checking if they are already converted
 	 * 							to speech and if they require such conversion
 	 */
-	void convertEmailsToSpeech(std::vector<EmailDownloaderMessage> & msgs, uint32_t ignoreOlderThan, const ConfigurationFile_Language lang);
+	void convertEmailsToSpeech(	std::vector<EmailDownloaderMessage> & msgs,
+								uint32_t ignoreOlderThan,
+								const ConfigurationFile_Language lang,
+								int maximumTries,
+								uint8_t delayAfterFailedTry);
 
 	virtual void convertTextToSpeech(std::string & text, std::string & outputFilename, ConfigurationFile_Language lang) = 0;
 

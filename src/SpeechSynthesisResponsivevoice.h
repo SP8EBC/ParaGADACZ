@@ -24,6 +24,11 @@ class SpeechSynthesisResponsivevoice: public SpeechSynthesis {
 	std::string rate;
 
 	/**
+	 * curl maximum timeout
+	 */
+	float timeout;
+
+	/**
 	 * Write callback uset to store HTTP server response
 	 */
 	void writeCallback(char* data, size_t data_size);
@@ -45,7 +50,7 @@ class SpeechSynthesisResponsivevoice: public SpeechSynthesis {
 	static size_t staticWriteCallback(char* get_data, size_t always_one, size_t get_data_size, void* userdata);
 
 public:
-	SpeechSynthesisResponsivevoice(std::string apiKey, float pitch, float rate);
+	SpeechSynthesisResponsivevoice(std::string apiKey, float pitch, float rate, float httpTimeout);
 	virtual ~SpeechSynthesisResponsivevoice();
 	virtual void convertTextToSpeech(std::string &text,
 			std::string &outputFilename, ConfigurationFile_Language lang);

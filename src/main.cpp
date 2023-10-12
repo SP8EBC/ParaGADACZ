@@ -206,7 +206,8 @@ int main(int argc, char **argv) {
 
 	speechSyntesis = std::make_shared<SpeechSynthesisResponsivevoice>(configurationFile->getSecrets().responsiveVoiceApiKey,
 																		configurationFile->getSpeechSynthesis().pitch,
-																		configurationFile->getSpeechSynthesis().rate);
+																		configurationFile->getSpeechSynthesis().rate,
+																		configurationFile->getSpeechSynthesis().maximumTimeout);
 
 	if (configurationFile->getEmailAnnonuncements().enabled) {
 		emailDownloader->downloadAllEmailsImap();
@@ -278,13 +279,13 @@ int main(int argc, char **argv) {
 		return downloadParseResult;
 	}
 
-	if (configurationFile->getEmailAnnonuncements().enabled) {
-		// try to open index file
-		if (speechSyntesis->readIndex(configurationFile->getSpeechSynthesis().indexFilePath) == -1) {
-			// create new one if it hasn't been created yet
-			speechSyntesis->createIndex(configurationFile->getSpeechSynthesis().indexFilePath);
-		}
-	}
+//	if (configurationFile->getEmailAnnonuncements().enabled) {
+//		// try to open index file
+//		if (speechSyntesis->readIndex(configurationFile->getSpeechSynthesis().indexFilePath) == -1) {
+//			// create new one if it hasn't been created yet
+//			speechSyntesis->createIndex(configurationFile->getSpeechSynthesis().indexFilePath);
+//		}
+//	}
 
 	// start to create playlist
 	playlistAssembler->start();

@@ -111,6 +111,13 @@ public:
 		return ts;
 	}
 
+	static boost::posix_time::ptime getPtimeFromEpoch (uint64_t epoch) {
+
+		std::time_t _time = (std::time_t)epoch;
+
+		return boost::posix_time::from_time_t(_time);
+	}
+
 	static long getEpochFromBoostLocalTime(const boost::local_time::local_date_time & in) {
 
 		boost::posix_time::ptime utc = in.utc_time();

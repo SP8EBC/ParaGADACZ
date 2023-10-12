@@ -111,13 +111,13 @@ PlaylistAssembler::PlaylistAssembler(std::shared_ptr<PlaylistSampler> & sampler,
 												configurationFile(config),
 												tts(configurationFile->getSecrets().responsiveVoiceApiKey,
 														configurationFile->getSpeechSynthesis().pitch,
-														configurationFile->getSpeechSynthesis().rate) {
+														configurationFile->getSpeechSynthesis().rate,
+														configurationFile->getSpeechSynthesis().maximumTimeout) {
 
 	this->playlist = std::make_shared<std::vector<std::string>>();
 }
 
 PlaylistAssembler::~PlaylistAssembler() {
-	// TODO Auto-generated destructor stub
 }
 
 PlaylistAssembler::PlaylistAssembler(const PlaylistAssembler &other) :
@@ -125,8 +125,8 @@ PlaylistAssembler::PlaylistAssembler(const PlaylistAssembler &other) :
 										configurationFile(other.configurationFile),
 										tts(configurationFile->getSecrets().responsiveVoiceApiKey,
 												configurationFile->getSpeechSynthesis().pitch,
-												configurationFile->getSpeechSynthesis().rate) {
-	// TODO Auto-generated constructor stub
+												configurationFile->getSpeechSynthesis().rate,
+												configurationFile->getSpeechSynthesis().maximumTimeout) {
 
 }
 
@@ -135,8 +135,8 @@ PlaylistAssembler::PlaylistAssembler(PlaylistAssembler &&other) :
 												configurationFile(other.configurationFile),
 												tts(configurationFile->getSecrets().responsiveVoiceApiKey,
 														configurationFile->getSpeechSynthesis().pitch,
-														configurationFile->getSpeechSynthesis().rate) {
-	// TODO Auto-generated constructor stub
+														configurationFile->getSpeechSynthesis().rate,
+														configurationFile->getSpeechSynthesis().maximumTimeout) {
 
 }
 
@@ -914,6 +914,9 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	const std::string indexFilename = configTts.indexFilePath;
 	const uint32_t ignoreOlderThan = configTts.ignoreOlderThan;
 	const ConfigurationFile_Language lang = configTts.language;
+	const float maximumTimeoutSec = configTts.maximumTimeout;
+	const int maximumTriesAfterFail = configTts.maximumTries;
+	const uint8_t delaySecondsAfterFail = configTts.delayAfterFailTry;
 
 	const uint64_t currentTime = TimeTools::getEpoch();
 
@@ -943,7 +946,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	}
 
 	// convert all emails into speech
-	tts.convertEmailsToSpeech(messages, ignoreOlderThan, lang);
+	tts.convertEmailsToSpeech(messages, ignoreOlderThan, lang, maximumTriesAfterFail, delaySecondsAfterFail);
 
 	// get an index after conversion, all messages should be here
 	const std::list<SpeechSynthesis_MessageIndexElem>& index = tts.getIndexContent();
@@ -956,6 +959,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 		if (elem.sayUntil != EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT) {
 			// check if this announcement can still be played
 			if (elem.sayUntil < currentTime) {
+				SPDLOG_DEBUG("Message from {} received at {} UTC is too old", elem.sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(elem.receivedAt)));
 				out.tooOld++;
 				continue;	// this is too old, so skip it
 			}

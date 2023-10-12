@@ -343,7 +343,11 @@ int SpeechSynthesis::getValidAnouncements(std::vector<std::string> &playlist) {
  * 							to speech and if they require such conversion
  */
 void SpeechSynthesis::convertEmailsToSpeech(
-		std::vector<EmailDownloaderMessage> &msgs, const uint32_t ignoreOlderThan, const ConfigurationFile_Language lang) {
+										std::vector<EmailDownloaderMessage> & msgs,
+										uint32_t ignoreOlderThan,
+										const ConfigurationFile_Language lang,
+										int maximumTries,
+										uint8_t delayAfterFailedTry) {
 
 	const uint64_t currentTime = TimeTools::getEpoch();
 
@@ -352,7 +356,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 	int converted = 0;
 
 	// counter of repetitions of
-	uint8_t repetitions = 0;
+	int repetitions = 0;
 
 	// context used for MD5
 	MD5_CTX md5_context;
@@ -379,6 +383,9 @@ void SpeechSynthesis::convertEmailsToSpeech(
 
 			// if this message has been sent before given date
 			if (emailDispatchTime + (const uint64_t)ignoreOlderThan * 60ULL < currentTime) {
+
+				SPDLOG_DEBUG("Message from {} received at {} UTC is too old", msg.getEmailAddress(), boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(msg.getEmailDispatchUtcTimestamp())));
+
 				tooOld++;
 				// continue to next one
 				continue;
@@ -431,9 +438,11 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// apply all text processing which is configured for that sender
 		std::string text = SpeechSynthesisStaticStuff::cutParagraphsFromText(msg.getPreprocess(), msg.getContent());
 
-		while(repetitions < SPEECHSYNTHESIS_ERROR_REPETITIONS_LIMIT) {
+		while(repetitions < maximumTries) {
 			try {
-				SPDLOG_INFO("Converting message sent by {} to speech", msg.getEmailAddress());
+				const uint64_t messageAge = TimeTools::getEpoch() - msg.getEmailDispatchUtcTimestamp();
+
+				SPDLOG_INFO("Converting to speech message sent by {} {} minutes ago", msg.getEmailAddress(), messageAge / 60);
 
 				// convert text to speech
 				this->convertTextToSpeech(text, indexElem.filename, lang);
@@ -453,7 +462,12 @@ void SpeechSynthesis::convertEmailsToSpeech(
 				SPDLOG_ERROR(ex.what());
 				repetitions++;
 
-				if (repetitions >= SPEECHSYNTHESIS_ERROR_REPETITIONS_LIMIT) {
+				if (delayAfterFailedTry > 0) {
+					SPDLOG_INFO("Sleeping for {} seconds before next try");
+					sleep(delayAfterFailedTry);
+				}
+
+				if (repetitions >= maximumTries) {
 					throw SpeechSynthesisTooMuchErrorsEx();
 				}
 			}
