@@ -107,7 +107,7 @@ bool Player::playNext() {
 
     // here there is a small hack not to append a prefix
     // if the filename already has a full path
-    if (fn.at(0) != '/' && filePrefix.length() > 1) {
+    if (currentFile->at(0) != '/' && filePrefix.length() > 1) {
     	fn = filePrefix + *currentFile;
     }
     else {

@@ -710,11 +710,9 @@ bool ConfigurationFile::parse() {
 	try {
 		int temp = 0;
 
-		libconfig::Setting &tts = root["SpeechSynthesis"];
+		if (emailAnnonuncements.enabled) {
 
-		tts.lookupValue("Enable", speechSynthesis.enabled);
-
-		if (speechSynthesis.enabled) {
+			libconfig::Setting &tts = root["SpeechSynthesis"];
 
 			if (!tts.lookupValue("IndexFilePath", speechSynthesis.indexFilePath)) {
 				SPDLOG_ERROR("Path to index file files hasn't been specified!");
@@ -770,7 +768,7 @@ bool ConfigurationFile::parse() {
 
 	}
 	catch (...) {
-		speechSynthesis.enabled = false;
+		emailAnnonuncements.enabled = false;
 	}
 
 	return out;
