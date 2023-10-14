@@ -307,7 +307,8 @@ void SpeechSynthesis::storeIndex() {
 void SpeechSynthesis::removeOldMessage(const SpeechSynthesis_MessageIndexElem &elem) {
 
 	indexContent.remove_if([&elem](const SpeechSynthesis_MessageIndexElem & indexElem) {
-		if (elem.filename == indexElem.filename) {
+		if (elem.receivedAt == indexElem.receivedAt &&
+				elem.sayUntil == indexElem.sayUntil) {
 			return true;
 		}
 		else {
