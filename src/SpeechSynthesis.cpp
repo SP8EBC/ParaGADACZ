@@ -293,6 +293,30 @@ void SpeechSynthesis::storeIndex() {
 }
 
 /**
+ * This is a callback used by Playlist Assembler on every message which is
+ * used on all outdated messages which should not be sayid and than removed
+ * from an index and probably even for a filesystem. The thing is that
+ * it must be used only for messages which are older than 'ignoreOlderThan'
+ * parameter in Text-to-seech configuration. Otherwise an email will be parsed
+ * and converted once again during next program startup, even that it won't
+ * be said at all. Playlist Assembler will detest it as an outdated one
+ * and call this once again etc.
+ *
+ * @param elem element to be removed
+ */
+void SpeechSynthesis::removeOldMessage(const SpeechSynthesis_MessageIndexElem &elem) {
+
+	indexContent.remove_if([&elem](const SpeechSynthesis_MessageIndexElem & indexElem) {
+		if (elem.filename == indexElem.filename) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	});
+}
+
+/**
  * Appends all announcements audio files which are valid (not too old) to be played now.
  * These paths are read from index file, so before a call to this file all new emails
  * must be converted from text to speech.
@@ -347,7 +371,7 @@ int SpeechSynthesis::getValidAnouncements(std::vector<std::string> &playlist) {
  * @param audioFilesBaseDir
  */
 void SpeechSynthesis::convertEmailsToSpeech(
-										std::vector<EmailDownloaderMessage> & msgs,
+										const std::vector<EmailDownloaderMessage> & msgs,
 										uint32_t ignoreOlderThan,
 										const ConfigurationFile_Language lang,
 										int maximumTries,

@@ -940,7 +940,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	}
 	catch (std::invalid_argument & ex) {
 		// path used as an index file is incorrect. maybe it points to a directory
-		// or devide, not to regular file
+		// or device, not to regular file
 		SPDLOG_ERROR("Text-to-speech conversion cannot continue");
 		throw ex; // bail out
 	}
@@ -961,6 +961,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 			if (elem.sayUntil < currentTime) {
 				SPDLOG_DEBUG("Message from {} received at {} UTC is too old", elem.sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(elem.receivedAt)));
 				out.tooOld++;
+				tts.removeOldMessage(elem);
 				continue;	// this is too old, so skip it
 			}
 		}
@@ -979,6 +980,12 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 		// append this file
 		playlist->push_back(elem.filename);
 		out.added++;
+	}
+
+	// check if an index shall be rewritten because some old messages was
+	// removed from it
+	if (out.tooOld > 0) {
+		tts.storeIndex();
 	}
 
 	return out;

@@ -95,8 +95,6 @@ void SpeechSynthesisResponsivevoice::convertTextToSpeech(std::string &text,
 	// string stream to assemble URL into
 	std::stringstream urlStream;
 
-    std::array<char, 128> header_string;
-
     char* effectiveUrl;
     long response_code;
 

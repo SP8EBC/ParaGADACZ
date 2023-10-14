@@ -1,0 +1,102 @@
+wx-station@wxstation-CF-31GG2HA1M:~/ParaGADACZ/Debug$ 
+wx-station@wxstation-CF-31GG2HA1M:~/ParaGADACZ/Debug$ sudo cp ParaGADACZ /usr/local/bin/ParaGADACZ 
+wx-station@wxstation-CF-31GG2HA1M:~/ParaGADACZ/Debug$ ParaGADACZ /etc/paragadacz.conf 
+[2023-10-13 09:04:16.278] [info] [Player.cpp:29] Initializing player
+[2023-10-13 09:04:16.284] [info] [main.cpp:133] ============ ParaGADACZ is starting =============
+[2023-10-13 09:04:16.284] [info] [main.cpp:134] ===== Mateusz Lubecki, Bielsko - Biała 2023 =====
+[2023-10-13 09:04:16.284] [info] [main.cpp:135] =================================================
+[2023-10-13 09:04:16.284] [info] [main.cpp:145] Using configuration file: /etc/paragadacz.conf
+[2023-10-13 09:04:16.284] [info] [ConfigurationFile.cpp:104] parsing configuration file: /etc/paragadacz.conf
+[2023-10-13 09:04:16.284] [info] [ConfigurationFile.cpp:188] SettingNotFoundException during parsing 'Inhibitor', inhibitor won't be enabled
+[2023-10-13 09:04:16.284] [warning] [ConfigurationFile.cpp:244] Configuration section for APRX log parser doesn't found. Using default values.
+[2023-10-13 09:04:16.285] [warning] [ConfigurationFile.cpp:266] Configuration section for pogoda.cc backend doesn't found. Using default base URL, not ignoring quality factors
+[2023-10-13 09:04:16.285] [warning] [ConfigurationFile.cpp:416] SettingNotFoundException during parsing 'CurrentWeather', e.getPath = .CurrentWeather
+[2023-10-13 09:04:16.285] [warning] [ConfigurationFile.cpp:442] SettingNotFoundException during parsing 'Trend', e.getPath = .Trend
+[2023-10-13 09:04:16.285] [warning] [ConfigurationFile.cpp:522] SettingNotFoundException during parsing 'ForecastMeteoblue', e.getPath = .ForecastMeteoblue
+[2023-10-13 09:04:16.285] [info] [ConfigurationFile.cpp:542] Avalanche warning configuration not present or malformed
+[2023-10-13 09:04:16.285] [debug] [ConfigurationFile.cpp:647] Email configuration, ImapAddress: poczta.interia.pl, ImapPort: 993, Username: fiji.meteo@interia.pl
+[2023-10-13 09:04:16.285] [debug] [ConfigurationFile.cpp:695] Configuration for sender cmop@met.gov.fj, single: true, eod: true, timed: false
+[2023-10-13 09:04:16.308] [info] [EmailDownloader.cpp:84] Downloading emails for fiji.meteo@interia.pl from IMAP server poczta.interia.pl:993
+[2023-10-13 09:04:19.462] [info] [EmailDownloader.cpp:115] Downloading emails from custom configured folder: comms
+[2023-10-13 09:04:23.969] [debug] [EmailDownloader.cpp:123] amount of emails in folder: 13
+[2023-10-13 09:04:25.472] [debug] [EmailDownloader.cpp:143] 13 emails was fetched
+[2023-10-13 09:04:25.473] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Wed, 11 Oct 2023 04:35:36 +1200, at UTC time: 2023-Oct-10 16:35:36, epoch: 1696955736, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:25.473] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:27.512] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Wed, 11 Oct 2023 11:16:34 +1200, at UTC time: 2023-Oct-10 23:16:34, epoch: 1696979794, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:27.512] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:29.587] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Wed, 11 Oct 2023 15:35:01 +1200, at UTC time: 2023-Oct-11 03:35:01, epoch: 1696995301, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:29.588] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:31.668] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Thu, 12 Oct 2023 00:47:20 +1200, at UTC time: 2023-Oct-11 12:47:20, epoch: 1697028440, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:31.668] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:33.762] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Thu, 12 Oct 2023 03:51:21 +1200, at UTC time: 2023-Oct-11 15:51:21, epoch: 1697039481, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:33.762] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:35.844] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Thu, 12 Oct 2023 06:40:29 +1200, at UTC time: 2023-Oct-11 18:40:29, epoch: 1697049629, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:35.844] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:37.922] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Thu, 12 Oct 2023 08:03:32 +1200, at UTC time: 2023-Oct-11 20:03:32, epoch: 1697054612, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:37.922] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:40.009] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Thu, 12 Oct 2023 11:48:38 +1200, at UTC time: 2023-Oct-11 23:48:38, epoch: 1697068118, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:40.009] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:42.095] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Thu, 12 Oct 2023 15:16:10 +1200, at UTC time: 2023-Oct-12 03:16:10, epoch: 1697080570, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:42.095] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:44.176] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Thu, 12 Oct 2023 19:15:58 +1200, at UTC time: 2023-Oct-12 07:15:58, epoch: 1697094958, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:44.176] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:46.254] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Thu, 12 Oct 2023 23:04:41 +1200, at UTC time: 2023-Oct-12 11:04:41, epoch: 1697108681, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:46.255] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:48.351] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Fri, 13 Oct 2023 06:28:32 +1200, at UTC time: 2023-Oct-12 18:28:32, epoch: 1697135312, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:48.352] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:50.444] [debug] [EmailDownloader.cpp:181] Email sent by: cmop@met.gov.fj, at time: Fri, 13 Oct 2023 07:53:09 +1200, at UTC time: 2023-Oct-12 19:53:09, epoch: 1697140389, topic: "Fiji Meteorological Service"
+[2023-10-13 09:04:50.445] [info] [EmailDownloader.cpp:205] Found a message from allowed sender: cmop@met.gov.fj
+[2023-10-13 09:04:52.565] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.565] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.565] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.565] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.565] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.565] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.565] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.565] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.565] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.566] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.566] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.566] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.566] [debug] [EmailDownloader.cpp:464] Email sender cmop@met.gov.fj found and validated
+[2023-10-13 09:04:52.566] [info] [EmailDownloader.cpp:474] 13 emails and theirs topics validated against configuration
+[2023-10-13 09:04:52.566] [info] [TrendDownloader.cpp:43] Trend data is disabled by configuration file
+[2023-10-13 09:04:52.566] [info] [PlaylistAssembler.cpp:145] initializing new playlist->
+[2023-10-13 09:04:52.566] [info] [PlaylistAssembler.cpp:923] Creating text-to-speech announcements for 13 email messages
+[2023-10-13 09:04:52.566] [info] [SpeechSynthesis.cpp:118] Loading speech synthesis index file /var/cache/paragadacz/ttsIndexMain.json
+[2023-10-13 09:04:52.567] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-10 16:35:36 UTC is too old
+[2023-10-13 09:04:52.567] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-10 23:16:34 UTC is too old
+[2023-10-13 09:04:52.567] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-11 03:35:01 UTC is too old
+[2023-10-13 09:04:52.567] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-11 12:47:20 UTC is too old
+[2023-10-13 09:04:52.567] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-11 15:51:21 UTC is too old
+[2023-10-13 09:04:52.567] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-11 18:40:29 UTC is too old
+[2023-10-13 09:04:52.567] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-11 20:03:32 UTC is too old
+[2023-10-13 09:04:52.568] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-11 23:48:38 UTC is too old
+[2023-10-13 09:04:52.568] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-12 03:16:10 UTC is too old
+[2023-10-13 09:04:52.568] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-12 07:15:58 UTC is too old
+[2023-10-13 09:04:52.568] [debug] [SpeechSynthesis.cpp:392] Message from cmop@met.gov.fj send at 2023-Oct-12 11:04:41 UTC is too old
+[2023-10-13 09:04:52.568] [info] [SpeechSynthesis.cpp:443] Message from cmop@met.gov.fj received at 2023-Oct-12 20:55:39 UTC has been converted tts before. No action needed
+[2023-10-13 09:04:52.568] [info] [SpeechSynthesis.cpp:443] Message from cmop@met.gov.fj received at 2023-Oct-12 20:55:41 UTC has been converted tts before. No action needed
+[2023-10-13 09:04:52.568] [info] [SpeechSynthesis.cpp:490] 0 messsages converted, 0 not valid, 11 too old
+[2023-10-13 09:04:52.568] [info] [PlaylistAssembler.cpp:954] text-to-speech index contains 3 messages which are converted
+[2023-10-13 09:04:52.568] [info] [main.cpp:342] Generated playlist has 4 elements
+[2023-10-13 09:04:52.568] [info] [main.cpp:345] Element: intro.ogg
+[2023-10-13 09:04:52.568] [info] [main.cpp:345] Element: 78233B8873C6268BC01373C0A76CC9A4.mp3
+[2023-10-13 09:04:52.568] [info] [main.cpp:345] Element: /var/cache/paragadacz/78233B8873C6268BC01373C0A76CC9A4.mp3
+[2023-10-13 09:04:52.568] [info] [main.cpp:345] Element: /var/cache/paragadacz/CC43D75530969602FCF3C39CD25A0970.mp3
+[2023-10-13 09:04:52.568] [info] [InhibitorAndPttControl.cpp:168] Parallel port is not used for PTT control.
+[2023-10-13 09:04:52.568] [info] [InhibitorAndPttControl.cpp:176] Checking serial port /dev/ttyUSB0
+[2023-10-13 09:04:52.777] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/intro.ogg
+[00007fca0000aa20] filesystem stream error: cannot open file /usr/local/share/paragadacz/intro.ogg (No such file or directory)
+[00005607a71f7590] main input error: Your input can't be opened
+[00005607a71f7590] main input error: VLC is unable to open the MRL 'file:///usr/local/share/paragadacz/intro.ogg'. Check the log for details.
+[2023-10-13 09:04:52.783] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/78233B8873C6268BC01373C0A76CC9A4.mp3
+[00007fca0000bbd0] filesystem stream error: cannot open file /usr/local/share/paragadacz/78233B8873C6268BC01373C0A76CC9A4.mp3 (No such file or directory)
+[00005607a71f7590] main input error: Your input can't be opened
+[00005607a71f7590] main input error: VLC is unable to open the MRL 'file:///usr/local/share/paragadacz/78233B8873C6268BC01373C0A76CC9A4.mp3'. Check the log for details.
+[2023-10-13 09:04:52.784] [info] [Player.cpp:117] Playling file file /var/cache/paragadacz/78233B8873C6268BC01373C0A76CC9A4.mp3
+[2023-10-13 09:07:22.904] [info] [Player.cpp:117] Playling file file /var/cache/paragadacz/CC43D75530969602FCF3C39CD25A0970.mp3
+[2023-10-13 09:09:52.738] [info] [Player.cpp:73] Last file has been played
+[2023-10-13 09:09:52.767] [info] [Player.cpp:61] Deinitializing player
+wx-station@wxstation-CF-31GG2HA1M:~/ParaGADACZ/Debug$ 
+
