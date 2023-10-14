@@ -76,8 +76,9 @@ public:
 	 * and call this once again etc.
 	 *
 	 * @param elem element to be removed
+	 * @param saveIndexAuto save index file after removal
 	 */
-	void removeOldMessage(const SpeechSynthesis_MessageIndexElem & elem);
+	void removeOldMessage(SpeechSynthesis_MessageIndexElem & elem, bool saveIndexAuto);
 
 	/**
 	 * Appends all announcements audio files which are valid (not too old) to be played now.

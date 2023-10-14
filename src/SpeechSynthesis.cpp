@@ -266,6 +266,10 @@ void SpeechSynthesis::storeIndex() {
 				SPDLOG_DEBUG("This is single-shot anouncement which will be sayd only once.");
 			}
 
+			if (elem.filename == "to_be_removed") {
+				continue;
+			}
+
 			// create single list object
 			nlohmann::basic_json _indexElementJson = nlohmann::json::object();
 
@@ -304,17 +308,17 @@ void SpeechSynthesis::storeIndex() {
  *
  * @param elem element to be removed
  */
-void SpeechSynthesis::removeOldMessage(const SpeechSynthesis_MessageIndexElem &elem) {
+void SpeechSynthesis::removeOldMessage(SpeechSynthesis_MessageIndexElem & elem, bool saveIndexAuto) {
 
-	indexContent.remove_if([&elem](const SpeechSynthesis_MessageIndexElem & indexElem) {
-		if (elem.receivedAt == indexElem.receivedAt &&
-				elem.sayUntil == indexElem.sayUntil) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	});
+	// only alter the element name with this special keyword, recognized
+	// by index saving routine. Element cannot be removed from a list
+	// directly, because this invalidates interators and may cause a crash
+	// if this method is called from inside a loop iterating through a list.
+	elem.filename = "to_be_removed";
+
+	if (saveIndexAuto) {
+		this->storeIndex();
+	}
 }
 
 /**

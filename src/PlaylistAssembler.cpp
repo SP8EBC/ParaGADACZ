@@ -961,7 +961,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 			if (elem.sayUntil < currentTime) {
 				SPDLOG_DEBUG("Message from {} received at {} UTC is too old", elem.sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(elem.receivedAt)));
 				out.tooOld++;
-				tts.removeOldMessage(elem);
+				tts.removeOldMessage(elem, false);
 				continue;	// this is too old, so skip it
 			}
 		}
