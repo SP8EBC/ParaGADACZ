@@ -954,7 +954,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	SPDLOG_INFO("text-to-speech index contains {} messages which are converted", index.size());
 
 	// go through emails
-	for (SpeechSynthesis_MessageIndexElem elem : index) {
+	for (SpeechSynthesis_MessageIndexElem & elem : index) {
 		// check if this is not single shot message
 		if (elem.sayUntil != EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT) {
 			// check if this announcement can still be played
