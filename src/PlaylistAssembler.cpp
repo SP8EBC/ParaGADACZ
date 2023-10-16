@@ -949,7 +949,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	tts.convertEmailsToSpeech(messages, ignoreOlderThan, lang, maximumTriesAfterFail, delaySecondsAfterFail, baseDir);
 
 	// get an index after conversion, all messages should be here
-	const std::list<SpeechSynthesis_MessageIndexElem>& index = tts.getIndexContent();
+	std::list<SpeechSynthesis_MessageIndexElem>& index = tts.getIndexContent();
 
 	SPDLOG_INFO("text-to-speech index contains {} messages which are converted", index.size());
 

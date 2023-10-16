@@ -113,7 +113,7 @@ public:
 	SpeechSynthesis();
 	virtual ~SpeechSynthesis();
 
-	const std::list<SpeechSynthesis_MessageIndexElem>& getIndexContent() const {
+	std::list<SpeechSynthesis_MessageIndexElem>& getIndexContent() {
 		return indexContent;
 	}
 };
