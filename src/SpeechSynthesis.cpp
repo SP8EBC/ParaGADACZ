@@ -241,6 +241,8 @@ void SpeechSynthesis::storeIndex() {
 		throw std::runtime_error("There is nothing to save an index for");
 	}
 
+	int toBeRemoved = 0;
+
 	// path to cache index in temporary directory
 	boost::filesystem::path index(this->indexFilename);
 
@@ -267,6 +269,7 @@ void SpeechSynthesis::storeIndex() {
 			}
 
 			if (elem.filename == "to_be_removed") {
+				toBeRemoved++;
 				continue;
 			}
 
@@ -293,6 +296,10 @@ void SpeechSynthesis::storeIndex() {
 	}
 	else {
 
+	}
+
+	if(toBeRemoved > 0) {
+		SPDLOG_DEBUG("{} entries has been removed from an index while saving it");
 	}
 }
 
