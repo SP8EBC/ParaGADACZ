@@ -506,7 +506,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 				repetitions++;
 
 				if (delayAfterFailedTry > 0) {
-					SPDLOG_INFO("Sleeping for {} seconds before next try");
+					SPDLOG_INFO("Sleeping for {} seconds before next try", delayAfterFailedTry);
 					sleep(delayAfterFailedTry);
 				}
 
