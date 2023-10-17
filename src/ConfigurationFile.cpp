@@ -751,7 +751,7 @@ bool ConfigurationFile::parse() {
 				speechSynthesis.maximumTries = 4;
 			}
 
-			if (!tts.lookupValue("DelayAfterFailTry", temp)) {
+			if (!tts.lookupValue("DelayAfterFailedTry", temp)) {
 				speechSynthesis.delayAfterFailTry = 0u;
 			}
 			else {
@@ -771,8 +771,8 @@ bool ConfigurationFile::parse() {
 				speechSynthesis.language = SPEECH_ENGLISH;
 			}
 
-			SPDLOG_DEBUG("IgnoreOlderThan: {}, Pitch: {}, Rate: {}", speechSynthesis.ignoreOlderThan, speechSynthesis.pitch, speechSynthesis.rate);
-			SPDLOG_DEBUG("MaximumTimeout: {}, MaximumTries: {}, DelayAfterFailTry: {}", speechSynthesis.maximumTimeout, speechSynthesis.maximumTries, speechSynthesis.delayAfterFailTry);
+			SPDLOG_DEBUG("SpeechSynthesis, IgnoreOlderThan: {}, Pitch: {}, Rate: {}", speechSynthesis.ignoreOlderThan, speechSynthesis.pitch, speechSynthesis.rate);
+			SPDLOG_DEBUG("SpeechSynthesis, MaximumTimeout: {}, MaximumTries: {}, DelayAfterFailTry: {}", speechSynthesis.maximumTimeout, speechSynthesis.maximumTries, speechSynthesis.delayAfterFailTry);
 		}
 
 	}
