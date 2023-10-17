@@ -758,6 +758,9 @@ bool ConfigurationFile::parse() {
 				if (temp > 255 || temp < 0) {
 					speechSynthesis.delayAfterFailTry = 255u;
 				}
+				else {
+					speechSynthesis.delayAfterFailTry = temp;
+				}
 			}
 
 			std::string language;
