@@ -740,7 +740,7 @@ bool ConfigurationFile::parse() {
 			if (!tts.lookupValue("MaximumTimeout", speechSynthesis.maximumTimeout)) {
 				speechSynthesis.maximumTimeout = 5.0f;
 			}
-			if (speechSynthesis.maximumTimeout <= 0.1f || speechSynthesis.maximumTimeout > 16.0f) {
+			if (speechSynthesis.maximumTimeout <= 0.1f || speechSynthesis.maximumTimeout > 64.0f) {
 				speechSynthesis.maximumTimeout = 5.0f;
 			}
 
