@@ -740,9 +740,15 @@ bool ConfigurationFile::parse() {
 			if (!tts.lookupValue("MaximumTimeout", speechSynthesis.maximumTimeout)) {
 				speechSynthesis.maximumTimeout = 5.0f;
 			}
+			if (speechSynthesis.maximumTimeout <= 0.1f || speechSynthesis.maximumTimeout > 16.0f) {
+				speechSynthesis.maximumTimeout = 5.0f;
+			}
 
 			if (!tts.lookupValue("MaximumTries", speechSynthesis.maximumTries)) {
 				speechSynthesis.maximumTries = 5;
+			}
+			if (speechSynthesis.maximumTries < 0 || speechSynthesis.maximumTries > 16) {
+				speechSynthesis.maximumTries = 4;
 			}
 
 			if (!tts.lookupValue("DelayAfterFailTry", temp)) {
@@ -764,6 +770,9 @@ bool ConfigurationFile::parse() {
 			else {
 				speechSynthesis.language = SPEECH_ENGLISH;
 			}
+
+			SPDLOG_DEBUG("IgnoreOlderThan: {}, Pitch: {}, Rate: {}", speechSynthesis.ignoreOlderThan, speechSynthesis.pitch, speechSynthesis.rate);
+			SPDLOG_DEBUG("MaximumTimeout: {}, MaximumTries: {}, DelayAfterFailTry: {}", speechSynthesis.maximumTimeout, speechSynthesis.maximumTries, speechSynthesis.delayAfterFailTry);
 		}
 
 	}

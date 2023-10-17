@@ -299,7 +299,7 @@ void SpeechSynthesis::storeIndex() {
 	}
 
 	if(toBeRemoved > 0) {
-		SPDLOG_DEBUG("{} entries has been removed from an index while saving it");
+		SPDLOG_DEBUG("{} entries has been removed from an index while saving it", toBeRemoved);
 	}
 }
 
