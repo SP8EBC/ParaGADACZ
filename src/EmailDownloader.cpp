@@ -8,6 +8,8 @@
 #include "EmailDownloader.h"
 #include "EmailDownloaderMessage.h"
 
+#include "exception/NoCommWithEmailServerEx.h"
+
 #include <unicode/unistr.h>
 #include <unicode/ustream.h>
 
@@ -269,14 +271,26 @@ int EmailDownloader::downloadAllEmailsImap() {
 	catch (const vmime::exceptions::illegal_state &e) {
 		SPDLOG_ERROR("illegal_state");
 		SPDLOG_ERROR(e.what());
+
+		if (config.bailoutIfNoCommWithServer) {
+			throw NoCommWithEmailServerEx();
+		}
 	}
 	catch (const vmime::exceptions::command_error &e) {
 		SPDLOG_ERROR("command_error");
 		SPDLOG_ERROR(e.what());
+
+		if (config.bailoutIfNoCommWithServer) {
+			throw NoCommWithEmailServerEx();
+		}
 	}
 	catch (const vmime::exceptions::net_exception &e) {
 		SPDLOG_ERROR("net_exception");
 		SPDLOG_ERROR(e.what());
+
+		if (config.bailoutIfNoCommWithServer) {
+			throw NoCommWithEmailServerEx();
+		}
 	}
 	catch (const std::exception& e)
 	{

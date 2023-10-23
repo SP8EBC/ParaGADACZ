@@ -216,6 +216,7 @@ struct ConfigurationFile_Email {
 	std::vector<ConfigurationFile_Email_AllowedSender> allowedSendersList;
 	int maximumLenghtInWords;	//!< Maximum size of one announcement in words
 	int inboxEmailFetchLenght;	//!< How many emails should be downloaded from an inbox
+	bool bailoutIfNoCommWithServer;//!< Abort program execution if there is no communication
 };
 
 /**
@@ -231,6 +232,7 @@ struct ConfigurationFile_SpeechSynthesis {
 	ConfigurationFile_Language language;	//!< Language to use for TSS conversion
 	float pitch;
 	float rate;
+	bool bailoutIfNoMailsToSay;	//!< Abort program execution if there is nothing new to say
 };
 
 class ConfigurationFile {

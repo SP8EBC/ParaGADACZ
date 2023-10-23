@@ -18,6 +18,7 @@
 #include "exception/DefinedStationNotFoundEx.h"
 #include "exception/AudioFileNotFoundEx.h"
 #include "exception/UnknownStationTypeEx.h"
+#include "exception/NoEmailsToSayEx.h"
 
 #include <algorithm>
 #include <functional>
@@ -917,6 +918,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	const int maximumTriesAfterFail = configTts.maximumTries;
 	const uint8_t delaySecondsAfterFail = configTts.delayAfterFailTry;
 	const std::string & baseDir = configTts.audioBasePath;
+	const bool bailoutIfNoNothingToSay = configTts.bailoutIfNoMailsToSay;
 
 	const uint64_t currentTime = TimeTools::getEpoch();
 
@@ -986,6 +988,13 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	// removed from it
 	if (out.tooOld > 0) {
 		tts.storeIndex();
+	}
+
+	if (out.added == 0) {
+		if (bailoutIfNoNothingToSay) {
+			SPDLOG_ERROR("There is nothing to say from email messages! Program will no continue!");
+			throw NoEmailsToSayEx();
+		}
 	}
 
 	return out;

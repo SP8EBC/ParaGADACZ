@@ -601,6 +601,7 @@ bool ConfigurationFile::parse() {
 		bool emailImapLookupResult = true;
 
 		emailAnnonuncements.enabled = false;
+		emailAnnonuncements.bailoutIfNoCommWithServer = false;
 		emailAnnonuncements.maximumLenghtInWords = 999;
 		emailAnnonuncements.serverConfig.startTls = false;
 		emailAnnonuncements.serverConfig.pop3Port = 0;
@@ -614,6 +615,7 @@ bool ConfigurationFile::parse() {
 
 		email.lookupValue("Enable", emailAnnonuncements.enabled);
 		email.lookupValue("MaximumLenghtInWords", emailAnnonuncements.maximumLenghtInWords);
+		email.lookupValue("BailoutIfNoCommWithServer", emailAnnonuncements.bailoutIfNoCommWithServer);
 
 		// how many allowed senders are configured
 		size_t allowedSendersSize = allowedSenders.getLength();
@@ -724,6 +726,13 @@ bool ConfigurationFile::parse() {
 				throw std::runtime_error("");
 			}
 
+
+			if (!tts.lookupValue("BailoutIfNoMailsToSay", speechSynthesis.bailoutIfNoMailsToSay)) {
+				speechSynthesis.bailoutIfNoMailsToSay = false;
+			}
+			else {
+				SPDLOG_INFO("Program will close if there is no emails to say!");
+			}
 
 			if (!tts.lookupValue("IgnoreOlderThan", speechSynthesis.ignoreOlderThan)) {
 				speechSynthesis.ignoreOlderThan = 0;
