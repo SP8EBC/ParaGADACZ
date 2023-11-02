@@ -233,6 +233,7 @@ struct ConfigurationFile_SpeechSynthesis {
 	float pitch;
 	float rate;
 	bool bailoutIfNoMailsToSay;	//!< Abort program execution if there is nothing new to say
+	bool placeAtTheEnd;			//!< Set to true to append anouncements at the end, just before outro
 };
 
 class ConfigurationFile {

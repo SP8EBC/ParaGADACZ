@@ -293,7 +293,7 @@ int main(int argc, char **argv) {
 	// append pre announcement
 	playlistAssembler->recordedAnnouncement(false);
 
-	if (configurationFile->getEmailAnnonuncements().enabled) {
+	if (configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().placeAtTheEnd == false) {
 		playlistAssembler->textToSpeechAnnouncements(validatedEmails);
 	}
 
@@ -330,6 +330,10 @@ int main(int argc, char **argv) {
 
 	// put post anouncements
 	playlistAssembler->recordedAnnouncement(true);
+
+	if (configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().placeAtTheEnd == true) {
+		playlistAssembler->textToSpeechAnnouncements(validatedEmails);
+	}
 
 	// add signoff
 	playlistAssembler->signOff();

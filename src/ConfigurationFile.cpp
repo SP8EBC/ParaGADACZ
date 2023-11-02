@@ -735,6 +735,11 @@ bool ConfigurationFile::parse() {
 				SPDLOG_INFO("Program will close if there is no emails to say!");
 			}
 
+			// placeAtTheEnd
+			if (!tts.lookupValue("PlaceAtTheEnd", speechSynthesis.placeAtTheEnd)) {
+				speechSynthesis.placeAtTheEnd = false;
+			}
+
 			if (!tts.lookupValue("IgnoreOlderThan", speechSynthesis.ignoreOlderThan)) {
 				speechSynthesis.ignoreOlderThan = 0;
 			}

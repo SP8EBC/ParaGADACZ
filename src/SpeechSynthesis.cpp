@@ -477,6 +477,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		if (it != indexContent.end()) {
 			// no need for further action
 			SPDLOG_INFO("Message from {} received at {} UTC has been converted tts before. No action needed", it->sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->receivedAt)) );
+			SPDLOG_DEBUG("Message will be playded until {} UTC", boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->sayUntil)));
 			continue;
 		}
 
