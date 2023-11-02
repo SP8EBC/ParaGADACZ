@@ -290,6 +290,8 @@ class ConfigurationFile {
 	std::vector<std::string> recordedSpecialAnnouncementPost;
 	std::vector<std::string> textSpecialAnnouncementPost;
 
+	std::string outro;
+
 	bool hasPogodacc;
 	bool hasAprx;
 	bool hasWeatherlink;
@@ -409,6 +411,10 @@ public:
 
 	const std::string& getZoneSpecificationFilePath() const {
 		return zoneSpecificationFilePath;
+	}
+
+	const std::string& getOutro() const {
+		return outro;
 	}
 };
 

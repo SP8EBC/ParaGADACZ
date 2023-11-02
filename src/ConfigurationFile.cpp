@@ -798,6 +798,9 @@ bool ConfigurationFile::parse() {
 		emailAnnonuncements.enabled = false;
 	}
 
+	// get outro
+	root.lookupValue("Outro", this->outro);
+
 	return out;
 }
 

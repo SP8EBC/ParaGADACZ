@@ -901,7 +901,9 @@ void PlaylistAssembler::avalancheWarning(AvalancheWarnings_Location location,
 }
 
 void PlaylistAssembler::signOff() {
-
+	if (configurationFile->getOutro().size() > 0) {
+		playlist->push_back(configurationFile->getOutro());
+	}
 }
 
 PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeechAnnouncements(
