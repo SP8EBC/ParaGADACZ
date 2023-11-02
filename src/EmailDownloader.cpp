@@ -357,6 +357,7 @@ std::tuple<bool, std::optional<uint64_t>> EmailDownloader::validateEmailSubject(
 		// check if until EOD anouncements are allowed
 		if (tokens.at(1) == "today") {
 			if (sender.eodAnnouncement) {
+				SPDLOG_INFO("Message sent by {} will be played until todays midnight");
 				out = true;
 			}
 			else {
@@ -378,6 +379,7 @@ std::tuple<bool, std::optional<uint64_t>> EmailDownloader::validateEmailSubject(
 				// check if sender is allowed to send timed anonuncement
 				if (sender.timedAnnouncement) {
 					out = true;
+					SPDLOG_INFO("Message sent by {} will be played until {} UTC", sender.emailAddress, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(timestampFromSubject)));
 				}
 				else {
 					SPDLOG_WARN("sender {} is not allowed to send timed anouncement", sender.emailAddress);

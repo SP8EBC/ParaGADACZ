@@ -730,7 +730,8 @@ bool ConfigurationFile::parse() {
 			if (!tts.lookupValue("BailoutIfNoMailsToSay", speechSynthesis.bailoutIfNoMailsToSay)) {
 				speechSynthesis.bailoutIfNoMailsToSay = false;
 			}
-			else {
+
+			if (speechSynthesis.bailoutIfNoMailsToSay) {
 				SPDLOG_INFO("Program will close if there is no emails to say!");
 			}
 
