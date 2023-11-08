@@ -963,7 +963,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 		if (elem.sayUntil != EMAILDOWNLOADERMESSAGE_VALIDUNTIL_SINGLESHOT_ANNOUNCEMENT) {
 			// check if this announcement can still be played
 			if (elem.sayUntil < currentTime) {
-				SPDLOG_DEBUG("Message from {} received at {} UTC is too old", elem.sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(elem.receivedAt)));
+				SPDLOG_DEBUG("Message from {} received at {} UTC is too old", elem.sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(elem.dispatchedAt)));
 				out.tooOld++;
 				tts.removeOldMessage(elem, false);
 				continue;	// this is too old, so skip it
@@ -971,7 +971,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 		}
 		else {
 			// if this is a single shot message check if it has been read before
-			if (elem.receivedAt == 0) {
+			if (elem.dispatchedAt == 0) {
 				out.singleShotReadBefore++;
 				continue;
 			}

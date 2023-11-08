@@ -16,6 +16,8 @@
 #include "TimeTools.h"
 #include "PlaylistAssembler.h"
 
+#include "secret.h"
+
 #pragma push_macro("U")
 #undef U
 // pragma required as a workaround of possible conflict with cpprestsdk.
@@ -79,7 +81,7 @@ BOOST_GLOBAL_FIXTURE (MyConfig);
 
 BOOST_AUTO_TEST_CASE(readIndex)
 {
-	SpeechSynthesisResponsivevoice synth("kvfbSITh");
+	SpeechSynthesisResponsivevoice synth("kvfbSITh", 0.5f, 0.5f, 30.0f);
 
 	const std::string fn = "./test_input/ttsIndex1.json";
 
@@ -94,14 +96,14 @@ BOOST_AUTO_TEST_CASE(readIndex)
 	BOOST_CHECK_EQUAL("test1.mp3", it->filename);
 	BOOST_CHECK_EQUAL(12345, it->sayUntil);
 	BOOST_CHECK_EQUAL("test@interia.pl", it->sender);
-	BOOST_CHECK_EQUAL(12340, it->receivedAt);
+	BOOST_CHECK_EQUAL(12340, it->dispatchedAt);
 
 	BOOST_CHECK_NO_THROW(it++);
 
 	BOOST_CHECK_EQUAL("test2.mp3", it->filename);
 	BOOST_CHECK_EQUAL(54321, it->sayUntil);
 	BOOST_CHECK_EQUAL("test@gmail.pl", it->sender);
-	BOOST_CHECK_EQUAL(54300, it->receivedAt);
+	BOOST_CHECK_EQUAL(54300, it->dispatchedAt);
 }
 
 BOOST_AUTO_TEST_CASE(validateSingleShot)
@@ -154,19 +156,19 @@ BOOST_AUTO_TEST_CASE(validateSingleShot)
 	BOOST_CHECK_EQUAL(messages.at(0).getValidUntil(), 666ULL);
 	BOOST_CHECK_EQUAL(messages.at(0).getEmailReceiveUtcTimestmp(), emailReceiveUtcTimestmp);
 
-	SpeechSynthesisResponsivevoice synth("kvfbSITh");
+	SpeechSynthesisResponsivevoice synth(RESPONSIVEVOICE, 0.5f, 0.5f, 30.0f);
 
 	const std::string fn = "./test_input/ttsIndex3.json";
 
 	BOOST_CHECK_NO_THROW(synth.createIndex(fn));
 	BOOST_CHECK_EQUAL(synth.getIndexContent().size(), 0);
 
-	synth.convertEmailsToSpeech(messages, 0, SPEECH_POLISH);
+	synth.convertEmailsToSpeech(messages, 0, SPEECH_POLISH, 10, 10, "");
 	BOOST_CHECK_EQUAL(synth.getIndexContent().size(), 1);
 
 	BOOST_CHECK_NO_THROW(synth.storeIndex());
 
-	SpeechSynthesisResponsivevoice synthRead("xxxxx2");
+	SpeechSynthesisResponsivevoice synthRead("xxxxx2", 0.5f, 0.5f, 30.0f);
 	BOOST_CHECK_NO_THROW(synthRead.readIndex(fn));
 	BOOST_CHECK_EQUAL(synthRead.getIndexContent().size(), 1);
 
@@ -179,7 +181,7 @@ BOOST_AUTO_TEST_CASE(validateSingleShot)
 	// is written one more time this value is stored as zero
 	BOOST_CHECK_EQUAL(firstElem.sayUntil, 666ULL);
 	BOOST_CHECK_EQUAL(firstElem.sender, sender.emailAddress);
-	BOOST_CHECK_EQUAL(firstElem.receivedAt, 0);
+	BOOST_CHECK_EQUAL(firstElem.dispatchedAt, 0);
 	BOOST_CHECK_EQUAL(firstElem.filename, "202CB962AC59075B964B07152D234B70.mp3");
 
 
@@ -190,9 +192,9 @@ BOOST_AUTO_TEST_CASE(playlisttAssemblerSingleShot)
 	std::string address2("noreply@bandcamp.com");
 	std::string address(sender.emailAddress);
 	std::string topic2 = "single";
-	std::string emailDispatchDateTime = "Wed, 6 Sep 2023 13:56:31 +0000";
-	uint64_t emailDispatchUtcTimestamp = 1694008591ULL;
-	uint64_t emailReceiveUtcTimestmp = 1694533288ULL;
+	std::string emailDispatchDateTime = "Wed, 8 Nov 2023 13:56:31 +0000";
+	uint64_t emailDispatchUtcTimestamp = 1699451791ULL;
+	uint64_t emailReceiveUtcTimestmp = 1699451791ULL;
 	std::string originalEncoding = "7bit";
 	std::string originalCharset = "us-ascii";
 
@@ -200,8 +202,8 @@ BOOST_AUTO_TEST_CASE(playlisttAssemblerSingleShot)
 
 	// copy date time into tm structure
 	datetime.tm_year = 2023;
-	datetime.tm_mon = 9;
-	datetime.tm_mday = 20;
+	datetime.tm_mon = 11;
+	datetime.tm_mday = 8;
 	datetime.tm_hour = 13;
 	datetime.tm_min = 56;
 	datetime.tm_sec = 31;
@@ -230,9 +232,11 @@ BOOST_AUTO_TEST_CASE(playlisttAssemblerSingleShot)
 	messages.push_back(msg1);
 
 	// used only to erase tts index, which also remove tts
-	SpeechSynthesisResponsivevoice synth("kvfbSITh");
+	SpeechSynthesisResponsivevoice synth(RESPONSIVEVOICE, 0.5f, 0.5f, 30.0f);
 
-	BOOST_CHECK_NO_THROW(synth.createIndex(configuration_file_first->getSpeechSynthesis().indexFilePath));
+	const ConfigurationFile_SpeechSynthesis speech_synthesis_config = configuration_file_first->getSpeechSynthesis();
+
+	BOOST_CHECK_NO_THROW(synth.createIndex(speech_synthesis_config.indexFilePath));
 
 	// assemble playlist with that announcement
 	PlaylistAssembler assembler(playlist_sampler, configuration_file_first);

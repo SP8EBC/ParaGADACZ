@@ -19,7 +19,7 @@ struct SpeechSynthesis_MessageIndexElem {
 	std::string filename;	//!< Filename with an synthesized announcement
 	uint64_t sayUntil;		//!< A timestamp after which this announcement will not be said
 	std::string sender;		//!< Sender of this message
-	uint64_t receivedAt;	//!< Time when this announcement was received
+	uint64_t dispatchedAt;	//!< Time when this announcement was sent by a sender
 };
 
 class SpeechSynthesis_FindValidAnouncements_UnaryPredicate {

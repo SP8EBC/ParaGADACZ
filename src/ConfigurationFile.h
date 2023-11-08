@@ -226,6 +226,7 @@ struct ConfigurationFile_SpeechSynthesis {
 	std::string indexFilePath;	//!< Path to JSON file with an index
 	std::string audioBasePath;	//!<
 	int ignoreOlderThan;		//!< Automatically ignore email messages older than xx minutes
+	bool takeOnlyLastEmail;		//!<
 	float maximumTimeout;		//!< Maximum timeout while converting from text to speed
 	int maximumTries;			//!< How many times the application will try to convert text to speech
 	uint8_t delayAfterFailTry;	//!< Delay in seconds between failed TTS conversion and next try

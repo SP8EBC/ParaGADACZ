@@ -59,7 +59,7 @@ void SpeechSynthesis::createIndex(const std::string &indexFn) {
 	_indexElementJson["filename"] = "dummy";
 	_indexElementJson["sayUntil"] = 0;
 	_indexElementJson["sender"] = "dummy";
-	_indexElementJson["receivedAt"] = 0;
+	_indexElementJson["dispatchedAt"] = 0;
 
 	// and add to the array
 	arr.push_back(_indexElementJson);
@@ -168,10 +168,10 @@ int SpeechSynthesis::readIndex(const std::string &indexFn) {
 								std::string _filename = elem["filename"];
 								uint64_t _sayUntil = elem["sayUntil"];
 								std::string _sender = elem["sender"];
-								uint64_t _receivedAt = elem["receivedAt"];
+								uint64_t _dispatched = elem["dispatchedAt"];
 
 								// check if this is dummy entry
-								if (_sayUntil == 0 && _receivedAt == 0) {
+								if (_sayUntil == 0 && _dispatched == 0) {
 									continue;	// ignore it
 								}
 
@@ -182,14 +182,15 @@ int SpeechSynthesis::readIndex(const std::string &indexFn) {
 									// message read before.
 									// PlaylistSampler works in the way that it
 									// ignores everything with _receivedAt set to 0
-									_receivedAt = 0;
+									SPDLOG_DEBUG("Message sent by {} at {} is a singleshot, which was read before and now only read from index.", _sender, _dispatched);
+									_dispatched = 0;
 								}
 
 								// create index element
 								SpeechSynthesis_MessageIndexElem indexElement;
 
 								indexElement.filename = _filename;
-								indexElement.receivedAt = _receivedAt;
+								indexElement.dispatchedAt = _dispatched;
 								indexElement.sayUntil = _sayUntil;
 								indexElement.sender = _sender;
 
@@ -280,7 +281,7 @@ void SpeechSynthesis::storeIndex() {
 			_indexElementJson["filename"] = (elem.filename);
 			_indexElementJson["sayUntil"] = (elem.sayUntil);
 			_indexElementJson["sender"] = (elem.sender);
-			_indexElementJson["receivedAt"] = (elem.receivedAt);
+			_indexElementJson["dispatchedAt"] = (elem.dispatchedAt);
 
 			// and add to the array
 			arr.push_back(_indexElementJson);
@@ -476,7 +477,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// this message has been already converted
 		if (it != indexContent.end()) {
 			// no need for further action
-			SPDLOG_INFO("Message from {} received at {} UTC has been converted tts before. No action needed", it->sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->receivedAt)) );
+			SPDLOG_INFO("Message from {} sent at {} UTC has been converted tts before. No action needed", it->sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->dispatchedAt)) );
 			SPDLOG_DEBUG("Message will be playded until {} UTC", boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->sayUntil)));
 			continue;
 		}
@@ -491,7 +492,7 @@ void SpeechSynthesis::convertEmailsToSpeech(
 				// convert text to speech
 				this->convertTextToSpeech(text, indexElem.filename, lang);
 
-				indexElem.receivedAt = msg.getEmailReceiveUtcTimestmp();
+				indexElem.dispatchedAt = msg.getEmailDispatchUtcTimestamp();
 				indexElem.sayUntil = msg.getValidUntil();
 				indexElem.sender = msg.getEmailAddress();
 

@@ -703,6 +703,7 @@ bool ConfigurationFile::parse() {
 	}
 	catch (...) {
 		emailAnnonuncements.enabled = false;
+		SPDLOG_WARN("Email anonuncements not enabled due to error in parsing config file");
 		; // this section is not mandatory, so do nothing if it doesn't exist
 	}
 
@@ -726,6 +727,9 @@ bool ConfigurationFile::parse() {
 				throw std::runtime_error("");
 			}
 
+			if (!tts.lookupValue("TakeOnlyLastEmail", speechSynthesis.takeOnlyLastEmail)) {
+				speechSynthesis.takeOnlyLastEmail = false;
+			}
 
 			if (!tts.lookupValue("BailoutIfNoMailsToSay", speechSynthesis.bailoutIfNoMailsToSay)) {
 				speechSynthesis.bailoutIfNoMailsToSay = false;

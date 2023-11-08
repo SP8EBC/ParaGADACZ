@@ -1,45 +1,45 @@
 Running 3 test cases...
 Entering test module "SpeechSynthesis_test"
-../src/SpeechSynthesis_test.cpp(80): Entering test case "readIndex"
-../src/SpeechSynthesis_test.cpp(88): info: check 'no exceptions thrown by result = synth.readIndex(fn)' has passed
-../src/SpeechSynthesis_test.cpp(89): info: check 2 == result has passed
-../src/SpeechSynthesis_test.cpp(94): info: check "test1.mp3" == it->filename has passed
-../src/SpeechSynthesis_test.cpp(95): info: check 12345 == it->sayUntil has passed
-../src/SpeechSynthesis_test.cpp(96): info: check "test@interia.pl" == it->sender has passed
-../src/SpeechSynthesis_test.cpp(97): info: check 12340 == it->receivedAt has passed
-../src/SpeechSynthesis_test.cpp(99): info: check 'no exceptions thrown by it++' has passed
-../src/SpeechSynthesis_test.cpp(101): info: check "test2.mp3" == it->filename has passed
-../src/SpeechSynthesis_test.cpp(102): info: check 54321 == it->sayUntil has passed
-../src/SpeechSynthesis_test.cpp(103): info: check "test@gmail.pl" == it->sender has passed
-../src/SpeechSynthesis_test.cpp(104): info: check 54300 == it->receivedAt has passed
-../src/SpeechSynthesis_test.cpp(80): Leaving test case "readIndex"; testing time: 21814us
-../src/SpeechSynthesis_test.cpp(107): Entering test case "validateSingleShot"
-../src/SpeechSynthesis_test.cpp(152): info: check amountEmailsValidated == 1 has passed
-../src/SpeechSynthesis_test.cpp(154): info: check messages.at(0).getValidUntil() == 666ULL has passed
-../src/SpeechSynthesis_test.cpp(155): info: check messages.at(0).getEmailReceiveUtcTimestmp() == emailReceiveUtcTimestmp has passed
-../src/SpeechSynthesis_test.cpp(161): info: check 'no exceptions thrown by synth.createIndex(fn)' has passed
-../src/SpeechSynthesis_test.cpp(162): info: check synth.getIndexContent().size() == 0 has passed
-../src/SpeechSynthesis_test.cpp(165): info: check synth.getIndexContent().size() == 1 has passed
-../src/SpeechSynthesis_test.cpp(167): info: check 'no exceptions thrown by synth.storeIndex()' has passed
-../src/SpeechSynthesis_test.cpp(170): info: check 'no exceptions thrown by synthRead.readIndex(fn)' has passed
-../src/SpeechSynthesis_test.cpp(171): info: check synthRead.getIndexContent().size() == 1 has passed
-../src/SpeechSynthesis_test.cpp(180): info: check firstElem.sayUntil == 666ULL has passed
-../src/SpeechSynthesis_test.cpp(181): info: check firstElem.sender == sender.emailAddress has passed
-../src/SpeechSynthesis_test.cpp(182): info: check firstElem.receivedAt == 0 has passed
-../src/SpeechSynthesis_test.cpp(183): info: check firstElem.filename == "202CB962AC59075B964B07152D234B70.mp3" has passed
-../src/SpeechSynthesis_test.cpp(107): Leaving test case "validateSingleShot"; testing time: 731161us
-../src/SpeechSynthesis_test.cpp(188): Entering test case "playlisttAssemblerSingleShot"
-../src/SpeechSynthesis_test.cpp(235): info: check 'no exceptions thrown by synth.createIndex(configuration_file_first->getSpeechSynthesis().indexFilePath)' has passed
-../src/SpeechSynthesis_test.cpp(241): info: check 'no exceptions thrown by assembler.start()' has passed
-../src/SpeechSynthesis_test.cpp(242): info: check 'no exceptions thrown by stats = assembler.textToSpeechAnnouncements(messages)' has passed
-../src/SpeechSynthesis_test.cpp(247): info: check 1 == stats.added has passed
-../src/SpeechSynthesis_test.cpp(248): info: check 1 == stats.addedSingleShot has passed
-../src/SpeechSynthesis_test.cpp(249): info: check 2 == playlist_ptr->size() has passed
-../src/SpeechSynthesis_test.cpp(250): info: check "intro.ogg" == playlist[i++] has passed
-../src/SpeechSynthesis_test.cpp(251): info: check "202CB962AC59075B964B07152D234B70.mp3" == playlist[i++] has passed
-../src/SpeechSynthesis_test.cpp(254): info: check 'no exceptions thrown by assembler.start()' has passed
-../src/SpeechSynthesis_test.cpp(255): info: check 'no exceptions thrown by stats = assembler.textToSpeechAnnouncements(messages)' has passed
-../src/SpeechSynthesis_test.cpp(260): info: check 0 == stats.added has passed
-../src/SpeechSynthesis_test.cpp(261): info: check 0 == stats.addedSingleShot has passed
-../src/SpeechSynthesis_test.cpp(188): Leaving test case "playlisttAssemblerSingleShot"; testing time: 358158us
-Leaving test module "SpeechSynthesis_test"; testing time: 1111352us
+../src/SpeechSynthesis_test.cpp(82): Entering test case "readIndex"
+../src/SpeechSynthesis_test.cpp(90): info: check 'no exceptions thrown by result = synth.readIndex(fn)' has passed
+../src/SpeechSynthesis_test.cpp(91): info: check 2 == result has passed
+../src/SpeechSynthesis_test.cpp(96): info: check "test1.mp3" == it->filename has passed
+../src/SpeechSynthesis_test.cpp(97): info: check 12345 == it->sayUntil has passed
+../src/SpeechSynthesis_test.cpp(98): info: check "test@interia.pl" == it->sender has passed
+../src/SpeechSynthesis_test.cpp(99): info: check 12340 == it->dispatchedAt has passed
+../src/SpeechSynthesis_test.cpp(101): info: check 'no exceptions thrown by it++' has passed
+../src/SpeechSynthesis_test.cpp(103): info: check "test2.mp3" == it->filename has passed
+../src/SpeechSynthesis_test.cpp(104): info: check 54321 == it->sayUntil has passed
+../src/SpeechSynthesis_test.cpp(105): info: check "test@gmail.pl" == it->sender has passed
+../src/SpeechSynthesis_test.cpp(106): info: check 54300 == it->dispatchedAt has passed
+../src/SpeechSynthesis_test.cpp(82): Leaving test case "readIndex"; testing time: 267us
+../src/SpeechSynthesis_test.cpp(109): Entering test case "validateSingleShot"
+../src/SpeechSynthesis_test.cpp(154): info: check amountEmailsValidated == 1 has passed
+../src/SpeechSynthesis_test.cpp(156): info: check messages.at(0).getValidUntil() == 666ULL has passed
+../src/SpeechSynthesis_test.cpp(157): info: check messages.at(0).getEmailReceiveUtcTimestmp() == emailReceiveUtcTimestmp has passed
+../src/SpeechSynthesis_test.cpp(163): info: check 'no exceptions thrown by synth.createIndex(fn)' has passed
+../src/SpeechSynthesis_test.cpp(164): info: check synth.getIndexContent().size() == 0 has passed
+../src/SpeechSynthesis_test.cpp(167): info: check synth.getIndexContent().size() == 1 has passed
+../src/SpeechSynthesis_test.cpp(169): info: check 'no exceptions thrown by synth.storeIndex()' has passed
+../src/SpeechSynthesis_test.cpp(172): info: check 'no exceptions thrown by synthRead.readIndex(fn)' has passed
+../src/SpeechSynthesis_test.cpp(173): info: check synthRead.getIndexContent().size() == 1 has passed
+../src/SpeechSynthesis_test.cpp(182): info: check firstElem.sayUntil == 666ULL has passed
+../src/SpeechSynthesis_test.cpp(183): info: check firstElem.sender == sender.emailAddress has passed
+../src/SpeechSynthesis_test.cpp(184): info: check firstElem.dispatchedAt == 0 has passed
+../src/SpeechSynthesis_test.cpp(185): info: check firstElem.filename == "202CB962AC59075B964B07152D234B70.mp3" has passed
+../src/SpeechSynthesis_test.cpp(109): Leaving test case "validateSingleShot"; testing time: 76334us
+../src/SpeechSynthesis_test.cpp(190): Entering test case "playlisttAssemblerSingleShot"
+../src/SpeechSynthesis_test.cpp(239): info: check 'no exceptions thrown by synth.createIndex(speech_synthesis_config.indexFilePath)' has passed
+../src/SpeechSynthesis_test.cpp(245): info: check 'no exceptions thrown by assembler.start()' has passed
+../src/SpeechSynthesis_test.cpp(246): info: check 'no exceptions thrown by stats = assembler.textToSpeechAnnouncements(messages)' has passed
+../src/SpeechSynthesis_test.cpp(251): info: check 1 == stats.added has passed
+../src/SpeechSynthesis_test.cpp(252): info: check 1 == stats.addedSingleShot has passed
+../src/SpeechSynthesis_test.cpp(253): info: check 2 == playlist_ptr->size() has passed
+../src/SpeechSynthesis_test.cpp(254): info: check "intro.ogg" == playlist[i++] has passed
+../src/SpeechSynthesis_test.cpp(255): info: check "202CB962AC59075B964B07152D234B70.mp3" == playlist[i++] has passed
+../src/SpeechSynthesis_test.cpp(258): info: check 'no exceptions thrown by assembler.start()' has passed
+../src/SpeechSynthesis_test.cpp(259): info: check 'no exceptions thrown by stats = assembler.textToSpeechAnnouncements(messages)' has passed
+../src/SpeechSynthesis_test.cpp(264): info: check 0 == stats.added has passed
+../src/SpeechSynthesis_test.cpp(265): info: check 0 == stats.addedSingleShot has passed
+../src/SpeechSynthesis_test.cpp(190): Leaving test case "playlisttAssemblerSingleShot"; testing time: 64648us
+Leaving test module "SpeechSynthesis_test"; testing time: 141331us
