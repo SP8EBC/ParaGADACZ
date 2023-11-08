@@ -34,6 +34,8 @@ constexpr SpeechSynthesis_FindValidAnouncements_UnaryPredicate SpeechSynthesis_g
 
 #define SPEECHSYNTHESIS_ERROR_REPETITIONS_LIMIT	5
 
+#define SPEECHSYNTHESIS_VALIDUNTIL_FOR_NOT_LAST_MESSAGES	123u
+
 SpeechSynthesis::SpeechSynthesis() {
 	// TODO Auto-generated constructor stub
 
@@ -182,7 +184,7 @@ int SpeechSynthesis::readIndex(const std::string &indexFn) {
 									// message read before.
 									// PlaylistSampler works in the way that it
 									// ignores everything with _receivedAt set to 0
-									SPDLOG_DEBUG("Message sent by {} at {} is a singleshot, which was read before and now only read from index.", _sender, _dispatched);
+									SPDLOG_DEBUG("Message sent by {} at {} is a singleshot, which was read before and now only read from the index.", _sender, _dispatched);
 									_dispatched = 0;
 								}
 
@@ -375,6 +377,7 @@ int SpeechSynthesis::getValidAnouncements(std::vector<std::string> &playlist) {
  * Takes a vector with emails taken from inbox, checks if they have been already
  * converted to speech and does that conversion if it is neccessary.
  * @param msgs vector of emails from an inbox
+ * @param useOnlyNewestOne
  * @param ignoreOlderThan if set to non zero all emails older than this amount of minutes will
  * 							be automatically ignored without checking if they are already converted
  * 							to speech and if they require such conversion
@@ -383,8 +386,9 @@ int SpeechSynthesis::getValidAnouncements(std::vector<std::string> &playlist) {
  * @param delayAfterFailedTry
  * @param audioFilesBaseDir
  */
-void SpeechSynthesis::convertEmailsToSpeech(
-										const std::vector<EmailDownloaderMessage> & msgs,
+SpeechSynthesis_ConvertEmailsToSpeech_Stats SpeechSynthesis::convertEmailsToSpeech(
+										std::vector<EmailDownloaderMessage> & msgs,
+										bool useOnlyNewestOne,
 										uint32_t ignoreOlderThan,
 										const ConfigurationFile_Language lang,
 										int maximumTries,
@@ -396,6 +400,9 @@ void SpeechSynthesis::convertEmailsToSpeech(
 	int notValid = 0;
 	int tooOld = 0;
 	int converted = 0;
+	int oldSingleshot = 0;
+	int notNewestSetAsOutdated = -1;
+	long latestDispatchTimestamp = 0ULL;
 
 	// counter of repetitions of
 	int repetitions = 0;
@@ -407,6 +414,44 @@ void SpeechSynthesis::convertEmailsToSpeech(
 	MD5_Init(&md5_context);
 
 	std::array<uint8_t, MD5_DIGEST_LENGTH> md5hashBinary;
+
+	// if an user want to play only the newest email from all validated
+	if (useOnlyNewestOne) {
+
+		notNewestSetAsOutdated = 0;
+
+		// go through all emails and find the newest one
+		for (EmailDownloaderMessage & msg : msgs) {
+
+			// skip any invalid messages
+			if (!msg.isValidated()) {
+				continue;
+			}
+
+			const long dispatchTsOfThisMsg = msg.getEmailDispatchUtcTimestamp();
+
+			// and look for latest dispatch timestamp
+			if (dispatchTsOfThisMsg > latestDispatchTimestamp) {
+				latestDispatchTimestamp = dispatchTsOfThisMsg;
+			}
+		}
+
+		// go through all emails once again and set as "too old"
+		// all messages except the latest one
+		for (EmailDownloaderMessage & msg : msgs) {
+			// skip any invalid messages
+			if (!msg.isValidated()) {
+				continue;
+			}
+
+			if (msg.getEmailDispatchUtcTimestamp() != latestDispatchTimestamp) {
+				notNewestSetAsOutdated++;
+				msg.setValidUntil(SPEECHSYNTHESIS_VALIDUNTIL_FOR_NOT_LAST_MESSAGES);
+			}
+		}
+
+		SPDLOG_DEBUG("latestDispatchTimestamp: {}, setAsOutdated: {}", latestDispatchTimestamp, notNewestSetAsOutdated);
+	}
 
 	// go through all messages in vector
 	for (EmailDownloaderMessage msg : msgs) {
@@ -432,6 +477,11 @@ void SpeechSynthesis::convertEmailsToSpeech(
 				// continue to next one
 				continue;
 			}
+		}
+
+		if (msg.getValidUntil() == SPEECHSYNTHESIS_VALIDUNTIL_FOR_NOT_LAST_MESSAGES) {
+			SPDLOG_DEBUG("Message from {} sent at {} UTC is not the newest one received", msg.getEmailAddress(), boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(msg.getEmailDispatchUtcTimestamp())));
+			continue;
 		}
 
 		// index element to store information about currently processed email
@@ -477,9 +527,15 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		// this message has been already converted
 		if (it != indexContent.end()) {
 			// no need for further action
-			SPDLOG_INFO("Message from {} sent at {} UTC has been converted tts before. No action needed", it->sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->dispatchedAt)) );
-			SPDLOG_DEBUG("Message will be playded until {} UTC", boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->sayUntil)));
-			continue;
+			// but print log only it this isn't single shot message played before
+			if (it->dispatchedAt != 0) {
+				SPDLOG_INFO("Message from {} sent at {} UTC has been converted tts before. No action needed", it->sender, boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->dispatchedAt)) );
+				SPDLOG_DEBUG("Message will be playded until {} UTC", boost::posix_time::to_simple_string(TimeTools::getPtimeFromEpoch(it->sayUntil)));
+			}
+			else {
+				oldSingleshot++;
+			}
+			continue;	// go to next message
 		}
 
 		// apply all text processing which is configured for that sender
@@ -525,7 +581,18 @@ void SpeechSynthesis::convertEmailsToSpeech(
 		storeIndex();
 	}
 
-	SPDLOG_INFO("{} messsages converted, {} not valid, {} too old", converted, notValid, tooOld);
+	SPDLOG_INFO("{} messsages converted, {} not valid, {} too old, {} singleshots read before", converted, notValid, tooOld, oldSingleshot);
+
+	SpeechSynthesis_ConvertEmailsToSpeech_Stats out;
+
+	out.converted = converted;
+	out.notValid = notValid;
+	out.tooOld = tooOld;
+	out.oldSingleshot = oldSingleshot;
+	out.latestDispatchTimestamp = latestDispatchTimestamp;
+	out.notNewestSetAsOutdated = notNewestSetAsOutdated;
+
+	return out;
 }
 
 

@@ -915,6 +915,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	ConfigurationFile_SpeechSynthesis configTts = configurationFile->getSpeechSynthesis();
 
 	const std::string indexFilename = configTts.indexFilePath;
+	const bool useOnlyLastEmail	= configTts.takeOnlyLastEmail;
 	const uint32_t ignoreOlderThan = configTts.ignoreOlderThan;
 	const ConfigurationFile_Language lang = configTts.language;
 	const int maximumTriesAfterFail = configTts.maximumTries;
@@ -950,7 +951,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 	}
 
 	// convert all emails into speech
-	tts.convertEmailsToSpeech(messages, ignoreOlderThan, lang, maximumTriesAfterFail, delaySecondsAfterFail, baseDir);
+	tts.convertEmailsToSpeech(messages, useOnlyLastEmail, ignoreOlderThan, lang, maximumTriesAfterFail, delaySecondsAfterFail, baseDir);
 
 	// get an index after conversion, all messages should be here
 	std::list<SpeechSynthesis_MessageIndexElem>& index = tts.getIndexContent();
@@ -994,7 +995,7 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 
 	if (out.added == 0) {
 		if (bailoutIfNoNothingToSay) {
-			SPDLOG_ERROR("There is nothing to say from email messages! Program will no continue!");
+			SPDLOG_ERROR("There is nothing to say from email messages! Program will not continue!");
 			throw NoEmailsToSayEx();
 		}
 	}

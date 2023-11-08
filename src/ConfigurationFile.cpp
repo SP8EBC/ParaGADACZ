@@ -185,8 +185,6 @@ bool ConfigurationFile::parse() {
 
 	}
 	catch (libconfig::SettingNotFoundException & e) {
-		SPDLOG_INFO("SettingNotFoundException during parsing 'Inhibitor', inhibitor won't be enabled");
-
 		this->inhibitor.serial.enable = false;
 		this->inhibitor.http.enable = false;
 		this->inhibitor.exec.enable = false;
@@ -293,8 +291,6 @@ bool ConfigurationFile::parse() {
 		intro.lookupValue("SayRegionalPressure", this->intro.sayRegionalPressure);
 	}
 	catch (...) {
-		SPDLOG_WARN("'Intro' section didn't find in configuration file! Set to defaults");
-
 		// set defaults values in case of exception
 		//this->intro.ident = "";
 		this->intro.sayCurrentTime = true;
@@ -320,7 +316,7 @@ bool ConfigurationFile::parse() {
 			}
 		}
 
-		SPDLOG_INFO("{} recorded special pre-announcement has been parsed", size);
+		SPDLOG_DEBUG("{} recorded special pre-announcement has been parsed", size);
 	}
 	catch (...) {
 		; // this section is not mandatory, so do nothing if it doesn't exist
@@ -345,7 +341,7 @@ bool ConfigurationFile::parse() {
 			}
 		}
 
-		SPDLOG_INFO("{} text special pre-anouncement has been parsed", size);
+		SPDLOG_DEBUG("{} text special pre-anouncement has been parsed", size);
 	}
 	catch (...) {
 		; // this section is not mandatory, so do nothing if it doesn't exist
@@ -405,10 +401,10 @@ bool ConfigurationFile::parse() {
 				}
 			}
 
-			SPDLOG_INFO("{} sources of current weather read", size);
+			SPDLOG_DEBUG("{} sources of current weather read", size);
 		}
 		else {
-			SPDLOG_WARN("'CurrentWeather' section didn't find in the configuration file");
+			SPDLOG_WARN("'CurrentWeather' section hasn't been found in the configuration file");
 			// this section is mandatory. return fail if it is empty
 		}
 	}

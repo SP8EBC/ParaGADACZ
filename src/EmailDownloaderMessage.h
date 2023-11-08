@@ -90,7 +90,7 @@ private:
 	 * anouncement. If validated flag is set to one, but validUntil is set to
 	 * zero this is one shot announcement which don't need to be stored
 	 */
-	uint64_t validUntil;
+	long validUntil;
 
 	/**
 	 * Text preprocessing to be applied to this message
@@ -132,11 +132,11 @@ public:
 		this->validated = true;
 	}
 
-	uint64_t getValidUntil() const {
+	long getValidUntil() const {
 		return validUntil;
 	}
 
-	void setValidUntil(uint64_t validUntil) {
+	void setValidUntil(long validUntil) {
 		this->validUntil = validUntil;
 	}
 

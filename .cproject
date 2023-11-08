@@ -106,7 +106,7 @@
 					<sourceEntries>
 						<entry excluding="lib/kisli_vmime_c6b9ad3c/contrib/punycode/punycode.c|pogodacc|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pogodacc"/>
-						<entry excluding="EmailDownloader_test.cpp|SpeechSynthesis_test.cpp|SpeechSynthesisResponsivevoice_test.cpp|ConfigurationFile_test.cpp|SpeechSynthesisStaticStuff_test.cpp|EmailDownloaderMessage_test.cpp|TrendDownloader_test.cpp|AprxLogParser_test.cpp|InhibitorAndPttControl_test.cpp|PlaylistAssembler_test.cpp|MeteoblueRainParser_test.cpp|ForecastDownloader_test_index.cpp|WeatherlinkDownloader_test.cpp|PogodaccDownloader_test.cpp|PlaylistCreatorPL_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="main.cpp|EmailDownloader_test.cpp|SpeechSynthesisResponsivevoice_test.cpp|ConfigurationFile_test.cpp|SpeechSynthesisStaticStuff_test.cpp|EmailDownloaderMessage_test.cpp|TrendDownloader_test.cpp|AprxLogParser_test.cpp|InhibitorAndPttControl_test.cpp|PlaylistAssembler_test.cpp|MeteoblueRainParser_test.cpp|ForecastDownloader_test_index.cpp|WeatherlinkDownloader_test.cpp|PogodaccDownloader_test.cpp|PlaylistCreatorPL_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -216,7 +216,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="lib/kisli_vmime_c6b9ad3c/contrib/punycode/punycode.c|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="EmailDownloader_test.cpp|SpeechSynthesis_test.cpp|SpeechSynthesisResponsivevoice_test.cpp|ConfigurationFile_test.cpp|SpeechSynthesisStaticStuff_test.cpp|EmailDownloaderMessage_test.cpp|TrendDownloader_test.cpp|AprxLogParser_test.cpp|InhibitorAndPttControl_test.cpp|PlaylistAssembler_test.cpp|MeteoblueRainParser_test.cpp|ForecastDownloader_test_index.cpp|WeatherlinkDownloader_test.cpp|PogodaccDownloader_test.cpp|PlaylistCreatorPL_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="main.cpp|EmailDownloader_test.cpp|SpeechSynthesisResponsivevoice_test.cpp|ConfigurationFile_test.cpp|SpeechSynthesisStaticStuff_test.cpp|EmailDownloaderMessage_test.cpp|TrendDownloader_test.cpp|AprxLogParser_test.cpp|InhibitorAndPttControl_test.cpp|PlaylistAssembler_test.cpp|MeteoblueRainParser_test.cpp|ForecastDownloader_test_index.cpp|WeatherlinkDownloader_test.cpp|PogodaccDownloader_test.cpp|PlaylistCreatorPL_test.cpp|AvalancheWarnings_test.cpp|ForecastDownloader_test.cpp|AprsWXDataFactory_test.cpp|ForecastFinder_test.cpp|Player_test.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

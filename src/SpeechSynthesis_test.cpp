@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_CASE(validateSingleShot)
 	BOOST_CHECK_NO_THROW(synth.createIndex(fn));
 	BOOST_CHECK_EQUAL(synth.getIndexContent().size(), 0);
 
-	synth.convertEmailsToSpeech(messages, 0, SPEECH_POLISH, 10, 10, "");
+	synth.convertEmailsToSpeech(messages, false, 0, SPEECH_POLISH, 10, 10, "");
 	BOOST_CHECK_EQUAL(synth.getIndexContent().size(), 1);
 
 	BOOST_CHECK_NO_THROW(synth.storeIndex());
@@ -263,5 +263,85 @@ BOOST_AUTO_TEST_CASE(playlisttAssemblerSingleShot)
 
 	BOOST_CHECK_EQUAL(0, stats.added);
 	BOOST_CHECK_EQUAL(0, stats.addedSingleShot);
+}
+
+
+BOOST_AUTO_TEST_CASE(speechSynthesisUseOnlyLastMessage)
+{
+	std::string address("sklep@8a.pl");
+	std::string topic2 = "single";
+	std::string emailDispatchDateTime = "Wed, 6 Sep 2023 13:56:31 +0000";
+	std::string emailDispatchDateTime2 = "Wed, 6 Sep 2023 14:56:31 +0000";
+	uint64_t emailDispatchUtcTimestamp = 1699451791ULL;
+	uint64_t emailDispatchUtcTimestamp2 = 1699455391ULL;
+	uint64_t emailReceiveUtcTimestmp = 1699533288ULL;
+	std::string originalEncoding = "7bit";
+	std::string originalCharset = "us-ascii";
+
+	tm datetime;
+
+	// copy date time into tm structure
+	datetime.tm_year = 2023;
+	datetime.tm_mon = 9;
+	datetime.tm_mday = 20;
+	datetime.tm_hour = 13;
+	datetime.tm_min = 56;
+	datetime.tm_sec = 31;
+
+	// convert that tm to have dispatch time&date in boost local_date_time format
+	boost::local_time::local_date_time emailDispatchBoostDate =
+			TimeTools::getLocalTimeFromTmStructAndTzOffset(datetime, true, GMT);
+
+	EmailDownloaderMessage msg1(
+							address,
+							topic2,
+							emailDispatchDateTime,
+							emailDispatchBoostDate,
+							0,
+							emailDispatchUtcTimestamp,
+							emailReceiveUtcTimestmp,
+							"123",
+							"123",
+							originalEncoding,
+							originalCharset);
+
+	datetime.tm_hour = 14;
+
+	// convert that tm to have dispatch time&date in boost local_date_time format
+	boost::local_time::local_date_time emailDispatchBoostDate2 =
+			TimeTools::getLocalTimeFromTmStructAndTzOffset(datetime, true, GMT);
+
+	EmailDownloaderMessage msg2(
+							address,
+							topic2,
+							emailDispatchDateTime2,
+							emailDispatchBoostDate2,
+							0,
+							emailDispatchUtcTimestamp2,
+							emailReceiveUtcTimestmp,
+							"123",
+							"123",
+							originalEncoding,
+							originalCharset);
+
+	std::vector<EmailDownloaderMessage> messages;
+	msg1.setValidated();
+	msg2.setValidated();
+	messages.push_back(msg1);
+	messages.push_back(msg2);
+
+	SpeechSynthesisResponsivevoice synth(RESPONSIVEVOICE, 0.5f, 0.5f, 30.0f);
+
+	synth.createIndex("./test_input/ttsIndex4_UseOnlyLastMessage.json");
+
+	const SpeechSynthesis_ConvertEmailsToSpeech_Stats result =
+			synth.convertEmailsToSpeech(messages, true, 1234, SPEECH_POLISH, 10, 10, "");
+
+	BOOST_CHECK_EQUAL(emailDispatchUtcTimestamp2, result.latestDispatchTimestamp);
+	BOOST_CHECK_EQUAL(1, result.notNewestSetAsOutdated);
+	BOOST_CHECK_EQUAL(1, result.converted);
+
+
+
 }
 

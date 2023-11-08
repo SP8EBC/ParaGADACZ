@@ -22,6 +22,15 @@ struct SpeechSynthesis_MessageIndexElem {
 	uint64_t dispatchedAt;	//!< Time when this announcement was sent by a sender
 };
 
+struct SpeechSynthesis_ConvertEmailsToSpeech_Stats {
+	int notValid;
+	int tooOld;
+	int converted;
+	int oldSingleshot;
+	int notNewestSetAsOutdated;
+	long latestDispatchTimestamp;
+};
+
 class SpeechSynthesis_FindValidAnouncements_UnaryPredicate {
 
 public:
@@ -101,12 +110,13 @@ public:
 	 * @param delayAfterFailedTry
 	 * @param audioFilesBaseDir
 	 */
-	void convertEmailsToSpeech(	const std::vector<EmailDownloaderMessage> & msgs,
-								uint32_t ignoreOlderThan,
-								const ConfigurationFile_Language lang,
-								int maximumTries,
-								uint8_t delayAfterFailedTry,
-								const std::string & audioFilesBaseDir);
+	SpeechSynthesis_ConvertEmailsToSpeech_Stats convertEmailsToSpeech(	std::vector<EmailDownloaderMessage> & msgs,
+																		bool useOnlyNewestOne,
+																		uint32_t ignoreOlderThan,
+																		const ConfigurationFile_Language lang,
+																		int maximumTries,
+																		uint8_t delayAfterFailedTry,
+																		const std::string & audioFilesBaseDir);
 
 	virtual void convertTextToSpeech(std::string & text, std::string & outputFilename, ConfigurationFile_Language lang) = 0;
 
