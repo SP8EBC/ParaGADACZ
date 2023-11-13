@@ -20,7 +20,7 @@
 
 #include <vlc/vlc.h>
 
-#define PLAYER_PLAYBACK_TIMEOUT_SECONDS		180
+#define PLAYER_PLAYBACK_TIMEOUT_SECONDS		300
 
 class Player {
 
