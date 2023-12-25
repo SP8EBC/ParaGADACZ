@@ -405,3 +405,56 @@ BOOST_AUTO_TEST_CASE (parse_aprsrflog2) {
 	//BOOST_CHECK_EQUAL(result.value(), expected);
 
 }
+
+BOOST_AUTO_TEST_CASE (getallweatherpackets_epoch_aprsrflog2) {
+
+	AprxLogParser parser("./test_input/aprs-rf-2.log", true);
+
+	const uint64_t epochFrom = 1670074204ULL;	// Your time zone: Saturday, 3 December 2022 14:30:04 GMT+01:00
+	const uint64_t epochTo = 1670074504ULL;
+
+	std::vector<AprsWXData>  result = parser.getAllWeatherPacketsInTimerange(epochFrom, epochTo);
+
+	BOOST_CHECK_GE(result.size(), 1);
+	BOOST_CHECK_EQUAL("SR9WXM", result[0].call);
+	BOOST_CHECK_EQUAL(172, result[0].wind_direction);
+	//BOOST_CHECK(result);  // 172
+	//BOOST_CHECK_EQUAL(result.value(), expected);	// 97
+
+}
+
+BOOST_AUTO_TEST_CASE (getallpackets_epoch_aprsrflog2) {
+
+	AprxLogParser parser("./test_input/aprs-rf-2.log", true);
+
+	const uint64_t epochFrom = 1670074204ULL;	// Your time zone: Saturday, 3 December 2022 14:30:04 GMT+01:00
+	const uint64_t epochTo = 1670074410ULL;		// Date and time (your time zone): Saturday, 3 December 2022 14:33:30 GMT+01:00
+
+	std::vector<AprsPacket>  result = parser.getAllPacketsInTimerange(epochFrom, epochTo);
+
+	BOOST_ASSERT(result.size() > 0);
+
+	const AprsPacket & first = *result.begin();
+	const AprsPacket & last = *(result.end() - 1);
+
+	BOOST_CHECK_EQUAL(result.size(), 103);
+
+	// 886 // 2022-12-03 14:30:17.365 APRSIS    R SR9LC-1>APRX29,TCPIP*,qAC,T2ROMANIA:;438.700LC*161707z5041.95N/01838.54Er438.700MHz c071 -760 R60k SR9LC Przemiennik Lubliniecki
+	// 988 // 2022-12-03 14:33:25.698 APRSIS    R SR9NDJ>APRX28,TCPIP*,qAC,T2RADOM:;SR9DJK   *000000h5033.45N/01927.01E&DMR Repeater Static TG260/TS1 2609/TS2 operator SP9JKL
+
+	const std::string first_data = ";438.700LC*161707z5041.95N/01838.54Er438.700MHz c071 -760 R60k SR9LC Przemiennik Lubliniecki";
+	const std::string second_data = ";SR9DJK   *000000h5033.45N/01927.01E&DMR Repeater Static TG260/TS1 2609/TS2 operator SP9JKL";
+
+	BOOST_CHECK_EQUAL("SR9LC", first.SrcAddr);
+	BOOST_CHECK_EQUAL(1, first.SrcSSID);
+	BOOST_CHECK_EQUAL("APRX29", first.DestAddr);
+	BOOST_CHECK_EQUAL(3, first.Path.size());
+	BOOST_CHECK_EQUAL(first_data, first.DataAsStr);
+
+	BOOST_CHECK_EQUAL("SR9NDJ", last.SrcAddr);
+	BOOST_CHECK_EQUAL(0, last.SrcSSID);
+	BOOST_CHECK_EQUAL("APRX28", last.DestAddr);
+	BOOST_CHECK_EQUAL(3, last.Path.size());
+	BOOST_CHECK_EQUAL(second_data, last.DataAsStr);
+}
+

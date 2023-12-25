@@ -43,10 +43,12 @@ public:
 	std::optional<AprsWXData> getLastPacketForStation(std::string call, uint8_t ssid);
 
 	std::vector<AprsWXData> getAllWeatherPacketsInTimerange(boost::posix_time::ptime from, boost::posix_time::ptime to);
-
 	std::vector<AprsWXData> getAllWeatherPacketsInTimerange(int64_t epochFrom, int64_t epochTo);
-
 	std::vector<AprsWXData> getAllWeatherPacketsInTimerange(uint16_t agoFrom, uint16_t agoTo, bool hoursOrMinutes);
+
+	std::vector<AprsPacket> getAllPacketsInTimerange(boost::posix_time::ptime from, boost::posix_time::ptime to);
+	std::vector<AprsPacket> getAllPacketsInTimerange(int64_t epochFrom, int64_t epochTo);
+	std::vector<AprsPacket> getAllPacketsInTimerange(uint16_t agoFrom, uint16_t agoTo, bool hoursOrMinutes);
 
 	AprxLogParser();
 	AprxLogParser(std::string fn, bool inLocal);

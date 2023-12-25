@@ -73,13 +73,13 @@ std::vector<AprsWXData> AprxLogParser::getAllWeatherPacketsInTimerange(
 	long epochFromLine;
 
 	// check if file has been opened (and used) previously
-	if (file.is_open()) {
+	//if (file.is_open()) {
 		this->closeFile();
 
 		this->openFile();
 
 		this->rewindFile();
-	}
+	//}
 
 	if (file.is_open()) {
 
@@ -177,13 +177,13 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 	// line separated by space to timestamp and rest of things
 	std::vector<std::string> seprated;
 
-	if (file.is_open()) {
+	//if (file.is_open()) {
 		this->closeFile();
 
 		this->openFile();
 
 		this->rewindFile();
-	}
+	//}
 
 	// iterate through file
 	do {
@@ -387,3 +387,115 @@ void AprxLogParser::rewindFile() {
 	file.seekg((int)lenght / 2, file.beg);
 }
 
+std::vector<AprsPacket> AprxLogParser::getAllPacketsInTimerange(
+		int64_t epochFrom, int64_t epochTo) {
+
+	std::vector<AprsPacket> out;
+
+	// local buffer to extract data from log file
+	std::string localBuffer;
+
+	// single line of aprx rf log separated to components by space
+	std::vector<std::string> separated;
+
+	// if at least one line has been found
+	bool hasBeenFound = false;
+
+	// epoch timestmp of current line
+	long epochFromLine;
+
+	// check if file has been opened (and used) previously
+	this->closeFile();
+
+	this->openFile();
+
+	this->rewindFile();
+
+	if (file.is_open()) {
+
+		// read line by line
+		while (std::getline(file, localBuffer)) {
+
+			// parse line
+			boost::split(separated, localBuffer, boost::is_any_of(" "));
+
+			// check if result has a meaningfull size
+			if (separated.size() > 4) {
+
+				// get frame timestamp
+				boost::posix_time::ptime timestamp = AprxLogParser_StaticStuff::convertToFrameTimestamp(separated.at(0), separated.at(1));
+
+				// convert into epoch
+				epochFromLine = TimeTools::getEpochFromPtime(timestamp, timestampsAreInLocal);
+
+				// check if this line fits within given range
+				if (epochFrom < epochFromLine && epochTo > epochFromLine) {
+					try {
+						AprsPacket aprsPacket;
+
+						std::optional<AprsWXData> weatherFrame = AprxLogParser_StaticStuff::parseFrame(separated, aprsPacket);
+
+						// if yes add this to output vector
+						out.push_back(aprsPacket);
+
+						if (!hasBeenFound) {
+							SPDLOG_DEBUG("Range has begun");
+						}
+
+						// and set a flag that we have entered into a range
+						hasBeenFound = true;
+					}
+					catch (std::runtime_error & ex) {
+						SPDLOG_WARN("Runtime error thrown during parsing APRX rf log entry");
+						SPDLOG_WARN(localBuffer);
+					}
+
+				}
+				else {
+					// check if at least one frame has been found
+					if (hasBeenFound) {
+						break;	// exit the loop because we are after the range
+					}
+					else {
+						;	// continue further as
+					}
+				}
+			}
+		}
+
+	}
+	else {
+		SPDLOG_ERROR("APRX rf log file is not opened!");
+	}
+
+	SPDLOG_DEBUG("Last epochFromLine: {}, epochFrom: {}, epochTo: {}", epochFromLine, epochFrom, epochTo);
+
+	return out;
+}
+
+std::vector<AprsPacket> AprxLogParser::getAllPacketsInTimerange(
+		boost::posix_time::ptime from, boost::posix_time::ptime to) {
+
+	// convert to epoch
+	const long fromEpoch = TimeTools::getEpochFromPtime(from, timestampsAreInLocal);
+	const long toEpoch = TimeTools::getEpochFromPtime(to, timestampsAreInLocal);
+
+	return this->getAllPacketsInTimerange(fromEpoch, toEpoch);
+}
+
+std::vector<AprsPacket> AprxLogParser::getAllPacketsInTimerange(
+		uint16_t agoFrom, uint16_t agoTo, bool hoursOrMinutes) {
+
+	// get current epoch
+	const long currentEpoch = TimeTools::getEpoch();
+
+	// get time to look for packet from
+	const long epochFrom = currentEpoch - agoFrom * (hoursOrMinutes ? 60 : 3600);
+
+	// get time to look for packet to
+	const long epochTo = currentEpoch - agoTo * (hoursOrMinutes ? 60 : 3600);
+
+	SPDLOG_DEBUG("epochFrom: {}, epochTo: {}", epochFrom, epochTo);
+
+	return this->getAllPacketsInTimerange(epochFrom, epochTo);
+}
