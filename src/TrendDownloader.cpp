@@ -86,8 +86,8 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 
 					SPDLOG_DEBUG("{} packets have been found in APRX rf log file, {} remained after filtering", packets.size(), filteredPackets.size());
 					SPDLOG_DEBUG("Oldest packet to be used: {}, Newest packet to be used: {}",
-																							boost::posix_time::to_simple_string(filteredPackets.at(0).packetTimestmp),
-																							boost::posix_time::to_simple_string(filteredPackets.at(filteredPackets.size() - 1).packetTimestmp));
+																							boost::posix_time::to_simple_string(filteredPackets.at(0).packetLocalTimestmp),
+																							boost::posix_time::to_simple_string(filteredPackets.at(filteredPackets.size() - 1).packetLocalTimestmp));
 
 					// sum values from all packets obtained
 					average = std::accumulate(filteredPackets.begin(), filteredPackets.end(), average, [] (AprsWXData & accumulator, AprsWXData & element) {

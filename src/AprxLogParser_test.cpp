@@ -151,6 +151,18 @@ BOOST_AUTO_TEST_CASE (cieszyn_convert_to_wxdata_aprsrflog2)
 	BOOST_CHECK(result->valid);
 	BOOST_CHECK_EQUAL(result->call, "SR9NCI");
 	BOOST_CHECK(result->wind_direction == 45);
+
+	boost::posix_time::ptime ptime = result->packetLocalTimestmp;
+	uint64_t timestamp = result->packetUtcTimestamp;
+
+	BOOST_CHECK_EQUAL(ptime.date().year(), 2022);
+	BOOST_CHECK_EQUAL(ptime.date().month(), 12);
+	BOOST_CHECK_EQUAL(ptime.date().day(), 3);
+
+	BOOST_CHECK_EQUAL(ptime.time_of_day().hours(), 14);
+	BOOST_CHECK_EQUAL(ptime.time_of_day().minutes(), 29);
+
+	BOOST_CHECK_EQUAL(timestamp, 1670074162ULL);
 }
 
 // 2023-08-13 17:49:29.598 SR9NSK-4  R SR9WXZ>AKLPRZ:!4943.43N/01912.10E_296/002g003t065r...p...P...b00000h00
@@ -172,6 +184,20 @@ BOOST_AUTO_TEST_CASE (jezioro_zywieckie_convert_to_wxdata_aprxrf)
 	BOOST_CHECK(result->valid);
 	BOOST_CHECK_EQUAL(result->call, "SR9WXZ");
 	BOOST_CHECK(result->wind_direction == 296);
+
+	boost::posix_time::ptime ptime = result->packetLocalTimestmp;
+	uint64_t timestamp = result->packetUtcTimestamp;
+
+	BOOST_CHECK_EQUAL(ptime.date().year(), 2023);
+	BOOST_CHECK_EQUAL(ptime.date().month(), 8);
+	BOOST_CHECK_EQUAL(ptime.date().day(), 13);
+
+	BOOST_CHECK_EQUAL(ptime.time_of_day().hours(), 17);
+	BOOST_CHECK_EQUAL(ptime.time_of_day().minutes(), 49);
+
+	// huh it depends if this test is run in summer or winter time :/ Yeap, quite a shame
+	// but this is how it works with rf-log file not having info about timezone
+	BOOST_CHECK_EQUAL(true, (timestamp == 1691941769ULL) || (timestamp == 1691945369));
 }
 
 // 2023-08-13 17:43:45.221 SR9NSK-4  R SR9WXL>AKLPRZ,SR9NWC*,WIDE2*:!4947.70N/01926.80E_263/001g003t069r...p...P...b09217h75

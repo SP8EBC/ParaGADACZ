@@ -1,0 +1,11 @@
+Running 1 test case...
+Entering test module "TimeTools_test"
+../src/TimeTools_test.cpp(37): Entering test case "test_getTmStructFromUndefinedTzEpoch"
+../src/TimeTools_test.cpp(52): info: check expected.tm_hour == given.tm_hour has passed
+../src/TimeTools_test.cpp(53): info: check expected.tm_min == given.tm_min has passed
+../src/TimeTools_test.cpp(54): info: check expected.tm_sec == given.tm_sec has passed
+../src/TimeTools_test.cpp(55): info: check expected.tm_mday == given.tm_mday has passed
+../src/TimeTools_test.cpp(56): info: check expected.tm_mon == given.tm_mon has passed
+../src/TimeTools_test.cpp(57): info: check expected.tm_year == given.tm_year has passed
+../src/TimeTools_test.cpp(37): Leaving test case "test_getTmStructFromUndefinedTzEpoch"; testing time: 163us
+Leaving test module "TimeTools_test"; testing time: 182us

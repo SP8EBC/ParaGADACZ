@@ -261,7 +261,7 @@ AprsWXData::AprsWXData(const AprsWXData& in) {
 	this->packetAgeInSecondsLocal = in.packetAgeInSecondsLocal;
 	this->packetAgeInSecondsUtc = in.packetAgeInSecondsUtc;
 
-	this->packetTimestmp = in.packetTimestmp;
+	this->packetLocalTimestmp = in.packetLocalTimestmp;
 }
 
 AprsWXData::AprsWXData(AprsWXData &&in) {
@@ -293,7 +293,7 @@ AprsWXData::AprsWXData(AprsWXData &&in) {
 	this->packetAgeInSecondsLocal = in.packetAgeInSecondsLocal;
 	this->packetAgeInSecondsUtc = in.packetAgeInSecondsUtc;
 
-	this->packetTimestmp = in.packetTimestmp;
+	this->packetLocalTimestmp = in.packetLocalTimestmp;
 }
 
 AprsWXData& AprsWXData::operator =(AprsWXData& _in) {
