@@ -134,6 +134,8 @@ int main(int argc, char **argv) {
 	SPDLOG_INFO("===== Mateusz Lubecki, Bielsko - Biała 2023 =====");
 	SPDLOG_INFO("=================================================");
 
+	SPDLOG_INFO("Application startup UTC time: {}", boost::posix_time::to_simple_string(boost::posix_time::second_clock::universal_time()));
+
 
 	if (argc > 1) {
 		configFn = std::string(argv[1]);

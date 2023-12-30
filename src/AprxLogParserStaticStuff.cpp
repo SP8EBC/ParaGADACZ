@@ -106,6 +106,7 @@ std::optional<AprsWXData>  AprxLogParser_StaticStuff::parseFrame(std::vector<std
 
 		// copy it to output object
 		ret.packetLocalTimestmp = timestamp;
+		out.packetLocalTimestmp = timestamp;
 
 		// calculate an age of this frame
 		boost::posix_time::time_duration ageUniversal = boost::posix_time::second_clock::universal_time() - timestamp;
