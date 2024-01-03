@@ -1,0 +1,3 @@
+Running 1 test case...
+Entering test module "PansaAirspace_test"
+../src/PansaAirspace_test.cpp(40): Entering test case "connect"
