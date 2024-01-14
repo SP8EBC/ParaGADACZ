@@ -1,9 +1,11 @@
- select
+ INSERT INTO airspace(
+	 designator, airspace_element_type, centroid_lon, centroid_lat, st_distance, epoch_from, epoch_to, lower_altitude, upper_altitude, unit, remarks, geography, "json_body")
+SELECT
 	json_body->'properties'->>'designator'::text as designator,
 	json_body->'properties'->>'airspaceElementType' as airspaceElementType,
 	json_array_elements(json_body->'properties'->'centroid')->'x' as centroidLon,
 	json_array_elements(json_body->'properties'->'centroid')->'y' as centroidLat,
-	ST_Distance(geography,  ST_SetSRID(ST_MakePoint(19.0318, 49.6852), 4326)::geography),
+	ST_Distance(geography,  ST_SetSRID(ST_MakePoint({{longitude}}, {{latitude}}), 4326)::geography),
 	extract (epoch from (airspaceReservation->>'startDate')::timestamp) as epochFrom,
 	extract (epoch from (airspaceReservation->>'endDate')::timestamp) as epochTo,
 	airspaceReservation->>'lowerAltitude' as lowerAltitude,
@@ -13,7 +15,7 @@
 	
 	geography,
 	json_body
-from (
+FROM (
 	select 
 		json_array_elements(json_body->'properties'->'airspaceReservations') as airspaceReservation,
 		geography,
@@ -26,7 +28,9 @@ from (
 		from
 		json_array_elements((select content::json from http_get('https://airspace.pansa.pl/map-configuration/aup')))
 	) as cycki 
-) as dupa
-WHERE ST_Distance(geography,  ST_SetSRID(ST_MakePoint(19.0318, 49.6852), 4326)::geography) < 70000 ORDER by st_distance;
-
---- this is used
+) as dupa 
+WHERE
+ST_Distance(geography,  ST_SetSRID(ST_MakePoint({{longitude}}, {{latitude}}), 4326)::geography) < {{distance}} 
+ORDER BY 
+st_distance
+RETURNING *;

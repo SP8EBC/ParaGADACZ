@@ -11,52 +11,196 @@
 #include <pqxx/pqxx>
 #include <pqxx/connection>
 
-#include <string>
+#include <sstream>
+#include <iostream>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/pattern_formatter.h"
 
+#include <ctemplate/template.h>
+
 std::string query = R"( select
-  json_body->'properties'->>'designator'::text as designator,
-   ST_Distance(geography,  ST_SetSRID(ST_MakePoint(19.0318, 49.6852), 4326)::geography),
-     geography,
-  json_array_elements(json_body->'properties'->'airspaceReservations') as airspaceReservation,
-  json_body
- from
-  (
-  select
-   ST_GeomFromGeoJSON(value->'geometry')::geography as geography,
-   value as json_body
-  from
-   json_array_elements((select content::json from http_get('https://airspace.pansa.pl/map-configuration/aup')))
-) as cycki WHERE ST_Distance(geography,  ST_SetSRID(ST_MakePoint(19.0318, 49.6852), 4326)::geography) < 70000 ORDER by st_distance;)";
+	json_body->'properties'->>'designator'::text as designator,
+	json_body->'properties'->>'airspaceElementType' as airspaceElementType,
+	json_array_elements(json_body->'properties'->'centroid')->'x' as centroidLon,
+	json_array_elements(json_body->'properties'->'centroid')->'y' as centroidLat,
+	ST_Distance(geography,  ST_SetSRID(ST_MakePoint(19.0318, 49.6852), 4326)::geography),
+	extract (epoch from (airspaceReservation->>'startDate')::timestamp) as epochFrom,
+	extract (epoch from (airspaceReservation->>'endDate')::timestamp) as epochTo,
+	airspaceReservation->>'lowerAltitude' as lowerAltitude,
+	airspaceReservation->>'upperAltitude' as upperAltitude,
+	airspaceReservation->>'unit' as unit,
+	airspaceReservation->>'remarks' as remarks,
+	
+	geography,
+	json_body
+from (
+	select 
+		json_array_elements(json_body->'properties'->'airspaceReservations') as airspaceReservation,
+		geography,
+		json_body
+	from
+	(
+		select
+		ST_GeomFromGeoJSON(value->'geometry')::geography as geography,
+		value as json_body
+		from
+		json_array_elements((select content::json from http_get('https://airspace.pansa.pl/map-configuration/aup')))
+	) as cycki 
+) as dupa
+WHERE ST_Distance(geography,  ST_SetSRID(ST_MakePoint(19.0318, 49.6852), 4326)::geography) < 70000 ORDER by st_distance;)";
 
-PansaAirspace::PansaAirspace() {
-	// TODO Auto-generated constructor stub
 
+
+float PansaAirspace::ConvertAltitudeStr(std::string _str) {
+
+	const std::size_t strSize = _str.length();
+
+	if (strSize != 3 && strSize != 4) {
+		throw std::runtime_error("");
+	}
+
+	// ground -> "GND"
+	if (_str[0] == 'G') {
+		return 0;
+	}
+	else if(_str[0] == 'A') {
+		// substring with altitude value itself
+		const std::string _value = _str.substr(1, strSize - 1);
+
+		// and here as an integer multipled by 100
+		const int _valueAsInt = 100 * std::stoi(_value);
+
+		return (int)(::roundf(_valueAsInt * 0.3048f));
+	}
+	else if (_str[0] == 'F') {
+		// we should really consider QNH pressure here, but as for now
+		// just keep it simple
+
+		// substring with altitude value itself
+		const std::string _value = _str.substr(1, strSize - 1);
+
+		// and here as an integer multipled by 100
+		const int _valueAsInt = 100 * std::stoi(_value);
+
+		return (int)(::roundf(_valueAsInt * 0.3048f));
+	}
+	else {
+		throw std::runtime_error("");
+	}
+}
+
+PansaAirspace::PansaAirspace(std::string psqlUsername, std::string psqlPassword, std::string psqlDb) {
+	hasDoubleReservation = false;
+
+	postgresDb = psqlDb;
+	postgresUsername = psqlUsername;
+	postgresPassword = psqlPassword;
+
+	std::stringstream ss;
+	ss << "user=" << postgresUsername << " host=localhost password=" << postgresPassword << " dbname=" << postgresDb;
+
+	connectionStr = ss.str();
 }
 
 PansaAirspace::~PansaAirspace() {
 	// TODO Auto-generated destructor stub
 }
 
-void PansaAirspace::connect() {
-	// https://stackoverflow.com/questions/7763546/connection-to-postgres-database-using-libpqxx
-	  pqxx::connection c{"user=postgres host=localhost password=dupajasia123 dbname=airspace"};
-	  pqxx::work txn{c};
+void PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool dumpSqlQuery) {
 
-	  pqxx::result res = txn.exec(query);
+	std::string queryStr;
+
+	// remove previous content of the map
+	reservations.clear();
+
+	ctemplate::TemplateDictionary dict("pansa");
+
+    dict.SetFormattedValue("longitude", "%.4f", lon);
+    dict.SetFormattedValue("latitude", "%.4f", lat);
+    dict.SetIntValue("distance", radius);
+
+    ctemplate::ExpandTemplate("pansa.tpl", ctemplate::DO_NOT_STRIP, &dict, &queryStr);
+
+    if (dumpSqlQuery) {
+    	SPDLOG_DEBUG("PostgreSQL used to download data from PANSA api \r\n{}", queryStr);
+    }
+
+	//pqxx::connection c{"user=postgres host=localhost password=dupajasia123 dbname=airspace"};
+    pqxx::connection c{connectionStr};
+	pqxx::work txn{c};
+
+	pqxx::result res = txn.exec(queryStr);
 
 	  for (auto row : res) {
-		  SPDLOG_DEBUG("designator: {}", row["designator"].c_str());
+		  PansaAirspace_Zone zone;
+
+		  std::string designator = std::string(row["designator"].c_str());
+		  std::string airspaceType = std::string(row["airspace_element_type"].c_str());
+		  float centroidLon = row["centroid_lon"].as<float>();
+		  float centroidLat = row["centroid_lat"].as<float>();
+		  float distanceInMeters = row["ST_Distance"].as<float>();
+		  float epochFrom = row["epoch_from"].as<float>();
+		  float epochTo = row["epoch_to"].as<float>();
+		  std::string unit = std::string(row["unit"].c_str());
+		  std::string remarks = std::string(row["remarks"].c_str());
+
+		  const std::string lowerAltitudeStr = row["lower_altitude"].as<std::string>();
+		  int lowerAltitude = PansaAirspace::ConvertAltitudeStr(lowerAltitudeStr);
+
+		  const std::string upperAltitudeStr = row["upper_altitude"].as<std::string>();
+		  int upperAltitude = PansaAirspace::ConvertAltitudeStr(upperAltitudeStr);
+
+
+		  PansaAirspace_Type type = PansaAirspace_Type_FromString(airspaceType);
+
+		  SPDLOG_INFO(	"designator: {}, distanceInMeters: {}, lowerAltitudeStr: {}, upperAltitudeStr: {}, lowerAltitude: {}, upperAltitude: {}",
+				  	    designator, (int)::roundf(distanceInMeters), lowerAltitudeStr, upperAltitudeStr, lowerAltitude, upperAltitude);
+
+		  PansaAirspace_Reservation reservation;
+
+		  reservation.fromTime = epochFrom;
+		  reservation.toTime = epochTo;
+		  reservation.lowerAltitude = lowerAltitude;
+		  reservation.upperAltitude = upperAltitude;
+		  reservation.unit = unit;
+		  reservation.remarks = remarks;
+
+		  std::map<std::string, PansaAirspace_Zone>::iterator previousRsrv = reservations.find(designator);
+
+		  // if at least one reservation for this zone has been found already
+		  if (previousRsrv != reservations.end()) {
+
+			  // get precious object
+			  PansaAirspace_Zone & existing = previousRsrv->second;
+
+			  existing.reservations.push_back(reservation);
+
+			  hasDoubleReservation = true;
+		  }
+		  else {
+			  // this is a new one
+			  PansaAirspace_Zone newOne;
+
+			  newOne.centroidLatitudeY = centroidLat;
+			  newOne.centroidLongitudeX = centroidLon;
+			  newOne.designator = designator;
+			  newOne.distanceFromSetpoint = distanceInMeters;
+			  newOne.type = type;
+			  newOne.reservations.push_back(reservation);
+
+			  reservations.insert(std::pair(designator, newOne));
+
+		  }
 	  }
 
 	  txn.commit();
 
 	  c.disconnect();
-}
 
-void PansaAirspace::disconnect() {
+	  if (reservations.size() == 0) {
+		  SPDLOG_WARN("No airspace reservations have been found. It is really OK??");
+	  }
 }
 
 #endif

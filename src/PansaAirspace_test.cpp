@@ -16,6 +16,11 @@
 
 #include "PansaAirspace.h"
 
+// user=postgres host=localhost password=dupajasia123 dbname=airspace
+#define PSQL_USER 		"postgres"
+#define PSQL_PASSWORD	"dupajasia123"
+#define PSQL_DB			"airspace"
+
 struct MyConfig
 {
   MyConfig() : test_log( "./test_reports/PansaAirspace_test.log" )
@@ -39,7 +44,8 @@ BOOST_GLOBAL_FIXTURE (MyConfig);
 
 BOOST_AUTO_TEST_CASE(connect)
 {
-	PansaAirspace pansa;
+	PansaAirspace pansa(PSQL_USER, PSQL_PASSWORD, PSQL_DB);
 
-	pansa.connect();
+	//pansa.connect();
+	pansa.downloadAroundLocation(49.6852, 19.0318, 70000.0f, true);
 }
