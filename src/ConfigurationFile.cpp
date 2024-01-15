@@ -590,6 +590,167 @@ bool ConfigurationFile::parse() {
 	}
 
 	//
+	// get 'Airspace'
+	//
+	try {
+		// preload default values
+		this->airspace.confPerElemType.sayTRA = true;
+		this->airspace.confPerElemType.sayTSA = true;
+		this->airspace.confPerElemType.sayATZ = true;
+		this->airspace.confPerElemType.sayD = true;
+		this->airspace.confPerElemType.sayR = true;
+
+		this->airspace.confPerElemType.atzDesignatorRegexp = "\\s[A-Z]{4}";
+		this->airspace.confPerElemType.traDesignatorRegexp = "[1-9]{1,3}";
+		this->airspace.confPerElemType.traSectorRegexp = "[A-Z]{1}$";
+		this->airspace.confPerElemType.tsaDesignatorRegexp = "[1-9]{1,3}";
+		this->airspace.confPerElemType.tsaSectorRegexp = "[A-Z]{1}$";
+		this->airspace.confPerElemType.dDesignatorRegexp = "[1-9]{1,3}";
+		this->airspace.confPerElemType.dSectorRegexp = "[A-Z]$";
+		this->airspace.confPerElemType.rDesignatorRegexp = "[0-9]{1,3}$";
+
+		this->airspace.reservationFutureTimeMargin = 0;	// say everything for today
+		this->airspace.sayPast = false;					// do not say any reservations which are gone
+		this->airspace.sayAltitudes = false;			// no need to say from which altitudes a reservation is set
+		this->airspace.includeAirspaceTypeInfo = true;
+
+		libconfig::Setting &airspace = root["Airspace"];
+
+		airspace.lookupValue("Enable", this->airspace.enabled);
+
+		/*
+		 * Configures point coordinates (lat, lon) with a radius in meters to look for
+		 * active reservations in. If any airspace having any common part with this
+		 * point+radius area has a reservation scheduled, it will be announced by
+		 * separate
+		 */
+		if (airspace.exists("AroundPoint")) {
+			libconfig::Setting &aroundPoint = airspace["AroundPoint"];
+			size_t size = aroundPoint.getLength();
+			SPDLOG_DEBUG("{} point-radius areas to check for active airspace reservations for", size);
+
+			for (unsigned i = 0; i < size; i++) {
+				ConfigurationFile_Airspace_AroundPoint ar;
+
+				aroundPoint[i].lookupValue("AudioFilename", ar.audioFilename);
+				aroundPoint[i].lookupValue("Latitude", ar.latitude);
+				aroundPoint[i].lookupValue("Longitude", ar.longitude);
+				aroundPoint[i].lookupValue("Radius", ar.radius);
+
+				this->airspace.aroundPoint.push_back(ar);
+			}
+		}
+
+		/*
+		 * This configuration section defines all airspaces which reservations are checked
+		 * explicitly by its designator, no matter where they are located.
+		 */
+		if (airspace.exists("Fixed")) {
+			libconfig::Setting &fixed = airspace["Fixed"];
+			size_t size = fixed.getLength();
+			SPDLOG_DEBUG("{} airspaces to check for active reservations for", size);
+
+			for (unsigned i = 0; i < size; i++) {
+				ConfigurationFile_Airspace_Fixed fx;
+
+				fixed[i].lookupValue("Designator", fx.designator);
+				fixed[i].lookupValue("SayAltitudes", fx.sayAltitudes);
+
+				this->airspace.fixed.push_back(fx);
+
+			}
+		}
+
+		// Say only activations which will start not later than XX minutes
+		airspace.lookupValue("ReservationFutureTimeMargin", this->airspace.reservationFutureTimeMargin);
+
+		// Say activations for today, which had expired before current time
+		airspace.lookupValue("SayPast", this->airspace.sayPast);
+
+		// Global switch to say altitude range within an airspace is reserved
+		airspace.lookupValue("SayAltitudes", this->airspace.sayAltitudes);
+
+		// Add airspace type announcement before each zone
+		airspace.lookupValue("IncludeAirspaceTypeInfo", this->airspace.includeAirspaceTypeInfo);
+
+		/*
+		 * Section used to specify which airspace types will be announced from the results of
+		 * lookup configured by a vector of @link{ConfigurationFile_Airspace_AroundPoint}
+		 * with a regular expressions used to extract designator (and sector if airspace
+		 * is divided). Options sayXXX does not control anything explicitly configured
+		 * by @link{ConfigurationFile_Airspace_Fixed} and those are announcement are
+		 * always generated if a reservation is found.
+		 *
+		 * Regular expressions are used to generate data for announcements. The overall
+		 * algorithm is as follows:
+		 * 	1. Lookup inside 'airspaceDesignatorsAnouncement' map for explicitly configured announcement
+		 * 	2. Extracting designator using regular expression. For example "EPD25A" may be
+		 * 	   extracted to "D25", which will be said as (delta two five) or "D25A"
+		 * 	   (said as delta two five alpha)
+		 * 	3. If sector regular expression is configured, it is extracted and announced
+		 * 	   separately. Final announcement for "EPD25A" might look like "delta
+		 * 	   two five sector alpha"
+		 * 	4. If regexp is not configured a generic announcement will be generated from
+		 * 	   the full desgiantor
+		 *
+		 */
+		if (airspace.exists("ConfigPerElemType")) {
+			libconfig::Setting &perElemType = airspace["ConfigPerElemType"];
+
+			perElemType.lookupValue("SayTRA", this->airspace.confPerElemType.sayTRA);
+			perElemType.lookupValue("SayTSA", this->airspace.confPerElemType.sayTSA);
+			perElemType.lookupValue("SayATZ", this->airspace.confPerElemType.sayATZ);
+			perElemType.lookupValue("SayD", this->airspace.confPerElemType.sayD);
+			perElemType.lookupValue("SayR", this->airspace.confPerElemType.sayR);
+
+			perElemType.lookupValue("AtzDesignatorRegexp", this->airspace.confPerElemType.atzDesignatorRegexp);
+			perElemType.lookupValue("TraDesignatorRegexp", this->airspace.confPerElemType.traDesignatorRegexp);
+			perElemType.lookupValue("TraSectorRegexp", this->airspace.confPerElemType.traSectorRegexp);
+			perElemType.lookupValue("TsaDesignatorRegexp", this->airspace.confPerElemType.tsaDesignatorRegexp);
+			perElemType.lookupValue("TsaSectorRegexp", this->airspace.confPerElemType.tsaSectorRegexp);
+			perElemType.lookupValue("DDesignatorRegexp", this->airspace.confPerElemType.dDesignatorRegexp);
+			perElemType.lookupValue("DSectorRegexp", this->airspace.confPerElemType.dSectorRegexp);
+			perElemType.lookupValue("RDesignatorRegexp", this->airspace.confPerElemType.rDesignatorRegexp);
+
+
+		}
+		else {
+			;
+		}
+
+		/*
+		 * This dictionary contains mapping between airspace designator and
+		 * an audio file with announcement / ident. It is used by the app
+		 * for any airspace reservation returned by the API. If exact match
+		 * is not found within this map, the application generate a generic
+		 * anonuncement used
+		 */
+		if (airspace.exists("AirspaceDesignatorsAnouncement")) {
+			libconfig::Setting &airspaceDesignators = airspace["AirspaceDesignatorsAnouncement"];
+
+			size_t size = airspaceDesignators.getLength();
+
+		}
+
+#ifndef PANSA_AIRSPACE
+		if (this->airspace.enabled) {
+			SPDLOG_WARN("You have enabled PANSA AUP announcements but You are using ParaGADACZ build w/o this feature");
+			SPDLOG_WARN("It is really something You want to do??");
+		}
+#endif
+	}
+	catch (libconfig::SettingNotFoundException & e) {
+		this->airspace.enabled = false;
+	}
+	catch (libconfig::ParseException & e) {
+		this->airspace.enabled = false;
+
+		SPDLOG_ERROR("ParseException during parsing 'Airspace', e.getLine = {}, e.getError = {}", e.getLine(), e.getError());
+
+		out = false;
+	}
+
+	//
 	// get 'EmailConfig'
 	//
 	try {

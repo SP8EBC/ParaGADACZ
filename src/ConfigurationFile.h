@@ -12,6 +12,7 @@
 #include <vector>
 #include <cstdint>
 #include <tuple>
+#include <map>
 
 #include <libconfig.h++>
 
@@ -206,6 +207,85 @@ struct ConfigurationFile_Email_AllowedSender {
 	ConfigurationFile_Email_AllowedSender_Preprocess preprocessing;
 };
 
+/**
+ * Configures point coordinates (lat, lon) with a radius in meters to look for
+ * active reservations in. If any airspace having any common part with this
+ * point+radius area has a reservation scheduled, it will be announced by
+ * separate
+ */
+struct ConfigurationFile_Airspace_AroundPoint {
+	std::string audioFilename;	//!< Filename used as an ident of this point
+	int radius;					//!< Radius around the point to look for reservations for
+	float longitude;			//!<
+	float latitude;				//!<
+};
+
+/**
+ * This configuration section defines all airspaces which reservations are checked
+ * explicitly by its designator, no matter where they are located.
+ */
+struct ConfigurationFile_Airspace_Fixed {
+	std::string designator;		//!< Airspace designator as returned by the API
+	bool sayAltitudes;
+};
+
+/**
+ * Section used to specify which airspace types will be announced from the results of
+ * lookup configured by a vector of @link{ConfigurationFile_Airspace_AroundPoint}
+ * with a regular expressions used to extract designator (and sector if airspace
+ * is divided). Options sayXXX does not control anything explicitly configured
+ * by @link{ConfigurationFile_Airspace_Fixed} and those are announcement are
+ * always generated if a reservation is found.
+ *
+ * Regular expressions are used to generate data for announcements. The overall
+ * algorithm is as follows:
+ * 	1. Lookup inside 'airspaceDesignatorsAnouncement' map for explicitly configured announcement
+ * 	2. Extracting designator using regular expression. For example "EPD25A" may be
+ * 	   extracted to "D25", which will be said as (delta two five) or "D25A"
+ * 	   (said as delta two five alpha)
+ * 	3. If sector regular expression is configured, it is extracted and announced
+ * 	   separately. Final announcement for "EPD25A" might look like "delta
+ * 	   two five sector alpha"
+ * 	4. If regexp is not configured a generic announcement will be generated from
+ * 	   the full desgiantor
+ *
+ */
+struct ConfigurationFile_Airspace_SayConfigPerElemType {
+	bool sayATZ;	//!< If any ATZ configured by @link{ConfigurationFile_Airspace_AroundPoint} will be said
+	bool sayTRA;	//!< If any TRA configured by @link{ConfigurationFile_Airspace_AroundPoint} will be said
+	bool sayTSA;	//!< If any TSA configured by @link{ConfigurationFile_Airspace_AroundPoint} will be said
+	bool sayD;	//!< If any D configured by @link{ConfigurationFile_Airspace_AroundPoint} will be said
+	bool sayR;	//!< If any R configured by @link{ConfigurationFile_Airspace_AroundPoint} will be said
+
+	std::string atzDesignatorRegexp;	//!< Regexp used to extract ATZ designator to say
+	std::string traDesignatorRegexp;	//!< Regexp used to extract TRA designator to say
+	std::string traSectorRegexp;		//!< Regexp used to extract TRA sector to say
+	std::string tsaDesignatorRegexp;	//!< Regexp used to extract TSA designator to say
+	std::string tsaSectorRegexp;		//!< Regexp used to extract TSA sector to say
+	std::string dDesignatorRegexp;		//!< Regexp used to extract TRA designator to say
+	std::string dSectorRegexp;			//!< Regexp used to extract TRA designator to say
+	std::string rDesignatorRegexp;		//!< Regexp used to extract TRA designator to say
+};
+
+struct ConfigurationFile_Airspace {
+	bool enabled;
+	std::vector<ConfigurationFile_Airspace_AroundPoint> aroundPoint;
+	std::vector<ConfigurationFile_Airspace_Fixed> fixed;
+	int reservationFutureTimeMargin;	//!< Say only activations which will start not later than XX minutes
+	bool sayPast;		//!< Say activations for today, which had expired before current time
+	bool sayAltitudes;	//!< Global switch to say altitude range within an airspace is reserved
+	bool includeAirspaceTypeInfo;	//!< Add airspace type announcement before each zone
+	ConfigurationFile_Airspace_SayConfigPerElemType confPerElemType; //!< How each airspace type is announced
+
+	/**
+	 * This dictionary contains mapping between airspace designator and
+	 * an audio file with announcement / ident. It is used by the app
+	 * for any airspace reservation returned by the API. If exact match
+	 * is not found within this map, the application generate a generic
+	 * anonuncement used
+	 */
+	std::map<std::string, std::string> airspaceDesignatorsAnouncement;
+};
 
 /**
  * Email text to speech announcements configuration
@@ -284,6 +364,8 @@ class ConfigurationFile {
 	ConfigurationFile_ForecastMeteoblue forecast;
 
 	ConfigurationFile_Avalanche	avalancheWarning;
+
+	ConfigurationFile_Airspace airspace;
 
 	ConfigurationFile_Email	emailAnnonuncements;
 	ConfigurationFile_SpeechSynthesis speechSynthesis;
