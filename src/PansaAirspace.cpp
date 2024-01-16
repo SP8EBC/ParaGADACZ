@@ -107,20 +107,22 @@ PansaAirspace::~PansaAirspace() {
 	// TODO Auto-generated destructor stub
 }
 
-void PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool dumpSqlQuery) {
+int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool dumpSqlQuery) {
+
+	int results = 0;
 
 	std::string queryStr;
 
 	// remove previous content of the map
 	reservations.clear();
 
-	ctemplate::TemplateDictionary dict("pansa");
+	ctemplate::TemplateDictionary dict("pansa_around_point");
 
     dict.SetFormattedValue("longitude", "%.4f", lon);
     dict.SetFormattedValue("latitude", "%.4f", lat);
     dict.SetIntValue("distance", radius);
 
-    ctemplate::ExpandTemplate("pansa.tpl", ctemplate::DO_NOT_STRIP, &dict, &queryStr);
+    ctemplate::ExpandTemplate("pansa_around_point.tpl", ctemplate::DO_NOT_STRIP, &dict, &queryStr);
 
     if (dumpSqlQuery) {
     	SPDLOG_DEBUG("PostgreSQL used to download data from PANSA api \r\n{}", queryStr);
@@ -168,6 +170,8 @@ void PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, boo
 
 		  std::map<std::string, PansaAirspace_Zone>::iterator previousRsrv = reservations.find(designator);
 
+		  results++;
+
 		  // if at least one reservation for this zone has been found already
 		  if (previousRsrv != reservations.end()) {
 
@@ -201,6 +205,60 @@ void PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, boo
 	  if (reservations.size() == 0) {
 		  SPDLOG_WARN("No airspace reservations have been found. It is really OK??");
 	  }
+
+	  return results;
+}
+
+std::vector<std::shared_ptr<PansaAirspace_Reservation> > PansaAirspace::downloadForDesginator(
+		std::string designator, bool dumpSqlQuery) {
+
+	std::vector<std::shared_ptr<PansaAirspace_Reservation> > out;
+
+	std::string queryStr;
+
+	ctemplate::TemplateDictionary dict("pansa_explicit_designator");
+
+    dict.SetValue("desgiantor", designator);
+
+    ctemplate::ExpandTemplate("pansa_explicit_designator.tpl", ctemplate::DO_NOT_STRIP, &dict, &queryStr);
+
+    SPDLOG_INFO("Looking for active reservations for airspace designator {}", designator);
+
+    if (dumpSqlQuery) {
+    	SPDLOG_DEBUG("PostgreSQL used to download data from PANSA api \r\n{}", queryStr);
+    }
+
+    pqxx::connection c{connectionStr};
+	pqxx::work txn{c};
+
+	pqxx::result res = txn.exec(queryStr);
+
+	for (auto row : res) {
+		  std::string designator = std::string(row["designator"].c_str());
+		  std::string airspaceType = std::string(row["airspace_element_type"].c_str());
+		  float epochFrom = row["epoch_from"].as<float>();
+		  float epochTo = row["epoch_to"].as<float>();
+
+		  const std::string lowerAltitudeStr = row["lower_altitude"].as<std::string>();
+		  int lowerAltitude = PansaAirspace::ConvertAltitudeStr(lowerAltitudeStr);
+
+		  const std::string upperAltitudeStr = row["upper_altitude"].as<std::string>();
+		  int upperAltitude = PansaAirspace::ConvertAltitudeStr(upperAltitudeStr);
+
+		  SPDLOG_INFO(	"airspaceType: {}, lowerAltitudeStr: {}, upperAltitudeStr: {}, lowerAltitude: {}, upperAltitude: {}",
+				  	    airspaceType, lowerAltitudeStr, upperAltitudeStr, lowerAltitude, upperAltitude);
+
+		  std::shared_ptr<PansaAirspace_Reservation> reserv =
+				  std::make_shared<PansaAirspace_Reservation>(epochFrom, epochTo, lowerAltitude, upperAltitude);
+
+		  out.push_back(reserv);
+	}
+
+	txn.commit();
+
+	c.disconnect();
+
+	return out;
 }
 
 #endif

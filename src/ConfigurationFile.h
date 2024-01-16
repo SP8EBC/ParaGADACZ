@@ -275,6 +275,7 @@ struct ConfigurationFile_Airspace {
 	bool sayPast;		//!< Say activations for today, which had expired before current time
 	bool sayAltitudes;	//!< Global switch to say altitude range within an airspace is reserved
 	bool includeAirspaceTypeInfo;	//!< Add airspace type announcement before each zone
+	bool bailoutIfNothingToSay;
 	ConfigurationFile_Airspace_SayConfigPerElemType confPerElemType; //!< How each airspace type is announced
 
 	/**
@@ -378,6 +379,25 @@ class ConfigurationFile {
 	bool hasPogodacc;
 	bool hasAprx;
 	bool hasWeatherlink;
+
+protected:
+
+	bool parseInhibitor(libconfig::Setting & root);
+	bool parsePttControl(libconfig::Setting & root);
+	bool parseAprx(libconfig::Setting & root);
+	bool parsePogodacc(libconfig::Setting & root);
+	bool parseIntro(libconfig::Setting & root);
+	bool parseRecordedSpecialAnnouncementPre(libconfig::Setting & root);
+	bool parseTextSpecialAnnouncementPre(libconfig::Setting & root);
+	bool parseCurrentWeather(libconfig::Setting & root);
+	bool parseTrend(libconfig::Setting & root);
+	bool parseForecastMeteoblue(libconfig::Setting & root);
+	bool parseAvalange(libconfig::Setting & root);
+	bool parseRecordedSpecialAnnouncementPost(libconfig::Setting & root);
+	bool parseTextSpecialAnnouncementPost(libconfig::Setting & root);
+	bool parseAirspace(libconfig::Setting & root);
+	bool parseEmailConfig(libconfig::Setting & root);
+	bool parseSpeechSynthesis(libconfig::Setting & root);
 
 public:
 
@@ -498,6 +518,10 @@ public:
 
 	const std::string& getOutro() const {
 		return outro;
+	}
+
+	const ConfigurationFile_Airspace& getAirspace() const {
+		return airspace;
 	}
 };
 

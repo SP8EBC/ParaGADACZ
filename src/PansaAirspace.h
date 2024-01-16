@@ -13,6 +13,7 @@
 
 #include <string>
 #include <map>
+#include <memory>
 
 class PansaAirspace {
 private:
@@ -40,7 +41,24 @@ public:
 	PansaAirspace(std::string psqlUsername, std::string psqlPassword, std::string psqlDb);
 	virtual ~PansaAirspace();
 
-	void downloadAroundLocation(float lat, float lon, int radius, bool dumpSqlQuery);
+	/**
+	 * Downloads all reservations for airspace elements located within an area defined
+	 * by coordinates and radius, results are stored in internal map thus this method
+	 * has side effects.
+	 * @param lat
+	 * @param lon
+	 * @param radius
+	 * @param dumpSqlQuery
+	 * @return how many reservations were found
+	 */
+	int downloadAroundLocation(float lat, float lon, int radius, bool dumpSqlQuery);
+
+	/**
+	 * Download all reservation for explicitly given airspace designator
+	 * @param designator
+	 * @return vector of all reservations found or an empty one if no reservations exists
+	 */
+	std::vector<std::shared_ptr<PansaAirspace_Reservation>> downloadForDesginator(std::string designator, bool dumpSqlQuery);
 
 	const std::map<std::string, PansaAirspace_Zone>& getReservations() const {
 		return reservations;

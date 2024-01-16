@@ -2,5 +2,5 @@ Running 1 test case...
 Entering test module "PansaAirspace_test"
 ../src/PansaAirspace_test.cpp(45): Entering test case "connect"
 Test case connect did not check any assertions
-../src/PansaAirspace_test.cpp(45): Leaving test case "connect"; testing time: 9387860us
-Leaving test module "PansaAirspace_test"; testing time: 9387925us
+../src/PansaAirspace_test.cpp(45): Leaving test case "connect"; testing time: 403128us
+Leaving test module "PansaAirspace_test"; testing time: 403194us

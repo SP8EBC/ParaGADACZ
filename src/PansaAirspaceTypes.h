@@ -19,6 +19,7 @@ typedef enum PansaAirspace_Type {
 	AIRSPACE_D,
 	AIRSPACE_R,
 	AIRSPACE_P,
+	AIRSPACE_ADHOC
 }PansaAirspace_Type;
 
 static PansaAirspace_Type PansaAirspace_Type_FromString(std::string _in) {
@@ -40,13 +41,37 @@ static PansaAirspace_Type PansaAirspace_Type_FromString(std::string _in) {
 	else if (_in == "P" || _in == "\"P\"") {
 		return AIRSPACE_P;
 	}
+	else if (_in == "ADHOC" || _in == "\"ADHOC\"") {
+		return AIRSPACE_ADHOC;
+	}
 	else {
-		throw std::runtime_error("");
+		throw std::runtime_error("Unkown airspace type: " + _in);
 	}
 }
 
 class PansaAirspace_Reservation {
 public:
+
+	PansaAirspace_Reservation() :
+		fromTime(0), toTime(0), lowerAltitude(0), upperAltitude(0)
+	{
+
+	}
+
+	PansaAirspace_Reservation(
+			uint64_t _fromTime, uint64_t _toTime, uint32_t _lowerAltitude, uint32_t _upperAltitude, std::string _unit, std::string _remarks) :
+			fromTime(_fromTime), toTime(_toTime), lowerAltitude(_lowerAltitude), upperAltitude(_upperAltitude), unit(_unit), remarks(_remarks)
+	{
+
+	}
+
+	PansaAirspace_Reservation(
+			uint64_t _fromTime, uint64_t _toTime, uint32_t _lowerAltitude, uint32_t _upperAltitude) :
+			fromTime(_fromTime), toTime(_toTime), lowerAltitude(_lowerAltitude), upperAltitude(_upperAltitude)
+	{
+
+	}
+
 	uint64_t fromTime;
 
 	uint64_t toTime;

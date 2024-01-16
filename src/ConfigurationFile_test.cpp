@@ -176,7 +176,148 @@ BOOST_AUTO_TEST_CASE(tts)
 
 	BOOST_CHECK_EQUAL(result, true);
 	BOOST_CHECK_EQUAL("./test_input/ttsIndex2.json", configurationFile.getSpeechSynthesis().indexFilePath);
-	BOOST_CHECK_EQUAL(180, configurationFile.getSpeechSynthesis().ignoreOlderThan);
+	BOOST_CHECK_EQUAL(1234, configurationFile.getSpeechSynthesis().ignoreOlderThan);
 	BOOST_CHECK_EQUAL(SPEECH_POLISH, configurationFile.getSpeechSynthesis().language);
 
 }
+
+BOOST_AUTO_TEST_CASE(airspace_aroundpoint_and_fixed)
+{
+	ConfigurationFile configurationFile("./test_input/configuration_airspace_aroundpoint_and_fixed.conf");
+
+	bool result = configurationFile.parse();
+	const ConfigurationFile_Airspace& airspace = configurationFile.getAirspace();
+
+	BOOST_CHECK_EQUAL(result, true);
+	BOOST_CHECK_EQUAL(2, airspace.aroundPoint.size());
+	BOOST_CHECK_EQUAL(2, airspace.fixed.size());
+	BOOST_CHECK_EQUAL(true, airspace.bailoutIfNothingToSay);
+
+	const ConfigurationFile_Airspace_AroundPoint & around1st = airspace.aroundPoint.at(0);
+	const ConfigurationFile_Airspace_AroundPoint & around2nd = airspace.aroundPoint.at(1);
+
+	const ConfigurationFile_Airspace_Fixed & fixed1st = airspace.fixed.at(0);
+	const ConfigurationFile_Airspace_Fixed & fixed2nd = airspace.fixed.at(1);
+
+	BOOST_CHECK_EQUAL("deadbeef.mp3", around1st.audioFilename);
+	BOOST_CHECK_EQUAL(19.1234f, around1st.latitude);
+	BOOST_CHECK_EQUAL(49.876f, around1st.longitude);
+	BOOST_CHECK_EQUAL(12345, around1st.radius);
+
+	BOOST_CHECK_EQUAL("nocoffe.mp3", around2nd.audioFilename);
+	BOOST_CHECK_EQUAL(19.4321f, around2nd.latitude);
+	BOOST_CHECK_EQUAL(49.8888f, around2nd.longitude);
+	BOOST_CHECK_EQUAL(54321, around2nd.radius);
+
+	BOOST_CHECK_EQUAL("EPTS6A", fixed1st.designator);
+	BOOST_CHECK_EQUAL(false, fixed1st.sayAltitudes);
+
+	BOOST_CHECK_EQUAL("ATZ EPBA", fixed2nd.designator);
+	BOOST_CHECK_EQUAL(true, fixed2nd.sayAltitudes);
+
+	// defaults not defined in test configuration file
+	BOOST_CHECK_EQUAL(0, airspace.reservationFutureTimeMargin);
+	BOOST_CHECK_EQUAL(false, airspace.sayPast);
+	BOOST_CHECK_EQUAL(false, airspace.sayAltitudes);
+	BOOST_CHECK_EQUAL(true, airspace.includeAirspaceTypeInfo);
+
+	BOOST_CHECK_EQUAL(true, airspace.confPerElemType.sayTRA);
+	BOOST_CHECK_EQUAL(true, airspace.confPerElemType.sayTSA);
+	BOOST_CHECK_EQUAL(true, airspace.confPerElemType.sayATZ);
+	BOOST_CHECK_EQUAL(true, airspace.confPerElemType.sayD);
+	BOOST_CHECK_EQUAL(true, airspace.confPerElemType.sayR);
+
+	BOOST_CHECK_EQUAL("\\s[A-Z]{4}", airspace.confPerElemType.atzDesignatorRegexp);
+	BOOST_CHECK_EQUAL("[1-9]{1,3}", airspace.confPerElemType.traDesignatorRegexp);
+	BOOST_CHECK_EQUAL("[A-Z]{1}$", airspace.confPerElemType.traSectorRegexp);
+	BOOST_CHECK_EQUAL("[1-9]{1,3}", airspace.confPerElemType.tsaDesignatorRegexp);
+	BOOST_CHECK_EQUAL("[A-Z]{1}$", airspace.confPerElemType.tsaSectorRegexp);
+	BOOST_CHECK_EQUAL("[1-9]{1,3}", airspace.confPerElemType.dDesignatorRegexp);
+	BOOST_CHECK_EQUAL("[A-Z]$", airspace.confPerElemType.dSectorRegexp);
+	BOOST_CHECK_EQUAL("[0-9]{1,3}$", airspace.confPerElemType.rDesignatorRegexp);
+
+}
+
+BOOST_AUTO_TEST_CASE(configuration_airspace_aroundpoint_and_fixed_with_nondefault)
+{
+	ConfigurationFile configurationFile("./test_input/configuration_airspace_aroundpoint_and_fixed_with_nondefault.conf");
+
+	bool result = configurationFile.parse();
+	const ConfigurationFile_Airspace& airspace = configurationFile.getAirspace();
+
+	BOOST_CHECK_EQUAL(result, true);
+	BOOST_CHECK_EQUAL(2, airspace.aroundPoint.size());
+	BOOST_CHECK_EQUAL(2, airspace.fixed.size());
+
+	const ConfigurationFile_Airspace_AroundPoint & around1st = airspace.aroundPoint.at(0);
+	const ConfigurationFile_Airspace_AroundPoint & around2nd = airspace.aroundPoint.at(1);
+
+	const ConfigurationFile_Airspace_Fixed & fixed1st = airspace.fixed.at(0);
+	const ConfigurationFile_Airspace_Fixed & fixed2nd = airspace.fixed.at(1);
+
+	BOOST_CHECK_EQUAL("beef.mp3", around1st.audioFilename);
+	BOOST_CHECK_EQUAL(19.1234f, around1st.latitude);
+	BOOST_CHECK_EQUAL(49.876f, around1st.longitude);
+	BOOST_CHECK_EQUAL(12345, around1st.radius);
+
+	BOOST_CHECK_EQUAL("coffe.mp3", around2nd.audioFilename);
+	BOOST_CHECK_EQUAL(19.4321f, around2nd.latitude);
+	BOOST_CHECK_EQUAL(49.8888f, around2nd.longitude);
+	BOOST_CHECK_EQUAL(54321, around2nd.radius);
+
+	BOOST_CHECK_EQUAL("EPTS6A", fixed1st.designator);
+	BOOST_CHECK_EQUAL(false, fixed1st.sayAltitudes);
+
+	BOOST_CHECK_EQUAL("ATZ EPBA", fixed2nd.designator);
+	BOOST_CHECK_EQUAL(true, fixed2nd.sayAltitudes);
+
+	// defaults not defined in test configuration file
+	BOOST_CHECK_EQUAL(600, airspace.reservationFutureTimeMargin);
+	BOOST_CHECK_EQUAL(true, airspace.sayPast);
+	BOOST_CHECK_EQUAL(true, airspace.sayAltitudes);
+	BOOST_CHECK_EQUAL(false, airspace.includeAirspaceTypeInfo);
+
+	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayTRA);
+	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayTSA);
+	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayATZ);
+	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayD);
+	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayR);
+
+	BOOST_CHECK_EQUAL(".{1..3}", airspace.confPerElemType.atzDesignatorRegexp);
+	BOOST_CHECK_EQUAL(".{2..4}", airspace.confPerElemType.traDesignatorRegexp);
+	BOOST_CHECK_EQUAL(".{3..5}", airspace.confPerElemType.traSectorRegexp);
+	BOOST_CHECK_EQUAL(".{4..6}", airspace.confPerElemType.tsaDesignatorRegexp);
+	BOOST_CHECK_EQUAL(".{5..7}", airspace.confPerElemType.tsaSectorRegexp);
+	BOOST_CHECK_EQUAL(".{6..8}", airspace.confPerElemType.dDesignatorRegexp);
+	BOOST_CHECK_EQUAL(".{7..9}", airspace.confPerElemType.dSectorRegexp);
+	BOOST_CHECK_EQUAL(".{8..9}", airspace.confPerElemType.rDesignatorRegexp);
+
+}
+
+BOOST_AUTO_TEST_CASE(configuration_airspace_dictionary)
+{
+	ConfigurationFile configurationFile("./test_input/configuration_airspace_dictionary.conf");
+
+	bool result = configurationFile.parse();
+	const ConfigurationFile_Airspace& airspace = configurationFile.getAirspace();
+
+	BOOST_CHECK_EQUAL(result, true);
+	BOOST_CHECK_EQUAL(2, airspace.aroundPoint.size());
+	BOOST_CHECK_EQUAL(2, airspace.fixed.size());
+
+	BOOST_CHECK_EQUAL(2, airspace.airspaceDesignatorsAnouncement.size());
+
+	auto first = airspace.airspaceDesignatorsAnouncement.find("ATZ EPBA");
+	auto second = airspace.airspaceDesignatorsAnouncement.find("EPTR3");
+
+	BOOST_CHECK(first != airspace.airspaceDesignatorsAnouncement.end());
+	BOOST_CHECK(second != airspace.airspaceDesignatorsAnouncement.end());
+
+	BOOST_CHECK_EQUAL("ATZ EPBA", first->first);
+	BOOST_CHECK_EQUAL("bielsko_biala.mp3", first->second);
+
+	BOOST_CHECK_EQUAL("EPTR3", second->first);
+	BOOST_CHECK_EQUAL("costam.mp3", second->second);
+
+}
+// configuration_airspace_dictionary

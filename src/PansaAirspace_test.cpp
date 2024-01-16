@@ -47,5 +47,6 @@ BOOST_AUTO_TEST_CASE(connect)
 	PansaAirspace pansa(PSQL_USER, PSQL_PASSWORD, PSQL_DB);
 
 	//pansa.connect();
-	pansa.downloadAroundLocation(49.6852, 19.0318, 70000.0f, true);
+	//pansa.downloadAroundLocation(49.6852, 19.0318, 70000.0f, true);
+	pansa.downloadForDesginator("EPTS6A", true);
 }

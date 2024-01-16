@@ -1,9 +1,9 @@
-Running 7 test cases...
+Running 10 test cases...
 Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(36): Entering test case "split_callsign"
 ../src/ConfigurationFile_test.cpp(42): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(43): info: check std::get<unsigned>(result) == 11 has passed
-../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 85us
+../src/ConfigurationFile_test.cpp(36): Leaving test case "split_callsign"; testing time: 88us
 ../src/ConfigurationFile_test.cpp(46): Entering test case "split_callsign_no_ssid"
 ../src/ConfigurationFile_test.cpp(52): info: check std::get<std::string>(result) == "SP8EBC" has passed
 ../src/ConfigurationFile_test.cpp(53): info: check std::get<unsigned>(result) == 0 has passed
@@ -19,7 +19,7 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(73): info: check inhibitor.exec.enable == true has passed
 ../src/ConfigurationFile_test.cpp(74): info: check inhibitor.exec.okRetval == 0 has passed
 ../src/ConfigurationFile_test.cpp(75): info: check inhibitor.exec.path == "/bin/more" has passed
-../src/ConfigurationFile_test.cpp(56): Leaving test case "inhibitor_parse"; testing time: 453us
+../src/ConfigurationFile_test.cpp(56): Leaving test case "inhibitor_parse"; testing time: 466us
 ../src/ConfigurationFile_test.cpp(81): Entering test case "simple_parse"
 ../src/ConfigurationFile_test.cpp(89): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(91): info: check configurationFile.getIntro().ident.at(0) == "intro.ogg" has passed
@@ -45,7 +45,7 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(114): info: check configurationFile.getForecast().locations.at(0).sayPrecipation == true has passed
 ../src/ConfigurationFile_test.cpp(115): info: check configurationFile.getForecast().locations.at(0).sayTemperature == true has passed
 ../src/ConfigurationFile_test.cpp(116): info: check configurationFile.getForecast().locations.at(0).sayWind == true has passed
-../src/ConfigurationFile_test.cpp(81): Leaving test case "simple_parse"; testing time: 367us
+../src/ConfigurationFile_test.cpp(81): Leaving test case "simple_parse"; testing time: 364us
 ../src/ConfigurationFile_test.cpp(121): Entering test case "parsing_pogodacc_config"
 ../src/ConfigurationFile_test.cpp(127): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(129): info: check configurationFile.getPogodaCc().baseUrl == "http://pogoda.cc:8080/meteo_backend" has passed
@@ -53,7 +53,7 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(131): info: check configurationFile.getPogodaCc().ignoreHumidityQf == true has passed
 ../src/ConfigurationFile_test.cpp(132): info: check configurationFile.getPogodaCc().ignorePressureQf == false has passed
 ../src/ConfigurationFile_test.cpp(133): info: check configurationFile.getPogodaCc().ignoreWindQf == false has passed
-../src/ConfigurationFile_test.cpp(121): Leaving test case "parsing_pogodacc_config"; testing time: 292us
+../src/ConfigurationFile_test.cpp(121): Leaving test case "parsing_pogodacc_config"; testing time: 288us
 ../src/ConfigurationFile_test.cpp(137): Entering test case "email_announcements"
 ../src/ConfigurationFile_test.cpp(143): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(147): info: check 0x100 == em.maximumLenghtInWords has passed
@@ -72,11 +72,92 @@ Entering test module "ConfigurationFile_test"
 ../src/ConfigurationFile_test.cpp(165): info: check 1 == sender.preprocessing.startFromParagraph has passed
 ../src/ConfigurationFile_test.cpp(166): info: check 3 == sender.preprocessing.endOnParagraph has passed
 ../src/ConfigurationFile_test.cpp(167): info: check true == sender.preprocessing.inhibitSizeLimit has passed
-../src/ConfigurationFile_test.cpp(137): Leaving test case "email_announcements"; testing time: 392us
+../src/ConfigurationFile_test.cpp(137): Leaving test case "email_announcements"; testing time: 429us
 ../src/ConfigurationFile_test.cpp(171): Entering test case "tts"
 ../src/ConfigurationFile_test.cpp(177): info: check result == true has passed
 ../src/ConfigurationFile_test.cpp(178): info: check "./test_input/ttsIndex2.json" == configurationFile.getSpeechSynthesis().indexFilePath has passed
-../src/ConfigurationFile_test.cpp(179): info: check 180 == configurationFile.getSpeechSynthesis().ignoreOlderThan has passed
+../src/ConfigurationFile_test.cpp(179): info: check 1234 == configurationFile.getSpeechSynthesis().ignoreOlderThan has passed
 ../src/ConfigurationFile_test.cpp(180): info: check SPEECH_POLISH == configurationFile.getSpeechSynthesis().language has passed
-../src/ConfigurationFile_test.cpp(171): Leaving test case "tts"; testing time: 300us
-Leaving test module "ConfigurationFile_test"; testing time: 2039us
+../src/ConfigurationFile_test.cpp(171): Leaving test case "tts"; testing time: 328us
+../src/ConfigurationFile_test.cpp(184): Entering test case "airspace_aroundpoint_and_fixed"
+../src/ConfigurationFile_test.cpp(191): info: check result == true has passed
+../src/ConfigurationFile_test.cpp(192): info: check 2 == airspace.aroundPoint.size() has passed
+../src/ConfigurationFile_test.cpp(193): info: check 2 == airspace.fixed.size() has passed
+../src/ConfigurationFile_test.cpp(194): info: check true == airspace.bailoutIfNothingToSay has passed
+../src/ConfigurationFile_test.cpp(202): info: check "deadbeef.mp3" == around1st.audioFilename has passed
+../src/ConfigurationFile_test.cpp(203): info: check 19.1234f == around1st.latitude has passed
+../src/ConfigurationFile_test.cpp(204): info: check 49.876f == around1st.longitude has passed
+../src/ConfigurationFile_test.cpp(205): info: check 12345 == around1st.radius has passed
+../src/ConfigurationFile_test.cpp(207): info: check "nocoffe.mp3" == around2nd.audioFilename has passed
+../src/ConfigurationFile_test.cpp(208): info: check 19.4321f == around2nd.latitude has passed
+../src/ConfigurationFile_test.cpp(209): info: check 49.8888f == around2nd.longitude has passed
+../src/ConfigurationFile_test.cpp(210): info: check 54321 == around2nd.radius has passed
+../src/ConfigurationFile_test.cpp(212): info: check "EPTS6A" == fixed1st.designator has passed
+../src/ConfigurationFile_test.cpp(213): info: check false == fixed1st.sayAltitudes has passed
+../src/ConfigurationFile_test.cpp(215): info: check "ATZ EPBA" == fixed2nd.designator has passed
+../src/ConfigurationFile_test.cpp(216): info: check true == fixed2nd.sayAltitudes has passed
+../src/ConfigurationFile_test.cpp(219): info: check 0 == airspace.reservationFutureTimeMargin has passed
+../src/ConfigurationFile_test.cpp(220): info: check false == airspace.sayPast has passed
+../src/ConfigurationFile_test.cpp(221): info: check false == airspace.sayAltitudes has passed
+../src/ConfigurationFile_test.cpp(222): info: check true == airspace.includeAirspaceTypeInfo has passed
+../src/ConfigurationFile_test.cpp(224): info: check true == airspace.confPerElemType.sayTRA has passed
+../src/ConfigurationFile_test.cpp(225): info: check true == airspace.confPerElemType.sayTSA has passed
+../src/ConfigurationFile_test.cpp(226): info: check true == airspace.confPerElemType.sayATZ has passed
+../src/ConfigurationFile_test.cpp(227): info: check true == airspace.confPerElemType.sayD has passed
+../src/ConfigurationFile_test.cpp(228): info: check true == airspace.confPerElemType.sayR has passed
+../src/ConfigurationFile_test.cpp(230): info: check "\\s[A-Z]{4}" == airspace.confPerElemType.atzDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(231): info: check "[1-9]{1,3}" == airspace.confPerElemType.traDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(232): info: check "[A-Z]{1}$" == airspace.confPerElemType.traSectorRegexp has passed
+../src/ConfigurationFile_test.cpp(233): info: check "[1-9]{1,3}" == airspace.confPerElemType.tsaDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(234): info: check "[A-Z]{1}$" == airspace.confPerElemType.tsaSectorRegexp has passed
+../src/ConfigurationFile_test.cpp(235): info: check "[1-9]{1,3}" == airspace.confPerElemType.dDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(236): info: check "[A-Z]$" == airspace.confPerElemType.dSectorRegexp has passed
+../src/ConfigurationFile_test.cpp(237): info: check "[0-9]{1,3}$" == airspace.confPerElemType.rDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(184): Leaving test case "airspace_aroundpoint_and_fixed"; testing time: 337us
+../src/ConfigurationFile_test.cpp(241): Entering test case "configuration_airspace_aroundpoint_and_fixed_with_nondefault"
+../src/ConfigurationFile_test.cpp(248): info: check result == true has passed
+../src/ConfigurationFile_test.cpp(249): info: check 2 == airspace.aroundPoint.size() has passed
+../src/ConfigurationFile_test.cpp(250): info: check 2 == airspace.fixed.size() has passed
+../src/ConfigurationFile_test.cpp(258): info: check "beef.mp3" == around1st.audioFilename has passed
+../src/ConfigurationFile_test.cpp(259): info: check 19.1234f == around1st.latitude has passed
+../src/ConfigurationFile_test.cpp(260): info: check 49.876f == around1st.longitude has passed
+../src/ConfigurationFile_test.cpp(261): info: check 12345 == around1st.radius has passed
+../src/ConfigurationFile_test.cpp(263): info: check "coffe.mp3" == around2nd.audioFilename has passed
+../src/ConfigurationFile_test.cpp(264): info: check 19.4321f == around2nd.latitude has passed
+../src/ConfigurationFile_test.cpp(265): info: check 49.8888f == around2nd.longitude has passed
+../src/ConfigurationFile_test.cpp(266): info: check 54321 == around2nd.radius has passed
+../src/ConfigurationFile_test.cpp(268): info: check "EPTS6A" == fixed1st.designator has passed
+../src/ConfigurationFile_test.cpp(269): info: check false == fixed1st.sayAltitudes has passed
+../src/ConfigurationFile_test.cpp(271): info: check "ATZ EPBA" == fixed2nd.designator has passed
+../src/ConfigurationFile_test.cpp(272): info: check true == fixed2nd.sayAltitudes has passed
+../src/ConfigurationFile_test.cpp(275): info: check 600 == airspace.reservationFutureTimeMargin has passed
+../src/ConfigurationFile_test.cpp(276): info: check true == airspace.sayPast has passed
+../src/ConfigurationFile_test.cpp(277): info: check true == airspace.sayAltitudes has passed
+../src/ConfigurationFile_test.cpp(278): info: check false == airspace.includeAirspaceTypeInfo has passed
+../src/ConfigurationFile_test.cpp(280): info: check false == airspace.confPerElemType.sayTRA has passed
+../src/ConfigurationFile_test.cpp(281): info: check false == airspace.confPerElemType.sayTSA has passed
+../src/ConfigurationFile_test.cpp(282): info: check false == airspace.confPerElemType.sayATZ has passed
+../src/ConfigurationFile_test.cpp(283): info: check false == airspace.confPerElemType.sayD has passed
+../src/ConfigurationFile_test.cpp(284): info: check false == airspace.confPerElemType.sayR has passed
+../src/ConfigurationFile_test.cpp(286): info: check ".{1..3}" == airspace.confPerElemType.atzDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(287): info: check ".{2..4}" == airspace.confPerElemType.traDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(288): info: check ".{3..5}" == airspace.confPerElemType.traSectorRegexp has passed
+../src/ConfigurationFile_test.cpp(289): info: check ".{4..6}" == airspace.confPerElemType.tsaDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(290): info: check ".{5..7}" == airspace.confPerElemType.tsaSectorRegexp has passed
+../src/ConfigurationFile_test.cpp(291): info: check ".{6..8}" == airspace.confPerElemType.dDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(292): info: check ".{7..9}" == airspace.confPerElemType.dSectorRegexp has passed
+../src/ConfigurationFile_test.cpp(293): info: check ".{8..9}" == airspace.confPerElemType.rDesignatorRegexp has passed
+../src/ConfigurationFile_test.cpp(241): Leaving test case "configuration_airspace_aroundpoint_and_fixed_with_nondefault"; testing time: 338us
+../src/ConfigurationFile_test.cpp(297): Entering test case "configuration_airspace_dictionary"
+../src/ConfigurationFile_test.cpp(304): info: check result == true has passed
+../src/ConfigurationFile_test.cpp(305): info: check 2 == airspace.aroundPoint.size() has passed
+../src/ConfigurationFile_test.cpp(306): info: check 2 == airspace.fixed.size() has passed
+../src/ConfigurationFile_test.cpp(308): info: check 2 == airspace.airspaceDesignatorsAnouncement.size() has passed
+../src/ConfigurationFile_test.cpp(313): info: check first != airspace.airspaceDesignatorsAnouncement.end() has passed
+../src/ConfigurationFile_test.cpp(314): info: check second != airspace.airspaceDesignatorsAnouncement.end() has passed
+../src/ConfigurationFile_test.cpp(316): info: check "ATZ EPBA" == first->first has passed
+../src/ConfigurationFile_test.cpp(317): info: check "bielsko_biala.mp3" == first->second has passed
+../src/ConfigurationFile_test.cpp(319): info: check "EPTR3" == second->first has passed
+../src/ConfigurationFile_test.cpp(320): info: check "costam.mp3" == second->second has passed
+../src/ConfigurationFile_test.cpp(297): Leaving test case "configuration_airspace_dictionary"; testing time: 304us
+Leaving test module "ConfigurationFile_test"; testing time: 3132us
