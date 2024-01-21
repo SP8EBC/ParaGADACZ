@@ -11,6 +11,13 @@
 #define KROPKA		 	"kropka.ogg"
 #define	MINUS	 		"minus.ogg"
 #define ORAZ		 	"oraz.ogg"
+#define DO				"do.ogg"
+#define POWYZEJ			"powyzej.ogg"
+
+#define OGLOSZENIE_SPECIALNE "ogloszenie_specjalne.ogg"
+#define OBSZAR		"obszar.ogg"
+#define PROMIEN  "promien.ogg"
+#define
 
 #define PIERWSZA		"pierwsza.ogg"
 #define DRUGA			"druga.ogg"
@@ -57,8 +64,6 @@
 #define	PRZELOTNE_OPAD  "przelotne.ogg"
 #define DESZCZU			"deszczu.ogg"
 #define SNIEGU			"sniegu.ogg"
-#define DO				"do.ogg"
-#define POWYZEJ			"powyzej.ogg"
 #define INTENSYWNE		"intensywne.ogg"
 #define LOKALNE			"lokalne.ogg"
 #define MOZLIWE			"mozliwe.ogg"
@@ -161,5 +166,43 @@
 #define NUMBER_0	"zero.ogg"
 
 #define NUMBER_2_	"dwie.ogg"
+
+#define 	PH_ALPHA_PL		"ph_alpha.ogg"
+#define 	PH_BRAVO_PL		"ph_bravo.ogg"
+#define 	PH_CHARLIE_PL	"ph_charlie.ogg"
+#define 	PH_DELTA_PL		"ph_delta.ogg"
+#define 	PH_ECHO_PL		"ph_echo.ogg"
+#define 	PH_FOXTROT_PL	"ph_foxtrot.ogg"
+#define 	PH_GOLF_PL		"ph_golf.ogg"
+#define 	PH_HOTEL_PL		"ph_hotel.ogg"
+#define 	PH_INDIA_PL		"ph_india.ogg"
+#define 	PH_JULIET_PL	"ph_juliet.ogg"
+#define 	PH_KILO_PL		"ph_kilo.ogg"
+#define 	PH_LIMA_PL		"ph_lima.ogg"
+#define 	PH_MIKE_PL		"ph_mike.ogg"
+#define 	PH_NOVEMBER_PL	"ph_november.ogg"
+#define 	PH_OSCAR_PL		"ph_oscar.ogg"
+#define 	PH_PAPA_PL		"ph_papa.ogg"
+#define 	PH_ROMEO_PL		"ph_romeo.ogg"
+#define 	PH_QUEBEC_PL	"ph_quebec.ogg"
+#define 	PH_SIERRA_PL	"ph_sierra.ogg"
+#define 	PH_TANGO_PL		"ph_tango.ogg"
+#define 	PH_UNIFORM_PL	"ph_uniform.ogg"
+#define 	PH_VICTOR_PL	"ph_vitor.ogg"
+#define 	PH_WISKEY_PL	"ph_whiskey.ogg"
+#define 	PH_XRAY_PL		"ph_xray.ogg"
+#define 	PH_YANKEE_PL	"ph_yankee.ogg"
+#define 	PH_ZULU_PL		"ph_zulu.ogg"
+
+#define AIRSPACE_TRA_PL		"strefa_rezerwowana.ogg"
+#define AIRSPACE_TSA_PL		"strefa_zamknieta.ogg"
+#define AIRSPACE_ATZ_PL		"strefa_ruchu_nadlotniskowego.ogg"
+#define AIRSPACE_D_PL		"strefa_niebezpieczna.ogg"
+#define AIRSPACE_R_PL		"strefa_ograniczen.ogg"
+#define AIRSPACE_P_PL		"strefa_zakazana.ogg"
+#define AIRSPACE_ADHOC_PL	AIRSPACE_TRA_PL
+
+#define FLIGHT_RESTRICTION	"ograniczenia_lotow_w_obszarze.ogg"
+#define ZONE			""
 
 #endif /* PLAYLISTSAMPLERPL_FILES_H_ */

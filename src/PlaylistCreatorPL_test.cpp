@@ -42,6 +42,74 @@ struct MyConfig
 
 BOOST_GLOBAL_FIXTURE (MyConfig);
 
+BOOST_AUTO_TEST_CASE(phonetic_1) {
+
+	const std::string _test = "dupa";
+
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE(_test);
+	std::vector<std::string> out = c->getPhoneticForWord(_test);
+
+	BOOST_CHECK_EQUAL(4, out.size());
+	BOOST_CHECK_EQUAL(PH_DELTA_PL, out.at(0));
+	BOOST_CHECK_EQUAL(PH_UNIFORM_PL, out.at(1));
+	BOOST_CHECK_EQUAL(PH_PAPA_PL, out.at(2));
+	BOOST_CHECK_EQUAL(PH_ALPHA_PL, out.at(3));
+
+}
+
+BOOST_AUTO_TEST_CASE(phonetic_two_words_in_sequence) {
+
+	const std::string _test = "dupa sto";
+
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE(_test);
+	std::vector<std::string> out = c->getPhoneticForWord(_test);
+
+	BOOST_CHECK_EQUAL(4, out.size());
+	BOOST_CHECK_EQUAL(PH_DELTA_PL, out.at(0));
+	BOOST_CHECK_EQUAL(PH_UNIFORM_PL, out.at(1));
+	BOOST_CHECK_EQUAL(PH_PAPA_PL, out.at(2));
+	BOOST_CHECK_EQUAL(PH_ALPHA_PL, out.at(3));
+
+}
+
+BOOST_AUTO_TEST_CASE(phonetic_two_words_in_sequence_leading_space) {
+
+	const std::string _test = "dupa sto";
+
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE(_test);
+	std::vector<std::string> out = c->getPhoneticForWord(_test);
+
+	BOOST_CHECK_EQUAL(4, out.size());
+	BOOST_CHECK_EQUAL(PH_DELTA_PL, out.at(0));
+	BOOST_CHECK_EQUAL(PH_UNIFORM_PL, out.at(1));
+	BOOST_CHECK_EQUAL(PH_PAPA_PL, out.at(2));
+	BOOST_CHECK_EQUAL(PH_ALPHA_PL, out.at(3));
+
+}
+
+BOOST_AUTO_TEST_CASE(phonetic_wrong_str) {
+
+	const std::string _test = "dupa123";
+
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE(_test);
+	BOOST_CHECK_THROW(std::vector<std::string> out = c->getPhoneticForWord(_test), std::runtime_error);
+//
+//	BOOST_CHECK_EQUAL(4, out.size());
+//	BOOST_CHECK_EQUAL(PH_DELTA_PL, out.at(0));
+//	BOOST_CHECK_EQUAL(PH_UNIFORM_PL, out.at(1));
+//	BOOST_CHECK_EQUAL(PH_PAPA_PL, out.at(2));
+//	BOOST_CHECK_EQUAL(PH_ALPHA_PL, out.at(3));
+
+}
+
 BOOST_AUTO_TEST_CASE(decimal_123_4) {
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
@@ -52,7 +120,7 @@ BOOST_AUTO_TEST_CASE(decimal_123_4) {
 	BOOST_CHECK_EQUAL(NUMBER_100, out.at(0));
 	BOOST_CHECK_EQUAL(NUMBER_20, out.at(1));
 	BOOST_CHECK_EQUAL(NUMBER_3, out.at(2));
-	BOOST_CHECK_EQUAL(DECIMAL, out.at(3));
+	BOOST_CHECK_EQUAL(KROPKA, out.at(3));
 	BOOST_CHECK_EQUAL(NUMBER_4, out.at(4));
 
 }
@@ -66,7 +134,7 @@ BOOST_AUTO_TEST_CASE(decimal_20_7) {
 
 //	BOOST_CHECK_EQUAL(5, out.size());
 	BOOST_CHECK_EQUAL(NUMBER_20, out.at(0));
-	BOOST_CHECK_EQUAL(DECIMAL, out.at(1));
+	BOOST_CHECK_EQUAL(KROPKA, out.at(1));
 	BOOST_CHECK_EQUAL(NUMBER_7, out.at(2));
 }
 
@@ -84,7 +152,7 @@ BOOST_AUTO_TEST_CASE(decimal_1123_4) {
 	BOOST_CHECK_EQUAL(NUMBER_100, out.at(1));
 	BOOST_CHECK_EQUAL(NUMBER_20, out.at(2));
 	BOOST_CHECK_EQUAL(NUMBER_3, out.at(3));
-	BOOST_CHECK_EQUAL(DECIMAL, out.at(4));
+	BOOST_CHECK_EQUAL(KROPKA, out.at(4));
 	BOOST_CHECK_EQUAL(NUMBER_4, out.at(5));
 
 }
@@ -99,7 +167,7 @@ BOOST_AUTO_TEST_CASE(decimal_1103_4) {
 	BOOST_CHECK_EQUAL(NUMBER_1k, out.at(0));
 	BOOST_CHECK_EQUAL(NUMBER_100, out.at(1));
 	BOOST_CHECK_EQUAL(NUMBER_3, out.at(2));
-	BOOST_CHECK_EQUAL(DECIMAL, out.at(3));
+	BOOST_CHECK_EQUAL(KROPKA, out.at(3));
 	BOOST_CHECK_EQUAL(NUMBER_4, out.at(4));
 
 }
@@ -113,7 +181,7 @@ BOOST_AUTO_TEST_CASE(decimal_1013_4) {
 	BOOST_CHECK_EQUAL(4, out.size());
 	BOOST_CHECK_EQUAL(NUMBER_1k, out.at(0));
 	BOOST_CHECK_EQUAL(NUMBER_13, out.at(1));
-	BOOST_CHECK_EQUAL(DECIMAL, out.at(2));
+	BOOST_CHECK_EQUAL(KROPKA, out.at(2));
 	BOOST_CHECK_EQUAL(NUMBER_4, out.at(3));
 
 }
@@ -199,37 +267,37 @@ BOOST_AUTO_TEST_CASE(current_time) {
 	}
 
 	// const
-	BOOST_CHECK_EQUAL(*(playlist.begin()), TIME);
-	BOOST_CHECK_EQUAL(*(playlist.end() - 1), UTC);
+	BOOST_CHECK_EQUAL(*(playlist.begin()), GODZINA);
+	BOOST_CHECK_EQUAL(*(playlist.end() - 1), UNIWERSALNEGO);
 
 	int i = 1;
 
 	// then check parts which depends on current time
 	switch (hours) {
 		case 0: BOOST_CHECK_EQUAL(NUMBER_0, playlist.at(i++)); break;
-		case 1: BOOST_CHECK_EQUAL(ONE_CLOCK, playlist.at(i++)); break;
-		case 2: BOOST_CHECK_EQUAL(TWO_CLOCK, playlist.at(i++)); break;
-		case 3: BOOST_CHECK_EQUAL(THREE_CLOCK, playlist.at(i++)); break;
-		case 4: BOOST_CHECK_EQUAL(FOUR_CLOCK, playlist.at(i++)); break;
-		case 5: BOOST_CHECK_EQUAL(FIVE_CLOCK, playlist.at(i++)); break;
-		case 6: BOOST_CHECK_EQUAL(SIX_CLOCK, playlist.at(i++)); break;
-		case 7: BOOST_CHECK_EQUAL(SEVEN_CLOCK, playlist.at(i++)); break;
-		case 8: BOOST_CHECK_EQUAL(EIGHT_CLOCK, playlist.at(i++)); break;
-		case 9: BOOST_CHECK_EQUAL(NINE_CLOCK, playlist.at(i++)); break;
-		case 10: BOOST_CHECK_EQUAL(TEN_CLOCK, playlist.at(i++)); break;
-		case 11: BOOST_CHECK_EQUAL(ELEVEN_CLOCK, playlist.at(i++)); break;
-		case 12: BOOST_CHECK_EQUAL(TWELVE_CLOCK, playlist.at(i++)); break;
-		case 13: BOOST_CHECK_EQUAL(THIRTEEN_CLOCK, playlist.at(i++)); break;
-		case 14: BOOST_CHECK_EQUAL(FOURTEEN_CLOCK, playlist.at(i++)); break;
-		case 15: BOOST_CHECK_EQUAL(FIFVETEEN_CLOCK, playlist.at(i++)); break;
-		case 16: BOOST_CHECK_EQUAL(SIXTEEN_CLOCK, playlist.at(i++)); break;
-		case 17: BOOST_CHECK_EQUAL(SEVENTEEN_CLOCK, playlist.at(i++)); break;
-		case 18: BOOST_CHECK_EQUAL(EIGHTEEN_CLOCK, playlist.at(i++)); break;
-		case 19: BOOST_CHECK_EQUAL(NINETEEN_CLOCK, playlist.at(i++)); break;
-		case 20: BOOST_CHECK_EQUAL(TWENTY_CLOCK, playlist.at(i++)); break;
-		case 21: BOOST_CHECK_EQUAL(TWENTY_CLOCK, playlist.at(i++)); BOOST_CHECK_EQUAL(ONE_CLOCK, playlist.at(i++)); break;
-		case 22: BOOST_CHECK_EQUAL(TWENTY_CLOCK, playlist.at(i++)); BOOST_CHECK_EQUAL(TWO_CLOCK, playlist.at(i++)); break;
-		case 23: BOOST_CHECK_EQUAL(TWENTY_CLOCK, playlist.at(i++)); BOOST_CHECK_EQUAL(THREE_CLOCK, playlist.at(i++)); break;
+		case 1: BOOST_CHECK_EQUAL(PIERWSZA, playlist.at(i++)); break;
+		case 2: BOOST_CHECK_EQUAL(DRUGA, playlist.at(i++)); break;
+		case 3: BOOST_CHECK_EQUAL(TRZECIA, playlist.at(i++)); break;
+		case 4: BOOST_CHECK_EQUAL(CZWARTA, playlist.at(i++)); break;
+		case 5: BOOST_CHECK_EQUAL(PIATA, playlist.at(i++)); break;
+		case 6: BOOST_CHECK_EQUAL(SZOSTA, playlist.at(i++)); break;
+		case 7: BOOST_CHECK_EQUAL(SIODMA, playlist.at(i++)); break;
+		case 8: BOOST_CHECK_EQUAL(OSMA, playlist.at(i++)); break;
+		case 9: BOOST_CHECK_EQUAL(DZIEWIATA, playlist.at(i++)); break;
+		case 10: BOOST_CHECK_EQUAL(DZIESIATA, playlist.at(i++)); break;
+		case 11: BOOST_CHECK_EQUAL(JEDENASTA, playlist.at(i++)); break;
+		case 12: BOOST_CHECK_EQUAL(DWUNASTA, playlist.at(i++)); break;
+		case 13: BOOST_CHECK_EQUAL(TRZYNASTA, playlist.at(i++)); break;
+		case 14: BOOST_CHECK_EQUAL(CZTERNASTA, playlist.at(i++)); break;
+		case 15: BOOST_CHECK_EQUAL(PIETNASTA, playlist.at(i++)); break;
+		case 16: BOOST_CHECK_EQUAL(SZESNASTA, playlist.at(i++)); break;
+		case 17: BOOST_CHECK_EQUAL(SIEDEMNASTA, playlist.at(i++)); break;
+		case 18: BOOST_CHECK_EQUAL(OSIEMNASTA, playlist.at(i++)); break;
+		case 19: BOOST_CHECK_EQUAL(DZIEWIETNASTA, playlist.at(i++)); break;
+		case 20: BOOST_CHECK_EQUAL(DWUDZIESTA, playlist.at(i++)); break;
+		case 21: BOOST_CHECK_EQUAL(DWUDZIESTA, playlist.at(i++)); BOOST_CHECK_EQUAL(PIERWSZA, playlist.at(i++)); break;
+		case 22: BOOST_CHECK_EQUAL(DWUDZIESTA, playlist.at(i++)); BOOST_CHECK_EQUAL(DRUGA, playlist.at(i++)); break;
+		case 23: BOOST_CHECK_EQUAL(DWUDZIESTA, playlist.at(i++)); BOOST_CHECK_EQUAL(TRZECIA, playlist.at(i++)); break;
 	}
 
 	if (minutes > 19 || minutes < 10) {

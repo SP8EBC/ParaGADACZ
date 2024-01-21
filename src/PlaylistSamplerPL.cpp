@@ -748,6 +748,10 @@ std::optional<
 	case PlaylistSampler_ConstanElement::THIRD_LEVEL:		return TRZECI_ST;
 	case PlaylistSampler_ConstanElement::FOURTH_LEVEL:		return CZWARTY_ST;
 	case PlaylistSampler_ConstanElement::ALSO:				return ORAZ;
+	case PlaylistSampler_ConstanElement::SPECIAL_ANOUNCEMENT: return OGLOSZENIE_SPECIALNE;
+	case PlaylistSampler_ConstanElement::REGION:		return OBSZAR;
+	case PlaylistSampler_ConstanElement::RADIUS:		return PROMIEN;
+	case PlaylistSampler_ConstanElement::AROUND:		break;
 	}
 
 	SPDLOG_ERROR("Unknown element: {}", element);
@@ -811,3 +815,94 @@ std::string PlaylistSamplerPL::getAudioForWindDirection(int direction) {
 		//return "";
 	}
 }
+
+/**
+ * Converts a single word into NATO phonetic pronunciation. This method
+ * should be universal across all implementations as the NATO phonetic
+ * alphabet is the same, although each language will have distinct
+ * voice used to generate samples. "BRAVO" will be the same word in each
+ * case, although it may sound a little bit differently across different
+ * natural languages, which shall be taken into consideration not to
+ * confuse a listener.
+ * @param word
+ * @return vector of filenames with each letter spoken phonetically
+ */
+std::vector<
+		std::__cxx11::basic_string<char, std::char_traits<char>,
+				std::allocator<char> >,
+		std::allocator<
+				std::__cxx11::basic_string<char, std::char_traits<char>,
+						std::allocator<char> > > > PlaylistSamplerPL::getPhoneticForWord(
+		std::string word) {
+
+	std::vector<std::string> out;
+
+	boost::algorithm::trim(word);
+
+	// split complete sentence to extract single word, in case that a caller passed more
+	boost::algorithm::split(out, word, boost::is_any_of(" "), boost::token_compress_off);
+
+	// single word, which will be split
+	std::string singleWord = out.at(0);
+
+	// convert to uppercase
+	boost::algorithm::to_upper(singleWord);
+
+	// clear output verctor, which was used for intermediate processing
+	out.clear();
+
+	// loop over all characters from provided word
+	for (char c : singleWord) {
+		const PlaylistSampler_Phonetic phonetic = static_cast<PlaylistSampler_Phonetic>(c);
+
+		switch (phonetic) {
+		case PH_ALPHA: 		out.push_back(PH_ALPHA_PL); break;
+		case PH_BRAVO:		out.push_back(PH_BRAVO_PL); break;
+		case PH_CHARLIE:	out.push_back(PH_CHARLIE_PL); break;
+		case PH_DELTA:		out.push_back(PH_DELTA_PL); break;
+		case PH_ECHO:		out.push_back(PH_ECHO_PL); break;
+		case PH_FOXTROT:	out.push_back(PH_FOXTROT_PL); break;
+		case PH_GOLF:		out.push_back(PH_GOLF_PL); break;
+		case PH_HOTEL:		out.push_back(PH_HOTEL_PL); break;
+		case PH_INDIA:		out.push_back(PH_INDIA_PL); break;
+		case PH_JULIET:		out.push_back(PH_JULIET_PL); break;
+		case PH_KILO:		out.push_back(PH_KILO_PL); break;
+		case PH_LIMA:		out.push_back(PH_LIMA_PL); break;
+		case PH_MIKE:		out.push_back(PH_MIKE_PL); break;
+		case PH_NOVEMBER:	out.push_back(PH_NOVEMBER_PL); break;
+		case PH_OSCAR:		out.push_back(PH_OSCAR_PL); break;
+		case PH_PAPA:		out.push_back(PH_PAPA_PL); break;
+		case PH_ROMEO:		out.push_back(PH_ROMEO_PL); break;
+		case PH_QUEBEC:		out.push_back(PH_QUEBEC_PL); break;
+		case PH_SIERRA:		out.push_back(PH_SIERRA_PL); break;
+		case PH_TANGO:		out.push_back(PH_TANGO_PL); break;
+		case PH_UNIFORM:	out.push_back(PH_UNIFORM_PL); break;
+		case PH_VICTOR:		out.push_back(PH_VICTOR_PL); break;
+		case PH_WISKEY:		out.push_back(PH_WISKEY_PL); break;
+		case PH_XRAY:		out.push_back(PH_XRAY_PL); break;
+		case PH_YANKEE:		out.push_back(PH_YANKEE_PL); break;
+		case PH_ZULU:		out.push_back(PH_ZULU_PL); break;
+		default: SPDLOG_ERROR("got a string which contains non letter character, singleWord: {}", singleWord); throw std::runtime_error("");
+		}
+	}
+
+	return out;
+}
+
+#ifdef PANSA_AIRSPACE
+std::string PlaylistSamplerPL::getForAirspaceType(PansaAirspace_Type type) {
+
+	switch (type) {
+	case AIRSPACE_TRA: return AIRSPACE_TRA_PL;
+	case AIRSPACE_TSA: return AIRSPACE_TSA_PL;
+	case AIRSPACE_ATZ: return AIRSPACE_ATZ_PL;
+	case AIRSPACE_D: return AIRSPACE_D_PL;
+	case AIRSPACE_R: return AIRSPACE_R_PL;
+	case AIRSPACE_P: return AIRSPACE_P_PL;
+	case AIRSPACE_ADHOC: return AIRSPACE_TSA_PL;
+	}
+
+	SPDLOG_ERROR("Unknown value provided: {}", (int)type);
+	throw std::runtime_error("");
+}
+#endif

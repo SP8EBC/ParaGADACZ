@@ -11,12 +11,19 @@
 #ifndef PLAYLISTSAMPLER_H_
 #define PLAYLISTSAMPLER_H_
 
+#ifdef PANSA_AIRSPACE
+
+#endif
+
 #include <vector>
 #include <string>
 #include <optional>
 #include <tuple>
 
 #include "AvalancheWarnings.h"
+#ifdef PANSA_AIRSPACE
+#include "PansaAirspaceTypes.h"
+#endif
 
 #include "boost/date_time/posix_time/posix_time.hpp" //include all types plus i/o
 
@@ -30,7 +37,9 @@ enum PlaylistSampler_Unit {
 	PERCENT,
 	CELSIUS,//!< Degrees Celsius
 	HPA,	//!<
-	MILIMETER
+	MILIMETER,
+	KM,		//!< Kilometers
+	NM		//!< Nautical miles
 };
 
 /**
@@ -69,7 +78,44 @@ enum PlaylistSampler_ConstanElement {
 	THIRD_LEVEL,	//!< avalanche warning level
 	FOURTH_LEVEL,	//!< avalanche warning level
 	ALSO,
-	SPECIAL_ANOUNCEMENT
+	SPECIAL_ANOUNCEMENT,
+	REGION,			//!< "region"
+	RADIUS,			//!< "radius"
+	AROUND			//!< "around"
+};
+
+enum PlaylistSampler_Phonetic {
+	PH_ALPHA		= 0x41,
+	PH_BRAVO		= 0x42,
+	PH_CHARLIE		= 0x43,
+	PH_DELTA		= 0x44,
+	PH_ECHO			= 0x45,
+	PH_FOXTROT		= 0x46,
+	PH_GOLF			= 0x47,
+	PH_HOTEL		= 0x48,
+	PH_INDIA		= 0x49,
+	PH_JULIET		= 0x4A,
+	PH_KILO			= 0x4B,
+	PH_LIMA			= 0x4C,
+	PH_MIKE			= 0x4D,
+	PH_NOVEMBER		= 0x4E,
+	PH_OSCAR		= 0x4F,
+	PH_PAPA			= 0x50,
+	PH_ROMEO		= 0x51,
+	PH_QUEBEC		= 0x52,
+	PH_SIERRA		= 0x53,
+	PH_TANGO		= 0x54,
+	PH_UNIFORM		= 0x55,
+	PH_VICTOR		= 0x56,
+	PH_WISKEY		= 0x57,
+	PH_XRAY			= 0x58,
+	PH_YANKEE		= 0x59,
+	PH_ZULU			= 0x5A
+};
+
+enum PlaylistSampler_Airspace {
+	AIRSPACE_RESTRICTIONS_IN,	//!< "Restrictions for paragliding flights in"
+	AIRSPACE_ZONE				//!< "Zone"
 };
 
 class PlaylistSampler {
@@ -173,6 +219,23 @@ public:
 	 * \param direction
 	 */
 	virtual std::string getAudioForWindDirection(int direction) = 0;
+
+	/**
+	 * Converts a single word into NATO phonetic pronunciation. This method
+	 * should be universal across all implementations as the NATO phonetic
+	 * alphabet is the same, although each language will have distinct
+	 * voice used to generate samples. "BRAVO" will be the same word in each
+	 * case, although it may sound a little bit differently across different
+	 * natural languages, which shall be taken into consideration not to
+	 * confuse a listener.
+	 * @param word
+	 * @return vector of filenames with each letter spoken phonetically
+	 */
+	virtual std::vector<std::string> getPhoneticForWord(std::string word) = 0;
+
+#ifdef PANSA_AIRSPACE
+	virtual std::string getForAirspaceType(PansaAirspace_Type type) = 0;
+#endif
 
 	/**
 	 *

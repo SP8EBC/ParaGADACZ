@@ -155,6 +155,34 @@ public:
 			std::__cxx11::basic_string<char, std::char_traits<char>,
 					std::allocator<char> > > getAudioForAvalancheWarningLocation(
 			AvalancheWarnings_Location location) override;
+
+	/**
+	 * Converts a single word into NATO phonetic pronunciation. This method
+	 * should be universal across all implementations as the NATO phonetic
+	 * alphabet is the same, although each language will have distinct
+	 * voice used to generate samples. "BRAVO" will be the same word in each
+	 * case, although it may sound a little bit differently across different
+	 * natural languages, which shall be taken into consideration not to
+	 * confuse a listener.
+	 * @param word
+	 * @return vector of filenames with each letter spoken phonetically
+	 */
+	virtual std::vector<
+			std::__cxx11::basic_string<char, std::char_traits<char>,
+					std::allocator<char> >,
+			std::allocator<
+					std::__cxx11::basic_string<char, std::char_traits<char>,
+							std::allocator<char> > > > getPhoneticForWord(
+			std::string word);
+
+#ifdef PANSA_AIRSPACE
+	/**
+	 *
+	 * @param type
+	 * @return
+	 */
+	virtual std::string getForAirspaceType(PansaAirspace_Type type) override;
+#endif
 };
 
 #endif /* PLAYLISTSAMPLERPL_H_ */
