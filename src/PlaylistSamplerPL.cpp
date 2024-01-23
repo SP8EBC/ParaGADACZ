@@ -672,30 +672,36 @@ std::string PlaylistSamplerPL::getAudioFromUnit(PlaylistSampler_Unit unit, int v
 		out = CELSIUSS;
 	}
 	else {
-		if ( value == 1) {
+		if ( value == 1) { // NM
 			switch (unit) {
 			case PlaylistSampler_Unit::KNOTS:		out = KNOT_ONE; 		break;
 			case PlaylistSampler_Unit::MS:			out = MS_ONE;			break;
 			case PlaylistSampler_Unit::DEG:			out = DEGREE_ONE;		break;
 			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_ONE;	break;
+			case PlaylistSampler_Unit::KM:			out = KILOMETER_ONE;	break;
+			case PlaylistSampler_Unit::NM:			out = NAUTICAL_MILE_ONE;break;
 			default: break;
 			}
 		}
 		else if ( value == 2 || value == 3 || value == 4) {
 			switch (unit) {
-			case PlaylistSampler_Unit::KNOTS:		out = KNOT_TWO_FOUR; 		break;
-			case PlaylistSampler_Unit::MS:			out = MS_TWO_FOUR;			break;
-			case PlaylistSampler_Unit::DEG:			out = DEGREE_TWO_FOUR;		break;
-			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_TWO_FOUR;	break;
+			case PlaylistSampler_Unit::KNOTS:		out = KNOT_TWO_FOUR; 			break;
+			case PlaylistSampler_Unit::MS:			out = MS_TWO_FOUR;				break;
+			case PlaylistSampler_Unit::DEG:			out = DEGREE_TWO_FOUR;			break;
+			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_TWO_FOUR;		break;
+			case PlaylistSampler_Unit::KM:			out = KILOMETER_TWO_FOUR;		break;
+			case PlaylistSampler_Unit::NM:			out = NAUTICAL_MILE_TWO_FOUR;	break;
 			default: break;
 			}
 		}
 		else {
 			switch (unit) {
-			case PlaylistSampler_Unit::KNOTS:		out = KNOT_FOUR; 		break;
-			case PlaylistSampler_Unit::MS:			out = MS_FOUR;			break;
-			case PlaylistSampler_Unit::DEG:			out = DEGREE_FOUR;		break;
-			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_FOUR;	break;
+			case PlaylistSampler_Unit::KNOTS:		out = KNOT_FOUR; 			break;
+			case PlaylistSampler_Unit::MS:			out = MS_FOUR;				break;
+			case PlaylistSampler_Unit::DEG:			out = DEGREE_FOUR;			break;
+			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_FOUR;		break;
+			case PlaylistSampler_Unit::KM:			out = KILOMETER_FOUR;		break;
+			case PlaylistSampler_Unit::NM:			out = NAUTICAL_MILE_FOUR;	break;
 			default: break;
 			}
 		}
@@ -751,7 +757,9 @@ std::optional<
 	case PlaylistSampler_ConstanElement::SPECIAL_ANOUNCEMENT: return OGLOSZENIE_SPECIALNE;
 	case PlaylistSampler_ConstanElement::REGION:		return OBSZAR;
 	case PlaylistSampler_ConstanElement::RADIUS:		return PROMIEN;
-	case PlaylistSampler_ConstanElement::AROUND:		break;
+	case PlaylistSampler_ConstanElement::IN_RADIUS:		return W_PROMIENIU;
+	case PlaylistSampler_ConstanElement::AROUND:		return WOKOL;
+	case PlaylistSampler_ConstanElement::FROM_LOCATION:		return OD_LOKALIZACJI;
 	}
 
 	SPDLOG_ERROR("Unknown element: {}", element);
@@ -899,10 +907,23 @@ std::string PlaylistSamplerPL::getForAirspaceType(PansaAirspace_Type type) {
 	case AIRSPACE_D: return AIRSPACE_D_PL;
 	case AIRSPACE_R: return AIRSPACE_R_PL;
 	case AIRSPACE_P: return AIRSPACE_P_PL;
-	case AIRSPACE_ADHOC: return AIRSPACE_TSA_PL;
+	case AIRSPACE_ADHOC: return AIRSPACE_ADHOC_PL;
 	}
 
 	SPDLOG_ERROR("Unknown value provided: {}", (int)type);
-	throw std::runtime_error("");
+	throw std::runtime_error("getForAirspaceType");
 }
+
+std::string PlaylistSamplerPL::getAirspaceConstantElement(
+		PlaylistSampler_Airspace _airspace) {
+
+	switch(_airspace) {
+	case AIRSPACE_RESTRICTIONS_IN: return FLIGHT_RESTRICTION;
+	case AIRSPACE_ZONE:	return ZONE;
+	}
+
+	SPDLOG_ERROR("Unknown value provided: {}", (int)_airspace);
+	throw std::runtime_error("getAudioForAirspaceConstant");
+}
+
 #endif

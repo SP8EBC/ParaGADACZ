@@ -81,7 +81,9 @@ enum PlaylistSampler_ConstanElement {
 	SPECIAL_ANOUNCEMENT,
 	REGION,			//!< "region"
 	RADIUS,			//!< "radius"
-	AROUND			//!< "around"
+	IN_RADIUS,		//!< "in radius of"
+	AROUND,			//!< "around"
+	FROM_LOCATION	//!< "from location"
 };
 
 enum PlaylistSampler_Phonetic {
@@ -114,7 +116,7 @@ enum PlaylistSampler_Phonetic {
 };
 
 enum PlaylistSampler_Airspace {
-	AIRSPACE_RESTRICTIONS_IN,	//!< "Restrictions for paragliding flights in"
+	AIRSPACE_RESTRICTIONS_IN,	//!< "Flight restrictions in area"
 	AIRSPACE_ZONE				//!< "Zone"
 };
 
@@ -235,6 +237,8 @@ public:
 
 #ifdef PANSA_AIRSPACE
 	virtual std::string getForAirspaceType(PansaAirspace_Type type) = 0;
+
+	virtual std::string getAirspaceConstantElement(const PlaylistSampler_Airspace _airspace) = 0;
 #endif
 
 	/**

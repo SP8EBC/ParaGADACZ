@@ -182,7 +182,11 @@ public:
 	 * @return
 	 */
 	virtual std::string getForAirspaceType(PansaAirspace_Type type) override;
+
+	virtual std::string getAirspaceConstantElement(
+			PlaylistSampler_Airspace _airspace);
 #endif
+
 };
 
 #endif /* PLAYLISTSAMPLERPL_H_ */

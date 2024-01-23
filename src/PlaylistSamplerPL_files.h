@@ -14,10 +14,12 @@
 #define DO				"do.ogg"
 #define POWYZEJ			"powyzej.ogg"
 
-#define OGLOSZENIE_SPECIALNE "ogloszenie_specjalne.ogg"
-#define OBSZAR		"obszar.ogg"
-#define PROMIEN  "promien.ogg"
-#define
+#define OGLOSZENIE_SPECIALNE 	"ogloszenie_specjalne.ogg"
+#define OBSZAR					"obszar.ogg"
+#define PROMIEN  				"promien.ogg"
+#define W_PROMIENIU				"w_promieniu.ogg"
+#define WOKOL					"wokol.ogg"
+#define OD_LOKALIZACJI			"od_lokalizacji.ogg"
 
 #define PIERWSZA		"pierwsza.ogg"
 #define DRUGA			"druga.ogg"
@@ -116,6 +118,14 @@
 #define HOUR_TWO_FOUR	"godziny.ogg"
 #define HOUR_FOUR		"godzin.ogg"
 
+#define KILOMETER_ONE		"kilometr.ogg"
+#define KILOMETER_TWO_FOUR	"kilometry.ogg"
+#define KILOMETER_FOUR		"kilometrow.ogg"
+
+#define NAUTICAL_MILE_ONE		"mila_morska.ogg"
+#define NAUTICAL_MILE_TWO_FOUR	"mile_morskie.ogg"
+#define NAUTICAL_MILE_FOUR		"mil_morskich.ogg"
+
 #define HECTOPASCALS	"hektopaskale.ogg"
 #define PERCENTS		"procent.ogg"
 #define CELSIUSS		"celsjusza.ogg"
@@ -202,7 +212,12 @@
 #define AIRSPACE_P_PL		"strefa_zakazana.ogg"
 #define AIRSPACE_ADHOC_PL	AIRSPACE_TRA_PL
 
-#define FLIGHT_RESTRICTION	"ograniczenia_lotow_w_obszarze.ogg"
-#define ZONE			""
+
+       // ograniczenia lotów w promieniu xx kilometrów od lokalizacji skrzyczne
+       // .... strefa ograniczeń Romeo jeden dwa trzy sektor bravo
+
+
+#define FLIGHT_RESTRICTION	"ograniczenia_lotow.ogg"
+#define ZONE			"strefa.ogg"
 
 #endif /* PLAYLISTSAMPLERPL_FILES_H_ */

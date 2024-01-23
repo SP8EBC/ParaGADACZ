@@ -256,6 +256,7 @@ struct ConfigurationFile_Airspace_SayConfigPerElemType {
 	bool sayTSA;	//!< If any TSA configured by @link{ConfigurationFile_Airspace_AroundPoint} will be said
 	bool sayD;	//!< If any D configured by @link{ConfigurationFile_Airspace_AroundPoint} will be said
 	bool sayR;	//!< If any R configured by @link{ConfigurationFile_Airspace_AroundPoint} will be said
+	bool sayP;	//!< If any P configured by @link{ConfigurationFile_Airspace_AroundPoint} will be said
 
 	std::string atzDesignatorRegexp;	//!< Regexp used to extract ATZ designator to say
 	std::string traDesignatorRegexp;	//!< Regexp used to extract TRA designator to say

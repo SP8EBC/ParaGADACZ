@@ -22,6 +22,20 @@ typedef enum PansaAirspace_Type {
 	AIRSPACE_ADHOC
 }PansaAirspace_Type;
 
+static std::string PansaAirspace_Type_ToString(PansaAirspace_Type type) {
+	switch (type) {
+		case AIRSPACE_TRA: return "AIRSPACE_TRA";
+		case AIRSPACE_TSA: return "AIRSPACE_TSA";
+		case AIRSPACE_ATZ: return "AIRSPACE_ATZ";
+		case AIRSPACE_D: return "AIRSPACE_D";
+		case AIRSPACE_R: return "AIRSPACE_R";
+		case AIRSPACE_P: return "AIRSPACE_P";
+		case AIRSPACE_ADHOC: return "AIRSPACE_ADHOC";
+	}
+
+	return "AIRSPACE_UNKNOWN???";
+}
+
 static PansaAirspace_Type PansaAirspace_Type_FromString(std::string _in) {
 	if (_in == "TRA" || _in == "\"TRA\"" ) {
 		return AIRSPACE_TRA;
