@@ -7,6 +7,7 @@
 
 #include "PlaylistSamplerPL.h"
 #include "PlaylistSamplerPL_files.h"
+#include "TimeTools.h"
 
 #include <boost/algorithm/string.hpp>
 
@@ -112,6 +113,85 @@ std::tuple<
 
 	return out;
 
+}
+
+/**
+ * Returns a list of audio samples for hour and minute represented by epoch timestamp
+ * @param timetstamp
+ * @param addUniversalTime adds additional sentece "universal time"
+ * @return
+ */
+std::vector<
+		std::__cxx11::basic_string<char, std::char_traits<char>,
+				std::allocator<char> >,
+		std::allocator<
+				std::__cxx11::basic_string<char, std::char_traits<char>,
+						std::allocator<char> > > > PlaylistSamplerPL::getAudioForHourAndMinute(
+		uint64_t timetstamp, bool addUniversalTime) {
+
+	std::vector<std::string> out;
+
+	// get current time
+	boost::posix_time::ptime current = TimeTools::getPtimeFromEpoch(timetstamp);
+
+	// get time
+	const boost::posix_time::time_duration time_of_day = current.time_of_day();
+
+	// get hours
+	const uint8_t hours = time_of_day.hours();
+
+	// get minutes
+	const int minutes = time_of_day.minutes();
+
+	SPDLOG_INFO("hours: {}, minutes: {}", hours, minutes);
+
+	// playlist for audio samples
+	std::vector<std::string> playlist;
+
+	playlist.push_back(GODZINA);
+
+	// get hours component
+	switch (hours) {
+	case 0: playlist.push_back(NUMBER_0); break;
+	case 1: playlist.push_back(PIERWSZA); break;
+	case 2: playlist.push_back(DRUGA); break;
+	case 3: playlist.push_back(TRZECIA); break;
+	case 4: playlist.push_back(CZWARTA); break;
+	case 5: playlist.push_back(PIATA); break;
+	case 6: playlist.push_back(SZOSTA); break;
+	case 7: playlist.push_back(SIODMA); break;
+	case 8: playlist.push_back(OSMA); break;
+	case 9: playlist.push_back(DZIEWIATA); break;
+	case 10: playlist.push_back(DZIESIATA); break;
+	case 11: playlist.push_back(JEDENASTA); break;
+	case 12: playlist.push_back(DWUNASTA); break;
+	case 13: playlist.push_back(TRZYNASTA); break;
+	case 14: playlist.push_back(CZTERNASTA); break;
+	case 15: playlist.push_back(PIETNASTA); break;
+	case 16: playlist.push_back(SZESNASTA); break;
+	case 17: playlist.push_back(SIEDEMNASTA); break;
+	case 18: playlist.push_back(OSIEMNASTA); break;
+	case 19: playlist.push_back(DZIEWIETNASTA); break;
+	case 20: playlist.push_back(DWUDZIESTA); break;
+	case 21: playlist.push_back(DWUDZIESTA); playlist.push_back(PIERWSZA); break;
+	case 22: playlist.push_back(DWUDZIESTA); playlist.push_back(DRUGA); break;
+	case 23: playlist.push_back(DWUDZIESTA); playlist.push_back(TRZECIA); break;
+	}
+
+	// get minutes into separate vector
+	std::vector<std::string> minutes_playlist = this->getAudioListFromNumber(minutes);
+
+	if (minutes_playlist.size() > 0) {
+		// now merge two vector together
+		playlist.insert(playlist.end(), minutes_playlist.begin(), minutes_playlist.end());
+
+		if (addUniversalTime) {
+			// append the end
+			playlist.push_back(UNIWERSALNEGO);
+		}
+	}
+
+	return out;
 }
 
 /**
@@ -864,6 +944,16 @@ std::vector<
 		const PlaylistSampler_Phonetic phonetic = static_cast<PlaylistSampler_Phonetic>(c);
 
 		switch (phonetic) {
+		case PH_ZERO: 		out.push_back(NUMBER_0_EN); break;
+		case PH_ONE: 		out.push_back(NUMBER_1_EN); break;
+		case PH_TWO: 		out.push_back(NUMBER_2_EN); break;
+		case PH_THREE: 		out.push_back(NUMBER_3_EN); break;
+		case PH_FOUR: 		out.push_back(NUMBER_4_EN); break;
+		case PH_FIVE: 		out.push_back(NUMBER_5_EN); break;
+		case PH_SIX: 		out.push_back(NUMBER_6_EN); break;
+		case PH_SEVEN: 		out.push_back(NUMBER_7_EN); break;
+		case PH_EIGHT: 		out.push_back(NUMBER_8_EN); break;
+		case PH_NINE: 		out.push_back(NUMBER_9_EN); break;
 		case PH_ALPHA: 		out.push_back(PH_ALPHA_PL); break;
 		case PH_BRAVO:		out.push_back(PH_BRAVO_PL); break;
 		case PH_CHARLIE:	out.push_back(PH_CHARLIE_PL); break;
@@ -918,7 +1008,7 @@ std::string PlaylistSamplerPL::getAirspaceConstantElement(
 		PlaylistSampler_Airspace _airspace) {
 
 	switch(_airspace) {
-	case AIRSPACE_RESTRICTIONS_IN: return FLIGHT_RESTRICTION;
+	case AIRSPACE_RESTRICTIONS_IN: return OGRANICZENIA_LOTOW;
 	case AIRSPACE_ZONE:	return ZONE;
 	}
 

@@ -25,7 +25,6 @@ CPP_SRCS += \
 ../src/PlaylistAssembler.cpp \
 ../src/PlaylistAssemblerAirspace.cpp \
 ../src/PlaylistAssemblerAirspace_test.cpp \
-../src/PlaylistCreatorPL_test.cpp \
 ../src/PlaylistSamplerPL.cpp \
 ../src/PogodaccDownloader.cpp \
 ../src/SpeechSynthesis.cpp \
@@ -57,7 +56,6 @@ CPP_DEPS += \
 ./src/PlaylistAssembler.d \
 ./src/PlaylistAssemblerAirspace.d \
 ./src/PlaylistAssemblerAirspace_test.d \
-./src/PlaylistCreatorPL_test.d \
 ./src/PlaylistSamplerPL.d \
 ./src/PogodaccDownloader.d \
 ./src/SpeechSynthesis.d \
@@ -89,7 +87,6 @@ OBJS += \
 ./src/PlaylistAssembler.o \
 ./src/PlaylistAssemblerAirspace.o \
 ./src/PlaylistAssemblerAirspace_test.o \
-./src/PlaylistCreatorPL_test.o \
 ./src/PlaylistSamplerPL.o \
 ./src/PogodaccDownloader.o \
 ./src/SpeechSynthesis.o \
@@ -112,7 +109,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AprxLogParserStaticStuff.d ./src/AprxLogParserStaticStuff.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/ConfigurationFile_Parsers.d ./src/ConfigurationFile_Parsers.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/EmailDownloader.d ./src/EmailDownloader.o ./src/EmailDownloaderMessage.d ./src/EmailDownloaderMessage.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/MeteobluePictocode.d ./src/MeteobluePictocode.o ./src/MeteoblueRainParser.d ./src/MeteoblueRainParser.o ./src/PansaAirspace.d ./src/PansaAirspace.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistAssemblerAirspace.d ./src/PlaylistAssemblerAirspace.o ./src/PlaylistAssemblerAirspace_test.d ./src/PlaylistAssemblerAirspace_test.o ./src/PlaylistCreatorPL_test.d ./src/PlaylistCreatorPL_test.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/SpeechSynthesis.d ./src/SpeechSynthesis.o ./src/SpeechSynthesisResponsivevoice.d ./src/SpeechSynthesisResponsivevoice.o ./src/SpeechSynthesisStaticStuff.d ./src/SpeechSynthesisStaticStuff.o ./src/TimeTools.d ./src/TimeTools.o ./src/TrendDownloader.d ./src/TrendDownloader.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o
+	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AprxLogParserStaticStuff.d ./src/AprxLogParserStaticStuff.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/ConfigurationFile_Parsers.d ./src/ConfigurationFile_Parsers.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/EmailDownloader.d ./src/EmailDownloader.o ./src/EmailDownloaderMessage.d ./src/EmailDownloaderMessage.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/MeteobluePictocode.d ./src/MeteobluePictocode.o ./src/MeteoblueRainParser.d ./src/MeteoblueRainParser.o ./src/PansaAirspace.d ./src/PansaAirspace.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistAssemblerAirspace.d ./src/PlaylistAssemblerAirspace.o ./src/PlaylistAssemblerAirspace_test.d ./src/PlaylistAssemblerAirspace_test.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/SpeechSynthesis.d ./src/SpeechSynthesis.o ./src/SpeechSynthesisResponsivevoice.d ./src/SpeechSynthesisResponsivevoice.o ./src/SpeechSynthesisStaticStuff.d ./src/SpeechSynthesisStaticStuff.o ./src/TimeTools.d ./src/TimeTools.o ./src/TrendDownloader.d ./src/TrendDownloader.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o
 
 .PHONY: clean-src
 

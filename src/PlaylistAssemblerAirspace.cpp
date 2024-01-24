@@ -59,12 +59,142 @@ bool PlaylistAssemblerAirspace::checkIfAirspaceTypeEnabled(
 	return out;
 }
 
+/**
+ *
+ * @param extractFrom full-designator-string to extract from
+ * @param extractWhat true to extract airspace designator or false to extract sector (if applicable)
+ * @param type
+ * @param confPerElemType
+ * @return
+ */
+std::optional<std::string> PlaylistAssemblerAirspace::extractUsingRegexp(
+		std::string extractFrom, bool extractWhat, const PansaAirspace_Type type,
+		const ConfigurationFile_Airspace_SayConfigPerElemType & confPerElemType) {
+
+	// regular expression used to extract designator or (optional) sector from full-designator-string
+	std::regex rexex;
+
+	// results of matching designator or (optional) sector from full-designator-string
+    std::smatch match;
+
+    bool result = false;
+
+    std::string usedRegex;
+
+	// extract designator and optional sector information
+	switch (type) {
+		case AIRSPACE_TRA:
+			if (extractWhat) {
+				usedRegex = confPerElemType.traDesignatorRegexp;
+			}
+			else {
+				usedRegex = confPerElemType.traSectorRegexp;
+			}
+
+			break;
+		case AIRSPACE_TSA:
+			if (extractWhat) {
+				usedRegex = confPerElemType.tsaDesignatorRegexp;
+			}
+			else {
+				usedRegex = confPerElemType.tsaSectorRegexp;
+			}
+
+			break;
+		case AIRSPACE_ATZ:
+			if (extractWhat) {
+				usedRegex = confPerElemType.atzDesignatorRegexp;
+			}
+			else {
+				;
+			}
+
+			break;
+		case AIRSPACE_D:
+			if (extractWhat) {
+				usedRegex = confPerElemType.dDesignatorRegexp;
+			}
+			else {
+				usedRegex = confPerElemType.dSectorRegexp;
+			}
+
+			break;
+		case AIRSPACE_R:
+			if (extractWhat) {
+				usedRegex = confPerElemType.rDesignatorRegexp;
+			}
+			else {
+				;
+			}
+
+			break;
+		case AIRSPACE_P:
+			if (extractWhat) {
+				usedRegex = confPerElemType.pDesignatorRegexp;
+			}
+			else {
+				;
+			}
+
+			break;
+		case AIRSPACE_ADHOC:
+			if (extractWhat) {
+				usedRegex = confPerElemType.tsaDesignatorRegexp;
+			}
+			else {
+				usedRegex = confPerElemType.tsaSectorRegexp;
+			}
+
+			break;
+	}
+
+	// check if any regular expression has been found for input configuration
+	if (usedRegex.size() > 0) {
+
+		try {
+			// try to create an instance of regex class for this regular expression
+			rexex = std::regex(usedRegex, std::regex::ECMAScript);
+		}
+		catch (std::regex_error & ex) {
+			SPDLOG_ERROR("std::regex_error thrown during creating an instance of regex with input regexp {}", usedRegex);
+			SPDLOG_ERROR(ex.what());
+			result = false;
+			return std::nullopt;
+		}
+
+		try {
+			// parse input string if an instance of regex is created
+			result = 	std::regex_search(extractFrom, match, rexex);
+		}
+		catch (std::regex_error & ex) {
+			SPDLOG_ERROR("std::regex_error throw during parsing {} with regexp {}", extractFrom, usedRegex);
+			SPDLOG_ERROR(ex.what());
+			result = false;
+			return std::nullopt;
+		}
+
+		if (!result && extractWhat) {
+			SPDLOG_ERROR("No string has been extracted from {} by regexp {}", extractFrom, usedRegex);
+			return std::nullopt;
+		}
+	}
+
+
+	if (result) {
+		return std::optional<std::string>(match[0].str());
+	}
+	else {
+		return std::nullopt;
+	}
+
+}
+
 PlaylistAssemblerAirspace::~PlaylistAssemblerAirspace() {
 	// TODO Auto-generated destructor stub
 }
 
 void PlaylistAssemblerAirspace::reservationsAroundPoint(
-		ConfigurationFile_Airspace_AroundPoint & point,
+		const ConfigurationFile_Airspace_AroundPoint & point,
 		const std::map<std::string, PansaAirspace_Zone>& airspaceReservations) {
 
 	if (!playlist.has_value()) {
@@ -81,6 +211,8 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 	const ConfigurationFile_Airspace & airspaceCfg = config->getAirspace();
 	const std::map<std::string, std::string> & designatorsAnouncementsDict = airspaceCfg.airspaceDesignatorsAnouncement;
 
+	int radiusKm = (int)::round(point.radius / 1000);
+
 	// ograniczenia lotów w promieniu xx kilometrów od lokalizacji skrzyczne
 	// .... strefa ograniczeń Romeo jeden dwa trzy sektor bravo
 
@@ -91,9 +223,9 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 	playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::IN_RADIUS).value());
 
 	// "XX kilometers"
-	auto radius = sampler->getAudioListFromNumber(point.radius);
+	auto radius = sampler->getAudioListFromNumber(radiusKm);
 	playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(radius.begin()), std::make_move_iterator(radius.end()));
-	playlistPtr->push_back(sampler->getAudioFromUnit(PlaylistSampler_Unit::KM, point.radius));
+	playlistPtr->push_back(sampler->getAudioFromUnit(PlaylistSampler_Unit::KM, radiusKm));
 
 	// "from location"
 	playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::FROM_LOCATION).value());
@@ -132,104 +264,35 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 		else {
 			// generate generic one
 
-			// result of matching designator from full-designator-string
-			bool designatorResult = false;
-
 			// add airspace type announcement
 			playlistPtr->push_back(sampler->getForAirspaceType(type));
 
-			// regular expression used to extract designator and (optional) sector from full-designator-string
-			std::regex designator;
-			std::regex sector;
+			// extract designator string
+			const std::optional<std::string> designatorStr = PlaylistAssemblerAirspace::extractUsingRegexp(it->first, true, type, airspaceCfg.confPerElemType);
 
-			// results of matching designator and (optional) sector from full-designator-string
-		    std::smatch designatorMatch;
-		    std::smatch sectorMatch;
+			// extract (optional) sector letter
+			const std::optional<std::string> sectorStr = PlaylistAssemblerAirspace::extractUsingRegexp(it->first, false, type, airspaceCfg.confPerElemType);
 
-			// extract designator and optional sector information
-			switch (type) {
-				case AIRSPACE_TRA:
-					designator = std::regex(airspaceCfg.confPerElemType.traDesignatorRegexp, std::regex::grep);
-					sector = std::regex(airspaceCfg.confPerElemType.traSectorRegexp, std::regex::grep);
-
-					designatorResult = 	std::regex_search(it->first, designatorMatch, designator);
-										std::regex_search(it->first, sectorMatch, sector);
-
-					if (!designatorResult) {
-						SPDLOG_ERROR("No designator string has been extracted from {} by regexp {}", it->first, airspaceCfg.confPerElemType.traDesignatorRegexp);
-						throw std::runtime_error("");
-					}
-
-					break;
-				case AIRSPACE_TSA:
-					designator = std::regex(airspaceCfg.confPerElemType.tsaDesignatorRegexp, std::regex::grep);
-					sector = std::regex(airspaceCfg.confPerElemType.tsaSectorRegexp, std::regex::grep);
-
-					designatorResult = 	std::regex_search(it->first, designatorMatch, designator);
-										std::regex_search(it->first, sectorMatch, sector);
-
-					if (!designatorResult) {
-						SPDLOG_ERROR("No designator string has been extracted from {} by regexp {}", it->first, airspaceCfg.confPerElemType.tsaDesignatorRegexp);
-						throw std::runtime_error("");
-					}
-
-					break;
-				case AIRSPACE_ATZ:
-					designator = std::regex(airspaceCfg.confPerElemType.atzDesignatorRegexp, std::regex::grep);
-					designatorResult = 	std::regex_search(it->first, designatorMatch, designator);
-
-					if (!designatorResult) {
-						SPDLOG_ERROR("No designator string has been extracted from {} by regexp {}", it->first, airspaceCfg.confPerElemType.atzDesignatorRegexp);
-						throw std::runtime_error("");
-					}
-
-					break;
-				case AIRSPACE_D:
-					designator = std::regex(airspaceCfg.confPerElemType.dDesignatorRegexp, std::regex::grep);
-					sector = std::regex(airspaceCfg.confPerElemType.dSectorRegexp, std::regex::grep);
-
-					designatorResult = 	std::regex_search(it->first, designatorMatch, designator);
-										std::regex_search(it->first, sectorMatch, sector);
-
-					if (!designatorResult) {
-						SPDLOG_ERROR("No designator string has been extracted from {} by regexp {}", it->first, airspaceCfg.confPerElemType.dDesignatorRegexp);
-						throw std::runtime_error("");
-					}
-
-					break;
-				case AIRSPACE_R:
-					designator = std::regex(airspaceCfg.confPerElemType.rDesignatorRegexp, std::regex::grep);
-					designatorResult = 	std::regex_search(it->first, designatorMatch, designator);
-
-					if (!designatorResult) {
-						SPDLOG_ERROR("No designator string has been extracted from {} by regexp {}", it->first, airspaceCfg.confPerElemType.rDesignatorRegexp);
-						throw std::runtime_error("");
-					}
-
-					break;
-				case AIRSPACE_P: break;
-				case AIRSPACE_ADHOC:
-					designator = std::regex(airspaceCfg.confPerElemType.tsaDesignatorRegexp, std::regex::grep);
-					sector = std::regex(airspaceCfg.confPerElemType.tsaSectorRegexp, std::regex::grep);
-
-					designatorResult = 	std::regex_search(it->first, designatorMatch, designator);
-										std::regex_search(it->first, sectorMatch, sector);
-
-					if (!designatorResult) {
-						SPDLOG_ERROR("No designator string has been extracted from {} by regexp {}", it->first, airspaceCfg.confPerElemType.tsaDesignatorRegexp);
-						throw std::runtime_error("");
-					}
-
-					break;
+			if (!designatorStr.has_value()) {
+				throw std::runtime_error("Designator for airspace must be extracted");
+			}
+			else {
+				SPDLOG_DEBUG("Designator {} extracted from full-designator-string for airspace {}", designatorStr.value(), it->first);
 			}
 
-			const std::string designatorStr = designatorMatch[0].str();
-			const std::string sectorStr = sectorMatch[0].str();
+			std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(designatorStr.value());
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
 
+			// optionally add sector anouncement
+			if (sectorStr.has_value()) {
+				SPDLOG_DEBUG("Sector {} extracted from full-designator-string for airspace {}", sectorStr.value(), it->first);
+				std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
+				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
+			}
 
 		}
 
-	} while (it++ != airspaceReservations.end());
+	} while (++it != airspaceReservations.end());
 
 }
 

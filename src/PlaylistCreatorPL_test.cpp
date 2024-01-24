@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(phonetic_two_words_in_sequence_leading_space) {
 
 BOOST_AUTO_TEST_CASE(phonetic_wrong_str) {
 
-	const std::string _test = "dupa123";
+	const std::string _test = "dupa;;123";
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
@@ -108,6 +108,24 @@ BOOST_AUTO_TEST_CASE(phonetic_wrong_str) {
 //	BOOST_CHECK_EQUAL(PH_PAPA_PL, out.at(2));
 //	BOOST_CHECK_EQUAL(PH_ALPHA_PL, out.at(3));
 
+}
+
+BOOST_AUTO_TEST_CASE(phonetic_with_number) {
+	const std::string _test = "dupa123";
+
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE(_test);
+	std::vector<std::string> out = c->getPhoneticForWord(_test);
+
+	BOOST_CHECK_EQUAL(7, out.size());
+	BOOST_CHECK_EQUAL(PH_DELTA_PL, out.at(0));
+	BOOST_CHECK_EQUAL(PH_UNIFORM_PL, out.at(1));
+	BOOST_CHECK_EQUAL(PH_PAPA_PL, out.at(2));
+	BOOST_CHECK_EQUAL(PH_ALPHA_PL, out.at(3));
+	BOOST_CHECK_EQUAL(NUMBER_1_EN, out.at(4));
+	BOOST_CHECK_EQUAL(NUMBER_2_EN, out.at(5));
+	BOOST_CHECK_EQUAL(NUMBER_3_EN, out.at(6));
 }
 
 BOOST_AUTO_TEST_CASE(decimal_123_4) {

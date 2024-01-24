@@ -1,0 +1,17 @@
+Running 1 test case...
+Entering test module "PlaylistAssemblerAirspace_test"
+../src/PlaylistAssemblerAirspace_test.cpp(85): Entering test case "first_test"
+../src/PlaylistAssemblerAirspace_test.cpp(104): info: check "intro.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(105): info: check "ograniczenia_lotow.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(106): info: check "w_promieniu.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(107): info: check "dwanascie.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(108): info: check "kilometrow.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(109): info: check "od_lokalizacji.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(110): info: check "beef.mp3" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(111): info: check "strefa_ruchu_nadlotniskowego.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(112): info: check "ph_echo.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(113): info: check "ph_papa.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(114): info: check "ph_bravo.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(115): info: check "ph_alpha.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(85): Leaving test case "first_test"; testing time: 435us
+Leaving test module "PlaylistAssemblerAirspace_test"; testing time: 447us

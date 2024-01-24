@@ -175,6 +175,17 @@
 #define NUMBER_9	"dziewiec.ogg"
 #define NUMBER_0	"zero.ogg"
 
+#define NUMBER_1_EN	"one.ogg"
+#define NUMBER_2_EN	"two.ogg"
+#define NUMBER_3_EN	"three.ogg"
+#define NUMBER_4_EN	"four.ogg"
+#define NUMBER_5_EN	"five.ogg"
+#define NUMBER_6_EN	"six.ogg"
+#define NUMBER_7_EN	"seven.ogg"
+#define NUMBER_8_EN	"eight.ogg"
+#define NUMBER_9_EN	"nine.ogg"
+#define NUMBER_0_EN	"ziro.ogg"
+
 #define NUMBER_2_	"dwie.ogg"
 
 #define 	PH_ALPHA_PL		"ph_alpha.ogg"
@@ -217,7 +228,7 @@
        // .... strefa ograniczeń Romeo jeden dwa trzy sektor bravo
 
 
-#define FLIGHT_RESTRICTION	"ograniczenia_lotow.ogg"
+#define OGRANICZENIA_LOTOW	"ograniczenia_lotow.ogg"
 #define ZONE			"strefa.ogg"
 
 #endif /* PLAYLISTSAMPLERPL_FILES_H_ */

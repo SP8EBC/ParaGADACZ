@@ -42,6 +42,20 @@ public:
 			boost::posix_time::ptime> getAudioForCurrentTime() ;
 
 	/**
+	 * Returns a list of audio samples for hour and minute represented by epoch timestamp
+	 * @param timetstamp
+	 * @param addUniversalTime adds additional sentece "universal time"
+	 * @return
+	 */
+	virtual std::vector<
+			std::__cxx11::basic_string<char, std::char_traits<char>,
+					std::allocator<char> >,
+			std::allocator<
+					std::__cxx11::basic_string<char, std::char_traits<char>,
+							std::allocator<char> > > > getAudioForHourAndMinute(
+			uint64_t timetstamp, bool addUniversalTime);
+
+	/**
 	 * Returns a list of audio samples for forecast announcement like
 	 * "Forecast for next 3 hours". If audio cannot be generated (wrong time step)
 	 * empty optional is returned
@@ -186,7 +200,6 @@ public:
 	virtual std::string getAirspaceConstantElement(
 			PlaylistSampler_Airspace _airspace);
 #endif
-
 };
 
 #endif /* PLAYLISTSAMPLERPL_H_ */

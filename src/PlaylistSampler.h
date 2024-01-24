@@ -87,6 +87,16 @@ enum PlaylistSampler_ConstanElement {
 };
 
 enum PlaylistSampler_Phonetic {
+	PH_ZERO			= 0x30,
+	PH_ONE			= 0x31,
+	PH_TWO			= 0x32,
+	PH_THREE		= 0x33,
+	PH_FOUR			= 0x34,
+	PH_FIVE			= 0x35,
+	PH_SIX			= 0x36,
+	PH_SEVEN		= 0x37,
+	PH_EIGHT		= 0x38,
+	PH_NINE			= 0x39,
 	PH_ALPHA		= 0x41,
 	PH_BRAVO		= 0x42,
 	PH_CHARLIE		= 0x43,
@@ -169,6 +179,14 @@ public:
 	 * \return Vector of paths to audio files representing current time (hours and minutes)
 	 */
 	virtual std::tuple<std::vector<std::string>, boost::posix_time::ptime> getAudioForCurrentTime(void) = 0;
+
+	/**
+	 * Returns a list of audio samples for hour and minute represented by epoch timestamp
+	 * @param timetstamp
+	 * @param addUniversalTime adds additional sentece "universal time"
+	 * @return
+	 */
+	virtual std::vector<std::string> getAudioForHourAndMinute(uint64_t timetstamp, bool addUniversalTime) = 0;
 
 	/**
 	 * Returns a file for given constant announcement element, or empty optional if

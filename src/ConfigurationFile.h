@@ -266,6 +266,7 @@ struct ConfigurationFile_Airspace_SayConfigPerElemType {
 	std::string dDesignatorRegexp;		//!< Regexp used to extract TRA designator to say
 	std::string dSectorRegexp;			//!< Regexp used to extract TRA designator to say
 	std::string rDesignatorRegexp;		//!< Regexp used to extract TRA designator to say
+	std::string pDesignatorRegexp;		//!< Regexp used to extract TRA designator to say
 };
 
 struct ConfigurationFile_Airspace {

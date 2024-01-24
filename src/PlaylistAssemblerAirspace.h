@@ -27,6 +27,20 @@ private:
 	std::shared_ptr<ConfigurationFile> & config;
 
 	static bool checkIfAirspaceTypeEnabled(PansaAirspace_Type type, const ConfigurationFile_Airspace_SayConfigPerElemType & config);
+
+	/**
+	 *
+	 * @param extractFrom full-designator-string to extract from
+	 * @param extractWhat true to extract airspace designator or false to extract sector (if applicable)
+	 * @param type
+	 * @param confPerElemType
+	 * @return
+	 */
+	static std::optional<std::string> extractUsingRegexp(
+									std::string extractFrom,
+									bool extractWhat,
+									const PansaAirspace_Type type,
+									const ConfigurationFile_Airspace_SayConfigPerElemType & confPerElemType);
 public:
 
 	/**
@@ -34,7 +48,9 @@ public:
 	 * @param point
 	 * @param airspaceReservations map between airspace designator (like ATZ EPBA) and reservations + type + centroid locations + designator once again
 	 */
-	void reservationsAroundPoint(ConfigurationFile_Airspace_AroundPoint & point, const std::map<std::string, PansaAirspace_Zone>& airspaceReservations);
+	void reservationsAroundPoint(
+					const ConfigurationFile_Airspace_AroundPoint & point,
+					const std::map<std::string, PansaAirspace_Zone>& airspaceReservations);
 
 	PlaylistAssemblerAirspace(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config);
 	virtual ~PlaylistAssemblerAirspace();
