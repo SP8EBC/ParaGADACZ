@@ -38,6 +38,7 @@ enum PlaylistSampler_Unit {
 	CELSIUS,//!< Degrees Celsius
 	HPA,	//!<
 	MILIMETER,
+	METER,
 	KM,		//!< Kilometers
 	NM		//!< Nautical miles
 };
@@ -55,6 +56,7 @@ enum PlaylistSampler_ConstanElement {
 	DROP,
 	QNH,
 	REGIONAL_QNH,	//!< "Regional pressure"
+	HOUR,			//!< "hour" (one)
 	HOURS,			//!< "hours"
 	WIND,			//!< "wind"
 	WIND_GUSTS,		//!< "gusts"
@@ -66,6 +68,7 @@ enum PlaylistSampler_ConstanElement {
 	RAIN,
 	SNOW,
 	THUNDERSTORM,
+	FROM,
 	UO_TO,			//!< "up to xxx"
 	ABOVE,			//!< "more than xxx" / "above xxx"
 	INTENSE,
@@ -83,7 +86,7 @@ enum PlaylistSampler_ConstanElement {
 	RADIUS,			//!< "radius"
 	IN_RADIUS,		//!< "in radius of"
 	AROUND,			//!< "around"
-	FROM_LOCATION	//!< "from location"
+	FROM_LOCATION,	//!< "from location"
 };
 
 enum PlaylistSampler_Phonetic {
@@ -127,7 +130,9 @@ enum PlaylistSampler_Phonetic {
 
 enum PlaylistSampler_Airspace {
 	AIRSPACE_RESTRICTIONS_IN,	//!< "Flight restrictions in area"
-	AIRSPACE_ZONE				//!< "Zone"
+	AIRSPACE_ZONE,				//!< "Zone"
+	AIRSPACE_ALTITUDE,
+	AIRSPACE_GROUND
 };
 
 class PlaylistSampler {

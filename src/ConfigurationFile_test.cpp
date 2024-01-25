@@ -219,7 +219,7 @@ BOOST_AUTO_TEST_CASE(airspace_aroundpoint_and_fixed)
 	BOOST_CHECK_EQUAL(0, airspace.reservationFutureTimeMargin);
 	BOOST_CHECK_EQUAL(false, airspace.sayPast);
 	BOOST_CHECK_EQUAL(false, airspace.sayAltitudes);
-	BOOST_CHECK_EQUAL(true, airspace.includeAirspaceTypeInfo);
+	BOOST_CHECK_EQUAL(true, airspace.genericAirspaceAnouncementFromRegexExtracted);
 
 	BOOST_CHECK_EQUAL(true, airspace.confPerElemType.sayTRA);
 	BOOST_CHECK_EQUAL(true, airspace.confPerElemType.sayTSA);
@@ -238,9 +238,9 @@ BOOST_AUTO_TEST_CASE(airspace_aroundpoint_and_fixed)
 
 }
 
-BOOST_AUTO_TEST_CASE(configuration_airspace_aroundpoint_and_fixed_with_nondefault)
+BOOST_AUTO_TEST_CASE(configuration_airspace_aroundpoint_and_fixed_genericairspace_false)
 {
-	ConfigurationFile configurationFile("./test_input/configuration_airspace_aroundpoint_and_fixed_with_nondefault.conf");
+	ConfigurationFile configurationFile("./test_input/configuration_airspace_aroundpoint_and_fixed_genericairspace_false.conf");
 
 	bool result = configurationFile.parse();
 	const ConfigurationFile_Airspace& airspace = configurationFile.getAirspace();
@@ -275,7 +275,38 @@ BOOST_AUTO_TEST_CASE(configuration_airspace_aroundpoint_and_fixed_with_nondefaul
 	BOOST_CHECK_EQUAL(600, airspace.reservationFutureTimeMargin);
 	BOOST_CHECK_EQUAL(true, airspace.sayPast);
 	BOOST_CHECK_EQUAL(true, airspace.sayAltitudes);
-	BOOST_CHECK_EQUAL(false, airspace.includeAirspaceTypeInfo);
+	BOOST_CHECK_EQUAL(false, airspace.genericAirspaceAnouncementFromRegexExtracted);
+
+	BOOST_CHECK_EQUAL(true, airspace.confPerElemType.sayTRA);
+	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayTSA);
+	BOOST_CHECK_EQUAL(true, airspace.confPerElemType.sayATZ);
+	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayD);
+	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayR);
+
+	BOOST_CHECK_EQUAL("\\s[A-Z]{4}", airspace.confPerElemType.atzDesignatorRegexp);
+	BOOST_CHECK_EQUAL("[1-9]{1,3}", airspace.confPerElemType.traDesignatorRegexp);
+	BOOST_CHECK_EQUAL("[A-Z]{1}$", airspace.confPerElemType.traSectorRegexp);
+	BOOST_CHECK_EQUAL("[1-9]{1,3}", airspace.confPerElemType.tsaDesignatorRegexp);
+	BOOST_CHECK_EQUAL("[A-Z]{1}$", airspace.confPerElemType.tsaSectorRegexp);
+	BOOST_CHECK_EQUAL("[1-9]{1,3}", airspace.confPerElemType.dDesignatorRegexp);
+	BOOST_CHECK_EQUAL("[A-Z]$", airspace.confPerElemType.dSectorRegexp);
+	BOOST_CHECK_EQUAL("[0-9]{1,3}$", airspace.confPerElemType.rDesignatorRegexp);
+
+}
+
+// configuration_airspace_custom_regexp
+BOOST_AUTO_TEST_CASE(configuration_airspace_custom_regexp)
+{
+	ConfigurationFile configurationFile("./test_input/configuration_airspace_custom_regexp.conf");
+
+	bool result = configurationFile.parse();
+	const ConfigurationFile_Airspace& airspace = configurationFile.getAirspace();
+
+	// defaults not defined in test configuration file
+	BOOST_CHECK_EQUAL(600, airspace.reservationFutureTimeMargin);
+	BOOST_CHECK_EQUAL(true, airspace.sayPast);
+	BOOST_CHECK_EQUAL(true, airspace.sayAltitudes);
+	BOOST_CHECK_EQUAL(true, airspace.genericAirspaceAnouncementFromRegexExtracted);
 
 	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayTRA);
 	BOOST_CHECK_EQUAL(false, airspace.confPerElemType.sayTSA);

@@ -11,6 +11,7 @@
 #define KROPKA		 	"kropka.ogg"
 #define	MINUS	 		"minus.ogg"
 #define ORAZ		 	"oraz.ogg"
+#define OD				"od.ogg"
 #define DO				"do.ogg"
 #define POWYZEJ			"powyzej.ogg"
 
@@ -20,6 +21,8 @@
 #define W_PROMIENIU				"w_promieniu.ogg"
 #define WOKOL					"wokol.ogg"
 #define OD_LOKALIZACJI			"od_lokalizacji.ogg"
+#define WYSOKOSC				"wysokosc.ogg"
+#define POZIOMU_GRUNTU			"poziomu_gruntu.ogg"
 
 #define PIERWSZA		"pierwsza.ogg"
 #define DRUGA			"druga.ogg"
@@ -117,6 +120,10 @@
 #define HOUR_ONE		"godzine.ogg"
 #define HOUR_TWO_FOUR	"godziny.ogg"
 #define HOUR_FOUR		"godzin.ogg"
+
+#define METER_ONE		"metr.ogg"
+#define METER_TWO_FOUR	"metry.ogg"
+#define METER_FOUR		"metrow.ogg"
 
 #define KILOMETER_ONE		"kilometr.ogg"
 #define KILOMETER_TWO_FOUR	"kilometry.ogg"

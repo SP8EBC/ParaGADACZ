@@ -6,6 +6,7 @@
  */
 
 #include "PlaylistAssemblerAirspace.h"
+#include "TimeTools.h"
 
 #ifdef PANSA_AIRSPACE
 
@@ -189,6 +190,31 @@ std::optional<std::string> PlaylistAssemblerAirspace::extractUsingRegexp(
 
 }
 
+/**
+ * Recalculates altitude from any value between 100 to 9999 meters to 100 meters increments
+ * @param altitude in meters
+ * @param trueToRoundUp set to true to round altitude to next 100 increment, like 1822 meters to 1900 meters
+ * @return
+ */
+int PlaylistAssemblerAirspace::convertMetersToHundretsMeters(int altitude,
+		bool trueToRoundUp) {
+
+	int out = 0;
+
+	if (altitude > 0) {
+		const int amountOfHundrets = (altitude / 100);
+
+		out = amountOfHundrets * 100;
+
+		if (trueToRoundUp && ((altitude % 100) != 0)) {
+			out += 100;
+		}
+
+	}
+
+	return out;
+}
+
 PlaylistAssemblerAirspace::~PlaylistAssemblerAirspace() {
 	// TODO Auto-generated destructor stub
 }
@@ -264,34 +290,86 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 		else {
 			// generate generic one
 
-			// add airspace type announcement
-			playlistPtr->push_back(sampler->getForAirspaceType(type));
+			if (airspaceCfg.genericAirspaceAnouncementFromRegexExtracted) {
+				// add airspace type announcement
+				playlistPtr->push_back(sampler->getForAirspaceType(type));
 
-			// extract designator string
-			const std::optional<std::string> designatorStr = PlaylistAssemblerAirspace::extractUsingRegexp(it->first, true, type, airspaceCfg.confPerElemType);
+				// extract designator string
+				const std::optional<std::string> designatorStr = PlaylistAssemblerAirspace::extractUsingRegexp(it->first, true, type, airspaceCfg.confPerElemType);
 
-			// extract (optional) sector letter
-			const std::optional<std::string> sectorStr = PlaylistAssemblerAirspace::extractUsingRegexp(it->first, false, type, airspaceCfg.confPerElemType);
+				// extract (optional) sector letter
+				const std::optional<std::string> sectorStr = PlaylistAssemblerAirspace::extractUsingRegexp(it->first, false, type, airspaceCfg.confPerElemType);
 
-			if (!designatorStr.has_value()) {
-				throw std::runtime_error("Designator for airspace must be extracted");
+				if (!designatorStr.has_value()) {
+					throw std::runtime_error("Designator for airspace must be extracted");
+				}
+				else {
+					SPDLOG_DEBUG("Designator {} extracted from full-designator-string for airspace {}", designatorStr.value(), it->first);
+				}
+
+				std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(designatorStr.value());
+				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
+
+				// optionally add sector anouncement
+				if (sectorStr.has_value()) {
+					SPDLOG_DEBUG("Sector {} extracted from full-designator-string for airspace {}", sectorStr.value(), it->first);
+					std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
+					playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
+				}
 			}
 			else {
-				SPDLOG_DEBUG("Designator {} extracted from full-designator-string for airspace {}", designatorStr.value(), it->first);
-			}
 
-			std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(designatorStr.value());
-			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
-
-			// optionally add sector anouncement
-			if (sectorStr.has_value()) {
-				SPDLOG_DEBUG("Sector {} extracted from full-designator-string for airspace {}", sectorStr.value(), it->first);
-				std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
-				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
 			}
 
 		}
 
+		// iterate through all reservations
+		for (const PansaAirspace_Reservation & r: it->second.reservations) {
+			// check if this reservation is in the past
+			if (!airspaceCfg.sayPast && ((uint64_t)TimeTools::getEpoch() > r.toTime)) {
+				SPDLOG_INFO("Reservation made by {} ommitted as there is {} minutes after it had ended", r.unit, (TimeTools::getEpoch() - r.toTime) / 60);
+				continue;
+			}
+
+			// from time
+			playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::FROM).value());
+			std::vector<std::string> timeFrom = sampler->getAudioForHourAndMinute(r.fromTime, true);
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(timeFrom.begin()), std::make_move_iterator(timeFrom.end()));
+
+			// to time
+			playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+			timeFrom = sampler->getAudioForHourAndMinute(r.toTime, true);
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(timeFrom.begin()), std::make_move_iterator(timeFrom.end()));
+
+			// check if altitude shall be included
+			if (airspaceCfg.sayAltitudes) {
+
+				// "altitude from"
+				playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_ALTITUDE));
+				playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::FROM).value());
+
+				if (r.lowerAltitude > 0)  {
+					// "XXXX meters"
+					auto fromMeters = sampler->getAudioListFromNumber(PlaylistAssemblerAirspace::convertMetersToHundretsMeters(r.lowerAltitude, false));
+					playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(fromMeters.begin()), std::make_move_iterator(fromMeters.end()));
+					playlistPtr->push_back(sampler->getAudioFromUnit(PlaylistSampler_Unit::METER, r.lowerAltitude));
+				}
+				else {
+					// ground
+					playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_GROUND));
+				}
+
+				// "to"
+				playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+
+				// "XXXX meters"
+				auto toMeters = sampler->getAudioListFromNumber(PlaylistAssemblerAirspace::convertMetersToHundretsMeters(r.upperAltitude, false));
+				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(toMeters.begin()), std::make_move_iterator(toMeters.end()));
+				playlistPtr->push_back(sampler->getAudioFromUnit(PlaylistSampler_Unit::METER, r.upperAltitude));
+
+
+			}
+		}
 	} while (++it != airspaceReservations.end());
 
 }

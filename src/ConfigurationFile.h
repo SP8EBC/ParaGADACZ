@@ -276,7 +276,7 @@ struct ConfigurationFile_Airspace {
 	int reservationFutureTimeMargin;	//!< Say only activations which will start not later than XX minutes
 	bool sayPast;		//!< Say activations for today, which had expired before current time
 	bool sayAltitudes;	//!< Global switch to say altitude range within an airspace is reserved
-	bool includeAirspaceTypeInfo;	//!< Add airspace type announcement before each zone
+	bool genericAirspaceAnouncementFromRegexExtracted;	//!< Add airspace type announcement before each zone
 	bool bailoutIfNothingToSay;
 	ConfigurationFile_Airspace_SayConfigPerElemType confPerElemType; //!< How each airspace type is announced
 

@@ -32,6 +32,14 @@ std::shared_ptr<PlaylistSampler> playlist_sampler;
 std::map<std::string, PansaAirspace_Zone> airspaceReservationsAll, airspaceReservationsFirst;
 PansaAirspace_Zone first, second, third;
 
+class Test_PlaylistAssemblerAirspace : public PlaylistAssemblerAirspace {
+
+public:
+	static int convertMetersToHundretsMeters(int altitude, bool trueToRoundUp) {
+		return PlaylistAssemblerAirspace::convertMetersToHundretsMeters(altitude, trueToRoundUp);
+	}
+};
+
 struct MyConfig
 {
   MyConfig() : test_log( "./test_reports/playlistassembler_airspace_test.log" )
@@ -40,7 +48,23 @@ struct MyConfig
     boost::unit_test::unit_test_log.set_threshold_level(boost::unit_test::log_level::log_successful_tests);
 	//spdlog::set_pattern("[%H:%M:%S.%e %z] [%L] [THR %-5t] [%s:%#] %v" );
 	spdlog::set_level(spdlog::level::debug);
-	config = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_for_playlist_assembler_test.conf");
+
+	/*
+	 * 	ReservationFutureTimeMargin = 600;
+	 *	SayPast = true;
+	 *	SayAltitudes = true;
+	 *	IncludeAirspaceTypeInfo = false;
+	 *
+	 *	ConfigPerElemType = {
+	 *		SayTRA = true;
+	 *		SayTSA = false;
+	 *		SayATZ = true;
+	 *		SayD = false;
+	 *		SayR = false;
+	 *
+	 *		}
+	 */
+	config = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_aroundpoint_and_fixed_genericairspace_true.conf");
 	config->parse();
 
 	playlist_sampler = std::make_shared<PlaylistSamplerPL>(config);
@@ -51,6 +75,7 @@ struct MyConfig
 	first.distanceFromSetpoint = 0.0f;
 	first.type = AIRSPACE_ATZ;
 	first.reservations.emplace_back(1706076000ULL, 1706119200ULL, 0, 1000);
+	// Wednesday, 24 January 2024 06:00:00   -->   Wednesday, 24 January 2024 18:00:00
 
 	second.designator = "EPTR10A";
 	second.centroidLatitudeY = 50.31573f;
@@ -67,7 +92,7 @@ struct MyConfig
 
 	airspaceReservationsFirst.insert(std::pair<std::string, PansaAirspace_Zone>("ATZ EPBA", first));
 
-	airspaceReservationsAll.insert(std::pair<std::string, PansaAirspace_Zone>("ATZ EPBA", first));
+	//airspaceReservationsAll.insert(std::pair<std::string, PansaAirspace_Zone>("ATZ EPBA", first));
 	airspaceReservationsAll.insert(std::pair<std::string, PansaAirspace_Zone>("EPTR10A", second));
 	airspaceReservationsAll.insert(std::pair<std::string, PansaAirspace_Zone>("EPTR114", third));
 
@@ -82,7 +107,27 @@ struct MyConfig
 
 BOOST_GLOBAL_FIXTURE (MyConfig);
 
-BOOST_AUTO_TEST_CASE(first_test)
+// PlaylistAssemblerAirspace::convertMetersToHundretsMeters
+BOOST_AUTO_TEST_CASE(altitude_recalculation)
+{
+	BOOST_CHECK_EQUAL(1100, Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(1001, true));
+	BOOST_CHECK_EQUAL(1000, Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(1001, false));
+	BOOST_CHECK_EQUAL(1400, Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(1398, true));
+	BOOST_CHECK_EQUAL(1300, Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(1398, false));
+	BOOST_CHECK_EQUAL(0, Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(99, false));
+	BOOST_CHECK_EQUAL(100, Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(99, true));
+	BOOST_CHECK_EQUAL(100, Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(100, true));
+	BOOST_CHECK_EQUAL(100, Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(100, false));
+
+
+}
+
+BOOST_AUTO_TEST_CASE(two_tra_around_point)
+{
+
+}
+
+BOOST_AUTO_TEST_CASE(epba_around_point)
 {
 	PlaylistAssemblerAirspace airspace(playlist_sampler, config);
 	PlaylistAssembler assembler(playlist_sampler, config);
@@ -113,5 +158,21 @@ BOOST_AUTO_TEST_CASE(first_test)
 	BOOST_CHECK_EQUAL(PH_PAPA_PL, playlistVct[i++]);
 	BOOST_CHECK_EQUAL(PH_BRAVO_PL, playlistVct[i++]);
 	BOOST_CHECK_EQUAL(PH_ALPHA_PL, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(OD, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(SZOSTA, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(NUMBER_0, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(NUMBER_0, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(DO, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(OSIEMNASTA, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(NUMBER_0, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(NUMBER_0, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(WYSOKOSC, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(OD, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(DO, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(NUMBER_1k, playlistVct[i++]);
+	BOOST_CHECK_EQUAL(METER_FOUR, playlistVct[i++]);
 
-}
+}// GODZINA

@@ -129,8 +129,6 @@ std::vector<
 						std::allocator<char> > > > PlaylistSamplerPL::getAudioForHourAndMinute(
 		uint64_t timetstamp, bool addUniversalTime) {
 
-	std::vector<std::string> out;
-
 	// get current time
 	boost::posix_time::ptime current = TimeTools::getPtimeFromEpoch(timetstamp);
 
@@ -143,12 +141,12 @@ std::vector<
 	// get minutes
 	const int minutes = time_of_day.minutes();
 
-	SPDLOG_INFO("hours: {}, minutes: {}", hours, minutes);
+	SPDLOG_DEBUG("timestamp: {}, hours: {}, minutes: {}", timetstamp, hours, minutes);
 
 	// playlist for audio samples
 	std::vector<std::string> playlist;
 
-	playlist.push_back(GODZINA);
+	//playlist.push_back(GODZINA);
 
 	// get hours component
 	switch (hours) {
@@ -185,13 +183,17 @@ std::vector<
 		// now merge two vector together
 		playlist.insert(playlist.end(), minutes_playlist.begin(), minutes_playlist.end());
 
+		if (minutes == 0) {
+			playlist.insert(playlist.end(), minutes_playlist.begin(), minutes_playlist.end());
+		}
+
 		if (addUniversalTime) {
 			// append the end
 			playlist.push_back(UNIWERSALNEGO);
 		}
 	}
 
-	return out;
+	return playlist;
 }
 
 /**
@@ -636,93 +638,98 @@ std::vector<
 		 out.push_back(MINUS);
 	}
 
-	// now select files
-	switch (thousands) {
-	case 1: out.push_back(NUMBER_1k); break;
-	case 2: out.push_back(NUMBER_2); out.push_back(NUMBER_2k_4k); break;
-	case 3: out.push_back(NUMBER_3); out.push_back(NUMBER_2k_4k); break;
-	case 4: out.push_back(NUMBER_4); out.push_back(NUMBER_2k_4k); break;
-	case 5: out.push_back(NUMBER_5); out.push_back(NUMBER_5k); break;
-	case 6: out.push_back(NUMBER_6); out.push_back(NUMBER_5k); break;
-	case 7: out.push_back(NUMBER_7); out.push_back(NUMBER_5k); break;
-	case 8: out.push_back(NUMBER_8); out.push_back(NUMBER_5k); break;
-	case 9: out.push_back(NUMBER_9); out.push_back(NUMBER_5k); break;
-	default: break;
-	}
+	if (integer != 0) {
+		// now select files
+		switch (thousands) {
+		case 1: out.push_back(NUMBER_1k); break;
+		case 2: out.push_back(NUMBER_2); out.push_back(NUMBER_2k_4k); break;
+		case 3: out.push_back(NUMBER_3); out.push_back(NUMBER_2k_4k); break;
+		case 4: out.push_back(NUMBER_4); out.push_back(NUMBER_2k_4k); break;
+		case 5: out.push_back(NUMBER_5); out.push_back(NUMBER_5k); break;
+		case 6: out.push_back(NUMBER_6); out.push_back(NUMBER_5k); break;
+		case 7: out.push_back(NUMBER_7); out.push_back(NUMBER_5k); break;
+		case 8: out.push_back(NUMBER_8); out.push_back(NUMBER_5k); break;
+		case 9: out.push_back(NUMBER_9); out.push_back(NUMBER_5k); break;
+		default: break;
+		}
 
-	switch (hundreds) {
-	case 1: out.push_back(NUMBER_100); break;
-	case 2: out.push_back(NUMBER_200); break;
-	case 3: out.push_back(NUMBER_300); break;
-	case 4: out.push_back(NUMBER_400); break;
-	case 5: out.push_back(NUMBER_500); break;
-	case 6: out.push_back(NUMBER_600); break;
-	case 7: out.push_back(NUMBER_700); break;
-	case 8: out.push_back(NUMBER_800); break;
-	case 9: out.push_back(NUMBER_900); break;
-	default: break;
+		switch (hundreds) {
+		case 1: out.push_back(NUMBER_100); break;
+		case 2: out.push_back(NUMBER_200); break;
+		case 3: out.push_back(NUMBER_300); break;
+		case 4: out.push_back(NUMBER_400); break;
+		case 5: out.push_back(NUMBER_500); break;
+		case 6: out.push_back(NUMBER_600); break;
+		case 7: out.push_back(NUMBER_700); break;
+		case 8: out.push_back(NUMBER_800); break;
+		case 9: out.push_back(NUMBER_900); break;
+		default: break;
 
-	}
+		}
 
-	switch (tens) {
-		case 2: out.push_back(NUMBER_20); break;
-		case 3: out.push_back(NUMBER_30); break;
-		case 4: out.push_back(NUMBER_40); break;
-		case 5: out.push_back(NUMBER_50); break;
-		case 6: out.push_back(NUMBER_60); break;
-		case 7: out.push_back(NUMBER_70); break;
-		case 8: out.push_back(NUMBER_80); break;
-		case 9: out.push_back(NUMBER_90); break;
+		switch (tens) {
+			case 2: out.push_back(NUMBER_20); break;
+			case 3: out.push_back(NUMBER_30); break;
+			case 4: out.push_back(NUMBER_40); break;
+			case 5: out.push_back(NUMBER_50); break;
+			case 6: out.push_back(NUMBER_60); break;
+			case 7: out.push_back(NUMBER_70); break;
+			case 8: out.push_back(NUMBER_80); break;
+			case 9: out.push_back(NUMBER_90); break;
 
-		// special case for number in range 10-19
-		case 1: {
-			switch (units) {
-			case 1: out.push_back(NUMBER_11); break;
-			case 2: out.push_back(NUMBER_12); break;
-			case 3: out.push_back(NUMBER_13); break;
-			case 4: out.push_back(NUMBER_14); break;
-			case 5: out.push_back(NUMBER_15); break;
-			case 6: out.push_back(NUMBER_16); break;
-			case 7: out.push_back(NUMBER_17); break;
-			case 8: out.push_back(NUMBER_18); break;
-			case 9: out.push_back(NUMBER_19); break;
-			case 0: out.push_back(NUMBER_10); break;
+			// special case for number in range 10-19
+			case 1: {
+				switch (units) {
+				case 1: out.push_back(NUMBER_11); break;
+				case 2: out.push_back(NUMBER_12); break;
+				case 3: out.push_back(NUMBER_13); break;
+				case 4: out.push_back(NUMBER_14); break;
+				case 5: out.push_back(NUMBER_15); break;
+				case 6: out.push_back(NUMBER_16); break;
+				case 7: out.push_back(NUMBER_17); break;
+				case 8: out.push_back(NUMBER_18); break;
+				case 9: out.push_back(NUMBER_19); break;
+				case 0: out.push_back(NUMBER_10); break;
 
+				}
 			}
 		}
-	}
 
-	// add tens digit if this isn't a number from 10...19 range
-	if (tens > 1) {
-		switch (units) {
-		//case 0: out.push_back(NUMBER_0); break;
-		case 1: out.push_back(NUMBER_1); break;
-		case 2: out.push_back(NUMBER_2); break;
-		case 3: out.push_back(NUMBER_3); break;
-		case 4: out.push_back(NUMBER_4); break;
-		case 5: out.push_back(NUMBER_5); break;
-		case 6: out.push_back(NUMBER_6); break;
-		case 7: out.push_back(NUMBER_7); break;
-		case 8: out.push_back(NUMBER_8); break;
-		case 9: out.push_back(NUMBER_9); break;
+		// add tens digit if this isn't a number from 10...19 range
+		if (tens > 1) {
+			switch (units) {
+			//case 0: out.push_back(NUMBER_0); break;
+			case 1: out.push_back(NUMBER_1); break;
+			case 2: out.push_back(NUMBER_2); break;
+			case 3: out.push_back(NUMBER_3); break;
+			case 4: out.push_back(NUMBER_4); break;
+			case 5: out.push_back(NUMBER_5); break;
+			case 6: out.push_back(NUMBER_6); break;
+			case 7: out.push_back(NUMBER_7); break;
+			case 8: out.push_back(NUMBER_8); break;
+			case 9: out.push_back(NUMBER_9); break;
+			}
 		}
-	}
-	else if (tens == 0){
-		switch (units) {
-		case 0: out.push_back(NUMBER_0); break;
-		case 1: out.push_back(NUMBER_1); break;
-		case 2: out.push_back(NUMBER_2); break;
-		case 3: out.push_back(NUMBER_3); break;
-		case 4: out.push_back(NUMBER_4); break;
-		case 5: out.push_back(NUMBER_5); break;
-		case 6: out.push_back(NUMBER_6); break;
-		case 7: out.push_back(NUMBER_7); break;
-		case 8: out.push_back(NUMBER_8); break;
-		case 9: out.push_back(NUMBER_9); break;
+		else if (tens == 0){
+			switch (units) {
+			//case 0: out.push_back(NUMBER_0); break;
+			case 1: out.push_back(NUMBER_1); break;
+			case 2: out.push_back(NUMBER_2); break;
+			case 3: out.push_back(NUMBER_3); break;
+			case 4: out.push_back(NUMBER_4); break;
+			case 5: out.push_back(NUMBER_5); break;
+			case 6: out.push_back(NUMBER_6); break;
+			case 7: out.push_back(NUMBER_7); break;
+			case 8: out.push_back(NUMBER_8); break;
+			case 9: out.push_back(NUMBER_9); break;
+			}
+		}
+		else {
+			;	// already added for range 10...19 in tens switch case 1
 		}
 	}
 	else {
-		;	// already added for range 10...19 in tens switch case 1
+		out.push_back(NUMBER_0);
 	}
 
 	return out;
@@ -758,6 +765,7 @@ std::string PlaylistSamplerPL::getAudioFromUnit(PlaylistSampler_Unit unit, int v
 			case PlaylistSampler_Unit::MS:			out = MS_ONE;			break;
 			case PlaylistSampler_Unit::DEG:			out = DEGREE_ONE;		break;
 			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_ONE;	break;
+			case PlaylistSampler_Unit::METER:		out = METER_FOUR;		break;
 			case PlaylistSampler_Unit::KM:			out = KILOMETER_ONE;	break;
 			case PlaylistSampler_Unit::NM:			out = NAUTICAL_MILE_ONE;break;
 			default: break;
@@ -769,6 +777,7 @@ std::string PlaylistSamplerPL::getAudioFromUnit(PlaylistSampler_Unit unit, int v
 			case PlaylistSampler_Unit::MS:			out = MS_TWO_FOUR;				break;
 			case PlaylistSampler_Unit::DEG:			out = DEGREE_TWO_FOUR;			break;
 			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_TWO_FOUR;		break;
+			case PlaylistSampler_Unit::METER:		out = METER_FOUR;				break;
 			case PlaylistSampler_Unit::KM:			out = KILOMETER_TWO_FOUR;		break;
 			case PlaylistSampler_Unit::NM:			out = NAUTICAL_MILE_TWO_FOUR;	break;
 			default: break;
@@ -780,6 +789,7 @@ std::string PlaylistSamplerPL::getAudioFromUnit(PlaylistSampler_Unit unit, int v
 			case PlaylistSampler_Unit::MS:			out = MS_FOUR;				break;
 			case PlaylistSampler_Unit::DEG:			out = DEGREE_FOUR;			break;
 			case PlaylistSampler_Unit::MILIMETER:	out = MILIMETER_FOUR;		break;
+			case PlaylistSampler_Unit::METER:		out = METER_FOUR;			break;
 			case PlaylistSampler_Unit::KM:			out = KILOMETER_FOUR;		break;
 			case PlaylistSampler_Unit::NM:			out = NAUTICAL_MILE_FOUR;	break;
 			default: break;
@@ -802,44 +812,46 @@ std::optional<
 		PlaylistSampler_ConstanElement element) {
 
 	switch (element) {
-	case PlaylistSampler_ConstanElement::CURRENT_TIME:		return GODZINA;			//!< "godzina"
-	case PlaylistSampler_ConstanElement::CURRENT_WEATHER:	return AKTUALNE_WARUNKI;		//!< "Aktualne Warunki"
-	case PlaylistSampler_ConstanElement::FORECAST:			return PROGNOZA;			//!< "Prognoza na nastepne"
-	case PlaylistSampler_ConstanElement::NO_CHANGE:			return BRAK_ZMIAN;
-	case PlaylistSampler_ConstanElement::DURING:			return PRZEZ;
-	case PlaylistSampler_ConstanElement::INCREASE:			return WZROST;
-	case PlaylistSampler_ConstanElement::DROP:				return SPADEK;
-	case PlaylistSampler_ConstanElement::QNH:				return CISNIENIE;
-	case PlaylistSampler_ConstanElement::REGIONAL_QNH: 		return CISNIENIE_REG;//!< "Ciśnienie atmosferyczne w regionie"
-	case PlaylistSampler_ConstanElement::HOURS:				return HOUR_TWO_FOUR;	//!< "hours"
-	case PlaylistSampler_ConstanElement::WIND: 				return KIERUNEK_WIATRU;		//!< "wiatr"
-	case PlaylistSampler_ConstanElement::WIND_GUSTS:		return PORYWY_WIATRU;
-	case PlaylistSampler_ConstanElement::TEMPERATURE: 		return TEMPERATURA;
-	case PlaylistSampler_ConstanElement::HUMIDITY:			return WILGOTNOSC;
-	case PlaylistSampler_ConstanElement::PRECIPATION:		return OPADY;
-	case PlaylistSampler_ConstanElement::NO_PRECIPATION:	return BRAK_OPADOW;
-	case PlaylistSampler_ConstanElement::INTERMITTENT:		return PRZELOTNE_OPAD;
-	case PlaylistSampler_ConstanElement::RAIN:				return DESZCZU;
-	case PlaylistSampler_ConstanElement::SNOW:				return SNIEGU;
-	case PlaylistSampler_ConstanElement::THUNDERSTORM:		return BURZE;
-	case PlaylistSampler_ConstanElement::UO_TO:				return DO;
-	case PlaylistSampler_ConstanElement::ABOVE:				return POWYZEJ;
-	case PlaylistSampler_ConstanElement::INTENSE:			return INTENSYWNE;
-	case PlaylistSampler_ConstanElement::LOCAL:				return LOKALNE;
+	case PlaylistSampler_ConstanElement::CURRENT_TIME:			return GODZINA;			//!< "godzina"
+	case PlaylistSampler_ConstanElement::CURRENT_WEATHER:		return AKTUALNE_WARUNKI;		//!< "Aktualne Warunki"
+	case PlaylistSampler_ConstanElement::FORECAST:				return PROGNOZA;			//!< "Prognoza na nastepne"
+	case PlaylistSampler_ConstanElement::NO_CHANGE:				return BRAK_ZMIAN;
+	case PlaylistSampler_ConstanElement::DURING:				return PRZEZ;
+	case PlaylistSampler_ConstanElement::INCREASE:				return WZROST;
+	case PlaylistSampler_ConstanElement::DROP:					return SPADEK;
+	case PlaylistSampler_ConstanElement::QNH:					return CISNIENIE;
+	case PlaylistSampler_ConstanElement::REGIONAL_QNH: 			return CISNIENIE_REG;//!< "Ciśnienie atmosferyczne w regionie"
+	case PlaylistSampler_ConstanElement::HOUR:					return GODZINA;				//!< "hour"
+	case PlaylistSampler_ConstanElement::HOURS:					return HOUR_TWO_FOUR;		//!< "hours"
+	case PlaylistSampler_ConstanElement::WIND: 					return KIERUNEK_WIATRU;		//!< "wiatr"
+	case PlaylistSampler_ConstanElement::WIND_GUSTS:			return PORYWY_WIATRU;
+	case PlaylistSampler_ConstanElement::TEMPERATURE: 			return TEMPERATURA;
+	case PlaylistSampler_ConstanElement::HUMIDITY:				return WILGOTNOSC;
+	case PlaylistSampler_ConstanElement::PRECIPATION:			return OPADY;
+	case PlaylistSampler_ConstanElement::NO_PRECIPATION:		return BRAK_OPADOW;
+	case PlaylistSampler_ConstanElement::INTERMITTENT:			return PRZELOTNE_OPAD;
+	case PlaylistSampler_ConstanElement::RAIN:					return DESZCZU;
+	case PlaylistSampler_ConstanElement::SNOW:					return SNIEGU;
+	case PlaylistSampler_ConstanElement::THUNDERSTORM:			return BURZE;
+	case PlaylistSampler_ConstanElement::FROM:					return OD;
+	case PlaylistSampler_ConstanElement::UO_TO:					return DO;
+	case PlaylistSampler_ConstanElement::ABOVE:					return POWYZEJ;
+	case PlaylistSampler_ConstanElement::INTENSE:				return INTENSYWNE;
+	case PlaylistSampler_ConstanElement::LOCAL:					return LOKALNE;
 	case PlaylistSampler_ConstanElement::POSSIBLE:				return MOZLIWE;
-	case PlaylistSampler_ConstanElement::AVALANCHE_WARNING:	return ZAGROZENIELAWINOWE;
-	case PlaylistSampler_ConstanElement::DANGEROUS_EXPOSITION: return ESKPOZYCJA;
-	case PlaylistSampler_ConstanElement::FIRST_LEVEL:		return PIERWSZY_ST;
-	case PlaylistSampler_ConstanElement::SECOND_LEVEL:		return DRUGI_ST;
-	case PlaylistSampler_ConstanElement::THIRD_LEVEL:		return TRZECI_ST;
-	case PlaylistSampler_ConstanElement::FOURTH_LEVEL:		return CZWARTY_ST;
-	case PlaylistSampler_ConstanElement::ALSO:				return ORAZ;
-	case PlaylistSampler_ConstanElement::SPECIAL_ANOUNCEMENT: return OGLOSZENIE_SPECIALNE;
-	case PlaylistSampler_ConstanElement::REGION:		return OBSZAR;
-	case PlaylistSampler_ConstanElement::RADIUS:		return PROMIEN;
-	case PlaylistSampler_ConstanElement::IN_RADIUS:		return W_PROMIENIU;
-	case PlaylistSampler_ConstanElement::AROUND:		return WOKOL;
-	case PlaylistSampler_ConstanElement::FROM_LOCATION:		return OD_LOKALIZACJI;
+	case PlaylistSampler_ConstanElement::AVALANCHE_WARNING:		return ZAGROZENIELAWINOWE;
+	case PlaylistSampler_ConstanElement::DANGEROUS_EXPOSITION: 	return ESKPOZYCJA;
+	case PlaylistSampler_ConstanElement::FIRST_LEVEL:			return PIERWSZY_ST;
+	case PlaylistSampler_ConstanElement::SECOND_LEVEL:			return DRUGI_ST;
+	case PlaylistSampler_ConstanElement::THIRD_LEVEL:			return TRZECI_ST;
+	case PlaylistSampler_ConstanElement::FOURTH_LEVEL:			return CZWARTY_ST;
+	case PlaylistSampler_ConstanElement::ALSO:					return ORAZ;
+	case PlaylistSampler_ConstanElement::SPECIAL_ANOUNCEMENT: 	return OGLOSZENIE_SPECIALNE;
+	case PlaylistSampler_ConstanElement::REGION:				return OBSZAR;
+	case PlaylistSampler_ConstanElement::RADIUS:				return PROMIEN;
+	case PlaylistSampler_ConstanElement::IN_RADIUS:				return W_PROMIENIU;
+	case PlaylistSampler_ConstanElement::AROUND:				return WOKOL;
+	case PlaylistSampler_ConstanElement::FROM_LOCATION:			return OD_LOKALIZACJI;
 	}
 
 	SPDLOG_ERROR("Unknown element: {}", element);
@@ -1008,8 +1020,10 @@ std::string PlaylistSamplerPL::getAirspaceConstantElement(
 		PlaylistSampler_Airspace _airspace) {
 
 	switch(_airspace) {
-	case AIRSPACE_RESTRICTIONS_IN: return OGRANICZENIA_LOTOW;
-	case AIRSPACE_ZONE:	return ZONE;
+	case AIRSPACE_RESTRICTIONS_IN: 	return OGRANICZENIA_LOTOW;
+	case AIRSPACE_ZONE:				return ZONE;
+	case AIRSPACE_ALTITUDE: 		return WYSOKOSC;
+	case AIRSPACE_GROUND: 			return POZIOMU_GRUNTU;
 	}
 
 	SPDLOG_ERROR("Unknown value provided: {}", (int)_airspace);

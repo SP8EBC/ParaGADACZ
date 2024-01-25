@@ -1,4 +1,4 @@
-Running 19 test cases...
+Running 31 test cases...
 Entering test module "PlaylistCreatorPL_test"
 ../src/PlaylistCreatorPL_test.cpp(45): Entering test case "phonetic_1"
 dupa
@@ -7,7 +7,7 @@ dupa
 ../src/PlaylistCreatorPL_test.cpp(56): info: check "ph_uniform.ogg" == out.at(1) has passed
 ../src/PlaylistCreatorPL_test.cpp(57): info: check "ph_papa.ogg" == out.at(2) has passed
 ../src/PlaylistCreatorPL_test.cpp(58): info: check "ph_alpha.ogg" == out.at(3) has passed
-../src/PlaylistCreatorPL_test.cpp(45): Leaving test case "phonetic_1"; testing time: 112us
+../src/PlaylistCreatorPL_test.cpp(45): Leaving test case "phonetic_1"; testing time: 100us
 ../src/PlaylistCreatorPL_test.cpp(62): Entering test case "phonetic_two_words_in_sequence"
 dupa sto
 ../src/PlaylistCreatorPL_test.cpp(71): info: check 4 == out.size() has passed
@@ -15,7 +15,7 @@ dupa sto
 ../src/PlaylistCreatorPL_test.cpp(73): info: check "ph_uniform.ogg" == out.at(1) has passed
 ../src/PlaylistCreatorPL_test.cpp(74): info: check "ph_papa.ogg" == out.at(2) has passed
 ../src/PlaylistCreatorPL_test.cpp(75): info: check "ph_alpha.ogg" == out.at(3) has passed
-../src/PlaylistCreatorPL_test.cpp(62): Leaving test case "phonetic_two_words_in_sequence"; testing time: 102us
+../src/PlaylistCreatorPL_test.cpp(62): Leaving test case "phonetic_two_words_in_sequence"; testing time: 93us
 ../src/PlaylistCreatorPL_test.cpp(79): Entering test case "phonetic_two_words_in_sequence_leading_space"
 dupa sto
 ../src/PlaylistCreatorPL_test.cpp(88): info: check 4 == out.size() has passed
@@ -23,11 +23,11 @@ dupa sto
 ../src/PlaylistCreatorPL_test.cpp(90): info: check "ph_uniform.ogg" == out.at(1) has passed
 ../src/PlaylistCreatorPL_test.cpp(91): info: check "ph_papa.ogg" == out.at(2) has passed
 ../src/PlaylistCreatorPL_test.cpp(92): info: check "ph_alpha.ogg" == out.at(3) has passed
-../src/PlaylistCreatorPL_test.cpp(79): Leaving test case "phonetic_two_words_in_sequence_leading_space"; testing time: 100us
+../src/PlaylistCreatorPL_test.cpp(79): Leaving test case "phonetic_two_words_in_sequence_leading_space"; testing time: 92us
 ../src/PlaylistCreatorPL_test.cpp(96): Entering test case "phonetic_wrong_str"
 dupa;;123
 ../src/PlaylistCreatorPL_test.cpp(103): info: check 'exception "std::runtime_error" raised as expected' has passed
-../src/PlaylistCreatorPL_test.cpp(96): Leaving test case "phonetic_wrong_str"; testing time: 116us
+../src/PlaylistCreatorPL_test.cpp(96): Leaving test case "phonetic_wrong_str"; testing time: 104us
 ../src/PlaylistCreatorPL_test.cpp(113): Entering test case "phonetic_with_number"
 dupa123
 ../src/PlaylistCreatorPL_test.cpp(121): info: check 7 == out.size() has passed
@@ -38,7 +38,7 @@ dupa123
 ../src/PlaylistCreatorPL_test.cpp(126): info: check "one.ogg" == out.at(4) has passed
 ../src/PlaylistCreatorPL_test.cpp(127): info: check "two.ogg" == out.at(5) has passed
 ../src/PlaylistCreatorPL_test.cpp(128): info: check "three.ogg" == out.at(6) has passed
-../src/PlaylistCreatorPL_test.cpp(113): Leaving test case "phonetic_with_number"; testing time: 115us
+../src/PlaylistCreatorPL_test.cpp(113): Leaving test case "phonetic_with_number"; testing time: 104us
 ../src/PlaylistCreatorPL_test.cpp(131): Entering test case "decimal_123_4"
 ../src/PlaylistCreatorPL_test.cpp(137): info: check 5 == out.size() has passed
 ../src/PlaylistCreatorPL_test.cpp(138): info: check "sto.ogg" == out.at(0) has passed
@@ -46,83 +46,157 @@ dupa123
 ../src/PlaylistCreatorPL_test.cpp(140): info: check "trzy.ogg" == out.at(2) has passed
 ../src/PlaylistCreatorPL_test.cpp(141): info: check "kropka.ogg" == out.at(3) has passed
 ../src/PlaylistCreatorPL_test.cpp(142): info: check "cztery.ogg" == out.at(4) has passed
-../src/PlaylistCreatorPL_test.cpp(131): Leaving test case "decimal_123_4"; testing time: 97us
+../src/PlaylistCreatorPL_test.cpp(131): Leaving test case "decimal_123_4"; testing time: 98us
 ../src/PlaylistCreatorPL_test.cpp(147): Entering test case "decimal_20_7"
 ../src/PlaylistCreatorPL_test.cpp(154): info: check "dwadziescia.ogg" == out.at(0) has passed
 ../src/PlaylistCreatorPL_test.cpp(155): info: check "kropka.ogg" == out.at(1) has passed
 ../src/PlaylistCreatorPL_test.cpp(156): info: check "siedem.ogg" == out.at(2) has passed
-../src/PlaylistCreatorPL_test.cpp(147): Leaving test case "decimal_20_7"; testing time: 88us
+../src/PlaylistCreatorPL_test.cpp(147): Leaving test case "decimal_20_7"; testing time: 83us
 ../src/PlaylistCreatorPL_test.cpp(159): Entering test case "decimal_1123_4"
-../src/PlaylistCreatorPL_test.cpp(168): info: check 6 == out.size() has passed
-../src/PlaylistCreatorPL_test.cpp(169): info: check "tysiac.ogg" == out.at(0) has passed
-../src/PlaylistCreatorPL_test.cpp(170): info: check "sto.ogg" == out.at(1) has passed
-../src/PlaylistCreatorPL_test.cpp(171): info: check "dwadziescia.ogg" == out.at(2) has passed
-../src/PlaylistCreatorPL_test.cpp(172): info: check "trzy.ogg" == out.at(3) has passed
-../src/PlaylistCreatorPL_test.cpp(173): info: check "kropka.ogg" == out.at(4) has passed
-../src/PlaylistCreatorPL_test.cpp(174): info: check "cztery.ogg" == out.at(5) has passed
-../src/PlaylistCreatorPL_test.cpp(159): Leaving test case "decimal_1123_4"; testing time: 99us
-../src/PlaylistCreatorPL_test.cpp(178): Entering test case "decimal_1103_4"
-../src/PlaylistCreatorPL_test.cpp(184): info: check 5 == out.size() has passed
-../src/PlaylistCreatorPL_test.cpp(185): info: check "tysiac.ogg" == out.at(0) has passed
-../src/PlaylistCreatorPL_test.cpp(186): info: check "sto.ogg" == out.at(1) has passed
-../src/PlaylistCreatorPL_test.cpp(187): info: check "trzy.ogg" == out.at(2) has passed
-../src/PlaylistCreatorPL_test.cpp(188): info: check "kropka.ogg" == out.at(3) has passed
-../src/PlaylistCreatorPL_test.cpp(189): info: check "cztery.ogg" == out.at(4) has passed
-../src/PlaylistCreatorPL_test.cpp(178): Leaving test case "decimal_1103_4"; testing time: 94us
-../src/PlaylistCreatorPL_test.cpp(193): Entering test case "decimal_1013_4"
-../src/PlaylistCreatorPL_test.cpp(199): info: check 4 == out.size() has passed
-../src/PlaylistCreatorPL_test.cpp(200): info: check "tysiac.ogg" == out.at(0) has passed
-../src/PlaylistCreatorPL_test.cpp(201): info: check "trzynascie.ogg" == out.at(1) has passed
-../src/PlaylistCreatorPL_test.cpp(202): info: check "kropka.ogg" == out.at(2) has passed
-../src/PlaylistCreatorPL_test.cpp(203): info: check "cztery.ogg" == out.at(3) has passed
-../src/PlaylistCreatorPL_test.cpp(193): Leaving test case "decimal_1013_4"; testing time: 94us
-../src/PlaylistCreatorPL_test.cpp(207): Entering test case "decimal_1013"
-../src/PlaylistCreatorPL_test.cpp(215): info: check 2 == out.size() has passed
-../src/PlaylistCreatorPL_test.cpp(216): info: check "tysiac.ogg" == out.at(0) has passed
-../src/PlaylistCreatorPL_test.cpp(217): info: check "trzynascie.ogg" == out.at(1) has passed
-../src/PlaylistCreatorPL_test.cpp(207): Leaving test case "decimal_1013"; testing time: 82us
-../src/PlaylistCreatorPL_test.cpp(221): Entering test case "decimal_999"
-../src/PlaylistCreatorPL_test.cpp(227): info: check 3 == out.size() has passed
-../src/PlaylistCreatorPL_test.cpp(228): info: check "dziewiecset.ogg" == out.at(0) has passed
-../src/PlaylistCreatorPL_test.cpp(229): info: check "dziewiecdziesiat.ogg" == out.at(1) has passed
-../src/PlaylistCreatorPL_test.cpp(230): info: check "dziewiec.ogg" == out.at(2) has passed
-../src/PlaylistCreatorPL_test.cpp(221): Leaving test case "decimal_999"; testing time: 85us
-../src/PlaylistCreatorPL_test.cpp(234): Entering test case "decimal_11"
-../src/PlaylistCreatorPL_test.cpp(240): info: check 1 == out.size() has passed
-../src/PlaylistCreatorPL_test.cpp(241): info: check "jedenascie.ogg" == out.at(0) has passed
-../src/PlaylistCreatorPL_test.cpp(234): Leaving test case "decimal_11"; testing time: 78us
-../src/PlaylistCreatorPL_test.cpp(246): Entering test case "integer_11"
-../src/PlaylistCreatorPL_test.cpp(251): info: check 1 == out.size() has passed
-../src/PlaylistCreatorPL_test.cpp(252): info: check "jedenascie.ogg" == out.at(0) has passed
-../src/PlaylistCreatorPL_test.cpp(246): Leaving test case "integer_11"; testing time: 78us
-../src/PlaylistCreatorPL_test.cpp(255): Entering test case "integer_999"
-../src/PlaylistCreatorPL_test.cpp(261): info: check 3 == out.size() has passed
-../src/PlaylistCreatorPL_test.cpp(262): info: check "dziewiecset.ogg" == out.at(0) has passed
-../src/PlaylistCreatorPL_test.cpp(263): info: check "dziewiecdziesiat.ogg" == out.at(1) has passed
-../src/PlaylistCreatorPL_test.cpp(264): info: check "dziewiec.ogg" == out.at(2) has passed
-../src/PlaylistCreatorPL_test.cpp(255): Leaving test case "integer_999"; testing time: 91us
-../src/PlaylistCreatorPL_test.cpp(268): Entering test case "current_time"
+1123.4f
+../src/PlaylistCreatorPL_test.cpp(170): info: check 6 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(171): info: check "tysiac.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(172): info: check "sto.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(173): info: check "dwadziescia.ogg" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(174): info: check "trzy.ogg" == out.at(3) has passed
+../src/PlaylistCreatorPL_test.cpp(175): info: check "kropka.ogg" == out.at(4) has passed
+../src/PlaylistCreatorPL_test.cpp(176): info: check "cztery.ogg" == out.at(5) has passed
+../src/PlaylistCreatorPL_test.cpp(159): Leaving test case "decimal_1123_4"; testing time: 95us
+../src/PlaylistCreatorPL_test.cpp(180): Entering test case "decimal_1103_4"
+1103.4f
+../src/PlaylistCreatorPL_test.cpp(188): info: check 5 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(189): info: check "tysiac.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(190): info: check "sto.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(191): info: check "trzy.ogg" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(192): info: check "kropka.ogg" == out.at(3) has passed
+../src/PlaylistCreatorPL_test.cpp(193): info: check "cztery.ogg" == out.at(4) has passed
+../src/PlaylistCreatorPL_test.cpp(180): Leaving test case "decimal_1103_4"; testing time: 93us
+../src/PlaylistCreatorPL_test.cpp(197): Entering test case "decimal_1013_4"
+1013.4f
+../src/PlaylistCreatorPL_test.cpp(205): info: check 4 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(206): info: check "tysiac.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(207): info: check "trzynascie.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(208): info: check "kropka.ogg" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(209): info: check "cztery.ogg" == out.at(3) has passed
+../src/PlaylistCreatorPL_test.cpp(197): Leaving test case "decimal_1013_4"; testing time: 86us
+../src/PlaylistCreatorPL_test.cpp(213): Entering test case "decimal_1013"
+1013.0f
+../src/PlaylistCreatorPL_test.cpp(220): info: check 2 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(221): info: check "tysiac.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(222): info: check "trzynascie.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(213): Leaving test case "decimal_1013"; testing time: 77us
+../src/PlaylistCreatorPL_test.cpp(226): Entering test case "decimal_999"
+999.0f
+../src/PlaylistCreatorPL_test.cpp(234): info: check 3 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(235): info: check "dziewiecset.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(236): info: check "dziewiecdziesiat.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(237): info: check "dziewiec.ogg" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(226): Leaving test case "decimal_999"; testing time: 82us
+../src/PlaylistCreatorPL_test.cpp(241): Entering test case "decimal_11"
+11.0f
+../src/PlaylistCreatorPL_test.cpp(249): info: check 1 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(250): info: check "jedenascie.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(241): Leaving test case "decimal_11"; testing time: 73us
+../src/PlaylistCreatorPL_test.cpp(255): Entering test case "integer_zero"
+0
+../src/PlaylistCreatorPL_test.cpp(262): info: check 1 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(263): info: check "zero.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(255): Leaving test case "integer_zero"; testing time: 73us
+../src/PlaylistCreatorPL_test.cpp(266): Entering test case "integer_100"
+100
+../src/PlaylistCreatorPL_test.cpp(273): info: check 1 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(274): info: check "sto.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(266): Leaving test case "integer_100"; testing time: 78us
+../src/PlaylistCreatorPL_test.cpp(277): Entering test case "integer_minus_100"
+-100
+../src/PlaylistCreatorPL_test.cpp(284): info: check 2 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(285): info: check "minus.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(286): info: check "sto.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(277): Leaving test case "integer_minus_100"; testing time: 78us
+../src/PlaylistCreatorPL_test.cpp(289): Entering test case "integer_minus_1000"
+-1000
+../src/PlaylistCreatorPL_test.cpp(296): info: check 2 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(297): info: check "minus.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(298): info: check "tysiac.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(289): Leaving test case "integer_minus_1000"; testing time: 77us
+../src/PlaylistCreatorPL_test.cpp(301): Entering test case "integer_1000"
+1000
+../src/PlaylistCreatorPL_test.cpp(308): info: check 1 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(309): info: check "tysiac.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(301): Leaving test case "integer_1000"; testing time: 75us
+../src/PlaylistCreatorPL_test.cpp(312): Entering test case "integer_11"
+11
+../src/PlaylistCreatorPL_test.cpp(319): info: check 1 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(320): info: check "jedenascie.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(312): Leaving test case "integer_11"; testing time: 74us
+../src/PlaylistCreatorPL_test.cpp(323): Entering test case "integer_minus_11"
+-11
+../src/PlaylistCreatorPL_test.cpp(330): info: check 2 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(331): info: check "minus.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(332): info: check "jedenascie.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(323): Leaving test case "integer_minus_11"; testing time: 77us
+../src/PlaylistCreatorPL_test.cpp(335): Entering test case "integer_15"
+15
+../src/PlaylistCreatorPL_test.cpp(342): info: check 1 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(343): info: check "pietnascie.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(335): Leaving test case "integer_15"; testing time: 74us
+../src/PlaylistCreatorPL_test.cpp(346): Entering test case "integer_minus_15"
+-15
+../src/PlaylistCreatorPL_test.cpp(353): info: check 2 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(354): info: check "minus.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(355): info: check "pietnascie.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(346): Leaving test case "integer_minus_15"; testing time: 78us
+../src/PlaylistCreatorPL_test.cpp(358): Entering test case "integer_9"
+9
+../src/PlaylistCreatorPL_test.cpp(365): info: check 1 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(366): info: check "dziewiec.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(358): Leaving test case "integer_9"; testing time: 74us
+../src/PlaylistCreatorPL_test.cpp(369): Entering test case "integer_minus_9"
+-9
+../src/PlaylistCreatorPL_test.cpp(376): info: check 2 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(377): info: check "minus.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(378): info: check "dziewiec.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(369): Leaving test case "integer_minus_9"; testing time: 76us
+../src/PlaylistCreatorPL_test.cpp(381): Entering test case "integer_23"
+23
+../src/PlaylistCreatorPL_test.cpp(388): info: check 2 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(389): info: check "dwadziescia.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(390): info: check "trzy.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(381): Leaving test case "integer_23"; testing time: 80us
+../src/PlaylistCreatorPL_test.cpp(394): Entering test case "integer_minus_23"
+-23
+../src/PlaylistCreatorPL_test.cpp(401): info: check 3 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(402): info: check "minus.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(403): info: check "dwadziescia.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(404): info: check "trzy.ogg" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(394): Leaving test case "integer_minus_23"; testing time: 82us
+../src/PlaylistCreatorPL_test.cpp(407): Entering test case "integer_999"
+999
+../src/PlaylistCreatorPL_test.cpp(415): info: check 3 == out.size() has passed
+../src/PlaylistCreatorPL_test.cpp(416): info: check "dziewiecset.ogg" == out.at(0) has passed
+../src/PlaylistCreatorPL_test.cpp(417): info: check "dziewiecdziesiat.ogg" == out.at(1) has passed
+../src/PlaylistCreatorPL_test.cpp(418): info: check "dziewiec.ogg" == out.at(2) has passed
+../src/PlaylistCreatorPL_test.cpp(407): Leaving test case "integer_999"; testing time: 82us
+../src/PlaylistCreatorPL_test.cpp(422): Entering test case "current_time"
 playlist content
 godzina.ogg
-siedemnasta.ogg
-piecdziesiat.ogg
-szesc.ogg
+dziewietnasta.ogg
+osiemnascie.ogg
 czasu_uniwersalnego.ogg
-../src/PlaylistCreatorPL_test.cpp(288): info: check *(playlist.begin()) == "godzina.ogg" has passed
-../src/PlaylistCreatorPL_test.cpp(289): info: check *(playlist.end() - 1) == "czasu_uniwersalnego.ogg" has passed
-../src/PlaylistCreatorPL_test.cpp(312): info: check "siedemnasta.ogg" == playlist.at(i++) has passed
-../src/PlaylistCreatorPL_test.cpp(330): info: check "piecdziesiat.ogg" == playlist.at(i++) has passed
-../src/PlaylistCreatorPL_test.cpp(341): info: check "szesc.ogg" == playlist.at(i++) has passed
-../src/PlaylistCreatorPL_test.cpp(268): Leaving test case "current_time"; testing time: 134us
-../src/PlaylistCreatorPL_test.cpp(363): Entering test case "get_audio_for_skrzyczne"
-../src/PlaylistCreatorPL_test.cpp(373): info: check result.has_value() has passed
-../src/PlaylistCreatorPL_test.cpp(374): info: check result.value() == "skrzyczne.mp3" has passed
-../src/PlaylistCreatorPL_test.cpp(363): Leaving test case "get_audio_for_skrzyczne"; testing time: 92us
-../src/PlaylistCreatorPL_test.cpp(377): Entering test case "get_audio_for_nonexistent_station"
-../src/PlaylistCreatorPL_test.cpp(387): info: check !result.has_value() has passed
-../src/PlaylistCreatorPL_test.cpp(377): Leaving test case "get_audio_for_nonexistent_station"; testing time: 76us
-../src/PlaylistCreatorPL_test.cpp(390): Entering test case "get_audio_for_meteoblue_jezioro"
-../src/PlaylistCreatorPL_test.cpp(401): info: check result.has_value() has passed
-../src/PlaylistCreatorPL_test.cpp(402): info: check result.value() == "costam2.mp3" has passed
-../src/PlaylistCreatorPL_test.cpp(390): Leaving test case "get_audio_for_meteoblue_jezioro"; testing time: 86us
-Leaving test module "PlaylistCreatorPL_test"; testing time: 2005us
+../src/PlaylistCreatorPL_test.cpp(442): info: check *(playlist.begin()) == "godzina.ogg" has passed
+../src/PlaylistCreatorPL_test.cpp(443): info: check *(playlist.end() - 1) == "czasu_uniwersalnego.ogg" has passed
+../src/PlaylistCreatorPL_test.cpp(468): info: check "dziewietnasta.ogg" == playlist.at(i++) has passed
+../src/PlaylistCreatorPL_test.cpp(511): info: check "osiemnascie.ogg" == playlist.at(i++) has passed
+../src/PlaylistCreatorPL_test.cpp(422): Leaving test case "current_time"; testing time: 111us
+../src/PlaylistCreatorPL_test.cpp(517): Entering test case "get_audio_for_skrzyczne"
+../src/PlaylistCreatorPL_test.cpp(527): info: check result.has_value() has passed
+../src/PlaylistCreatorPL_test.cpp(528): info: check result.value() == "skrzyczne.mp3" has passed
+../src/PlaylistCreatorPL_test.cpp(517): Leaving test case "get_audio_for_skrzyczne"; testing time: 88us
+../src/PlaylistCreatorPL_test.cpp(531): Entering test case "get_audio_for_nonexistent_station"
+../src/PlaylistCreatorPL_test.cpp(541): info: check !result.has_value() has passed
+../src/PlaylistCreatorPL_test.cpp(531): Leaving test case "get_audio_for_nonexistent_station"; testing time: 71us
+../src/PlaylistCreatorPL_test.cpp(544): Entering test case "get_audio_for_meteoblue_jezioro"
+../src/PlaylistCreatorPL_test.cpp(555): info: check result.has_value() has passed
+../src/PlaylistCreatorPL_test.cpp(556): info: check result.value() == "costam2.mp3" has passed
+../src/PlaylistCreatorPL_test.cpp(544): Leaving test case "get_audio_for_meteoblue_jezioro"; testing time: 79us
+Leaving test module "PlaylistCreatorPL_test"; testing time: 2879us

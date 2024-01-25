@@ -163,6 +163,8 @@ BOOST_AUTO_TEST_CASE(decimal_1123_4) {
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
+	BOOST_TEST_MESSAGE("1123.4f");
+
 	std::vector<std::string> out = c->getAudioListFromNumber(1123.4f);
 
 	BOOST_CHECK_EQUAL(6, out.size());
@@ -179,6 +181,8 @@ BOOST_AUTO_TEST_CASE(decimal_1103_4) {
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
+	BOOST_TEST_MESSAGE("1103.4f");
+
 	std::vector<std::string> out = c->getAudioListFromNumber(1103.4f);
 
 	BOOST_CHECK_EQUAL(5, out.size());
@@ -194,6 +198,8 @@ BOOST_AUTO_TEST_CASE(decimal_1013_4) {
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
+	BOOST_TEST_MESSAGE("1013.4f");
+
 	std::vector<std::string> out = c->getAudioListFromNumber(1013.4f);
 
 	BOOST_CHECK_EQUAL(4, out.size());
@@ -205,10 +211,9 @@ BOOST_AUTO_TEST_CASE(decimal_1013_4) {
 }
 
 BOOST_AUTO_TEST_CASE(decimal_1013) {
-
-
-
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("1013.0f");
 
 	std::vector<std::string> out = c->getAudioListFromNumber(1013.0f);
 
@@ -221,6 +226,8 @@ BOOST_AUTO_TEST_CASE(decimal_1013) {
 BOOST_AUTO_TEST_CASE(decimal_999) {
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("999.0f");
 
 	std::vector<std::string> out = c->getAudioListFromNumber(999.0f);
 
@@ -235,6 +242,8 @@ BOOST_AUTO_TEST_CASE(decimal_11) {
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
 
+	BOOST_TEST_MESSAGE("11.0f");
+
 	std::vector<std::string> out = c->getAudioListFromNumber(11.0f);
 
 	BOOST_CHECK_EQUAL(1, out.size());
@@ -243,8 +252,67 @@ BOOST_AUTO_TEST_CASE(decimal_11) {
 
 }
 
+BOOST_AUTO_TEST_CASE(integer_zero) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("0");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)0);
+
+	BOOST_CHECK_EQUAL(1, out.size());
+	BOOST_CHECK_EQUAL(NUMBER_0, out.at(0));
+}
+
+BOOST_AUTO_TEST_CASE(integer_100) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("100");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)100);
+
+	BOOST_CHECK_EQUAL(1, out.size());
+	BOOST_CHECK_EQUAL(NUMBER_100, out.at(0));
+}
+
+BOOST_AUTO_TEST_CASE(integer_minus_100) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("-100");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)-100);
+
+	BOOST_CHECK_EQUAL(2, out.size());
+	BOOST_CHECK_EQUAL(MINUS, out.at(0));
+	BOOST_CHECK_EQUAL(NUMBER_100, out.at(1));
+}
+
+BOOST_AUTO_TEST_CASE(integer_minus_1000) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("-1000");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)-1000);
+
+	BOOST_CHECK_EQUAL(2, out.size());
+	BOOST_CHECK_EQUAL(MINUS, out.at(0));
+	BOOST_CHECK_EQUAL(NUMBER_1k, out.at(1));
+}
+
+BOOST_AUTO_TEST_CASE(integer_1000) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("1000");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)1000);
+
+	BOOST_CHECK_EQUAL(1, out.size());
+	BOOST_CHECK_EQUAL(NUMBER_1k, out.at(0));
+}
+
 BOOST_AUTO_TEST_CASE(integer_11) {
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("11");
 
 	std::vector<std::string> out = c->getAudioListFromNumber((int)11);
 
@@ -252,9 +320,95 @@ BOOST_AUTO_TEST_CASE(integer_11) {
 	BOOST_CHECK_EQUAL(NUMBER_11, out.at(0));
 }
 
+BOOST_AUTO_TEST_CASE(integer_minus_11) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("-11");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)-11);
+
+	BOOST_CHECK_EQUAL(2, out.size());
+	BOOST_CHECK_EQUAL(MINUS, out.at(0));
+	BOOST_CHECK_EQUAL(NUMBER_11, out.at(1));
+}
+
+BOOST_AUTO_TEST_CASE(integer_15) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("15");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)15);
+
+	BOOST_CHECK_EQUAL(1, out.size());
+	BOOST_CHECK_EQUAL(NUMBER_15, out.at(0));
+}
+
+BOOST_AUTO_TEST_CASE(integer_minus_15) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("-15");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)-15);
+
+	BOOST_CHECK_EQUAL(2, out.size());
+	BOOST_CHECK_EQUAL(MINUS, out.at(0));
+	BOOST_CHECK_EQUAL(NUMBER_15, out.at(1));
+}
+
+BOOST_AUTO_TEST_CASE(integer_9) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("9");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)9);
+
+	BOOST_CHECK_EQUAL(1, out.size());
+	BOOST_CHECK_EQUAL(NUMBER_9, out.at(0));
+}
+
+BOOST_AUTO_TEST_CASE(integer_minus_9) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("-9");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)-9);
+
+	BOOST_CHECK_EQUAL(2, out.size());
+	BOOST_CHECK_EQUAL(MINUS, out.at(0));
+	BOOST_CHECK_EQUAL(NUMBER_9, out.at(1));
+}
+
+BOOST_AUTO_TEST_CASE(integer_23) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("23");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)23);
+
+	BOOST_CHECK_EQUAL(2, out.size());
+	BOOST_CHECK_EQUAL(NUMBER_20, out.at(0));
+	BOOST_CHECK_EQUAL(NUMBER_3, out.at(1));
+
+}
+
+BOOST_AUTO_TEST_CASE(integer_minus_23) {
+	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("-23");
+
+	std::vector<std::string> out = c->getAudioListFromNumber((int)-23);
+
+	BOOST_CHECK_EQUAL(3, out.size());
+	BOOST_CHECK_EQUAL(MINUS, out.at(0));
+	BOOST_CHECK_EQUAL(NUMBER_20, out.at(1));
+	BOOST_CHECK_EQUAL(NUMBER_3, out.at(2));
+}
+
 BOOST_AUTO_TEST_CASE(integer_999) {
 
 	std::unique_ptr<PlaylistSampler> c = std::make_unique<PlaylistSamplerPL>(config);
+
+	BOOST_TEST_MESSAGE("999");
 
 	std::vector<std::string> out = c->getAudioListFromNumber((int)999);
 

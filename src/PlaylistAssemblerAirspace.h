@@ -41,6 +41,16 @@ private:
 									bool extractWhat,
 									const PansaAirspace_Type type,
 									const ConfigurationFile_Airspace_SayConfigPerElemType & confPerElemType);
+
+protected:
+	/**
+	 * Recalculates altitude from any value between 100 to 9999 meters to 100 meters increments
+	 * @param altitude in meters
+	 * @param trueToRoundUp set to true to round altitude to next 100 increment, like 1822 meters to 1900 meters
+	 * @return
+	 */
+	static int convertMetersToHundretsMeters(int altitude, bool trueToRoundUp);
+
 public:
 
 	/**

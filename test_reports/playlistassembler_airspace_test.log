@@ -1,17 +1,46 @@
-Running 1 test case...
+Running 3 test cases...
 Entering test module "PlaylistAssemblerAirspace_test"
-../src/PlaylistAssemblerAirspace_test.cpp(85): Entering test case "first_test"
-../src/PlaylistAssemblerAirspace_test.cpp(104): info: check "intro.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(105): info: check "ograniczenia_lotow.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(106): info: check "w_promieniu.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(107): info: check "dwanascie.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(108): info: check "kilometrow.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(109): info: check "od_lokalizacji.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(110): info: check "beef.mp3" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(111): info: check "strefa_ruchu_nadlotniskowego.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(112): info: check "ph_echo.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(113): info: check "ph_papa.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(114): info: check "ph_bravo.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(115): info: check "ph_alpha.ogg" == playlistVct[i++] has passed
-../src/PlaylistAssemblerAirspace_test.cpp(85): Leaving test case "first_test"; testing time: 435us
-Leaving test module "PlaylistAssemblerAirspace_test"; testing time: 447us
+../src/PlaylistAssemblerAirspace_test.cpp(111): Entering test case "altitude_recalculation"
+../src/PlaylistAssemblerAirspace_test.cpp(113): info: check 1100 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(1001, true) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(114): info: check 1000 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(1001, false) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(115): info: check 1400 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(1398, true) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(116): info: check 1300 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(1398, false) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(117): info: check 0 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(99, false) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(118): info: check 100 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(99, true) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(119): info: check 100 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(100, true) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(120): info: check 100 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(100, false) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(111): Leaving test case "altitude_recalculation"; testing time: 111us
+../src/PlaylistAssemblerAirspace_test.cpp(125): Entering test case "two_tra_around_point"
+Test case two_tra_around_point did not check any assertions
+../src/PlaylistAssemblerAirspace_test.cpp(125): Leaving test case "two_tra_around_point"; testing time: 67us
+../src/PlaylistAssemblerAirspace_test.cpp(130): Entering test case "epba_around_point"
+../src/PlaylistAssemblerAirspace_test.cpp(149): info: check "intro.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(150): info: check "ograniczenia_lotow.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(151): info: check "w_promieniu.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(152): info: check "dwanascie.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(153): info: check "kilometrow.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(154): info: check "od_lokalizacji.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(155): info: check "beef.mp3" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(156): info: check "strefa_ruchu_nadlotniskowego.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(157): info: check "ph_echo.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(158): info: check "ph_papa.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(159): info: check "ph_bravo.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(160): info: check "ph_alpha.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(161): info: check "od.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(162): info: check "szosta.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(163): info: check "zero.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(164): info: check "zero.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(165): info: check "czasu_uniwersalnego.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(166): info: check "do.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(167): info: check "osiemnasta.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(168): info: check "zero.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(169): info: check "zero.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(170): info: check "czasu_uniwersalnego.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(171): info: check "wysokosc.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(172): info: check "od.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(173): info: check "poziomu_gruntu.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(174): info: check "do.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(175): info: check "tysiac.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(176): info: check "metrow.ogg" == playlistVct[i++] has passed
+../src/PlaylistAssemblerAirspace_test.cpp(130): Leaving test case "epba_around_point"; testing time: 1427us
+Leaving test module "PlaylistAssemblerAirspace_test"; testing time: 1662us

@@ -481,7 +481,7 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 		this->airspace.reservationFutureTimeMargin = 0;	// say everything for today
 		this->airspace.sayPast = false;					// do not say any reservations which are gone
 		this->airspace.sayAltitudes = false;			// no need to say from which altitudes a reservation is set
-		this->airspace.includeAirspaceTypeInfo = true;
+		this->airspace.genericAirspaceAnouncementFromRegexExtracted = true;
 		this->airspace.bailoutIfNothingToSay = false;
 
 		libconfig::Setting &airspace = root["Airspace"];
@@ -543,8 +543,8 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 		// Global switch to say altitude range within an airspace is reserved
 		airspace.lookupValue("SayAltitudes", this->airspace.sayAltitudes);
 
-		// Add airspace type announcement before each zone
-		airspace.lookupValue("IncludeAirspaceTypeInfo", this->airspace.includeAirspaceTypeInfo);
+		// Generic airspace anouncement in form of "{airspace type} {designator extracted by regexp} {sector extracted by regexp}
+		airspace.lookupValue("GenericAirspaceAnouncementFromRegexExtracted", this->airspace.genericAirspaceAnouncementFromRegexExtracted);
 
 		/*
 		 * Section used to specify which airspace types will be announced from the results of
