@@ -237,5 +237,6 @@
 
 #define OGRANICZENIA_LOTOW	"ograniczenia_lotow.ogg"
 #define ZONE			"strefa.ogg"
+#define SEKTOR			"sektor.ogg"
 
 #endif /* PLAYLISTSAMPLERPL_FILES_H_ */

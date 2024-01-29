@@ -1022,6 +1022,7 @@ std::string PlaylistSamplerPL::getAirspaceConstantElement(
 	switch(_airspace) {
 	case AIRSPACE_RESTRICTIONS_IN: 	return OGRANICZENIA_LOTOW;
 	case AIRSPACE_ZONE:				return ZONE;
+	case AIRSPACE_SECTOR:			return SEKTOR;
 	case AIRSPACE_ALTITUDE: 		return WYSOKOSC;
 	case AIRSPACE_GROUND: 			return POZIOMU_GRUNTU;
 	}

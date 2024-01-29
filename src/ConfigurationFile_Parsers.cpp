@@ -470,18 +470,18 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 		this->airspace.confPerElemType.sayR = true;
 
 		this->airspace.confPerElemType.atzDesignatorRegexp = "\\s[A-Z]{4}";
-		this->airspace.confPerElemType.traDesignatorRegexp = "[1-9]{1,3}";
+		this->airspace.confPerElemType.traDesignatorRegexp = "[A-Z]{1,2}[0-9]{1,3}";
 		this->airspace.confPerElemType.traSectorRegexp = "[A-Z]{1}$";
-		this->airspace.confPerElemType.tsaDesignatorRegexp = "[1-9]{1,3}";
+		this->airspace.confPerElemType.tsaDesignatorRegexp = "[A-Z]{1,2}[0-9]{1,3}";
 		this->airspace.confPerElemType.tsaSectorRegexp = "[A-Z]{1}$";
-		this->airspace.confPerElemType.dDesignatorRegexp = "[1-9]{1,3}";
+		this->airspace.confPerElemType.dDesignatorRegexp = "[A-Z][0-9]{1,3}";
 		this->airspace.confPerElemType.dSectorRegexp = "[A-Z]$";
-		this->airspace.confPerElemType.rDesignatorRegexp = "[0-9]{1,3}$";
+		this->airspace.confPerElemType.rDesignatorRegexp = "[A-Z][0-9]{1,3}$";
 
 		this->airspace.reservationFutureTimeMargin = 0;	// say everything for today
 		this->airspace.sayPast = false;					// do not say any reservations which are gone
 		this->airspace.sayAltitudes = false;			// no need to say from which altitudes a reservation is set
-		this->airspace.genericAirspaceAnouncementFromRegexExtracted = true;
+		this->airspace.genericAnouncementFromRegex = true;
 		this->airspace.bailoutIfNothingToSay = false;
 
 		libconfig::Setting &airspace = root["Airspace"];
@@ -544,7 +544,10 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 		airspace.lookupValue("SayAltitudes", this->airspace.sayAltitudes);
 
 		// Generic airspace anouncement in form of "{airspace type} {designator extracted by regexp} {sector extracted by regexp}
-		airspace.lookupValue("GenericAirspaceAnouncementFromRegexExtracted", this->airspace.genericAirspaceAnouncementFromRegexExtracted);
+		airspace.lookupValue("GenericAnouncementFromRegex", this->airspace.genericAnouncementFromRegex);
+
+		// Glue designator extracting result (if genericAnouncementFromRegex enabled) or glue full-designator-string
+		airspace.lookupValue("GlueGenericAnouncement", this->airspace.glueGenericAnouncement);
 
 		/*
 		 * Section used to specify which airspace types will be announced from the results of

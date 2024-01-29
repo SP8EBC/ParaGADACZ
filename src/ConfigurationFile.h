@@ -247,7 +247,7 @@ struct ConfigurationFile_Airspace_Fixed {
  * 	   separately. Final announcement for "EPD25A" might look like "delta
  * 	   two five sector alpha"
  * 	4. If regexp is not configured a generic announcement will be generated from
- * 	   the full desgiantor
+ * 	   the full desgiantor aka full-designator-string
  *
  */
 struct ConfigurationFile_Airspace_SayConfigPerElemType {
@@ -276,7 +276,8 @@ struct ConfigurationFile_Airspace {
 	int reservationFutureTimeMargin;	//!< Say only activations which will start not later than XX minutes
 	bool sayPast;		//!< Say activations for today, which had expired before current time
 	bool sayAltitudes;	//!< Global switch to say altitude range within an airspace is reserved
-	bool genericAirspaceAnouncementFromRegexExtracted;	//!< Add airspace type announcement before each zone
+	bool genericAnouncementFromRegex;	//!< Use regular expressions to extract designator and sector for announcement
+	bool glueGenericAnouncement; //!< Glue designator extracting result (if genericAnouncementFromRegex enabled) or glue full-designator-string
 	bool bailoutIfNothingToSay;
 	ConfigurationFile_Airspace_SayConfigPerElemType confPerElemType; //!< How each airspace type is announced
 

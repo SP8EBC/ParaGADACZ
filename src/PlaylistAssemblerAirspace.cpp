@@ -290,10 +290,10 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 		else {
 			// generate generic one
 
-			if (airspaceCfg.genericAirspaceAnouncementFromRegexExtracted) {
-				// add airspace type announcement
-				playlistPtr->push_back(sampler->getForAirspaceType(type));
+			// add airspace type announcement
+			playlistPtr->push_back(sampler->getForAirspaceType(type));
 
+			if (airspaceCfg.genericAnouncementFromRegex) {
 				// extract designator string
 				const std::optional<std::string> designatorStr = PlaylistAssemblerAirspace::extractUsingRegexp(it->first, true, type, airspaceCfg.confPerElemType);
 
@@ -307,18 +307,39 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 					SPDLOG_DEBUG("Designator {} extracted from full-designator-string for airspace {}", designatorStr.value(), it->first);
 				}
 
+				// say designator in phonetical way. like: "Echo Papa Bravo Alpha"
 				std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(designatorStr.value());
 				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
 
-				// optionally add sector anouncement
+				// optionally add sector announcement
 				if (sectorStr.has_value()) {
+					playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_SECTOR));
+
 					SPDLOG_DEBUG("Sector {} extracted from full-designator-string for airspace {}", sectorStr.value(), it->first);
 					std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
 					playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
 				}
 			}
 			else {
+				// splitted designator
+				std::vector<std::string> words;
 
+				// final string to be converted to voice announcement
+				std::string out;
+
+				// count words in designator
+				boost::split(words, it->first, boost::is_space(), boost::token_compress_off);
+
+				if (airspaceCfg.glueGenericAnouncement) {
+					out = boost::algorithm::join(words, "");
+				}
+				else {
+					// use first word from
+					out = words[0];
+				}
+
+				std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(out);
+				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
 			}
 
 		}
@@ -329,6 +350,14 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 			if (!airspaceCfg.sayPast && ((uint64_t)TimeTools::getEpoch() > r.toTime)) {
 				SPDLOG_INFO("Reservation made by {} ommitted as there is {} minutes after it had ended", r.unit, (TimeTools::getEpoch() - r.toTime) / 60);
 				continue;
+			}
+
+			if (airspaceCfg.reservationFutureTimeMargin != 0) {
+				if ((uint64_t)(TimeTools::getEpoch() + airspaceCfg.reservationFutureTimeMargin * 60ULL) < r.fromTime) {
+					SPDLOG_INFO("Reservation made by {} ommitted as it starts {} minutes, or {} hours in the future", r.unit, (r.fromTime - (uint64_t)TimeTools::getEpoch()) / 60ULL, (r.fromTime - (uint64_t)TimeTools::getEpoch()) / 3600ULL);
+					SPDLOG_INFO("Future time limit is set to {} minutes", airspaceCfg.reservationFutureTimeMargin);
+					continue;
+				}
 			}
 
 			// from time

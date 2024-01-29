@@ -116,8 +116,8 @@ enum PlaylistSampler_Phonetic {
 	PH_NOVEMBER		= 0x4E,
 	PH_OSCAR		= 0x4F,
 	PH_PAPA			= 0x50,
-	PH_ROMEO		= 0x51,
-	PH_QUEBEC		= 0x52,
+	PH_QUEBEC		= 0x51,
+	PH_ROMEO		= 0x52,
 	PH_SIERRA		= 0x53,
 	PH_TANGO		= 0x54,
 	PH_UNIFORM		= 0x55,
@@ -131,6 +131,7 @@ enum PlaylistSampler_Phonetic {
 enum PlaylistSampler_Airspace {
 	AIRSPACE_RESTRICTIONS_IN,	//!< "Flight restrictions in area"
 	AIRSPACE_ZONE,				//!< "Zone"
+	AIRSPACE_SECTOR,
 	AIRSPACE_ALTITUDE,
 	AIRSPACE_GROUND
 };

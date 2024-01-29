@@ -26,7 +26,7 @@
 
 #include "ConfigurationFile.h"
 
-std::shared_ptr<ConfigurationFile> config;
+std::shared_ptr<ConfigurationFile> config_genericairspace_true, config_genericairspace_false, config_genericairspace_futuretime, config_genericairspace_dict;
 std::shared_ptr<PlaylistSampler> playlist_sampler;
 
 std::map<std::string, PansaAirspace_Zone> airspaceReservationsAll, airspaceReservationsFirst;
@@ -64,10 +64,19 @@ struct MyConfig
 	 *
 	 *		}
 	 */
-	config = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_aroundpoint_and_fixed_genericairspace_true.conf");
-	config->parse();
+	config_genericairspace_true = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_aroundpoint_and_fixed_genericanouncementfromregex_true.conf");
+	config_genericairspace_true->parse();
 
-	playlist_sampler = std::make_shared<PlaylistSamplerPL>(config);
+	config_genericairspace_false = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_aroundpoint_and_fixed_genericanouncementfromregex_false.conf");
+	config_genericairspace_false->parse();
+
+	config_genericairspace_futuretime = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_aroundpoint_and_fixed_genericanouncementfromregex_true_futuretime.conf");
+	config_genericairspace_futuretime->parse();
+
+	config_genericairspace_dict = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_aroundpoint_and_fixed_anouncement_dictionary.conf");
+	config_genericairspace_dict->parse();
+
+	playlist_sampler = std::make_shared<PlaylistSamplerPL>(config_genericairspace_true);
 
 	first.designator = "ATZ EPBA";
 	first.centroidLatitudeY = 49.766487f;
@@ -82,13 +91,16 @@ struct MyConfig
 	second.centroidLongitudeX = 21.30986f;
 	second.distanceFromSetpoint = 150439.0f;
 	second.reservations.emplace_back(1706079600ULL, 1706130000ULL, 0, 1000);
+	//  Wednesday, 24 January 2024 07:00:00    ---> Wednesday, 24 January 2024 21:00:00
 
 	third.designator = "EPTR114";
 	third.centroidLatitudeY = 52.77208597936472f;
 	third.centroidLongitudeX = 23.815587796821536f;
 	third.distanceFromSetpoint = 467344.9f;
 	third.reservations.emplace_back(1706140800ULL, 1706162400ULL, 0, 1500);
-	third.reservations.emplace_back(1706076000ULL, 1706140740ULL, 0, 1400);
+	third.reservations.emplace_back(1789076000ULL, 1789140740ULL, 123, 1400);
+	// Thursday, 25 January 2024 00:00:00  --->   Thursday, 25 January 2024 06:00:00
+	// Thursday, 10 September 2026 21:33:20  -->  Friday, 11 September 2026 15:32:20
 
 	airspaceReservationsFirst.insert(std::pair<std::string, PansaAirspace_Zone>("ATZ EPBA", first));
 
@@ -122,21 +134,16 @@ BOOST_AUTO_TEST_CASE(altitude_recalculation)
 
 }
 
-BOOST_AUTO_TEST_CASE(two_tra_around_point)
+BOOST_AUTO_TEST_CASE(epba_around_point_genericanouncementfromregex_false)
 {
-
-}
-
-BOOST_AUTO_TEST_CASE(epba_around_point)
-{
-	PlaylistAssemblerAirspace airspace(playlist_sampler, config);
-	PlaylistAssembler assembler(playlist_sampler, config);
+	PlaylistAssemblerAirspace airspace(playlist_sampler, config_genericairspace_false);
+	PlaylistAssembler assembler(playlist_sampler, config_genericairspace_false);
 
 	assembler.start();
 
 	airspace.setPlaylist(assembler.getPlaylist());
 
-	const ConfigurationFile_Airspace & configAirspace = config->getAirspace();
+	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_false->getAirspace();
 	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
 
 	airspace.reservationsAroundPoint(point, airspaceReservationsFirst);
@@ -144,35 +151,353 @@ BOOST_AUTO_TEST_CASE(epba_around_point)
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
 	std::vector<std::string> playlistVct = *playlistOut;
-	int i = 0;
+	std::vector<std::string>::const_iterator it = playlistVct.begin();
 
-	BOOST_CHECK_EQUAL("intro.ogg", playlistVct[i++]);
-	BOOST_CHECK_EQUAL(OGRANICZENIA_LOTOW, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(W_PROMIENIU, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(NUMBER_12, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(KILOMETER_FOUR, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(OD_LOKALIZACJI, playlistVct[i++]);
-	BOOST_CHECK_EQUAL("beef.mp3", playlistVct[i++]);
-	BOOST_CHECK_EQUAL(AIRSPACE_ATZ_PL, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(PH_ECHO_PL, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(PH_PAPA_PL, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(PH_BRAVO_PL, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(PH_ALPHA_PL, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(OD, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(SZOSTA, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(NUMBER_0, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(NUMBER_0, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(UNIWERSALNEGO, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(DO, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(OSIEMNASTA, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(NUMBER_0, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(NUMBER_0, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(UNIWERSALNEGO, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(WYSOKOSC, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(OD, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(DO, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(NUMBER_1k, playlistVct[i++]);
-	BOOST_CHECK_EQUAL(METER_FOUR, playlistVct[i++]);
+	BOOST_CHECK_EQUAL("intro.ogg", *(it++));
+	BOOST_CHECK_EQUAL(OGRANICZENIA_LOTOW, *(it++));
+	BOOST_CHECK_EQUAL(W_PROMIENIU, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_12, *(it++));
+	BOOST_CHECK_EQUAL(KILOMETER_FOUR, *(it++));
+	BOOST_CHECK_EQUAL(OD_LOKALIZACJI, *(it++));
+	BOOST_CHECK_EQUAL("beef.mp3", *(it++));
+	BOOST_CHECK_EQUAL(AIRSPACE_ATZ_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ALPHA_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_TANGO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ZULU_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ECHO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_PAPA_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_BRAVO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ALPHA_PL, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(SZOSTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(OSIEMNASTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++));
+}
+
+BOOST_AUTO_TEST_CASE(epba_around_point_genericanouncementfromregex_true)
+{
+	PlaylistAssemblerAirspace airspace(playlist_sampler, config_genericairspace_true);
+	PlaylistAssembler assembler(playlist_sampler, config_genericairspace_true);
+
+	assembler.start();
+
+	airspace.setPlaylist(assembler.getPlaylist());
+
+	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_true->getAirspace();
+	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
+
+	airspace.reservationsAroundPoint(point, airspaceReservationsFirst);
+
+	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
+
+	std::vector<std::string> playlistVct = *playlistOut;
+	std::vector<std::string>::const_iterator it = playlistVct.begin();
+
+	BOOST_CHECK_EQUAL("intro.ogg", *(it++));
+	BOOST_CHECK_EQUAL(OGRANICZENIA_LOTOW, *(it++));
+	BOOST_CHECK_EQUAL(W_PROMIENIU, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_12, *(it++));
+	BOOST_CHECK_EQUAL(KILOMETER_FOUR, *(it++));
+	BOOST_CHECK_EQUAL(OD_LOKALIZACJI, *(it++));
+	BOOST_CHECK_EQUAL("beef.mp3", *(it++));
+	BOOST_CHECK_EQUAL(AIRSPACE_ATZ_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ECHO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_PAPA_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_BRAVO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ALPHA_PL, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(SZOSTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(OSIEMNASTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++));
+	BOOST_CHECK(playlistVct.end() == it); ////
+
+}
+
+BOOST_AUTO_TEST_CASE(tra_around_point_genericanouncementfromregex_true)
+{
+	PlaylistAssemblerAirspace airspace(playlist_sampler, config_genericairspace_true);
+	PlaylistAssembler assembler(playlist_sampler, config_genericairspace_true);
+
+	assembler.start();
+
+	airspace.setPlaylist(assembler.getPlaylist());
+
+	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_true->getAirspace();
+	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
+
+	airspace.reservationsAroundPoint(point, airspaceReservationsAll);
+
+	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
+
+	std::vector<std::string> playlistVct = *playlistOut;
+	std::vector<std::string>::const_iterator it = playlistVct.begin();
+
+	BOOST_CHECK_EQUAL("intro.ogg", *(it++));
+	BOOST_CHECK_EQUAL(OGRANICZENIA_LOTOW, *(it++));
+	BOOST_CHECK_EQUAL(W_PROMIENIU, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_12, *(it++));
+	BOOST_CHECK_EQUAL(KILOMETER_FOUR, *(it++));
+	BOOST_CHECK_EQUAL(OD_LOKALIZACJI, *(it++));
+	BOOST_CHECK_EQUAL("beef.mp3", *(it++));
+	BOOST_CHECK_EQUAL(AIRSPACE_TRA_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_TANGO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ROMEO_PL, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0_EN, *(it++));
+	BOOST_CHECK_EQUAL(SEKTOR, *(it++));
+	BOOST_CHECK_EQUAL(PH_ALPHA_PL, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(SIODMA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(DWUDZIESTA, *(it++));
+	BOOST_CHECK_EQUAL(PIERWSZA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++)); //
+	BOOST_CHECK_EQUAL(AIRSPACE_TRA_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_TANGO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ROMEO_PL, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_4_EN, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(SZOSTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_500, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++)); ////
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(DWUDZIESTA, *(it++));
+	BOOST_CHECK_EQUAL(PIERWSZA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_30, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_3, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(PIETNASTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_30, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_2, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_100, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_400, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++));
+	BOOST_CHECK(playlistVct.end() == it); ////
+
 
 }// GODZINA
+
+BOOST_AUTO_TEST_CASE(tra_around_point_genericanouncementfromregex_true_nonzero_future_time)
+{
+	PlaylistAssemblerAirspace airspace(playlist_sampler, config_genericairspace_futuretime);
+	PlaylistAssembler assembler(playlist_sampler, config_genericairspace_futuretime);
+
+	assembler.start();
+
+	airspace.setPlaylist(assembler.getPlaylist());
+
+	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_true->getAirspace();
+	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
+
+	airspace.reservationsAroundPoint(point, airspaceReservationsAll);
+
+	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
+
+	std::vector<std::string> playlistVct = *playlistOut;
+	std::vector<std::string>::const_iterator it = playlistVct.begin();
+
+	BOOST_CHECK_EQUAL("intro.ogg", *(it++));
+	BOOST_CHECK_EQUAL(OGRANICZENIA_LOTOW, *(it++));
+	BOOST_CHECK_EQUAL(W_PROMIENIU, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_12, *(it++));
+	BOOST_CHECK_EQUAL(KILOMETER_FOUR, *(it++));
+	BOOST_CHECK_EQUAL(OD_LOKALIZACJI, *(it++));
+	BOOST_CHECK_EQUAL("beef.mp3", *(it++));
+	BOOST_CHECK_EQUAL(AIRSPACE_TRA_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_TANGO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ROMEO_PL, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0_EN, *(it++));
+	BOOST_CHECK_EQUAL(SEKTOR, *(it++));
+	BOOST_CHECK_EQUAL(PH_ALPHA_PL, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(SIODMA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(DWUDZIESTA, *(it++));
+	BOOST_CHECK_EQUAL(PIERWSZA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++)); //
+	BOOST_CHECK_EQUAL(AIRSPACE_TRA_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_TANGO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ROMEO_PL, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_4_EN, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(SZOSTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_500, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++)); ////
+	BOOST_CHECK(playlistVct.end() == it); ////
+
+}
+
+BOOST_AUTO_TEST_CASE(epba_aroundpoint_and_fixed_anouncement_dictionary)
+{
+	PlaylistAssemblerAirspace airspace(playlist_sampler, config_genericairspace_dict);
+	PlaylistAssembler assembler(playlist_sampler, config_genericairspace_dict);
+
+	assembler.start();
+
+	airspace.setPlaylist(assembler.getPlaylist());
+
+	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_true->getAirspace();
+	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
+
+	airspace.reservationsAroundPoint(point, airspaceReservationsAll);
+
+	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
+
+	std::vector<std::string> playlistVct = *playlistOut;
+	std::vector<std::string>::const_iterator it = playlistVct.begin();
+
+	BOOST_CHECK_EQUAL("intro.ogg", *(it++));
+	BOOST_CHECK_EQUAL(OGRANICZENIA_LOTOW, *(it++));
+	BOOST_CHECK_EQUAL(W_PROMIENIU, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_12, *(it++));
+	BOOST_CHECK_EQUAL(KILOMETER_FOUR, *(it++));
+	BOOST_CHECK_EQUAL(OD_LOKALIZACJI, *(it++));
+	BOOST_CHECK_EQUAL("beef.mp3", *(it++));
+	BOOST_CHECK_EQUAL("costam.mp3", *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(SIODMA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(DWUDZIESTA, *(it++));
+	BOOST_CHECK_EQUAL(PIERWSZA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++)); //
+	BOOST_CHECK_EQUAL(AIRSPACE_TRA_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_TANGO_PL, *(it++));
+	BOOST_CHECK_EQUAL(PH_ROMEO_PL, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_4_EN, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(SZOSTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_500, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++)); ////
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(DWUDZIESTA, *(it++));
+	BOOST_CHECK_EQUAL(PIERWSZA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_30, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_3, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(PIETNASTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_30, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_2, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_100, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_400, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++));
+	BOOST_CHECK(playlistVct.end() == it); ////
+
+}
+

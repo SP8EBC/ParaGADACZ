@@ -62,6 +62,10 @@ public:
 					const ConfigurationFile_Airspace_AroundPoint & point,
 					const std::map<std::string, PansaAirspace_Zone>& airspaceReservations);
 
+	void reservationsForExplicitlyConfAirspaces(
+					const ConfigurationFile_Airspace_Fixed & airspace,
+					)
+
 	PlaylistAssemblerAirspace(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config);
 	virtual ~PlaylistAssemblerAirspace();
 
