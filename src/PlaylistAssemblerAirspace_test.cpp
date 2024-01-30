@@ -32,6 +32,9 @@ std::shared_ptr<PlaylistSampler> playlist_sampler;
 std::map<std::string, PansaAirspace_Zone> airspaceReservationsAll, airspaceReservationsFirst;
 PansaAirspace_Zone first, second, third;
 
+std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>> nowyTarg;
+
+
 class Test_PlaylistAssemblerAirspace : public PlaylistAssemblerAirspace {
 
 public:
@@ -107,6 +110,9 @@ struct MyConfig
 	//airspaceReservationsAll.insert(std::pair<std::string, PansaAirspace_Zone>("ATZ EPBA", first));
 	airspaceReservationsAll.insert(std::pair<std::string, PansaAirspace_Zone>("EPTR10A", second));
 	airspaceReservationsAll.insert(std::pair<std::string, PansaAirspace_Zone>("EPTR114", third));
+
+	std::shared_ptr<PansaAirspace_Reservation> ntReservation = std::make_shared<PansaAirspace_Reservation>(1706140800ULL, 1706162400ULL, 0, 1500);
+	nowyTarg = std::make_pair(PansaAirspace_Type::AIRSPACE_ATZ, std::vector<std::shared_ptr<PansaAirspace_Reservation>>({ntReservation}));
 
   }
   ~MyConfig()
@@ -499,5 +505,15 @@ BOOST_AUTO_TEST_CASE(epba_aroundpoint_and_fixed_anouncement_dictionary)
 	BOOST_CHECK_EQUAL(METER_FOUR, *(it++));
 	BOOST_CHECK(playlistVct.end() == it); ////
 
+}
+
+BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary)
+{
+	PlaylistAssemblerAirspace airspace(playlist_sampler, config_genericairspace_dict);
+	PlaylistAssembler assembler(playlist_sampler, config_genericairspace_dict);
+
+	assembler.start();
+
+	airspace.setPlaylist(assembler.getPlaylist());
 }
 

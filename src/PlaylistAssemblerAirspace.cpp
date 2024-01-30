@@ -215,6 +215,91 @@ int PlaylistAssemblerAirspace::convertMetersToHundretsMeters(int altitude,
 	return out;
 }
 
+/**
+ * Inserts single announcement for an airspace explicitly configured and checked in the API
+ * @param airspace configuration of this airspace
+ * @param reservations result of a query, the vector may be empty if no reservations are active currently
+ */
+void PlaylistAssemblerAirspace::reservationsForExplicitlyConfAirspace(
+		const ConfigurationFile_Airspace_Fixed &airspace,
+		const std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>>  &reservations) {
+
+	// check if there are any reservations
+	if (reservations.second.size() == 0) {
+		SPDLOG_WARN("There are no reservations for airspace {}", airspace.designator);
+	}
+
+	const std::shared_ptr<std::vector<std::string>> playlistPtr = playlist.value();
+	const ConfigurationFile_Airspace & airspaceCfg = config->getAirspace();
+	const std::map<std::string, std::string> & designatorsAnouncementsDict = airspaceCfg.airspaceDesignatorsAnouncement;
+
+	// check if there is an explicit audio file for this designator
+	const std::map<std::string, std::string>::const_iterator itAnnouncement = designatorsAnouncementsDict.find(airspace.designator);
+
+	if (itAnnouncement != designatorsAnouncementsDict.end()) {
+		// there is an announcement from audio file
+		playlistPtr->push_back(itAnnouncement->second);
+	}
+	else {
+
+		// add airspace type announcement
+		playlistPtr->push_back(sampler->getForAirspaceType(reservations.first));
+
+		// check if generic (not configured by dictionary) announcement shall be generated using regular expressions and extracting from
+		if (airspaceCfg.genericAnouncementFromRegex) {
+			// extract designator string
+			const std::optional<std::string> designatorStr = PlaylistAssemblerAirspace::extractUsingRegexp(airspace.designator, true, reservations.first, airspaceCfg.confPerElemType);
+
+			// extract (optional) sector letter
+			const std::optional<std::string> sectorStr = PlaylistAssemblerAirspace::extractUsingRegexp(airspace.designator, false, reservations.first, airspaceCfg.confPerElemType);
+
+			if (!designatorStr.has_value()) {
+				throw std::runtime_error("Designator for airspace must be extracted");
+			}
+			else {
+				SPDLOG_DEBUG("Designator {} extracted from full-designator-string for explicitly conf airspace {}", designatorStr.value(), airspace.designator);
+			}
+
+			// say designator in phonetical way. like: "Echo Papa Bravo Alpha"
+			std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(designatorStr.value());
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
+
+			// optionally add sector announcement
+			if (sectorStr.has_value()) {
+				playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_SECTOR));
+
+				SPDLOG_DEBUG("Sector {} extracted from full-designator-string for explicitly conf  airspace {}", sectorStr.value(), airspace.designator);
+				std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
+				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
+			}
+		}
+		else {
+			// splitted designator
+			std::vector<std::string> words;
+
+			// final string to be converted to voice announcement
+			std::string out;
+
+			// split airspace designator to separate words. Like "ATZ EPBA" will be separated to "ATZ" and "EPBA"
+			boost::split(words, airspace.designator, boost::is_space(), boost::token_compress_off);
+
+			// if generic (non dictionary) announcement shall be created from complete designator
+			if (airspaceCfg.glueGenericAnouncement) {
+				// glue that back together but withoud any spaces in between. phonetic convert function stops on first space!
+				out = boost::algorithm::join(words, "");
+			}
+			else {
+				// use first word from
+				out = words[0];
+			}
+
+			// convert to speech and put into the playlist
+			std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(out);
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
+		}
+	}
+}
+
 PlaylistAssemblerAirspace::~PlaylistAssemblerAirspace() {
 	// TODO Auto-generated destructor stub
 }
@@ -280,11 +365,11 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 			SPDLOG_INFO("Addind airspace {} of type {} with {} reservations", it->first, PansaAirspace_Type_ToString(type), it->second.reservations.size());
 		}
 
-		// check if there is an explicit announcement for this designator
+		// check if there is an explicit audio file for this designator
 		const std::map<std::string, std::string>::const_iterator itAnnouncement = designatorsAnouncementsDict.find(it->first);
 
 		if (itAnnouncement != designatorsAnouncementsDict.end()) {
-			// there is an announcement
+			// there is an announcement from audio file
 			playlistPtr->push_back(itAnnouncement->second);
 		}
 		else {

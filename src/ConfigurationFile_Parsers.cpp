@@ -525,6 +525,7 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 
 				fixed[i].lookupValue("Designator", fx.designator);
 				fixed[i].lookupValue("SayAltitudes", fx.sayAltitudes);
+				fixed[i].lookupValue("SayTimes", fx.sayTimes);
 
 				this->airspace.fixed.push_back(fx);
 

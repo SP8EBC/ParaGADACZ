@@ -58,7 +58,7 @@ public:
 	 * @param designator
 	 * @return vector of all reservations found or an empty one if no reservations exists
 	 */
-	std::vector<std::shared_ptr<PansaAirspace_Reservation>> downloadForDesginator(std::string designator, bool dumpSqlQuery);
+	std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>> downloadForDesginator(std::string designator, bool dumpSqlQuery);
 
 	const std::map<std::string, PansaAirspace_Zone>& getReservations() const {
 		return reservations;

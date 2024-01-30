@@ -26,6 +26,12 @@ private:
 
 	std::shared_ptr<ConfigurationFile> & config;
 
+	/**
+	 * Checks if a kind of airspace (like TRA, TSA etc) is currently enabled by user configuration
+	 * @param type airspace type
+	 * @param config parsed from configuration file
+	 * @return
+	 */
 	static bool checkIfAirspaceTypeEnabled(PansaAirspace_Type type, const ConfigurationFile_Airspace_SayConfigPerElemType & config);
 
 	/**
@@ -62,9 +68,14 @@ public:
 					const ConfigurationFile_Airspace_AroundPoint & point,
 					const std::map<std::string, PansaAirspace_Zone>& airspaceReservations);
 
-	void reservationsForExplicitlyConfAirspaces(
+	/**
+	 * Inserts single announcement for an airspace explicitly configured and checked in the API
+	 * @param airspace configuration of this airspace
+	 * @param reservations result of a query, the vector may be empty if no reservations are active currently
+	 */
+	void reservationsForExplicitlyConfAirspace(
 					const ConfigurationFile_Airspace_Fixed & airspace,
-					)
+					const std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>> & reservations);
 
 	PlaylistAssemblerAirspace(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config);
 	virtual ~PlaylistAssemblerAirspace();

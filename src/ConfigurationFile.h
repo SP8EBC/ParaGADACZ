@@ -227,6 +227,7 @@ struct ConfigurationFile_Airspace_AroundPoint {
 struct ConfigurationFile_Airspace_Fixed {
 	std::string designator;		//!< Airspace designator as returned by the API
 	bool sayAltitudes;
+	bool sayTimes;
 };
 
 /**

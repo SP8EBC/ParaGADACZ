@@ -209,12 +209,14 @@ int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool
 	  return results;
 }
 
-std::vector<std::shared_ptr<PansaAirspace_Reservation> > PansaAirspace::downloadForDesginator(
+std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>> PansaAirspace::downloadForDesginator(
 		std::string designator, bool dumpSqlQuery) {
 
 	std::vector<std::shared_ptr<PansaAirspace_Reservation> > out;
 
 	std::string queryStr;
+
+	PansaAirspace_Type type;
 
 	ctemplate::TemplateDictionary dict("pansa_explicit_designator");
 
@@ -239,6 +241,8 @@ std::vector<std::shared_ptr<PansaAirspace_Reservation> > PansaAirspace::download
 		  float epochFrom = row["epoch_from"].as<float>();
 		  float epochTo = row["epoch_to"].as<float>();
 
+		  type = PansaAirspace_Type_FromString(airspaceType);
+
 		  const std::string lowerAltitudeStr = row["lower_altitude"].as<std::string>();
 		  int lowerAltitude = PansaAirspace::ConvertAltitudeStr(lowerAltitudeStr);
 
@@ -258,7 +262,8 @@ std::vector<std::shared_ptr<PansaAirspace_Reservation> > PansaAirspace::download
 
 	c.disconnect();
 
-	return out;
+	return std::make_pair(type, out);
+	//return out;
 }
 
 #endif
