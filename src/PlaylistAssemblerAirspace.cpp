@@ -191,6 +191,156 @@ std::optional<std::string> PlaylistAssemblerAirspace::extractUsingRegexp(
 }
 
 /**
+ * Puts all announcement elements, which are common for both Explicitly configured airspaces
+ * and reservation / restriction around given point. These are airspace designator and
+ * optionally altitude and time range
+ * @param designatorsAnouncementsDict dictionary with custom announcements for certain airspaces
+ * @param airspaceCfg global configuration red from tag 'Airspace' in config file
+ * @param airspaceFullDesignatorString like "ATZ EPBA" or "EPTR03C", which might have some unwanted characters
+ * @param type airspace type like ATZ, TRA, TSA and so on
+ * @param reservations vector of all active reservation downloaded from the API, which shall be put into anouncement
+ * @param sayAltitudeRangeOfReservations if an announcement should contains altitude range for each reservation
+ * @param sayTimeRangeOfReservations if an announcement should contains time (as hours) range for each reservation
+ */
+void PlaylistAssemblerAirspace::insertCommonAnnouncementAudioElems(
+		const std::map<std::string, std::string> & designatorsAnouncementsDict,
+		const ConfigurationFile_Airspace & airspaceCfg,
+		const std::string & airspaceFullDesignatorString,
+		const PansaAirspace_Type & type,
+		const std::vector<std::shared_ptr<PansaAirspace_Reservation>> & reservations,
+		bool sayAltitudeRangeOfReservations,
+		bool sayTimeRangeOfReservations) {
+
+	const std::shared_ptr<std::vector<std::string>> playlistPtr = playlist.value();
+
+	// check if there is an explicit audio file for this designator
+	const std::map<std::string, std::string>::const_iterator itAnnouncement = designatorsAnouncementsDict.find(airspaceFullDesignatorString);
+
+
+	if (itAnnouncement != designatorsAnouncementsDict.end()) {
+		// there is an announcement from audio file
+		playlistPtr->push_back(itAnnouncement->second);
+	}
+	else {
+		// generate generic one
+
+		// add airspace type announcement
+		playlistPtr->push_back(sampler->getForAirspaceType(type));
+
+		if (airspaceCfg.genericAnouncementFromRegex) {
+			// extract designator string
+			const std::optional<std::string> designatorStr = PlaylistAssemblerAirspace::extractUsingRegexp(airspaceFullDesignatorString, true, type, airspaceCfg.confPerElemType);
+
+			// extract (optional) sector letter
+			const std::optional<std::string> sectorStr = PlaylistAssemblerAirspace::extractUsingRegexp(airspaceFullDesignatorString, false, type, airspaceCfg.confPerElemType);
+
+			if (!designatorStr.has_value()) {
+				throw std::runtime_error("Designator for airspace must be extracted");
+			}
+			else {
+				SPDLOG_DEBUG("Designator {} extracted from full-designator-string for airspace {}", designatorStr.value(), airspaceFullDesignatorString);
+			}
+
+			// say designator in phonetical way. like: "Echo Papa Bravo Alpha"
+			std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(designatorStr.value());
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
+
+			// optionally add sector announcement
+			if (sectorStr.has_value()) {
+				playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_SECTOR));
+
+				SPDLOG_DEBUG("Sector {} extracted from full-designator-string for airspace {}", sectorStr.value(), airspaceFullDesignatorString);
+				std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
+				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
+			}
+		}
+		else {
+			// splitted designator
+			std::vector<std::string> words;
+
+			// final string to be converted to voice announcement
+			std::string out;
+
+			// count words in designator
+			boost::split(words, airspaceFullDesignatorString, boost::is_space(), boost::token_compress_off);
+
+			if (airspaceCfg.glueGenericAnouncement) {
+				out = boost::algorithm::join(words, "");
+			}
+			else {
+				// use first word from
+				out = words[0];
+			}
+
+			std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(out);
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
+		}
+
+	}
+
+	// iterate through all reservations
+	for (const std::shared_ptr<PansaAirspace_Reservation> & ptr: reservations) {
+		// reservation held by this pointer
+		const PansaAirspace_Reservation r = *ptr;
+
+		// check if this reservation is in the past
+		if (!airspaceCfg.sayPast && ((uint64_t)TimeTools::getEpoch() > r.toTime)) {
+			SPDLOG_INFO("Reservation made by {} ommitted as there is {} minutes after it had ended", r.unit, (TimeTools::getEpoch() - r.toTime) / 60);
+			continue;
+		}
+
+		if (airspaceCfg.reservationFutureTimeMargin != 0) {
+			if ((uint64_t)(TimeTools::getEpoch() + airspaceCfg.reservationFutureTimeMargin * 60ULL) < r.fromTime) {
+				SPDLOG_INFO("Reservation made by {} ommitted as it starts {} minutes, or {} hours in the future", r.unit, (r.fromTime - (uint64_t)TimeTools::getEpoch()) / 60ULL, (r.fromTime - (uint64_t)TimeTools::getEpoch()) / 3600ULL);
+				SPDLOG_INFO("Future time limit is set to {} minutes", airspaceCfg.reservationFutureTimeMargin);
+				continue;
+			}
+		}
+
+		if (sayTimeRangeOfReservations) {
+			// from time
+			playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::FROM).value());
+			std::vector<std::string> timeFrom = sampler->getAudioForHourAndMinute(r.fromTime, true);
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(timeFrom.begin()), std::make_move_iterator(timeFrom.end()));
+
+			// to time
+			playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+			timeFrom = sampler->getAudioForHourAndMinute(r.toTime, true);
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(timeFrom.begin()), std::make_move_iterator(timeFrom.end()));
+		}
+
+		// check if altitude shall be included
+		if (sayAltitudeRangeOfReservations) {
+
+			// "altitude from"
+			playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_ALTITUDE));
+			playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::FROM).value());
+
+			if (r.lowerAltitude > 0)  {
+				// "XXXX meters"
+				auto fromMeters = sampler->getAudioListFromNumber(PlaylistAssemblerAirspace::convertMetersToHundretsMeters(r.lowerAltitude, false));
+				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(fromMeters.begin()), std::make_move_iterator(fromMeters.end()));
+				playlistPtr->push_back(sampler->getAudioFromUnit(PlaylistSampler_Unit::METER, r.lowerAltitude));
+			}
+			else {
+				// ground
+				playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_GROUND));
+			}
+
+			// "to"
+			playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
+
+			// "XXXX meters"
+			auto toMeters = sampler->getAudioListFromNumber(PlaylistAssemblerAirspace::convertMetersToHundretsMeters(r.upperAltitude, false));
+			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(toMeters.begin()), std::make_move_iterator(toMeters.end()));
+			playlistPtr->push_back(sampler->getAudioFromUnit(PlaylistSampler_Unit::METER, r.upperAltitude));
+
+
+		}
+	}
+}
+
+/**
  * Recalculates altitude from any value between 100 to 9999 meters to 100 meters increments
  * @param altitude in meters
  * @param trueToRoundUp set to true to round altitude to next 100 increment, like 1822 meters to 1900 meters
@@ -233,71 +383,26 @@ void PlaylistAssemblerAirspace::reservationsForExplicitlyConfAirspace(
 	const ConfigurationFile_Airspace & airspaceCfg = config->getAirspace();
 	const std::map<std::string, std::string> & designatorsAnouncementsDict = airspaceCfg.airspaceDesignatorsAnouncement;
 
-	// check if there is an explicit audio file for this designator
-	const std::map<std::string, std::string>::const_iterator itAnnouncement = designatorsAnouncementsDict.find(airspace.designator);
+	// get airspace type
+	const PansaAirspace_Type type = reservations.first;
 
-	if (itAnnouncement != designatorsAnouncementsDict.end()) {
-		// there is an announcement from audio file
-		playlistPtr->push_back(itAnnouncement->second);
+	// get all reservations for this airspace, which have been downloaded from PANSA api
+	const std::vector<std::shared_ptr<PansaAirspace_Reservation>> & activeReservations = reservations.second;
+
+	// combination of global and per airspace setting for "should I say any altitude range for this"
+	bool localSayAltitudes = config->getAirspace().sayAltitudes;
+
+	// if say altitudes is enabled globaly
+	if (localSayAltitudes) {
+		// enable or disable it basing on configuration specific for that
+		localSayAltitudes = airspace.sayAltitudes;
 	}
 	else {
-
-		// add airspace type announcement
-		playlistPtr->push_back(sampler->getForAirspaceType(reservations.first));
-
-		// check if generic (not configured by dictionary) announcement shall be generated using regular expressions and extracting from
-		if (airspaceCfg.genericAnouncementFromRegex) {
-			// extract designator string
-			const std::optional<std::string> designatorStr = PlaylistAssemblerAirspace::extractUsingRegexp(airspace.designator, true, reservations.first, airspaceCfg.confPerElemType);
-
-			// extract (optional) sector letter
-			const std::optional<std::string> sectorStr = PlaylistAssemblerAirspace::extractUsingRegexp(airspace.designator, false, reservations.first, airspaceCfg.confPerElemType);
-
-			if (!designatorStr.has_value()) {
-				throw std::runtime_error("Designator for airspace must be extracted");
-			}
-			else {
-				SPDLOG_DEBUG("Designator {} extracted from full-designator-string for explicitly conf airspace {}", designatorStr.value(), airspace.designator);
-			}
-
-			// say designator in phonetical way. like: "Echo Papa Bravo Alpha"
-			std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(designatorStr.value());
-			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
-
-			// optionally add sector announcement
-			if (sectorStr.has_value()) {
-				playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_SECTOR));
-
-				SPDLOG_DEBUG("Sector {} extracted from full-designator-string for explicitly conf  airspace {}", sectorStr.value(), airspace.designator);
-				std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
-				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
-			}
-		}
-		else {
-			// splitted designator
-			std::vector<std::string> words;
-
-			// final string to be converted to voice announcement
-			std::string out;
-
-			// split airspace designator to separate words. Like "ATZ EPBA" will be separated to "ATZ" and "EPBA"
-			boost::split(words, airspace.designator, boost::is_space(), boost::token_compress_off);
-
-			// if generic (non dictionary) announcement shall be created from complete designator
-			if (airspaceCfg.glueGenericAnouncement) {
-				// glue that back together but withoud any spaces in between. phonetic convert function stops on first space!
-				out = boost::algorithm::join(words, "");
-			}
-			else {
-				// use first word from
-				out = words[0];
-			}
-
-			// convert to speech and put into the playlist
-			std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(out);
-			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
-		}
+		; // if it is not enabled globally, ignore what is set specific here
 	}
+
+	insertCommonAnnouncementAudioElems(designatorsAnouncementsDict, airspaceCfg, airspace.designator, type, activeReservations, localSayAltitudes, airspace.sayTimes);
+
 }
 
 PlaylistAssemblerAirspace::~PlaylistAssemblerAirspace() {
@@ -350,8 +455,14 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 	// iterate through all airspace, which has any reservation
 	do {
 
+		// get full-designator-string
+		const std::string fullDesignatorString = it->first;
+
 		// get airspace type
 		const PansaAirspace_Type type = it->second.type;
+
+		// vector of all active reservations for this airspace, which have been fetched from Pansa API
+		const std::vector<std::shared_ptr<PansaAirspace_Reservation>> & activeReservations = it->second.reservations;
 
 		// check if announcement for this airspace type is enabled
 		const bool typeEnabled = PlaylistAssemblerAirspace::checkIfAirspaceTypeEnabled(type, airspaceCfg.confPerElemType);
@@ -362,128 +473,12 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 			continue;
 		}
 		else {
-			SPDLOG_INFO("Addind airspace {} of type {} with {} reservations", it->first, PansaAirspace_Type_ToString(type), it->second.reservations.size());
+			SPDLOG_INFO("Addind airspace {} of type {} with {} reservations", it->first, PansaAirspace_Type_ToString(type), activeReservations.size());
 		}
 
-		// check if there is an explicit audio file for this designator
-		const std::map<std::string, std::string>::const_iterator itAnnouncement = designatorsAnouncementsDict.find(it->first);
+		//
+		insertCommonAnnouncementAudioElems(designatorsAnouncementsDict, airspaceCfg, fullDesignatorString, type, activeReservations, config->getAirspace().sayAltitudes, true);
 
-		if (itAnnouncement != designatorsAnouncementsDict.end()) {
-			// there is an announcement from audio file
-			playlistPtr->push_back(itAnnouncement->second);
-		}
-		else {
-			// generate generic one
-
-			// add airspace type announcement
-			playlistPtr->push_back(sampler->getForAirspaceType(type));
-
-			if (airspaceCfg.genericAnouncementFromRegex) {
-				// extract designator string
-				const std::optional<std::string> designatorStr = PlaylistAssemblerAirspace::extractUsingRegexp(it->first, true, type, airspaceCfg.confPerElemType);
-
-				// extract (optional) sector letter
-				const std::optional<std::string> sectorStr = PlaylistAssemblerAirspace::extractUsingRegexp(it->first, false, type, airspaceCfg.confPerElemType);
-
-				if (!designatorStr.has_value()) {
-					throw std::runtime_error("Designator for airspace must be extracted");
-				}
-				else {
-					SPDLOG_DEBUG("Designator {} extracted from full-designator-string for airspace {}", designatorStr.value(), it->first);
-				}
-
-				// say designator in phonetical way. like: "Echo Papa Bravo Alpha"
-				std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(designatorStr.value());
-				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
-
-				// optionally add sector announcement
-				if (sectorStr.has_value()) {
-					playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_SECTOR));
-
-					SPDLOG_DEBUG("Sector {} extracted from full-designator-string for airspace {}", sectorStr.value(), it->first);
-					std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
-					playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
-				}
-			}
-			else {
-				// splitted designator
-				std::vector<std::string> words;
-
-				// final string to be converted to voice announcement
-				std::string out;
-
-				// count words in designator
-				boost::split(words, it->first, boost::is_space(), boost::token_compress_off);
-
-				if (airspaceCfg.glueGenericAnouncement) {
-					out = boost::algorithm::join(words, "");
-				}
-				else {
-					// use first word from
-					out = words[0];
-				}
-
-				std::vector<std::string> designatorAudio = sampler->getPhoneticForWord(out);
-				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(designatorAudio.begin()), std::make_move_iterator(designatorAudio.end()));
-			}
-
-		}
-
-		// iterate through all reservations
-		for (const PansaAirspace_Reservation & r: it->second.reservations) {
-			// check if this reservation is in the past
-			if (!airspaceCfg.sayPast && ((uint64_t)TimeTools::getEpoch() > r.toTime)) {
-				SPDLOG_INFO("Reservation made by {} ommitted as there is {} minutes after it had ended", r.unit, (TimeTools::getEpoch() - r.toTime) / 60);
-				continue;
-			}
-
-			if (airspaceCfg.reservationFutureTimeMargin != 0) {
-				if ((uint64_t)(TimeTools::getEpoch() + airspaceCfg.reservationFutureTimeMargin * 60ULL) < r.fromTime) {
-					SPDLOG_INFO("Reservation made by {} ommitted as it starts {} minutes, or {} hours in the future", r.unit, (r.fromTime - (uint64_t)TimeTools::getEpoch()) / 60ULL, (r.fromTime - (uint64_t)TimeTools::getEpoch()) / 3600ULL);
-					SPDLOG_INFO("Future time limit is set to {} minutes", airspaceCfg.reservationFutureTimeMargin);
-					continue;
-				}
-			}
-
-			// from time
-			playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::FROM).value());
-			std::vector<std::string> timeFrom = sampler->getAudioForHourAndMinute(r.fromTime, true);
-			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(timeFrom.begin()), std::make_move_iterator(timeFrom.end()));
-
-			// to time
-			playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
-			timeFrom = sampler->getAudioForHourAndMinute(r.toTime, true);
-			playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(timeFrom.begin()), std::make_move_iterator(timeFrom.end()));
-
-			// check if altitude shall be included
-			if (airspaceCfg.sayAltitudes) {
-
-				// "altitude from"
-				playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_ALTITUDE));
-				playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::FROM).value());
-
-				if (r.lowerAltitude > 0)  {
-					// "XXXX meters"
-					auto fromMeters = sampler->getAudioListFromNumber(PlaylistAssemblerAirspace::convertMetersToHundretsMeters(r.lowerAltitude, false));
-					playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(fromMeters.begin()), std::make_move_iterator(fromMeters.end()));
-					playlistPtr->push_back(sampler->getAudioFromUnit(PlaylistSampler_Unit::METER, r.lowerAltitude));
-				}
-				else {
-					// ground
-					playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_GROUND));
-				}
-
-				// "to"
-				playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::UO_TO).value());
-
-				// "XXXX meters"
-				auto toMeters = sampler->getAudioListFromNumber(PlaylistAssemblerAirspace::convertMetersToHundretsMeters(r.upperAltitude, false));
-				playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(toMeters.begin()), std::make_move_iterator(toMeters.end()));
-				playlistPtr->push_back(sampler->getAudioFromUnit(PlaylistSampler_Unit::METER, r.upperAltitude));
-
-
-			}
-		}
 	} while (++it != airspaceReservations.end());
 
 }

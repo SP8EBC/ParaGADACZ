@@ -13,6 +13,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <memory>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/pattern_formatter.h"
@@ -159,14 +160,11 @@ int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool
 		  SPDLOG_INFO(	"designator: {}, distanceInMeters: {}, lowerAltitudeStr: {}, upperAltitudeStr: {}, lowerAltitude: {}, upperAltitude: {}",
 				  	    designator, (int)::roundf(distanceInMeters), lowerAltitudeStr, upperAltitudeStr, lowerAltitude, upperAltitude);
 
-		  PansaAirspace_Reservation reservation;
+		  std::shared_ptr<PansaAirspace_Reservation> reserv =
+		  				  std::make_shared<PansaAirspace_Reservation>(epochFrom, epochTo, lowerAltitude, upperAltitude);
 
-		  reservation.fromTime = epochFrom;
-		  reservation.toTime = epochTo;
-		  reservation.lowerAltitude = lowerAltitude;
-		  reservation.upperAltitude = upperAltitude;
-		  reservation.unit = unit;
-		  reservation.remarks = remarks;
+		  reserv->unit = unit;
+		  reserv->remarks = remarks;
 
 		  std::map<std::string, PansaAirspace_Zone>::iterator previousRsrv = reservations.find(designator);
 
@@ -178,7 +176,7 @@ int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool
 			  // get precious object
 			  PansaAirspace_Zone & existing = previousRsrv->second;
 
-			  existing.reservations.push_back(reservation);
+			  existing.reservations.push_back(reserv);
 
 			  hasDoubleReservation = true;
 		  }
@@ -191,7 +189,7 @@ int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool
 			  newOne.designator = designator;
 			  newOne.distanceFromSetpoint = distanceInMeters;
 			  newOne.type = type;
-			  newOne.reservations.push_back(reservation);
+			  newOne.reservations.push_back(reserv);
 
 			  reservations.insert(std::pair(designator, newOne));
 

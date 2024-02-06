@@ -336,7 +336,7 @@ BOOST_AUTO_TEST_CASE(configuration_airspace_dictionary)
 	BOOST_CHECK_EQUAL(2, airspace.aroundPoint.size());
 	BOOST_CHECK_EQUAL(2, airspace.fixed.size());
 
-	BOOST_CHECK_EQUAL(2, airspace.airspaceDesignatorsAnouncement.size());
+	BOOST_CHECK_EQUAL(3, airspace.airspaceDesignatorsAnouncement.size());
 
 	auto first = airspace.airspaceDesignatorsAnouncement.find("ATZ EPBA");
 	auto second = airspace.airspaceDesignatorsAnouncement.find("EPTR3");

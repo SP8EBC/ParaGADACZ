@@ -33,6 +33,7 @@ std::map<std::string, PansaAirspace_Zone> airspaceReservationsAll, airspaceReser
 PansaAirspace_Zone first, second, third;
 
 std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>> nowyTarg;
+std::vector<std::shared_ptr<PansaAirspace_Reservation>> reservationsForNowyTarg;
 
 
 class Test_PlaylistAssemblerAirspace : public PlaylistAssemblerAirspace {
@@ -86,22 +87,22 @@ struct MyConfig
 	first.centroidLongitudeX = 18.944265f;
 	first.distanceFromSetpoint = 0.0f;
 	first.type = AIRSPACE_ATZ;
-	first.reservations.emplace_back(1706076000ULL, 1706119200ULL, 0, 1000);
+	first.reservations.emplace_back(std::make_shared<PansaAirspace_Reservation>(1706076000ULL, 1706119200ULL, 0, 1000));
 	// Wednesday, 24 January 2024 06:00:00   -->   Wednesday, 24 January 2024 18:00:00
 
 	second.designator = "EPTR10A";
 	second.centroidLatitudeY = 50.31573f;
 	second.centroidLongitudeX = 21.30986f;
 	second.distanceFromSetpoint = 150439.0f;
-	second.reservations.emplace_back(1706079600ULL, 1706130000ULL, 0, 1000);
+	second.reservations.emplace_back(std::make_shared<PansaAirspace_Reservation>(1706079600ULL, 1706130000ULL, 0, 1000));
 	//  Wednesday, 24 January 2024 07:00:00    ---> Wednesday, 24 January 2024 21:00:00
 
 	third.designator = "EPTR114";
 	third.centroidLatitudeY = 52.77208597936472f;
 	third.centroidLongitudeX = 23.815587796821536f;
 	third.distanceFromSetpoint = 467344.9f;
-	third.reservations.emplace_back(1706140800ULL, 1706162400ULL, 0, 1500);
-	third.reservations.emplace_back(1789076000ULL, 1789140740ULL, 123, 1400);
+	third.reservations.emplace_back(std::make_shared<PansaAirspace_Reservation>(1706140800ULL, 1706162400ULL, 0, 1500));
+	third.reservations.emplace_back(std::make_shared<PansaAirspace_Reservation>(1789076000ULL, 1789140740ULL, 123, 1400));
 	// Thursday, 25 January 2024 00:00:00  --->   Thursday, 25 January 2024 06:00:00
 	// Thursday, 10 September 2026 21:33:20  -->  Friday, 11 September 2026 15:32:20
 
@@ -509,11 +510,23 @@ BOOST_AUTO_TEST_CASE(epba_aroundpoint_and_fixed_anouncement_dictionary)
 
 BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary)
 {
+	const ConfigurationFile_Airspace& airspaceConfig = config_genericairspace_dict->getAirspace();
+	BOOST_CHECK_GE(airspaceConfig.fixed.size(), 3);
+	BOOST_CHECK_EQUAL("ATZ EPNT", airspaceConfig.fixed[2].designator);
+	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayAltitudes);
+
 	PlaylistAssemblerAirspace airspace(playlist_sampler, config_genericairspace_dict);
 	PlaylistAssembler assembler(playlist_sampler, config_genericairspace_dict);
 
 	assembler.start();
 
 	airspace.setPlaylist(assembler.getPlaylist());
+
+	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg);
+
+	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
+
+	std::vector<std::string> playlistVct = *playlistOut;
+	std::vector<std::string>::const_iterator it = playlistVct.begin();
 }
 

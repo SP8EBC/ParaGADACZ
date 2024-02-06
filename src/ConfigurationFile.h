@@ -226,6 +226,22 @@ struct ConfigurationFile_Airspace_AroundPoint {
  */
 struct ConfigurationFile_Airspace_Fixed {
 	std::string designator;		//!< Airspace designator as returned by the API
+	/**
+	 * If an altitude range shall be spoken for this airspace. False value has
+	 * a priority over value of 'sayAltitudes' in @link{ConfigurationFile_Airspace}
+	 * If it is disabled here, the altitude range won't be added to announcement
+	 * even if @link{ConfigurationFile_Airspace} enabled that. False value of
+	 * global switch has also a priority over this field, so long story short
+	 *
+	 *  will be spoken if:
+	 *  ConfigurationFile_Airspace = true & ConfigurationFile_Airspace_Fixed = true
+	 *
+	 *  will not be spoken if:
+	 *  ConfigurationFile_Airspace = true & ConfigurationFile_Airspace_Fixed = false
+	 *  ConfigurationFile_Airspace = false & ConfigurationFile_Airspace_Fixed = true
+	 *
+	 *  this field is initialized with value of false if not present in config file
+	 */
 	bool sayAltitudes;
 	bool sayTimes;
 };

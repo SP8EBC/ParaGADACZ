@@ -522,6 +522,8 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 
 			for (unsigned i = 0; i < size; i++) {
 				ConfigurationFile_Airspace_Fixed fx;
+				fx.sayAltitudes = false;
+				fx.sayTimes = true;
 
 				fixed[i].lookupValue("Designator", fx.designator);
 				fixed[i].lookupValue("SayAltitudes", fx.sayAltitudes);

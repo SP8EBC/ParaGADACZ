@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <memory>
 
 typedef enum PansaAirspace_Type {
 	AIRSPACE_TRA,
@@ -109,7 +110,7 @@ public:
 
 	float centroidLongitudeX;
 
-	std::vector<PansaAirspace_Reservation> reservations;
+	std::vector<std::shared_ptr<PansaAirspace_Reservation>> reservations;
 
 	float distanceFromSetpoint;
 

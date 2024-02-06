@@ -48,6 +48,27 @@ private:
 									const PansaAirspace_Type type,
 									const ConfigurationFile_Airspace_SayConfigPerElemType & confPerElemType);
 
+	/**
+	 * Puts all announcement elements, which are common for both Explicitly configured airspaces
+	 * and reservation / restriction around given point. These are airspace designator and
+	 * optionally altitude and time range
+	 * @param designatorsAnouncementsDict dictionary with custom announcements for certain airspaces
+	 * @param airspaceCfg global configuration red from tag 'Airspace' in config file
+	 * @param airspaceFullDesignatorString like "ATZ EPBA" or "EPTR03C", which might have some unwanted characters
+	 * @param type airspace type like ATZ, TRA, TSA and so on
+	 * @param reservations vector of all active reservation downloaded from the API, which shall be put into anouncement
+	 * @param sayAltitudeRangeOfReservations if an announcement should contains altitude range for each reservation
+	 * @param sayTimeRangeOfReservations if an announcement should contains time (as hours) range for each reservation
+	 */
+	void insertCommonAnnouncementAudioElems(
+								const std::map<std::string, std::string> & designatorsAnouncementsDict,
+								const ConfigurationFile_Airspace & airspaceCfg,
+								const std::string & airspaceFullDesignatorString,
+								const PansaAirspace_Type & type,
+								const std::vector<std::shared_ptr<PansaAirspace_Reservation>> & reservations,
+								bool sayAltitudeRangeOfReservations,
+								bool sayTimeRangeOfReservations);
+
 protected:
 	/**
 	 * Recalculates altitude from any value between 100 to 9999 meters to 100 meters increments
