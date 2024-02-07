@@ -176,6 +176,11 @@ std::vector<
 	case 23: playlist.push_back(DWUDZIESTA); playlist.push_back(TRZECIA); break;
 	}
 
+	// if there is from 1 to 9 minutes after an hour
+	if (minutes >= 1 && minutes <= 9) {
+		playlist.push_back(NUMBER_0);
+	}
+
 	// get minutes into separate vector
 	std::vector<std::string> minutes_playlist = this->getAudioListFromNumber(minutes);
 
@@ -1025,6 +1030,7 @@ std::string PlaylistSamplerPL::getAirspaceConstantElement(
 	case AIRSPACE_SECTOR:			return SEKTOR;
 	case AIRSPACE_ALTITUDE: 		return WYSOKOSC;
 	case AIRSPACE_GROUND: 			return POZIOMU_GRUNTU;
+	case AIRSPACE_ACTIVE:			return AKTYWNA;
 	}
 
 	SPDLOG_ERROR("Unknown value provided: {}", (int)_airspace);

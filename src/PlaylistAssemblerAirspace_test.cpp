@@ -26,13 +26,19 @@
 
 #include "ConfigurationFile.h"
 
-std::shared_ptr<ConfigurationFile> config_genericairspace_true, config_genericairspace_false, config_genericairspace_futuretime, config_genericairspace_dict;
+std::shared_ptr<ConfigurationFile> config_genericairspace_true, config_genericairspace_false;
+std::shared_ptr<ConfigurationFile> config_genericairspace_futuretime, config_genericairspace_dict;
+std::shared_ptr<ConfigurationFile> config_fixed_anouncement_dictionary_sayalt_saytime;
+std::shared_ptr<ConfigurationFile> config_fixed_anouncement_dictionary_sayalt;
+std::shared_ptr<ConfigurationFile> fixed_anouncement_dictionary_saytime_noalt_locally;
+
+
 std::shared_ptr<PlaylistSampler> playlist_sampler;
 
 std::map<std::string, PansaAirspace_Zone> airspaceReservationsAll, airspaceReservationsFirst;
 PansaAirspace_Zone first, second, third;
 
-std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>> nowyTarg;
+std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>> nowyTarg_from_002, nowyTarg_from_1202;
 std::vector<std::shared_ptr<PansaAirspace_Reservation>> reservationsForNowyTarg;
 
 
@@ -80,6 +86,15 @@ struct MyConfig
 	config_genericairspace_dict = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_aroundpoint_and_fixed_anouncement_dictionary.conf");
 	config_genericairspace_dict->parse();
 
+	config_fixed_anouncement_dictionary_sayalt_saytime = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_fixed_anouncement_dictionary_sayalt_saytime.conf");
+	config_fixed_anouncement_dictionary_sayalt_saytime->parse();
+
+	config_fixed_anouncement_dictionary_sayalt = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_fixed_anouncement_dictionary_sayalt.conf");
+	config_fixed_anouncement_dictionary_sayalt->parse();
+
+	fixed_anouncement_dictionary_saytime_noalt_locally = std::make_shared<ConfigurationFile>("./test_input/configuration_airspace_fixed_anouncement_dictionary_saytime_noalt_locally.conf");
+	fixed_anouncement_dictionary_saytime_noalt_locally->parse();
+
 	playlist_sampler = std::make_shared<PlaylistSamplerPL>(config_genericairspace_true);
 
 	first.designator = "ATZ EPBA";
@@ -112,8 +127,13 @@ struct MyConfig
 	airspaceReservationsAll.insert(std::pair<std::string, PansaAirspace_Zone>("EPTR10A", second));
 	airspaceReservationsAll.insert(std::pair<std::string, PansaAirspace_Zone>("EPTR114", third));
 
-	std::shared_ptr<PansaAirspace_Reservation> ntReservation = std::make_shared<PansaAirspace_Reservation>(1706140800ULL, 1706162400ULL, 0, 1500);
-	nowyTarg = std::make_pair(PansaAirspace_Type::AIRSPACE_ATZ, std::vector<std::shared_ptr<PansaAirspace_Reservation>>({ntReservation}));
+	// Thursday, 25 January 2024 00:02:40   ->    Thursday, 25 January 2024 06:00:00
+	std::shared_ptr<PansaAirspace_Reservation> ntReservation_002 = std::make_shared<PansaAirspace_Reservation>(1706140960ULL, 1706162400ULL, 0, 1500);
+	nowyTarg_from_002 = std::make_pair(PansaAirspace_Type::AIRSPACE_ATZ, std::vector<std::shared_ptr<PansaAirspace_Reservation>>({ntReservation_002}));
+
+	// Thursday, 25 January 2024 12:02:40   ->    Thursday, 25 January 2024 14:49:20
+	std::shared_ptr<PansaAirspace_Reservation> ntReservation_1202 = std::make_shared<PansaAirspace_Reservation>(1706184160ULL, 1706194160ULL, 0, 1500);
+	nowyTarg_from_1202 = std::make_pair(PansaAirspace_Type::AIRSPACE_ATZ, std::vector<std::shared_ptr<PansaAirspace_Reservation>>({ntReservation_1202}));
 
   }
   ~MyConfig()
@@ -175,6 +195,7 @@ BOOST_AUTO_TEST_CASE(epba_around_point_genericanouncementfromregex_false)
 	BOOST_CHECK_EQUAL(PH_PAPA_PL, *(it++));
 	BOOST_CHECK_EQUAL(PH_BRAVO_PL, *(it++));
 	BOOST_CHECK_EQUAL(PH_ALPHA_PL, *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
 	BOOST_CHECK_EQUAL(OD, *(it++));
 	BOOST_CHECK_EQUAL(SZOSTA, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
@@ -224,6 +245,7 @@ BOOST_AUTO_TEST_CASE(epba_around_point_genericanouncementfromregex_true)
 	BOOST_CHECK_EQUAL(PH_PAPA_PL, *(it++));
 	BOOST_CHECK_EQUAL(PH_BRAVO_PL, *(it++));
 	BOOST_CHECK_EQUAL(PH_ALPHA_PL, *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
 	BOOST_CHECK_EQUAL(OD, *(it++));
 	BOOST_CHECK_EQUAL(SZOSTA, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
@@ -277,6 +299,7 @@ BOOST_AUTO_TEST_CASE(tra_around_point_genericanouncementfromregex_true)
 	BOOST_CHECK_EQUAL(NUMBER_0_EN, *(it++));
 	BOOST_CHECK_EQUAL(SEKTOR, *(it++));
 	BOOST_CHECK_EQUAL(PH_ALPHA_PL, *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
 	BOOST_CHECK_EQUAL(OD, *(it++));
 	BOOST_CHECK_EQUAL(SIODMA, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
@@ -300,6 +323,7 @@ BOOST_AUTO_TEST_CASE(tra_around_point_genericanouncementfromregex_true)
 	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_4_EN, *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
 	BOOST_CHECK_EQUAL(OD, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
@@ -374,6 +398,7 @@ BOOST_AUTO_TEST_CASE(tra_around_point_genericanouncementfromregex_true_nonzero_f
 	BOOST_CHECK_EQUAL(NUMBER_0_EN, *(it++));
 	BOOST_CHECK_EQUAL(SEKTOR, *(it++));
 	BOOST_CHECK_EQUAL(PH_ALPHA_PL, *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
 	BOOST_CHECK_EQUAL(OD, *(it++));
 	BOOST_CHECK_EQUAL(SIODMA, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
@@ -397,6 +422,7 @@ BOOST_AUTO_TEST_CASE(tra_around_point_genericanouncementfromregex_true_nonzero_f
 	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_4_EN, *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
 	BOOST_CHECK_EQUAL(OD, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
@@ -445,6 +471,7 @@ BOOST_AUTO_TEST_CASE(epba_aroundpoint_and_fixed_anouncement_dictionary)
 	BOOST_CHECK_EQUAL(OD_LOKALIZACJI, *(it++));
 	BOOST_CHECK_EQUAL("beef.mp3", *(it++));
 	BOOST_CHECK_EQUAL("costam.mp3", *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
 	BOOST_CHECK_EQUAL(OD, *(it++));
 	BOOST_CHECK_EQUAL(SIODMA, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
@@ -468,6 +495,7 @@ BOOST_AUTO_TEST_CASE(epba_aroundpoint_and_fixed_anouncement_dictionary)
 	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_1_EN, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_4_EN, *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
 	BOOST_CHECK_EQUAL(OD, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
 	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
@@ -508,25 +536,166 @@ BOOST_AUTO_TEST_CASE(epba_aroundpoint_and_fixed_anouncement_dictionary)
 
 }
 
-BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary)
+BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_sayalt_saytime_002)
 {
-	const ConfigurationFile_Airspace& airspaceConfig = config_genericairspace_dict->getAirspace();
+	const ConfigurationFile_Airspace& airspaceConfig = config_fixed_anouncement_dictionary_sayalt_saytime->getAirspace();
 	BOOST_CHECK_GE(airspaceConfig.fixed.size(), 3);
 	BOOST_CHECK_EQUAL("ATZ EPNT", airspaceConfig.fixed[2].designator);
 	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayAltitudes);
+	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayTimes);
 
-	PlaylistAssemblerAirspace airspace(playlist_sampler, config_genericairspace_dict);
-	PlaylistAssembler assembler(playlist_sampler, config_genericairspace_dict);
+	PlaylistAssemblerAirspace airspace(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
+	PlaylistAssembler assembler(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
 
 	assembler.start();
 
 	airspace.setPlaylist(assembler.getPlaylist());
 
-	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg);
+	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg_from_002);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
 	std::vector<std::string> playlistVct = *playlistOut;
 	std::vector<std::string>::const_iterator it = playlistVct.begin();
+
+	BOOST_CHECK_EQUAL("intro.ogg", *(it++));
+	BOOST_CHECK_EQUAL("nowytarg.mp3", *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_2, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(SZOSTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_500, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++)); //
+	BOOST_CHECK(playlistVct.end() == it); ////
+}
+
+BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_sayalt_saytime_1202)
+{
+	const ConfigurationFile_Airspace& airspaceConfig = config_fixed_anouncement_dictionary_sayalt_saytime->getAirspace();
+	BOOST_CHECK_GE(airspaceConfig.fixed.size(), 3);
+	BOOST_CHECK_EQUAL("ATZ EPNT", airspaceConfig.fixed[2].designator);
+	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayAltitudes);
+	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayTimes);
+
+	PlaylistAssemblerAirspace airspace(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
+	PlaylistAssembler assembler(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
+
+	assembler.start();
+
+	airspace.setPlaylist(assembler.getPlaylist());
+
+	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg_from_1202);
+
+	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
+
+	std::vector<std::string> playlistVct = *playlistOut;
+	std::vector<std::string>::const_iterator it = playlistVct.begin();
+
+	BOOST_CHECK_EQUAL("intro.ogg", *(it++));
+	BOOST_CHECK_EQUAL("nowytarg.mp3", *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(DWUNASTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_2, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(CZTERNASTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_40, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_9, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_500, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++)); //
+	BOOST_CHECK(playlistVct.end() == it); ////
+}
+
+BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_sayalt)
+{
+	const ConfigurationFile_Airspace& airspaceConfig = config_fixed_anouncement_dictionary_sayalt->getAirspace();
+	BOOST_CHECK_GE(airspaceConfig.fixed.size(), 3);
+	BOOST_CHECK_EQUAL("ATZ EPNT", airspaceConfig.fixed[2].designator);
+	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayAltitudes);
+	BOOST_CHECK_EQUAL(false, airspaceConfig.fixed[2].sayTimes);
+
+	PlaylistAssemblerAirspace airspace(playlist_sampler, config_fixed_anouncement_dictionary_sayalt);
+	PlaylistAssembler assembler(playlist_sampler, config_fixed_anouncement_dictionary_sayalt);
+
+	assembler.start();
+
+	airspace.setPlaylist(assembler.getPlaylist());
+
+	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg_from_1202);
+
+	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
+
+	std::vector<std::string> playlistVct = *playlistOut;
+	std::vector<std::string>::const_iterator it = playlistVct.begin();
+
+	BOOST_CHECK_EQUAL("intro.ogg", *(it++));
+	BOOST_CHECK_EQUAL("nowytarg.mp3", *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
+	BOOST_CHECK_EQUAL(WYSOKOSC, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(POZIOMU_GRUNTU, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_1k, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_500, *(it++));
+	BOOST_CHECK_EQUAL(METER_FOUR, *(it++)); //
+	BOOST_CHECK(playlistVct.end() == it); ////
+}
+
+BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_saytime_1202_noalt_locally)
+{
+	const ConfigurationFile_Airspace& airspaceConfig = fixed_anouncement_dictionary_saytime_noalt_locally->getAirspace();
+	BOOST_CHECK_GE(airspaceConfig.fixed.size(), 3);
+	BOOST_CHECK_EQUAL("ATZ EPNT", airspaceConfig.fixed[2].designator);
+	BOOST_CHECK_EQUAL(false, airspaceConfig.fixed[2].sayAltitudes);
+	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayTimes);
+
+	PlaylistAssemblerAirspace airspace(playlist_sampler, fixed_anouncement_dictionary_saytime_noalt_locally);
+	PlaylistAssembler assembler(playlist_sampler, fixed_anouncement_dictionary_saytime_noalt_locally);
+
+	assembler.start();
+
+	airspace.setPlaylist(assembler.getPlaylist());
+
+	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg_from_1202);
+
+	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
+
+	std::vector<std::string> playlistVct = *playlistOut;
+	std::vector<std::string>::const_iterator it = playlistVct.begin();
+
+	BOOST_CHECK_EQUAL("intro.ogg", *(it++));
+	BOOST_CHECK_EQUAL("nowytarg.mp3", *(it++));
+	BOOST_CHECK_EQUAL(AKTYWNA, *(it++));
+	BOOST_CHECK_EQUAL(OD, *(it++));
+	BOOST_CHECK_EQUAL(DWUNASTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_0, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_2, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK_EQUAL(DO, *(it++));
+	BOOST_CHECK_EQUAL(CZTERNASTA, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_40, *(it++));
+	BOOST_CHECK_EQUAL(NUMBER_9, *(it++));
+	BOOST_CHECK_EQUAL(UNIWERSALNEGO, *(it++));
+	BOOST_CHECK(playlistVct.end() == it); ////
 }
 

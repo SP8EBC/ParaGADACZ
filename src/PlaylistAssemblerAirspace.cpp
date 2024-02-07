@@ -216,6 +216,11 @@ void PlaylistAssemblerAirspace::insertCommonAnnouncementAudioElems(
 	// check if there is an explicit audio file for this designator
 	const std::map<std::string, std::string>::const_iterator itAnnouncement = designatorsAnouncementsDict.find(airspaceFullDesignatorString);
 
+	// check if input has any sense
+	if (reservations.size() == 0) {
+		SPDLOG_ERROR("There are no reservations provided for airspace {}, which doesnt make much sense in this context!", airspaceFullDesignatorString);
+		throw std::runtime_error("");
+	}
 
 	if (itAnnouncement != designatorsAnouncementsDict.end()) {
 		// there is an announcement from audio file
@@ -277,6 +282,9 @@ void PlaylistAssemblerAirspace::insertCommonAnnouncementAudioElems(
 		}
 
 	}
+
+	// "active"
+	playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_ACTIVE));
 
 	// iterate through all reservations
 	for (const std::shared_ptr<PansaAirspace_Reservation> & ptr: reservations) {

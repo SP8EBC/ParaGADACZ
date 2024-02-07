@@ -23,6 +23,7 @@
 #define OD_LOKALIZACJI			"od_lokalizacji.ogg"
 #define WYSOKOSC				"wysokosc.ogg"
 #define POZIOMU_GRUNTU			"poziomu_gruntu.ogg"
+#define AKTYWNA					"aktywna.ogg"
 
 #define PIERWSZA		"pierwsza.ogg"
 #define DRUGA			"druga.ogg"

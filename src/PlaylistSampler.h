@@ -47,6 +47,7 @@ enum PlaylistSampler_Unit {
  * Constant element of an anouncement.
  */
 enum PlaylistSampler_ConstanElement {
+	WEATHER,		//!< "weather"
 	CURRENT_TIME,	//!< like "Current time is"
 	CURRENT_WEATHER,//!< "Current weather conditions"
 	FORECAST,		//!< "Forecast for next"
@@ -86,7 +87,7 @@ enum PlaylistSampler_ConstanElement {
 	RADIUS,			//!< "radius"
 	IN_RADIUS,		//!< "in radius of"
 	AROUND,			//!< "around"
-	FROM_LOCATION,	//!< "from location"
+	FROM_LOCATION	//!< "from location"
 };
 
 enum PlaylistSampler_Phonetic {
@@ -133,7 +134,8 @@ enum PlaylistSampler_Airspace {
 	AIRSPACE_ZONE,				//!< "Zone"
 	AIRSPACE_SECTOR,
 	AIRSPACE_ALTITUDE,
-	AIRSPACE_GROUND
+	AIRSPACE_GROUND,
+	AIRSPACE_ACTIVE
 };
 
 class PlaylistSampler {
@@ -189,7 +191,7 @@ public:
 	/**
 	 * Returns a list of audio samples for hour and minute represented by epoch timestamp
 	 * @param timetstamp
-	 * @param addUniversalTime adds additional sentece "universal time"
+	 * @param addUniversalTime adds additional sentence "universal time"
 	 * @return
 	 */
 	virtual std::vector<std::string> getAudioForHourAndMinute(uint64_t timetstamp, bool addUniversalTime) = 0;
