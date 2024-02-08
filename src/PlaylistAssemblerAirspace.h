@@ -8,7 +8,7 @@
 #ifndef PLAYLISTASSEMBLERAIRSPACE_H_
 #define PLAYLISTASSEMBLERAIRSPACE_H_
 
-#ifdef PANSA_AIRSPACE
+#ifdef PANSA_AIRSPACE_ENABLED
 
 #include <memory>
 #include <optional>

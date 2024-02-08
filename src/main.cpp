@@ -41,6 +41,10 @@
 #include "SpeechSynthesis.h"
 #include "TimeTools.h"
 
+#ifdef PANSA_AIRSPACE_ENABLED
+#include "PansaAirspace.h"
+#endif
+
 #pragma push_macro("U")
 #undef U
 // pragma required as a workaround of possible conflict with cpprestsdk.
@@ -110,6 +114,10 @@ std::shared_ptr<EmailDownloader> emailDownloader;
 std::vector<EmailDownloaderMessage> validatedEmails;
 
 std::shared_ptr<SpeechSynthesis> speechSyntesis;
+
+#ifdef PANSA_AIRSPACE_ENABLED
+std::shared_ptr<PansaAirspace> pansa;
+#endif
 
 #ifdef __linux__
 #include <signal.h>
@@ -211,6 +219,13 @@ int main(int argc, char **argv) {
 																		configurationFile->getSpeechSynthesis().rate,
 																		configurationFile->getSpeechSynthesis().maximumTimeout);
 
+#ifdef PANSA_AIRSPACE_ENABLED
+	pansa = std::make_shared<PansaAirspace>(
+							configurationFile->getAirspace().postgresUsername,
+							configurationFile->getAirspace().postgresPassword,
+							configurationFile->getAirspace().postgresDb);
+#endif
+
 	if (configurationFile->getEmailAnnonuncements().enabled) {
 		emailDownloader->downloadAllEmailsImap();
 
@@ -281,19 +296,23 @@ int main(int argc, char **argv) {
 		return downloadParseResult;
 	}
 
-//	if (configurationFile->getEmailAnnonuncements().enabled) {
-//		// try to open index file
-//		if (speechSyntesis->readIndex(configurationFile->getSpeechSynthesis().indexFilePath) == -1) {
-//			// create new one if it hasn't been created yet
-//			speechSyntesis->createIndex(configurationFile->getSpeechSynthesis().indexFilePath);
-//		}
-//	}
-
 	// start to create playlist
 	playlistAssembler->start();
 
 	// append pre announcement
 	playlistAssembler->recordedAnnouncement(false);
+
+#ifdef PANSA_AIRSPACE_ENABLED
+
+	const bool airspaceDumpSql = configurationFile->getAirspace().dumpSqlQueries;
+
+	if (configurationFile->getAirspace().enabled) {
+		// iterate through all configured
+		for (ConfigurationFile_Airspace_AroundPoint apoint : configurationFile->getAirspace().aroundPoint) {
+			pansa->downloadAroundLocation(apoint.latitude, apoint.longitude, apoint.radius, airspaceDumpSql);
+		}
+	}
+#endif
 
 	if (configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().placeAtTheEnd == false) {
 		playlistAssembler->textToSpeechAnnouncements(validatedEmails);

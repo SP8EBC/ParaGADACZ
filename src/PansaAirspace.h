@@ -4,7 +4,7 @@
  *  Created on: Jan 3, 2024
  *      Author: mateusz
  */
-#ifdef PANSA_AIRSPACE
+#ifdef PANSA_AIRSPACE_ENABLED
 
 #ifndef PANSAAIRSPACE_H_
 #define PANSAAIRSPACE_H_

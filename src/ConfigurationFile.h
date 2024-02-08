@@ -288,6 +288,10 @@ struct ConfigurationFile_Airspace_SayConfigPerElemType {
 
 struct ConfigurationFile_Airspace {
 	bool enabled;
+	bool dumpSqlQueries;
+	std::string postgresUsername;	//!< Username to PostgreSQL with postgis and http-client addons
+	std::string postgresPassword;	//!< Password to PostgreSQL with postgis and http-client addons
+	std::string postgresDb;		//!< PostgreSQL database to use
 	std::vector<ConfigurationFile_Airspace_AroundPoint> aroundPoint;
 	std::vector<ConfigurationFile_Airspace_Fixed> fixed;
 	int reservationFutureTimeMargin;	//!< Say only activations which will start not later than XX minutes
@@ -295,7 +299,7 @@ struct ConfigurationFile_Airspace {
 	bool sayAltitudes;	//!< Global switch to say altitude range within an airspace is reserved
 	bool genericAnouncementFromRegex;	//!< Use regular expressions to extract designator and sector for announcement
 	bool glueGenericAnouncement; //!< Glue designator extracting result (if genericAnouncementFromRegex enabled) or glue full-designator-string
-	bool bailoutIfNothingToSay;
+	bool bailoutIfNothingToSay;	//!< Exit the app if there is no active reservations in the API
 	ConfigurationFile_Airspace_SayConfigPerElemType confPerElemType; //!< How each airspace type is announced
 
 	/**

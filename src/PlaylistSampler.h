@@ -11,7 +11,7 @@
 #ifndef PLAYLISTSAMPLER_H_
 #define PLAYLISTSAMPLER_H_
 
-#ifdef PANSA_AIRSPACE
+#ifdef PANSA_AIRSPACE_ENABLED
 
 #endif
 
@@ -21,7 +21,7 @@
 #include <tuple>
 
 #include "AvalancheWarnings.h"
-#ifdef PANSA_AIRSPACE
+#ifdef PANSA_AIRSPACE_ENABLED
 #include "PansaAirspaceTypes.h"
 #endif
 
@@ -261,7 +261,7 @@ public:
 	 */
 	virtual std::vector<std::string> getPhoneticForWord(std::string word) = 0;
 
-#ifdef PANSA_AIRSPACE
+#ifdef PANSA_AIRSPACE_ENABLED
 	virtual std::string getForAirspaceType(PansaAirspace_Type type) = 0;
 
 	virtual std::string getAirspaceConstantElement(const PlaylistSampler_Airspace _airspace) = 0;

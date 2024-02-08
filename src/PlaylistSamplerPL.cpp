@@ -1004,7 +1004,7 @@ std::vector<
 	return out;
 }
 
-#ifdef PANSA_AIRSPACE
+#ifdef PANSA_AIRSPACE_ENABLED
 std::string PlaylistSamplerPL::getForAirspaceType(PansaAirspace_Type type) {
 
 	switch (type) {

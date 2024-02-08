@@ -8,7 +8,7 @@
 #include "PlaylistAssemblerAirspace.h"
 #include "TimeTools.h"
 
-#ifdef PANSA_AIRSPACE
+#ifdef PANSA_AIRSPACE_ENABLED
 
 #include <regex>
 

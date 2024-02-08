@@ -7,7 +7,7 @@
 
 #include "PansaAirspace.h"
 
-#ifdef PANSA_AIRSPACE
+#ifdef PANSA_AIRSPACE_ENABLED
 #include <pqxx/pqxx>
 #include <pqxx/connection>
 

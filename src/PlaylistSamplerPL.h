@@ -189,7 +189,7 @@ public:
 							std::allocator<char> > > > getPhoneticForWord(
 			std::string word);
 
-#ifdef PANSA_AIRSPACE
+#ifdef PANSA_AIRSPACE_ENABLED
 	/**
 	 *
 	 * @param type

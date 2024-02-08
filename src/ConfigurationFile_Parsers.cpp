@@ -484,6 +484,14 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 		this->airspace.genericAnouncementFromRegex = true;
 		this->airspace.bailoutIfNothingToSay = false;
 
+#define PSQL_USER 		"postgres"
+#define PSQL_PASSWORD	"dupajasia123"
+#define PSQL_DB			"airspace"
+
+		this->airspace.postgresUsername = PSQL_USER;
+		this->airspace.postgresPassword = PSQL_PASSWORD;
+		this->airspace.postgresDb = PSQL_DB;
+
 		libconfig::Setting &airspace = root["Airspace"];
 
 		airspace.lookupValue("Enable", this->airspace.enabled);
@@ -551,6 +559,11 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 
 		// Glue designator extracting result (if genericAnouncementFromRegex enabled) or glue full-designator-string
 		airspace.lookupValue("GlueGenericAnouncement", this->airspace.glueGenericAnouncement);
+
+		// username & password & database name use to connect to PostreSQL server with postgis and http-client extensions
+		airspace.lookupValue("PostgresUsername", this->airspace.postgresUsername);
+		airspace.lookupValue("PostgresPassword", this->airspace.postgresPassword);
+		airspace.lookupValue("PostgresDb", this->airspace.postgresDb);
 
 		/*
 		 * Section used to specify which airspace types will be announced from the results of
@@ -621,7 +634,7 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 
 		}
 
-#ifndef PANSA_AIRSPACE
+#ifndef PANSA_AIRSPACE_ENABLED
 		if (this->airspace.enabled) {
 			SPDLOG_WARN("You have enabled PANSA AUP announcements but You are using ParaGADACZ build w/o this feature");
 			SPDLOG_WARN("It is really something You want to do??");
