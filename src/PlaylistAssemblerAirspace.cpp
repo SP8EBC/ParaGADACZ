@@ -22,7 +22,7 @@
 
 
 PlaylistAssemblerAirspace::PlaylistAssemblerAirspace(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config) :
-																sampler(sampler), config(config) {
+														hasSomethingToSay(false), sampler(sampler), config(config) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -202,7 +202,7 @@ std::optional<std::string> PlaylistAssemblerAirspace::extractUsingRegexp(
  * @param sayAltitudeRangeOfReservations if an announcement should contains altitude range for each reservation
  * @param sayTimeRangeOfReservations if an announcement should contains time (as hours) range for each reservation
  */
-void PlaylistAssemblerAirspace::insertCommonAnnouncementAudioElems(
+int PlaylistAssemblerAirspace::insertCommonAnnouncementAudioElems(
 		const std::map<std::string, std::string> & designatorsAnouncementsDict,
 		const ConfigurationFile_Airspace & airspaceCfg,
 		const std::string & airspaceFullDesignatorString,
@@ -211,16 +211,12 @@ void PlaylistAssemblerAirspace::insertCommonAnnouncementAudioElems(
 		bool sayAltitudeRangeOfReservations,
 		bool sayTimeRangeOfReservations) {
 
+	int out = 0;
+
 	const std::shared_ptr<std::vector<std::string>> playlistPtr = playlist.value();
 
 	// check if there is an explicit audio file for this designator
 	const std::map<std::string, std::string>::const_iterator itAnnouncement = designatorsAnouncementsDict.find(airspaceFullDesignatorString);
-
-	// check if input has any sense
-	if (reservations.size() == 0) {
-		SPDLOG_ERROR("There are no reservations provided for airspace {}, which doesnt make much sense in this context!", airspaceFullDesignatorString);
-		throw std::runtime_error("");
-	}
 
 	if (itAnnouncement != designatorsAnouncementsDict.end()) {
 		// there is an announcement from audio file
@@ -345,7 +341,10 @@ void PlaylistAssemblerAirspace::insertCommonAnnouncementAudioElems(
 
 
 		}
+		out++;		// increase number of anouncements added
 	}
+
+	return out;
 }
 
 /**
@@ -379,23 +378,21 @@ int PlaylistAssemblerAirspace::convertMetersToHundretsMeters(int altitude,
  * @param reservations result of a query, the vector may be empty if no reservations are active currently
  */
 void PlaylistAssemblerAirspace::reservationsForExplicitlyConfAirspace(
-		const ConfigurationFile_Airspace_Fixed &airspace,
-		const std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>>  &reservations) {
+		const std::string designator,
+		const bool sayAltitudes,
+		const bool sayTimes,
+		const PansaAirspace_Type type,
+		const std::vector<std::shared_ptr<PansaAirspace_Reservation>> & activeReservations) {
 
 	// check if there are any reservations
-	if (reservations.second.size() == 0) {
-		SPDLOG_WARN("There are no reservations for airspace {}", airspace.designator);
+	if (activeReservations.size() == 0) {
+		SPDLOG_WARN("There are no reservations for airspace {}", designator);
+		return;
 	}
 
 	const std::shared_ptr<std::vector<std::string>> playlistPtr = playlist.value();
 	const ConfigurationFile_Airspace & airspaceCfg = config->getAirspace();
 	const std::map<std::string, std::string> & designatorsAnouncementsDict = airspaceCfg.airspaceDesignatorsAnouncement;
-
-	// get airspace type
-	const PansaAirspace_Type type = reservations.first;
-
-	// get all reservations for this airspace, which have been downloaded from PANSA api
-	const std::vector<std::shared_ptr<PansaAirspace_Reservation>> & activeReservations = reservations.second;
 
 	// combination of global and per airspace setting for "should I say any altitude range for this"
 	bool localSayAltitudes = config->getAirspace().sayAltitudes;
@@ -403,13 +400,17 @@ void PlaylistAssemblerAirspace::reservationsForExplicitlyConfAirspace(
 	// if say altitudes is enabled globaly
 	if (localSayAltitudes) {
 		// enable or disable it basing on configuration specific for that
-		localSayAltitudes = airspace.sayAltitudes;
+		localSayAltitudes = sayAltitudes;
 	}
 	else {
 		; // if it is not enabled globally, ignore what is set specific here
 	}
 
-	insertCommonAnnouncementAudioElems(designatorsAnouncementsDict, airspaceCfg, airspace.designator, type, activeReservations, localSayAltitudes, airspace.sayTimes);
+	int anouncements = insertCommonAnnouncementAudioElems(designatorsAnouncementsDict, airspaceCfg, designator, type, activeReservations, localSayAltitudes, sayTimes);
+
+	if (anouncements > 0) {
+		this->hasSomethingToSay = true;
+	}
 
 }
 
@@ -418,7 +419,8 @@ PlaylistAssemblerAirspace::~PlaylistAssemblerAirspace() {
 }
 
 void PlaylistAssemblerAirspace::reservationsAroundPoint(
-		const ConfigurationFile_Airspace_AroundPoint & point,
+		const int radiusInMeters,
+		const std::string anouncementAudioFilename,
 		const std::map<std::string, PansaAirspace_Zone>& airspaceReservations) {
 
 	if (!playlist.has_value()) {
@@ -435,7 +437,7 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 	const ConfigurationFile_Airspace & airspaceCfg = config->getAirspace();
 	const std::map<std::string, std::string> & designatorsAnouncementsDict = airspaceCfg.airspaceDesignatorsAnouncement;
 
-	int radiusKm = (int)::round(point.radius / 1000);
+	int radiusKm = (int)::round(radiusInMeters / 1000);
 
 	// ograniczenia lotów w promieniu xx kilometrów od lokalizacji skrzyczne
 	// .... strefa ograniczeń Romeo jeden dwa trzy sektor bravo
@@ -455,7 +457,7 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 	playlistPtr->push_back(sampler->getConstantElement(PlaylistSampler_ConstanElement::FROM_LOCATION).value());
 
 	// location itself
-	playlistPtr->push_back(point.audioFilename);
+	playlistPtr->push_back(anouncementAudioFilename);
 
 	// iterator to reservations map
 	std::map<std::string, PansaAirspace_Zone>::const_iterator it = airspaceReservations.begin();
@@ -485,7 +487,11 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 		}
 
 		//
-		insertCommonAnnouncementAudioElems(designatorsAnouncementsDict, airspaceCfg, fullDesignatorString, type, activeReservations, config->getAirspace().sayAltitudes, true);
+		int anouncements = insertCommonAnnouncementAudioElems(designatorsAnouncementsDict, airspaceCfg, fullDesignatorString, type, activeReservations, config->getAirspace().sayAltitudes, true);
+
+		if (anouncements > 0) {
+			this->hasSomethingToSay = true;
+		}
 
 	} while (++it != airspaceReservations.end());
 

@@ -108,14 +108,19 @@ PansaAirspace::~PansaAirspace() {
 	// TODO Auto-generated destructor stub
 }
 
-int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool dumpSqlQuery) {
+int PansaAirspace::downloadAroundLocation(std::string name, float lat, float lon, int radius, bool dumpSqlQuery) {
 
 	int results = 0;
 
 	std::string queryStr;
 
-	// remove previous content of the map
-	reservations.clear();
+	// result for single airspace
+	std::shared_ptr<PansaAirspace_ResultsAroundPoint> singleResult = std::make_shared<PansaAirspace_ResultsAroundPoint>();
+
+	singleResult->pointName = name;
+	singleResult->lon = lon;
+	singleResult->lat = lat;
+	singleResult->radius = radius;
 
 	ctemplate::TemplateDictionary dict("pansa_around_point");
 
@@ -143,8 +148,8 @@ int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool
 		  float centroidLon = row["centroid_lon"].as<float>();
 		  float centroidLat = row["centroid_lat"].as<float>();
 		  float distanceInMeters = row["ST_Distance"].as<float>();
-		  float epochFrom = row["epoch_from"].as<float>();
-		  float epochTo = row["epoch_to"].as<float>();
+		  uint64_t epochFrom = (uint64_t)row["epoch_from"].as<double>();
+		  uint64_t epochTo = (uint64_t)row["epoch_to"].as<double>();
 		  std::string unit = std::string(row["unit"].c_str());
 		  std::string remarks = std::string(row["remarks"].c_str());
 
@@ -166,12 +171,12 @@ int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool
 		  reserv->unit = unit;
 		  reserv->remarks = remarks;
 
-		  std::map<std::string, PansaAirspace_Zone>::iterator previousRsrv = reservations.find(designator);
+		  std::map<std::string, PansaAirspace_Zone>::iterator previousRsrv = singleResult->reservations.find(designator);
 
 		  results++;
 
 		  // if at least one reservation for this zone has been found already
-		  if (previousRsrv != reservations.end()) {
+		  if (previousRsrv != singleResult->reservations.end()) {
 
 			  // get precious object
 			  PansaAirspace_Zone & existing = previousRsrv->second;
@@ -191,7 +196,7 @@ int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool
 			  newOne.type = type;
 			  newOne.reservations.push_back(reserv);
 
-			  reservations.insert(std::pair(designator, newOne));
+			  singleResult->reservations.insert(std::pair(designator, newOne));
 
 		  }
 	  }
@@ -200,17 +205,25 @@ int PansaAirspace::downloadAroundLocation(float lat, float lon, int radius, bool
 
 	  c.disconnect();
 
-	  if (reservations.size() == 0) {
+	  if (singleResult->reservations.size() == 0) {
 		  SPDLOG_WARN("No airspace reservations have been found. It is really OK??");
 	  }
+
+	  reservationsAroundPoints.push_back(singleResult);
 
 	  return results;
 }
 
-std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>> PansaAirspace::downloadForDesginator(
-		std::string designator, bool dumpSqlQuery) {
+int PansaAirspace::downloadForDesginator(
+		std::string designator, bool sayAltitude, bool sayTime, bool dumpSqlQuery) {
 
-	std::vector<std::shared_ptr<PansaAirspace_Reservation> > out;
+	int out = 0;
+
+	// single result, all reservations for this designator
+	std::shared_ptr<PansaAirspace_ResultsForDesignator> singleResult = std::make_shared<PansaAirspace_ResultsForDesignator>();
+	singleResult->designator = designator;
+	singleResult->sayAltitude = sayAltitude;
+	singleResult->sayTime = sayTime;
 
 	std::string queryStr;
 
@@ -234,34 +247,36 @@ std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservat
 	pqxx::result res = txn.exec(queryStr);
 
 	for (auto row : res) {
-		  std::string designator = std::string(row["designator"].c_str());
-		  std::string airspaceType = std::string(row["airspace_element_type"].c_str());
-		  float epochFrom = row["epoch_from"].as<float>();
-		  float epochTo = row["epoch_to"].as<float>();
+		out++;
+		std::string designator = std::string(row["designator"].c_str());
+		std::string airspaceType = std::string(row["airspace_element_type"].c_str());
+		float epochFrom = row["epoch_from"].as<float>();
+		float epochTo = row["epoch_to"].as<float>();
 
-		  type = PansaAirspace_Type_FromString(airspaceType);
+		type = PansaAirspace_Type_FromString(airspaceType);
 
-		  const std::string lowerAltitudeStr = row["lower_altitude"].as<std::string>();
-		  int lowerAltitude = PansaAirspace::ConvertAltitudeStr(lowerAltitudeStr);
+		const std::string lowerAltitudeStr = row["lower_altitude"].as<std::string>();
+		int lowerAltitude = PansaAirspace::ConvertAltitudeStr(lowerAltitudeStr);
 
-		  const std::string upperAltitudeStr = row["upper_altitude"].as<std::string>();
-		  int upperAltitude = PansaAirspace::ConvertAltitudeStr(upperAltitudeStr);
+		const std::string upperAltitudeStr = row["upper_altitude"].as<std::string>();
+		int upperAltitude = PansaAirspace::ConvertAltitudeStr(upperAltitudeStr);
 
-		  SPDLOG_INFO(	"airspaceType: {}, lowerAltitudeStr: {}, upperAltitudeStr: {}, lowerAltitude: {}, upperAltitude: {}",
-				  	    airspaceType, lowerAltitudeStr, upperAltitudeStr, lowerAltitude, upperAltitude);
+		SPDLOG_INFO(	"airspaceType: {}, lowerAltitudeStr: {}, upperAltitudeStr: {}, lowerAltitude: {}, upperAltitude: {}",
+					airspaceType, lowerAltitudeStr, upperAltitudeStr, lowerAltitude, upperAltitude);
 
-		  std::shared_ptr<PansaAirspace_Reservation> reserv =
-				  std::make_shared<PansaAirspace_Reservation>(epochFrom, epochTo, lowerAltitude, upperAltitude);
+		std::shared_ptr<PansaAirspace_Reservation> reserv =
+			  std::make_shared<PansaAirspace_Reservation>(epochFrom, epochTo, lowerAltitude, upperAltitude);
 
-		  out.push_back(reserv);
+		singleResult->reservations.push_back(reserv);
 	}
 
 	txn.commit();
 
 	c.disconnect();
 
-	return std::make_pair(type, out);
-	//return out;
+	reservationsForZones.push_back(singleResult);
+	//return std::make_pair(type, out);
+	return out;
 }
 
 #endif

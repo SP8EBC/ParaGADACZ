@@ -14,6 +14,7 @@
 #include <memory>
 
 typedef enum PansaAirspace_Type {
+	AIRSPACE_UNINITIALIZED,
 	AIRSPACE_TRA,
 	AIRSPACE_TSA,
 	AIRSPACE_ATZ,

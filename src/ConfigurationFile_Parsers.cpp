@@ -496,6 +496,8 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 
 		airspace.lookupValue("Enable", this->airspace.enabled);
 
+		airspace.lookupValue("DumpSqlQueries", this->airspace.dumpSqlQueries);
+
 		/*
 		 * Configures point coordinates (lat, lon) with a radius in meters to look for
 		 * active reservations in. If any airspace having any common part with this

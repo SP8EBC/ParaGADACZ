@@ -43,6 +43,7 @@
 
 #ifdef PANSA_AIRSPACE_ENABLED
 #include "PansaAirspace.h"
+#include "PlaylistAssemblerAirspace.h"
 #endif
 
 #pragma push_macro("U")
@@ -117,6 +118,8 @@ std::shared_ptr<SpeechSynthesis> speechSyntesis;
 
 #ifdef PANSA_AIRSPACE_ENABLED
 std::shared_ptr<PansaAirspace> pansa;
+
+std::shared_ptr<PlaylistAssemblerAirspace> playlistAssemblerAirspace;//(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
 #endif
 
 #ifdef __linux__
@@ -139,7 +142,7 @@ int main(int argc, char **argv) {
 	spdlog::set_level(spdlog::level::debug);
 
 	SPDLOG_INFO("============ ParaGADACZ is starting =============");
-	SPDLOG_INFO("===== Mateusz Lubecki, Bielsko - Biała 2023 =====");
+	SPDLOG_INFO("===== Mateusz Lubecki, Bielsko - Biała 2024 =====");
 	SPDLOG_INFO("=================================================");
 
 	SPDLOG_INFO("Application startup UTC time: {}", boost::posix_time::to_simple_string(boost::posix_time::second_clock::universal_time()));
@@ -220,6 +223,9 @@ int main(int argc, char **argv) {
 																		configurationFile->getSpeechSynthesis().maximumTimeout);
 
 #ifdef PANSA_AIRSPACE_ENABLED
+	playlistAssemblerAirspace = std::make_shared<PlaylistAssemblerAirspace>(
+												playlistSampler, configurationFile);
+
 	pansa = std::make_shared<PansaAirspace>(
 							configurationFile->getAirspace().postgresUsername,
 							configurationFile->getAirspace().postgresPassword,
@@ -296,23 +302,29 @@ int main(int argc, char **argv) {
 		return downloadParseResult;
 	}
 
-	// start to create playlist
-	playlistAssembler->start();
-
-	// append pre announcement
-	playlistAssembler->recordedAnnouncement(false);
-
 #ifdef PANSA_AIRSPACE_ENABLED
 
 	const bool airspaceDumpSql = configurationFile->getAirspace().dumpSqlQueries;
 
 	if (configurationFile->getAirspace().enabled) {
-		// iterate through all configured
+		// iterate through all configured points and download all active airspace activation for them
 		for (ConfigurationFile_Airspace_AroundPoint apoint : configurationFile->getAirspace().aroundPoint) {
-			pansa->downloadAroundLocation(apoint.latitude, apoint.longitude, apoint.radius, airspaceDumpSql);
+			pansa->downloadAroundLocation(apoint.audioFilename, apoint.latitude, apoint.longitude, apoint.radius, airspaceDumpSql);
 		}
+
+		// iterate through all fixed-conigured airspaces and check if there are any reservations for them
+		for (ConfigurationFile_Airspace_Fixed fx : configurationFile->getAirspace().fixed) {
+			pansa->downloadForDesginator(fx.designator, fx.sayAltitudes, fx.sayTimes, airspaceDumpSql);
+		}
+
 	}
 #endif
+
+	// start to create playlist
+	playlistAssembler->start();
+
+	// append pre announcement
+	playlistAssembler->recordedAnnouncement(false);
 
 	if (configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().placeAtTheEnd == false) {
 		playlistAssembler->textToSpeechAnnouncements(validatedEmails);
@@ -348,6 +360,23 @@ int main(int argc, char **argv) {
 			configurationFile->getAvalancheWarning(),
 			avalancheWarning,
 			playlistAssembler);
+
+#ifdef PANSA_AIRSPACE_ENABLED
+	playlistAssemblerAirspace->setPlaylist(playlistAssembler->getPlaylist());
+
+	const std::vector<std::shared_ptr<PansaAirspace_ResultsAroundPoint>> & aroundPoints = pansa->getReservationsAroundPoints();
+
+	const std::vector<std::shared_ptr<PansaAirspace_ResultsForDesignator> >& fixedZones = pansa->getReservationsForZones();
+
+	for (const std::shared_ptr<PansaAirspace_ResultsAroundPoint> & point : aroundPoints) {
+		playlistAssemblerAirspace->reservationsAroundPoint(point->radius, point->pointName, point->reservations);
+	}
+
+	for (const std::shared_ptr<PansaAirspace_ResultsForDesignator> & zone : fixedZones) {
+		playlistAssemblerAirspace->reservationsForExplicitlyConfAirspace(zone->designator, zone->sayAltitude, zone->sayTime, zone->type, zone->reservations);
+	}
+
+#endif
 
 	// put post anouncements
 	playlistAssembler->recordedAnnouncement(true);

@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(epba_around_point_genericanouncementfromregex_false)
 	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_false->getAirspace();
 	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
 
-	airspace.reservationsAroundPoint(point, airspaceReservationsFirst);
+	airspace.reservationsAroundPoint(point.radius, point.audioFilename, airspaceReservationsFirst);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
@@ -226,7 +226,7 @@ BOOST_AUTO_TEST_CASE(epba_around_point_genericanouncementfromregex_true)
 	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_true->getAirspace();
 	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
 
-	airspace.reservationsAroundPoint(point, airspaceReservationsFirst);
+	airspace.reservationsAroundPoint(point.radius, point.audioFilename, airspaceReservationsFirst);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
@@ -278,7 +278,7 @@ BOOST_AUTO_TEST_CASE(tra_around_point_genericanouncementfromregex_true)
 	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_true->getAirspace();
 	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
 
-	airspace.reservationsAroundPoint(point, airspaceReservationsAll);
+	airspace.reservationsAroundPoint(point.radius, point.audioFilename, airspaceReservationsAll);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
@@ -377,7 +377,7 @@ BOOST_AUTO_TEST_CASE(tra_around_point_genericanouncementfromregex_true_nonzero_f
 	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_true->getAirspace();
 	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
 
-	airspace.reservationsAroundPoint(point, airspaceReservationsAll);
+	airspace.reservationsAroundPoint(point.radius, point.audioFilename, airspaceReservationsAll);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
@@ -456,7 +456,7 @@ BOOST_AUTO_TEST_CASE(epba_aroundpoint_and_fixed_anouncement_dictionary)
 	const ConfigurationFile_Airspace & configAirspace = config_genericairspace_true->getAirspace();
 	const ConfigurationFile_Airspace_AroundPoint & point = configAirspace.aroundPoint.at(0);
 
-	airspace.reservationsAroundPoint(point, airspaceReservationsAll);
+	airspace.reservationsAroundPoint(point.radius, point.audioFilename, airspaceReservationsAll);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
@@ -540,9 +540,11 @@ BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_sayalt_saytime_002)
 {
 	const ConfigurationFile_Airspace& airspaceConfig = config_fixed_anouncement_dictionary_sayalt_saytime->getAirspace();
 	BOOST_CHECK_GE(airspaceConfig.fixed.size(), 3);
-	BOOST_CHECK_EQUAL("ATZ EPNT", airspaceConfig.fixed[2].designator);
-	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayAltitudes);
-	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayTimes);
+
+	ConfigurationFile_Airspace_Fixed fixed = airspaceConfig.fixed[2];
+	BOOST_CHECK_EQUAL("ATZ EPNT", fixed.designator);
+	BOOST_CHECK_EQUAL(true, fixed.sayAltitudes);
+	BOOST_CHECK_EQUAL(true, fixed.sayTimes);
 
 	PlaylistAssemblerAirspace airspace(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
 	PlaylistAssembler assembler(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
@@ -551,7 +553,7 @@ BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_sayalt_saytime_002)
 
 	airspace.setPlaylist(assembler.getPlaylist());
 
-	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg_from_002);
+	airspace.reservationsForExplicitlyConfAirspace(fixed.designator, fixed.sayAltitudes, fixed.sayTimes, nowyTarg_from_002.first, nowyTarg_from_002.second);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
@@ -585,9 +587,11 @@ BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_sayalt_saytime_1202)
 {
 	const ConfigurationFile_Airspace& airspaceConfig = config_fixed_anouncement_dictionary_sayalt_saytime->getAirspace();
 	BOOST_CHECK_GE(airspaceConfig.fixed.size(), 3);
-	BOOST_CHECK_EQUAL("ATZ EPNT", airspaceConfig.fixed[2].designator);
-	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayAltitudes);
-	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayTimes);
+
+	ConfigurationFile_Airspace_Fixed fixed = airspaceConfig.fixed[2];
+	BOOST_CHECK_EQUAL("ATZ EPNT", fixed.designator);
+	BOOST_CHECK_EQUAL(true, fixed.sayAltitudes);
+	BOOST_CHECK_EQUAL(true, fixed.sayTimes);
 
 	PlaylistAssemblerAirspace airspace(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
 	PlaylistAssembler assembler(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
@@ -596,7 +600,7 @@ BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_sayalt_saytime_1202)
 
 	airspace.setPlaylist(assembler.getPlaylist());
 
-	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg_from_1202);
+	airspace.reservationsForExplicitlyConfAirspace(fixed.designator, fixed.sayAltitudes, fixed.sayTimes, nowyTarg_from_1202.first, nowyTarg_from_1202.second);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
@@ -630,9 +634,11 @@ BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_sayalt)
 {
 	const ConfigurationFile_Airspace& airspaceConfig = config_fixed_anouncement_dictionary_sayalt->getAirspace();
 	BOOST_CHECK_GE(airspaceConfig.fixed.size(), 3);
-	BOOST_CHECK_EQUAL("ATZ EPNT", airspaceConfig.fixed[2].designator);
-	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayAltitudes);
-	BOOST_CHECK_EQUAL(false, airspaceConfig.fixed[2].sayTimes);
+
+	ConfigurationFile_Airspace_Fixed fixed = airspaceConfig.fixed[2];
+	BOOST_CHECK_EQUAL("ATZ EPNT", fixed.designator);
+	BOOST_CHECK_EQUAL(true, fixed.sayAltitudes);
+	BOOST_CHECK_EQUAL(false, fixed.sayTimes);
 
 	PlaylistAssemblerAirspace airspace(playlist_sampler, config_fixed_anouncement_dictionary_sayalt);
 	PlaylistAssembler assembler(playlist_sampler, config_fixed_anouncement_dictionary_sayalt);
@@ -641,7 +647,7 @@ BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_sayalt)
 
 	airspace.setPlaylist(assembler.getPlaylist());
 
-	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg_from_1202);
+	airspace.reservationsForExplicitlyConfAirspace(fixed.designator, fixed.sayAltitudes, fixed.sayTimes, nowyTarg_from_1202.first, nowyTarg_from_1202.second);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 
@@ -665,9 +671,11 @@ BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_saytime_1202_noalt_locally)
 {
 	const ConfigurationFile_Airspace& airspaceConfig = fixed_anouncement_dictionary_saytime_noalt_locally->getAirspace();
 	BOOST_CHECK_GE(airspaceConfig.fixed.size(), 3);
-	BOOST_CHECK_EQUAL("ATZ EPNT", airspaceConfig.fixed[2].designator);
-	BOOST_CHECK_EQUAL(false, airspaceConfig.fixed[2].sayAltitudes);
-	BOOST_CHECK_EQUAL(true, airspaceConfig.fixed[2].sayTimes);
+
+	ConfigurationFile_Airspace_Fixed fixed = airspaceConfig.fixed[2];
+	BOOST_CHECK_EQUAL("ATZ EPNT", fixed.designator);
+	BOOST_CHECK_EQUAL(false, fixed.sayAltitudes);
+	BOOST_CHECK_EQUAL(true, fixed.sayTimes);
 
 	PlaylistAssemblerAirspace airspace(playlist_sampler, fixed_anouncement_dictionary_saytime_noalt_locally);
 	PlaylistAssembler assembler(playlist_sampler, fixed_anouncement_dictionary_saytime_noalt_locally);
@@ -676,7 +684,7 @@ BOOST_AUTO_TEST_CASE(fixed_atz_epnt_with_dictionary_saytime_1202_noalt_locally)
 
 	airspace.setPlaylist(assembler.getPlaylist());
 
-	airspace.reservationsForExplicitlyConfAirspace(airspaceConfig.fixed[2], nowyTarg_from_1202);
+	airspace.reservationsForExplicitlyConfAirspace(fixed.designator, fixed.sayAltitudes, fixed.sayTimes, nowyTarg_from_1202.first, nowyTarg_from_1202.second);
 
 	const std::shared_ptr<std::vector<std::string> > & playlistOut = airspace.getPlaylist();
 

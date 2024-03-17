@@ -9,7 +9,7 @@ Entering test module "PlaylistAssemblerAirspace_test"
 ../src/PlaylistAssemblerAirspace_test.cpp(157): info: check 100 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(99, true) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(158): info: check 100 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(100, true) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(159): info: check 100 == Test_PlaylistAssemblerAirspace::convertMetersToHundretsMeters(100, false) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(150): Leaving test case "altitude_recalculation"; testing time: 112us
+../src/PlaylistAssemblerAirspace_test.cpp(150): Leaving test case "altitude_recalculation"; testing time: 133us
 ../src/PlaylistAssemblerAirspace_test.cpp(164): Entering test case "epba_around_point_genericanouncementfromregex_false"
 ../src/PlaylistAssemblerAirspace_test.cpp(183): info: check "intro.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(184): info: check "ograniczenia_lotow.ogg" == *(it++) has passed
@@ -43,7 +43,7 @@ Entering test module "PlaylistAssemblerAirspace_test"
 ../src/PlaylistAssemblerAirspace_test.cpp(212): info: check "do.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(213): info: check "tysiac.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(214): info: check "metrow.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(164): Leaving test case "epba_around_point_genericanouncementfromregex_false"; testing time: 390us
+../src/PlaylistAssemblerAirspace_test.cpp(164): Leaving test case "epba_around_point_genericanouncementfromregex_false"; testing time: 385us
 ../src/PlaylistAssemblerAirspace_test.cpp(217): Entering test case "epba_around_point_genericanouncementfromregex_true"
 ../src/PlaylistAssemblerAirspace_test.cpp(236): info: check "intro.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(237): info: check "ograniczenia_lotow.ogg" == *(it++) has passed
@@ -75,7 +75,7 @@ Entering test module "PlaylistAssemblerAirspace_test"
 ../src/PlaylistAssemblerAirspace_test.cpp(263): info: check "tysiac.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(264): info: check "metrow.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(265): info: check playlistVct.end() == it has passed
-../src/PlaylistAssemblerAirspace_test.cpp(217): Leaving test case "epba_around_point_genericanouncementfromregex_true"; testing time: 586us
+../src/PlaylistAssemblerAirspace_test.cpp(217): Leaving test case "epba_around_point_genericanouncementfromregex_true"; testing time: 717us
 ../src/PlaylistAssemblerAirspace_test.cpp(269): Entering test case "tra_around_point_genericanouncementfromregex_true"
 ../src/PlaylistAssemblerAirspace_test.cpp(288): info: check "intro.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(289): info: check "ograniczenia_lotow.ogg" == *(it++) has passed
@@ -153,7 +153,7 @@ Entering test module "PlaylistAssemblerAirspace_test"
 ../src/PlaylistAssemblerAirspace_test.cpp(361): info: check "czterysta.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(362): info: check "metrow.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(363): info: check playlistVct.end() == it has passed
-../src/PlaylistAssemblerAirspace_test.cpp(269): Leaving test case "tra_around_point_genericanouncementfromregex_true"; testing time: 1407us
+../src/PlaylistAssemblerAirspace_test.cpp(269): Leaving test case "tra_around_point_genericanouncementfromregex_true"; testing time: 1670us
 ../src/PlaylistAssemblerAirspace_test.cpp(368): Entering test case "tra_around_point_genericanouncementfromregex_true_nonzero_future_time"
 ../src/PlaylistAssemblerAirspace_test.cpp(387): info: check "intro.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(388): info: check "ograniczenia_lotow.ogg" == *(it++) has passed
@@ -212,7 +212,7 @@ Entering test module "PlaylistAssemblerAirspace_test"
 ../src/PlaylistAssemblerAirspace_test.cpp(441): info: check "piecset.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(442): info: check "metrow.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(443): info: check playlistVct.end() == it has passed
-../src/PlaylistAssemblerAirspace_test.cpp(368): Leaving test case "tra_around_point_genericanouncementfromregex_true_nonzero_future_time"; testing time: 1302us
+../src/PlaylistAssemblerAirspace_test.cpp(368): Leaving test case "tra_around_point_genericanouncementfromregex_true_nonzero_future_time"; testing time: 1668us
 ../src/PlaylistAssemblerAirspace_test.cpp(447): Entering test case "epba_aroundpoint_and_fixed_anouncement_dictionary"
 ../src/PlaylistAssemblerAirspace_test.cpp(466): info: check "intro.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(467): info: check "ograniczenia_lotow.ogg" == *(it++) has passed
@@ -284,96 +284,96 @@ Entering test module "PlaylistAssemblerAirspace_test"
 ../src/PlaylistAssemblerAirspace_test.cpp(533): info: check "czterysta.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(534): info: check "metrow.ogg" == *(it++) has passed
 ../src/PlaylistAssemblerAirspace_test.cpp(535): info: check playlistVct.end() == it has passed
-../src/PlaylistAssemblerAirspace_test.cpp(447): Leaving test case "epba_aroundpoint_and_fixed_anouncement_dictionary"; testing time: 966us
+../src/PlaylistAssemblerAirspace_test.cpp(447): Leaving test case "epba_aroundpoint_and_fixed_anouncement_dictionary"; testing time: 1021us
 ../src/PlaylistAssemblerAirspace_test.cpp(539): Entering test case "fixed_atz_epnt_with_dictionary_sayalt_saytime_002"
 ../src/PlaylistAssemblerAirspace_test.cpp(542): info: check airspaceConfig.fixed.size() >= 3 has passed
-../src/PlaylistAssemblerAirspace_test.cpp(543): info: check "ATZ EPNT" == airspaceConfig.fixed[2].designator has passed
-../src/PlaylistAssemblerAirspace_test.cpp(544): info: check true == airspaceConfig.fixed[2].sayAltitudes has passed
-../src/PlaylistAssemblerAirspace_test.cpp(545): info: check true == airspaceConfig.fixed[2].sayTimes has passed
-../src/PlaylistAssemblerAirspace_test.cpp(561): info: check "intro.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(562): info: check "nowytarg.mp3" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(563): info: check "aktywna.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(564): info: check "od.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(565): info: check "zero.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(566): info: check "zero.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(567): info: check "dwa.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(568): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(569): info: check "do.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(570): info: check "szosta.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(571): info: check "zero.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(572): info: check "zero.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(573): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(574): info: check "wysokosc.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(575): info: check "od.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(576): info: check "poziomu_gruntu.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(577): info: check "do.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(578): info: check "tysiac.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(579): info: check "piecset.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(580): info: check "metrow.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(581): info: check playlistVct.end() == it has passed
-../src/PlaylistAssemblerAirspace_test.cpp(539): Leaving test case "fixed_atz_epnt_with_dictionary_sayalt_saytime_002"; testing time: 242us
-../src/PlaylistAssemblerAirspace_test.cpp(584): Entering test case "fixed_atz_epnt_with_dictionary_sayalt_saytime_1202"
-../src/PlaylistAssemblerAirspace_test.cpp(587): info: check airspaceConfig.fixed.size() >= 3 has passed
-../src/PlaylistAssemblerAirspace_test.cpp(588): info: check "ATZ EPNT" == airspaceConfig.fixed[2].designator has passed
-../src/PlaylistAssemblerAirspace_test.cpp(589): info: check true == airspaceConfig.fixed[2].sayAltitudes has passed
-../src/PlaylistAssemblerAirspace_test.cpp(590): info: check true == airspaceConfig.fixed[2].sayTimes has passed
-../src/PlaylistAssemblerAirspace_test.cpp(606): info: check "intro.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(607): info: check "nowytarg.mp3" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(608): info: check "aktywna.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(609): info: check "od.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(610): info: check "dwunasta.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(611): info: check "zero.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(612): info: check "dwa.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(613): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(614): info: check "do.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(615): info: check "czternasta.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(616): info: check "czterdziesci.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(617): info: check "dziewiec.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(618): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(619): info: check "wysokosc.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(620): info: check "od.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(621): info: check "poziomu_gruntu.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(622): info: check "do.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(623): info: check "tysiac.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(624): info: check "piecset.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(625): info: check "metrow.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(626): info: check playlistVct.end() == it has passed
-../src/PlaylistAssemblerAirspace_test.cpp(584): Leaving test case "fixed_atz_epnt_with_dictionary_sayalt_saytime_1202"; testing time: 231us
-../src/PlaylistAssemblerAirspace_test.cpp(629): Entering test case "fixed_atz_epnt_with_dictionary_sayalt"
-../src/PlaylistAssemblerAirspace_test.cpp(632): info: check airspaceConfig.fixed.size() >= 3 has passed
-../src/PlaylistAssemblerAirspace_test.cpp(633): info: check "ATZ EPNT" == airspaceConfig.fixed[2].designator has passed
-../src/PlaylistAssemblerAirspace_test.cpp(634): info: check true == airspaceConfig.fixed[2].sayAltitudes has passed
-../src/PlaylistAssemblerAirspace_test.cpp(635): info: check false == airspaceConfig.fixed[2].sayTimes has passed
-../src/PlaylistAssemblerAirspace_test.cpp(651): info: check "intro.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(652): info: check "nowytarg.mp3" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(653): info: check "aktywna.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(654): info: check "wysokosc.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(655): info: check "od.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(656): info: check "poziomu_gruntu.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(657): info: check "do.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(658): info: check "tysiac.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(659): info: check "piecset.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(660): info: check "metrow.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(661): info: check playlistVct.end() == it has passed
-../src/PlaylistAssemblerAirspace_test.cpp(629): Leaving test case "fixed_atz_epnt_with_dictionary_sayalt"; testing time: 164us
-../src/PlaylistAssemblerAirspace_test.cpp(664): Entering test case "fixed_atz_epnt_with_dictionary_saytime_1202_noalt_locally"
-../src/PlaylistAssemblerAirspace_test.cpp(667): info: check airspaceConfig.fixed.size() >= 3 has passed
-../src/PlaylistAssemblerAirspace_test.cpp(668): info: check "ATZ EPNT" == airspaceConfig.fixed[2].designator has passed
-../src/PlaylistAssemblerAirspace_test.cpp(669): info: check false == airspaceConfig.fixed[2].sayAltitudes has passed
-../src/PlaylistAssemblerAirspace_test.cpp(670): info: check true == airspaceConfig.fixed[2].sayTimes has passed
-../src/PlaylistAssemblerAirspace_test.cpp(686): info: check "intro.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(687): info: check "nowytarg.mp3" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(688): info: check "aktywna.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(689): info: check "od.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(690): info: check "dwunasta.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(691): info: check "zero.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(692): info: check "dwa.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(693): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(694): info: check "do.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(695): info: check "czternasta.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(696): info: check "czterdziesci.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(697): info: check "dziewiec.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(698): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
-../src/PlaylistAssemblerAirspace_test.cpp(699): info: check playlistVct.end() == it has passed
-../src/PlaylistAssemblerAirspace_test.cpp(664): Leaving test case "fixed_atz_epnt_with_dictionary_saytime_1202_noalt_locally"; testing time: 208us
-Leaving test module "PlaylistAssemblerAirspace_test"; testing time: 5734us
+../src/PlaylistAssemblerAirspace_test.cpp(545): info: check "ATZ EPNT" == fixed.designator has passed
+../src/PlaylistAssemblerAirspace_test.cpp(546): info: check true == fixed.sayAltitudes has passed
+../src/PlaylistAssemblerAirspace_test.cpp(547): info: check true == fixed.sayTimes has passed
+../src/PlaylistAssemblerAirspace_test.cpp(563): info: check "intro.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(564): info: check "nowytarg.mp3" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(565): info: check "aktywna.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(566): info: check "od.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(567): info: check "zero.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(568): info: check "zero.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(569): info: check "dwa.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(570): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(571): info: check "do.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(572): info: check "szosta.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(573): info: check "zero.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(574): info: check "zero.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(575): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(576): info: check "wysokosc.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(577): info: check "od.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(578): info: check "poziomu_gruntu.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(579): info: check "do.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(580): info: check "tysiac.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(581): info: check "piecset.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(582): info: check "metrow.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(583): info: check playlistVct.end() == it has passed
+../src/PlaylistAssemblerAirspace_test.cpp(539): Leaving test case "fixed_atz_epnt_with_dictionary_sayalt_saytime_002"; testing time: 256us
+../src/PlaylistAssemblerAirspace_test.cpp(586): Entering test case "fixed_atz_epnt_with_dictionary_sayalt_saytime_1202"
+../src/PlaylistAssemblerAirspace_test.cpp(589): info: check airspaceConfig.fixed.size() >= 3 has passed
+../src/PlaylistAssemblerAirspace_test.cpp(592): info: check "ATZ EPNT" == fixed.designator has passed
+../src/PlaylistAssemblerAirspace_test.cpp(593): info: check true == fixed.sayAltitudes has passed
+../src/PlaylistAssemblerAirspace_test.cpp(594): info: check true == fixed.sayTimes has passed
+../src/PlaylistAssemblerAirspace_test.cpp(610): info: check "intro.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(611): info: check "nowytarg.mp3" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(612): info: check "aktywna.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(613): info: check "od.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(614): info: check "dwunasta.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(615): info: check "zero.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(616): info: check "dwa.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(617): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(618): info: check "do.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(619): info: check "czternasta.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(620): info: check "czterdziesci.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(621): info: check "dziewiec.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(622): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(623): info: check "wysokosc.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(624): info: check "od.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(625): info: check "poziomu_gruntu.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(626): info: check "do.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(627): info: check "tysiac.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(628): info: check "piecset.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(629): info: check "metrow.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(630): info: check playlistVct.end() == it has passed
+../src/PlaylistAssemblerAirspace_test.cpp(586): Leaving test case "fixed_atz_epnt_with_dictionary_sayalt_saytime_1202"; testing time: 266us
+../src/PlaylistAssemblerAirspace_test.cpp(633): Entering test case "fixed_atz_epnt_with_dictionary_sayalt"
+../src/PlaylistAssemblerAirspace_test.cpp(636): info: check airspaceConfig.fixed.size() >= 3 has passed
+../src/PlaylistAssemblerAirspace_test.cpp(639): info: check "ATZ EPNT" == fixed.designator has passed
+../src/PlaylistAssemblerAirspace_test.cpp(640): info: check true == fixed.sayAltitudes has passed
+../src/PlaylistAssemblerAirspace_test.cpp(641): info: check false == fixed.sayTimes has passed
+../src/PlaylistAssemblerAirspace_test.cpp(657): info: check "intro.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(658): info: check "nowytarg.mp3" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(659): info: check "aktywna.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(660): info: check "wysokosc.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(661): info: check "od.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(662): info: check "poziomu_gruntu.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(663): info: check "do.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(664): info: check "tysiac.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(665): info: check "piecset.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(666): info: check "metrow.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(667): info: check playlistVct.end() == it has passed
+../src/PlaylistAssemblerAirspace_test.cpp(633): Leaving test case "fixed_atz_epnt_with_dictionary_sayalt"; testing time: 176us
+../src/PlaylistAssemblerAirspace_test.cpp(670): Entering test case "fixed_atz_epnt_with_dictionary_saytime_1202_noalt_locally"
+../src/PlaylistAssemblerAirspace_test.cpp(673): info: check airspaceConfig.fixed.size() >= 3 has passed
+../src/PlaylistAssemblerAirspace_test.cpp(676): info: check "ATZ EPNT" == fixed.designator has passed
+../src/PlaylistAssemblerAirspace_test.cpp(677): info: check false == fixed.sayAltitudes has passed
+../src/PlaylistAssemblerAirspace_test.cpp(678): info: check true == fixed.sayTimes has passed
+../src/PlaylistAssemblerAirspace_test.cpp(694): info: check "intro.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(695): info: check "nowytarg.mp3" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(696): info: check "aktywna.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(697): info: check "od.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(698): info: check "dwunasta.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(699): info: check "zero.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(700): info: check "dwa.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(701): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(702): info: check "do.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(703): info: check "czternasta.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(704): info: check "czterdziesci.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(705): info: check "dziewiec.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(706): info: check "czasu_uniwersalnego.ogg" == *(it++) has passed
+../src/PlaylistAssemblerAirspace_test.cpp(707): info: check playlistVct.end() == it has passed
+../src/PlaylistAssemblerAirspace_test.cpp(670): Leaving test case "fixed_atz_epnt_with_dictionary_saytime_1202_noalt_locally"; testing time: 234us
+Leaving test module "PlaylistAssemblerAirspace_test"; testing time: 6666us

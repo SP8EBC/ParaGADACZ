@@ -20,6 +20,9 @@
 
 class PlaylistAssemblerAirspace {
 private:
+
+	bool hasSomethingToSay;
+
 	std::optional<std::shared_ptr<std::vector<std::string>>> playlist;
 
 	std::shared_ptr<PlaylistSampler> & sampler;
@@ -60,7 +63,7 @@ private:
 	 * @param sayAltitudeRangeOfReservations if an announcement should contains altitude range for each reservation
 	 * @param sayTimeRangeOfReservations if an announcement should contains time (as hours) range for each reservation
 	 */
-	void insertCommonAnnouncementAudioElems(
+	int insertCommonAnnouncementAudioElems(
 								const std::map<std::string, std::string> & designatorsAnouncementsDict,
 								const ConfigurationFile_Airspace & airspaceCfg,
 								const std::string & airspaceFullDesignatorString,
@@ -86,7 +89,8 @@ public:
 	 * @param airspaceReservations map between airspace designator (like ATZ EPBA) and reservations + type + centroid locations + designator once again
 	 */
 	void reservationsAroundPoint(
-					const ConfigurationFile_Airspace_AroundPoint & point,
+					const int radiusInMeters,
+					const std::string anouncementAudioFilename,
 					const std::map<std::string, PansaAirspace_Zone>& airspaceReservations);
 
 	/**
@@ -95,8 +99,11 @@ public:
 	 * @param reservations result of a query, the vector may be empty if no reservations are active currently
 	 */
 	void reservationsForExplicitlyConfAirspace(
-					const ConfigurationFile_Airspace_Fixed & airspace,
-					const std::pair<PansaAirspace_Type, std::vector<std::shared_ptr<PansaAirspace_Reservation>>> & reservations);
+			const std::string designator,
+			const bool sayAltitudes,
+			const bool sayTimes,
+			const PansaAirspace_Type type,
+			const std::vector<std::shared_ptr<PansaAirspace_Reservation>> & activeReservations);
 
 	PlaylistAssemblerAirspace(std::shared_ptr<PlaylistSampler> & sampler, std::shared_ptr<ConfigurationFile> & config);
 	virtual ~PlaylistAssemblerAirspace();
@@ -108,6 +115,10 @@ public:
 	void setPlaylist(
 			const std::optional<std::shared_ptr<std::vector<std::string> > > &playlist) {
 		this->playlist = playlist;
+	}
+
+	bool isHasSomethingToSay() const {
+		return hasSomethingToSay;
 	}
 };
 
