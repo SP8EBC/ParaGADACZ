@@ -109,6 +109,7 @@ struct MyConfig
 	second.centroidLatitudeY = 50.31573f;
 	second.centroidLongitudeX = 21.30986f;
 	second.distanceFromSetpoint = 150439.0f;
+	second.type = AIRSPACE_TRA;
 	second.reservations.emplace_back(std::make_shared<PansaAirspace_Reservation>(1706079600ULL, 1706130000ULL, 0, 1000));
 	//  Wednesday, 24 January 2024 07:00:00    ---> Wednesday, 24 January 2024 21:00:00
 
@@ -116,6 +117,7 @@ struct MyConfig
 	third.centroidLatitudeY = 52.77208597936472f;
 	third.centroidLongitudeX = 23.815587796821536f;
 	third.distanceFromSetpoint = 467344.9f;
+	third.type = AIRSPACE_TRA;
 	third.reservations.emplace_back(std::make_shared<PansaAirspace_Reservation>(1706140800ULL, 1706162400ULL, 0, 1500));
 	third.reservations.emplace_back(std::make_shared<PansaAirspace_Reservation>(1789076000ULL, 1789140740ULL, 123, 1400));
 	// Thursday, 25 January 2024 00:00:00  --->   Thursday, 25 January 2024 06:00:00

@@ -316,7 +316,6 @@ int main(int argc, char **argv) {
 		for (ConfigurationFile_Airspace_Fixed fx : configurationFile->getAirspace().fixed) {
 			pansa->downloadForDesginator(fx.designator, fx.sayAltitudes, fx.sayTimes, airspaceDumpSql);
 		}
-
 	}
 #endif
 
@@ -374,6 +373,13 @@ int main(int argc, char **argv) {
 
 	for (const std::shared_ptr<PansaAirspace_ResultsForDesignator> & zone : fixedZones) {
 		playlistAssemblerAirspace->reservationsForExplicitlyConfAirspace(zone->designator, zone->sayAltitude, zone->sayTime, zone->type, zone->reservations);
+	}
+
+	if (configurationFile->getAirspace().bailoutIfNothingToSay && !playlistAssemblerAirspace->isHasSomethingToSay()) {
+		SPDLOG_ERROR("No airspace restriction announcements have been generated, due to configuration");
+		SPDLOG_ERROR("and/or because no reservations are currently active in todays AUP.");
+		SPDLOG_ERROR("Program will exit because BailoutIfNothingToSay is enabled.");
+		return 0;
 	}
 
 #endif

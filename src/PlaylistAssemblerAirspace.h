@@ -30,6 +30,25 @@ private:
 	std::shared_ptr<ConfigurationFile> & config;
 
 	/**
+	 * Vector of all designators, which were already added to a playlist as
+	 * airspaces around a point. This is not to double the same designator
+	 * in explicitly designated section
+	 */
+	std::vector<std::string> designatorsAlreadyAdded;
+
+	/**
+	 * Checks airspace reservations against the configuration to verify
+	 * if there is anything, what will be said taking into acount which
+	 * types of airspace are enabled
+	 * @param airspaceReservations
+	 * @param config
+	 * @return
+	 */
+	static bool checkIfThereIsAnythingToSayAroundPoint(
+										const std::map<std::string, PansaAirspace_Zone>& airspaceReservations,
+										const ConfigurationFile_Airspace_SayConfigPerElemType &config);
+
+	/**
 	 * Checks if a kind of airspace (like TRA, TSA etc) is currently enabled by user configuration
 	 * @param type airspace type
 	 * @param config parsed from configuration file
