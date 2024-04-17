@@ -247,7 +247,7 @@ $slownik = array(
     array('tri', 'three'),
     array('for', 'four'),
     array('fajf', 'five'),
-    array('siks', 'six'),
+    array('six', 'six'),
     array('sewen', 'seven'),
     array('ejt', 'eight'),
     array('najner', 'nine'),
@@ -290,8 +290,8 @@ $slownik = array(
     array('zawody paralotniowe', 'zawody_para'), 
 
     array('stacja podaje wyłącznie planowane użycie przestrzeni powietrznej, które może się różnić od faktycznego. ', 'outro_disclarimer'), 
-    array('najnowsze informację dostępne w Kraków Informacja', 'outro_disclarimer_2'), 
-    array('aktualne warunki i prognoza pogody, proszę słuchać Skrzyczne Radio, u ka ef kanał 7, częstotliwość, sto sześćdziesiąt kropka dziewięć pięć zero megaherców, ef em', 'outro_listen_to_spn')
+    array('bierzącą zajętość stref można uzyskać  w Kraków Informacja', 'outro_disclarimer_2'), 
+    array('aktualne warunki i prognoza pogody, proszę słuchać Skrzyczne Radio, u ka ef, kanał 7, częstotliwość, sto sześćdziesiąt kropka dziewięć pięć zero megaherców, ef em', 'outro_listen_to_spn')
 
 
 

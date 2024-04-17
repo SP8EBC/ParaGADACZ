@@ -114,7 +114,7 @@ std::optional<std::string> PlaylistAssemblerAirspace::extractUsingRegexp(
 				usedRegex = confPerElemType.atzDesignatorRegexp;
 			}
 			else {
-				;
+				usedRegex = confPerElemType.atzSectorRegexp;
 			}
 
 			break;
@@ -316,11 +316,33 @@ int PlaylistAssemblerAirspace::insertCommonAnnouncementAudioElems(
 
 				// optionally add sector announcement
 				if (sectorStr.has_value()) {
-					playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_SECTOR));
+					// special check for ATZ. usually is not sectorized although, but if it its designator may looks like: "ATZ EPGLA"
+					if (type == AIRSPACE_ATZ) {
+						// check if the designator is five characters long, what suggests that it has a sector at the end
+						std::regex lenghtTest = std::regex("[A-Z]{5}$", std::regex::ECMAScript);
 
-					SPDLOG_DEBUG("Sector {} extracted from full-designator-string for airspace {}", sectorStr.value(), airspaceFullDesignatorString);
-					std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
-					playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
+					    std::smatch lenghTestMatch;
+
+						// try to extract last 5 characters from airspace designator
+					    const bool result = std::regex_search(airspaceFullDesignatorString, lenghTestMatch, lenghtTest);
+
+					    // if it was extraced
+					    if (result && lenghTestMatch[0].length() == 5) {
+							playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_SECTOR));
+
+							SPDLOG_DEBUG("Sector {} extracted from full-designator-string for ATZ {}", sectorStr.value(), airspaceFullDesignatorString);
+							std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
+							playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
+					    }
+					}
+					else {
+						playlistPtr->push_back(sampler->getAirspaceConstantElement(PlaylistSampler_Airspace::AIRSPACE_SECTOR));
+
+						SPDLOG_DEBUG("Sector {} extracted from full-designator-string for airspace {}", sectorStr.value(), airspaceFullDesignatorString);
+						std::vector<std::string> sectorAudio = sampler->getPhoneticForWord(sectorStr.value());
+						playlistPtr->insert(playlistPtr->end(), std::make_move_iterator(sectorAudio.begin()), std::make_move_iterator(sectorAudio.end()));
+					}
+
 				}
 			}
 			else {

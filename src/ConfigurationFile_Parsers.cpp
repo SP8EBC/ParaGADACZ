@@ -470,6 +470,7 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 		this->airspace.confPerElemType.sayR = true;
 
 		this->airspace.confPerElemType.atzDesignatorRegexp = "\\s[A-Z]{4}";
+		this->airspace.confPerElemType.atzSectorRegexp = "[A-Z]{1}$";
 		this->airspace.confPerElemType.traDesignatorRegexp = "[A-Z]{1,2}[0-9]{1,3}";
 		this->airspace.confPerElemType.traSectorRegexp = "[A-Z]{1}$";
 		this->airspace.confPerElemType.tsaDesignatorRegexp = "[A-Z]{1,2}[0-9]{1,3}";
