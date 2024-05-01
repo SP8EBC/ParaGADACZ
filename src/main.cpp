@@ -144,6 +144,8 @@ int main(int argc, char **argv) {
 	SPDLOG_INFO("============ ParaGADACZ is starting =============");
 	SPDLOG_INFO("===== Mateusz Lubecki, Bielsko - Biała 2024 =====");
 	SPDLOG_INFO("=================================================");
+	SPDLOG_INFO("Application version: {}, from: {}", MAIN_SOFTWARE_VERSION, MAIN_SOFTWARE_DATE);
+
 
 	SPDLOG_INFO("Application startup UTC time: {}", boost::posix_time::to_simple_string(boost::posix_time::second_clock::universal_time()));
 
