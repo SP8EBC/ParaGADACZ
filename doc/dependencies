@@ -2,6 +2,15 @@ This is a list of packages which must be installed to compile and use ParaGADACZ
 at least in Xubuntu 22.04.1 and Debian 12
 
 libboost1.74
+	atomic1
+	chrono
+	date-time
+	filesystem
+	regex
+	serialization
+	system
+	thread
+	
 libcpprest
 libspdlog1.10
 libcurl3-gnutls
@@ -36,8 +45,8 @@ sudo aptitude install libcpprest-dev
 For DebugPansaAirspace and ReleasePansaAirspace
 
 1. Install postgresql-14, postgresql-client-14, postgresql-server-dev-14
-2. Install postgis, postgresql-14-postgis-3
-3. clone, compile and install this repository: https://github.com/pramsey/pgsql-http
+2. Install postgis, postgresql-14-postgis-3, libpqxx, libpqxx-dev, libctemplate, libctemplate-dev
+3. clone, compile and install this repository: /lib
 4. Login into postgresql server prompt and type: 
 	create extension postgis;
 	create extension http;

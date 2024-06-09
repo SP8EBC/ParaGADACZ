@@ -161,6 +161,8 @@ struct ConfigurationFile_PttControl {
 	uint32_t pttParportLinesSelector;	// !< This is a bitmask which selects which parallel port lines are used
 	std::string pttParportDevice;		// !< String to device entry in /dev directory representing parallel port
 #endif
+
+	bool pttSerialActiveHigh;				// !< set true if PTT is active high
 };
 
 struct ConfigurationFile_Avalanche {
@@ -361,6 +363,7 @@ class ConfigurationFile {
 
 	bool debug;
 	bool onlyAssemblePlaylist;	//!< Only for debug/development. Assembles playlist of an anoyuncement w/o playing it
+	bool onlyPttDekey;
 
 	std::string audioBasePath;	//!< Base path do directory where all audio files are put
 	std::string logOutput;		//!< Path to created log file
@@ -547,6 +550,10 @@ public:
 
 	const ConfigurationFile_Airspace& getAirspace() const {
 		return airspace;
+	}
+
+	bool isOnlyPttDekey() const {
+		return onlyPttDekey;
 	}
 };
 

@@ -127,9 +127,13 @@ bool ConfigurationFile::parse() {
 		this->debug = false;
 	}
 
-	// get debug
+	// get only assemble playlist
 	if (!root.lookupValue("OnlyAssemblePlaylist", this->onlyAssemblePlaylist)) {
 		this->onlyAssemblePlaylist = false;
+	}
+
+	if (!root.lookupValue("OnlyPttDekey", this->onlyPttDekey)) {
+		this->onlyPttDekey = false;
 	}
 
 	// get log output

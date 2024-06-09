@@ -179,6 +179,15 @@ int main(int argc, char **argv) {
 		spdlog::set_level(spdlog::level::info);
 	}
 
+	if (configurationFile->isOnlyPttDekey()) {
+		SPDLOG_INFO("Only dekeying PTT");
+		inhibitAndPtt.setConfigAndCheckPort(configurationFile);
+
+		inhibitAndPtt.dekeyPtt();
+
+		return 0;
+	}
+
 	TimeTools::initBoostTimezones(configurationFile->getZoneSpecificationFilePath());
 
 	auto inhibitorConfig = configurationFile->getInhibitor();

@@ -31,6 +31,7 @@ InhibitorAndPttControl::InhibitorAndPttControl() {
 	parallelConfigured = false;
 	preAnouncementDelay = 0;
 	parallelPins = 0;
+	serialActiveHigh = true;
 #ifdef __linux__
 	parallelPortFd = -1;
 #endif
@@ -56,9 +57,16 @@ void InhibitorAndPttControl::keyPtt(bool withDelay) {
 	if (serialConfigured) {
 		serial->open();
 
-		// key PTT
-		serial->setRTS(true);
-		serial->setDTR(true);
+		if (serialActiveHigh) {
+			// key PTT
+			serial->setRTS(true);
+			serial->setDTR(true);
+		}
+		else {
+			// key PTT
+			serial->setRTS(false);
+			serial->setDTR(false);
+		}
 	}
 
 	if (parallelConfigured) {
@@ -91,8 +99,14 @@ void InhibitorAndPttControl::dekeyPtt() {
 	}
 
 	if (serialConfigured) {
-		serial->setRTS(false);
-		serial->setDTR(false);
+		if (serialActiveHigh) {
+			serial->setRTS(false);
+			serial->setDTR(false);
+		}
+		else {
+			serial->setRTS(true);
+			serial->setDTR(true);
+		}
 
 		serial->close();
 	}
@@ -122,7 +136,7 @@ bool InhibitorAndPttControl::setConfigAndCheckPort(
 	bool out = false;
 
 	preAnouncementDelay = configurationFile.preAnounmntDelay;
-
+	serialActiveHigh = configurationFile.pttSerialActiveHigh;
 #ifdef __linux__
 
 	int mode = IEEE1284_MODE_BYTE;

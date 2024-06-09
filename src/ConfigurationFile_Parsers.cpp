@@ -52,10 +52,13 @@ bool ConfigurationFile::parseInhibitor(libconfig::Setting & root) {
 
 bool ConfigurationFile::parsePttControl(libconfig::Setting & root) {
 	bool out = true;
+	this->pttControl.pttSerialActiveHigh = true;
+
 	try {
 		libconfig::Setting &pttControl = root["PttControl"];
 
 		pttControl.lookupValue("SerialPort", this->pttControl.pttSerialportDevice);
+		pttControl.lookupValue("SerialActiveHigh", this->pttControl.pttSerialActiveHigh);
 		pttControl.lookupValue("DelayPre", this->pttControl.preAnounmntDelay);
 		pttControl.lookupValue("DelayPost", this->pttControl.postAnounmntDelay);
 

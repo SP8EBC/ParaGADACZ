@@ -42,6 +42,8 @@ class InhibitorAndPttControl {
 	 */
 	std::shared_ptr<serial::Serial> serial;
 
+	bool serialActiveHigh;
+
 #ifdef __linux__
 	/**
 	 * Set to true if parallel port is configured
