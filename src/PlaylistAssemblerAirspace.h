@@ -40,13 +40,14 @@ private:
 	 * Checks airspace reservations against the configuration to verify
 	 * if there is anything, what will be said taking into acount which
 	 * types of airspace are enabled
-	 * @param airspaceReservations
+	 * @param airspaceReservations map between airspace designator (like ATZ EPBA) and reservations + type + centroid locations + designator once again
 	 * @param config
 	 * @return
 	 */
 	static bool checkIfThereIsAnythingToSayAroundPoint(
 										const std::map<std::string, PansaAirspace_Zone>& airspaceReservations,
-										const ConfigurationFile_Airspace_SayConfigPerElemType &config);
+										const ConfigurationFile_Airspace_SayConfigPerElemType &config,
+										const std::vector<std::string> & filter);
 
 	/**
 	 * Checks if a kind of airspace (like TRA, TSA etc) is currently enabled by user configuration
@@ -55,6 +56,14 @@ private:
 	 * @return
 	 */
 	static bool checkIfAirspaceTypeEnabled(PansaAirspace_Type type, const ConfigurationFile_Airspace_SayConfigPerElemType & config);
+
+	/**
+	 *
+	 * @param designator
+	 * @param filter
+	 * @return
+	 */
+	static bool checkIfFiltered(const std::string & designator, const std::vector<std::string> & filter);
 
 	/**
 	 *

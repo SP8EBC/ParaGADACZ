@@ -503,6 +503,23 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 		airspace.lookupValue("DumpSqlQueries", this->airspace.dumpSqlQueries);
 
 		/*
+		 * Designator filters
+		 */
+		if (airspace.exists("Filter")) {
+			libconfig::Setting &aroundPoint = airspace["Filter"];
+			size_t size = aroundPoint.getLength();
+
+			for (unsigned i = 0; i < size; i++) {
+				const std::string elem = airspace["Filter"][i];
+
+				this->airspace.designatorsFilter.push_back(elem);
+
+				SPDLOG_DEBUG("Designator filtering entry {}", elem);
+
+			}
+		}
+
+		/*
 		 * Configures point coordinates (lat, lon) with a radius in meters to look for
 		 * active reservations in. If any airspace having any common part with this
 		 * point+radius area has a reservation scheduled, it will be announced by

@@ -137,6 +137,8 @@ int main(int argc, char **argv) {
 
 	int downloadParseResult = 0;
 
+	int ttsAnouncmtsFromEmails = 0;
+
 	std::string configFn;
 
 	spdlog::set_level(spdlog::level::debug);
@@ -337,7 +339,8 @@ int main(int argc, char **argv) {
 	playlistAssembler->recordedAnnouncement(false);
 
 	if (configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().placeAtTheEnd == false) {
-		playlistAssembler->textToSpeechAnnouncements(validatedEmails);
+		const PlaylistAssembler_TextToSpeechAnnouncement_Stats stats = playlistAssembler->textToSpeechAnnouncements(validatedEmails);
+		ttsAnouncmtsFromEmails = stats.added;
 	}
 
 	// if there is regional pressure to say
@@ -378,19 +381,12 @@ int main(int argc, char **argv) {
 
 	const std::vector<std::shared_ptr<PansaAirspace_ResultsForDesignator> >& fixedZones = pansa->getReservationsForZones();
 
-	for (const std::shared_ptr<PansaAirspace_ResultsAroundPoint> & point : aroundPoints) {
-		playlistAssemblerAirspace->reservationsAroundPoint(point->radius, point->pointName, point->reservations);
-	}
-
 	for (const std::shared_ptr<PansaAirspace_ResultsForDesignator> & zone : fixedZones) {
 		playlistAssemblerAirspace->reservationsForExplicitlyConfAirspace(zone->designator, zone->sayAltitude, zone->sayTime, zone->type, zone->reservations);
 	}
 
-	if (configurationFile->getAirspace().bailoutIfNothingToSay && !playlistAssemblerAirspace->isHasSomethingToSay()) {
-		SPDLOG_ERROR("No airspace restriction announcements have been generated, due to configuration");
-		SPDLOG_ERROR("and/or because no reservations are currently active in todays AUP.");
-		SPDLOG_ERROR("Program will exit because BailoutIfNothingToSay is enabled.");
-		return 0;
+	for (const std::shared_ptr<PansaAirspace_ResultsAroundPoint> & point : aroundPoints) {
+		playlistAssemblerAirspace->reservationsAroundPoint(point->radius, point->pointName, point->reservations);
 	}
 
 #endif
@@ -399,7 +395,8 @@ int main(int argc, char **argv) {
 	playlistAssembler->recordedAnnouncement(true);
 
 	if (configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().placeAtTheEnd == true) {
-		playlistAssembler->textToSpeechAnnouncements(validatedEmails);
+		const PlaylistAssembler_TextToSpeechAnnouncement_Stats stats = playlistAssembler->textToSpeechAnnouncements(validatedEmails);
+		ttsAnouncmtsFromEmails = stats.added;
 	}
 
 	// add signoff
@@ -407,6 +404,61 @@ int main(int argc, char **argv) {
 
 	// get finished playlist
 	auto playlist = playlistAssembler->getPlaylist();
+
+#ifdef PANSA_AIRSPACE_ENABLED
+	bool bailoutConfig = false;
+	bool bailoutCondition = false;
+
+	if (configurationFile->isLogicalAndOnBailout()) {
+		if (configurationFile->getAirspace().enabled && configurationFile->getAirspace().bailoutIfNothingToSay) {
+			bailoutCondition = !playlistAssemblerAirspace->isHasSomethingToSay();
+		}
+		if (configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().bailoutIfNoMailsToSay) {
+			bailoutCondition = bailoutCondition & (ttsAnouncmtsFromEmails == 0);
+		}
+	}
+	else {
+		if (configurationFile->getAirspace().enabled && configurationFile->getAirspace().bailoutIfNothingToSay) {
+			bailoutCondition = !playlistAssemblerAirspace->isHasSomethingToSay();
+		}
+		if (bailoutCondition == false && configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().bailoutIfNoMailsToSay) {
+			bailoutCondition = (ttsAnouncmtsFromEmails == 0);
+		}
+	}
+
+//	if (configurationFile->getAirspace().enabled && configurationFile->getEmailAnnonuncements().enabled) {
+//		if (configurationFile->isLogicalAndOnBailout()) {
+//			bailoutCondition = (!playlistAssemblerAirspace->isHasSomethingToSay() && (ttsAnouncmtsFromEmails == 0));
+//		}
+//		else {
+//			bailoutCondition = (!playlistAssemblerAirspace->isHasSomethingToSay() || (ttsAnouncmtsFromEmails == 0));
+//		}
+//	}
+//	else {
+//
+//	}
+// TODO TODO TODO
+//	if (configurationFile->getAirspace().bailoutIfNothingToSay && !playlistAssemblerAirspace->isHasSomethingToSay()) {
+//		if (ttsAnouncmtsFromEmails == 0 && configurationFile->getSpeechSynthesis().bailoutIfNoMailsToSay) {
+//			SPDLOG_ERROR("No airspace restriction announcements have been generated, due to configuration");
+//			SPDLOG_ERROR("and/or because no reservations are currently active in todays AUP.");
+//			SPDLOG_ERROR("There is also no text-to-speech announcements from Emails.");
+//			SPDLOG_ERROR("Program will exit because BailoutIfNothingToSay is enabled for both Airspace and TTS.");
+//			return 0;
+//		}
+//		else {
+//
+//		}
+//
+//	}
+#else
+	if (ttsAnouncmtsFromEmails == 0 && configurationFile->getSpeechSynthesis().bailoutIfNoMailsToSay) {
+		SPDLOG_ERROR("There is nothing to say from email messages! Program will not continue!");
+		throw NoEmailsToSayEx();
+	}
+#endif
+
+
 
 	// print all playlist elements
 	if (configurationFile->isDebug()) {

@@ -69,6 +69,32 @@ bool PlaylistAssemblerAirspace::checkIfAirspaceTypeEnabled(
 
 /**
  *
+ * @param designator
+ * @param filter
+ * @return
+ */
+bool PlaylistAssemblerAirspace::checkIfFiltered(const std::string & designator, const std::vector<std::string> & filter) {
+	bool out = std::any_of(
+			filter.begin(),	// begining of vector with filtering strings
+			filter.end(),	// end of vector with filtering strings
+			[&designator](const std::string f) {
+								// filtering works by looking for a case sensitive
+								// substring with a defined filter, within an airspace
+								// designator
+								const std::size_t found = designator.find(f, 0);
+								if (found != std::string::npos) {
+									return true;	// returning true ends a loop
+								}
+								else {
+									return false;
+								}
+							});
+
+	return out;
+}
+
+/**
+ *
  * @param extractFrom full-designator-string to extract from
  * @param extractWhat true to extract airspace designator or false to extract sector (if applicable)
  * @param type of an airspace. required to look for certain regular expression, which may be different for different
@@ -207,7 +233,8 @@ std::optional<std::string> PlaylistAssemblerAirspace::extractUsingRegexp(
  */
 bool PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(
 		const std::map<std::string, PansaAirspace_Zone> &airspaceReservations,
-		const ConfigurationFile_Airspace_SayConfigPerElemType &config){
+		const ConfigurationFile_Airspace_SayConfigPerElemType &config,
+		const std::vector<std::string> & filter){
 
 	bool output = false;
 
@@ -217,13 +244,23 @@ bool PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(
 	// iterate through all airspace, which has any reservation
 	do {
 
-		const PansaAirspace_Type t = it->second.type;
+		const PansaAirspace_Type& t = it->second.type;
+		const std::string designator = it->first;
 
+		// check if this type of airspace is enabled by configuration
 		const bool sayThis = PlaylistAssemblerAirspace::checkIfAirspaceTypeEnabled(t, config);
 
-		if (sayThis) {
-			output = true;
-			break;
+		// go through configure filters and look for
+		const bool isFiltered = PlaylistAssemblerAirspace::checkIfFiltered(designator, filter);
+
+		if (!isFiltered) {
+			if (sayThis) {
+				output = true;
+				break;
+			}
+		}
+		else {
+			SPDLOG_INFO("Airspace designator {} is filtered and won't be added to playlist", designator);
 		}
 	} while (++it != airspaceReservations.end());
 
@@ -538,7 +575,7 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 	const ConfigurationFile_Airspace & airspaceCfg = config->getAirspace();
 	const std::map<std::string, std::string> & designatorsAnouncementsDict = airspaceCfg.airspaceDesignatorsAnouncement;
 
-	const bool anythingToSay = PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(airspaceReservations, airspaceCfg.confPerElemType);
+	const bool anythingToSay = PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(airspaceReservations, airspaceCfg.confPerElemType, airspaceCfg.designatorsFilter);
 
 	if (!anythingToSay) {
 		SPDLOG_INFO("There is nothing to say around this point, because types of all active airspaces are disabled by config");
@@ -582,8 +619,16 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 		// vector of all active reservations for this airspace, which have been fetched from Pansa API
 		const std::vector<std::shared_ptr<PansaAirspace_Reservation>> & activeReservations = it->second.reservations;
 
+		// check if it filtered out TODO:
+		const bool filtered = PlaylistAssemblerAirspace::checkIfFiltered(fullDesignatorString, airspaceCfg.designatorsFilter);
+
 		// check if announcement for this airspace type is enabled
 		const bool typeEnabled = PlaylistAssemblerAirspace::checkIfAirspaceTypeEnabled(type, airspaceCfg.confPerElemType);
+
+		if (filtered) {
+			SPDLOG_INFO("{} has been filtered out and will be skipped", it->first);
+			continue;
+		}
 
 		// skip this reservation if this is not enabled
 		if (!typeEnabled) {

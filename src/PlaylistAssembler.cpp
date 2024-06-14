@@ -993,13 +993,6 @@ PlaylistAssembler_TextToSpeechAnnouncement_Stats PlaylistAssembler::textToSpeech
 		tts.storeIndex();
 	}
 
-	if (out.added == 0) {
-		if (bailoutIfNoNothingToSay) {
-			SPDLOG_ERROR("There is nothing to say from email messages! Program will not continue!");
-			throw NoEmailsToSayEx();
-		}
-	}
-
 	return out;
 
 }

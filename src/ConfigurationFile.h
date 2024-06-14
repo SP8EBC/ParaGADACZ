@@ -304,6 +304,7 @@ struct ConfigurationFile_Airspace {
 	bool glueGenericAnouncement; //!< Glue designator extracting result (if genericAnouncementFromRegex enabled) or glue full-designator-string
 	bool bailoutIfNothingToSay;	//!< Exit the app if there is no active reservations in the API
 	ConfigurationFile_Airspace_SayConfigPerElemType confPerElemType; //!< How each airspace type is announced
+	std::vector<std::string> designatorsFilter;
 
 	/**
 	 * This dictionary contains mapping between airspace designator and
@@ -369,6 +370,8 @@ class ConfigurationFile {
 	std::string logOutput;		//!< Path to created log file
 
 	std::string zoneSpecificationFilePath;	//!< Path to 'date_time_zonespec.csv' including filename itself
+
+	bool logicalAndOnBailout;				//!< Bailout conditions for
 
 	ConfigurationFile_Secret secrets;
 
@@ -554,6 +557,10 @@ public:
 
 	bool isOnlyPttDekey() const {
 		return onlyPttDekey;
+	}
+
+	bool isLogicalAndOnBailout() const {
+		return logicalAndOnBailout;
 	}
 };
 

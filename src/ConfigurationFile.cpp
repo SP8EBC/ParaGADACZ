@@ -41,6 +41,8 @@ ConfigurationFile::ConfigurationFile(std::string fileName) {
 
 	avalancheWarning.goprBabiaGora = false;
 
+	logicalAndOnBailout = false;
+
 }
 
 ConfigurationFile_CurrentWeatherType ConfigurationFile::currentWeatherTypeFromString(
@@ -144,6 +146,10 @@ bool ConfigurationFile::parse() {
 	// get log output
 	if (!root.lookupValue("ZoneSpecificationFilePath", this->zoneSpecificationFilePath)) {
 		this->zoneSpecificationFilePath = "/usr/local/share/paragadacz/date_time_zonespec.csv";
+	}
+
+	if (!root.lookupValue("LogicalAndOnBailout", this->logicalAndOnBailout)) {
+		this->logicalAndOnBailout = false;
 	}
 
 	// get audio base path
