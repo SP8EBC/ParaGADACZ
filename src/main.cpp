@@ -120,6 +120,51 @@ std::shared_ptr<SpeechSynthesis> speechSyntesis;
 std::shared_ptr<PansaAirspace> pansa;
 
 std::shared_ptr<PlaylistAssemblerAirspace> playlistAssemblerAirspace;//(playlist_sampler, config_fixed_anouncement_dictionary_sayalt_saytime);
+
+bool bailoutCheck(	const bool isLogicalAndOnBailout,
+					const ConfigurationFile_Airspace& airspace,
+					const ConfigurationFile_Email& emailAnnonuncements,
+					const ConfigurationFile_SpeechSynthesis& speechSynthesis,
+					bool isHasSomethingToSay,
+					int ttsAnouncmtsFromEmails)
+{
+
+	bool bailoutCondition = false;
+
+	if (isLogicalAndOnBailout) {
+		if (airspace.enabled && airspace.bailoutIfNothingToSay) {
+			bailoutCondition = !playlistAssemblerAirspace->isHasSomethingToSay();
+		}
+		if (emailAnnonuncements.enabled && speechSynthesis.bailoutIfNoMailsToSay) {
+			bailoutCondition = bailoutCondition & (ttsAnouncmtsFromEmails == 0);
+		}
+
+	}
+	else {
+		if (airspace.enabled && airspace.bailoutIfNothingToSay) {
+			bailoutCondition = !playlistAssemblerAirspace->isHasSomethingToSay();
+		}
+		if (bailoutCondition == false && emailAnnonuncements.enabled && speechSynthesis.bailoutIfNoMailsToSay) {
+			bailoutCondition = (ttsAnouncmtsFromEmails == 0);
+		}
+	}
+
+	if (bailoutCondition) {
+		if (!playlistAssemblerAirspace->isHasSomethingToSay()) {
+			SPDLOG_ERROR("No airspace restriction announcements have been generated, due to configuration");
+			SPDLOG_ERROR("and/or because no reservations are currently active in todays AUP.");
+		}
+
+		if ((ttsAnouncmtsFromEmails == 0)) {
+			SPDLOG_ERROR("There is also no text-to-speech announcements from Emails.");
+		}
+
+		SPDLOG_ERROR("Program will exit because BailoutIfNothingToSay is enabled.");
+	}
+
+	return bailoutCondition;
+
+}
 #endif
 
 #ifdef __linux__
@@ -406,51 +451,16 @@ int main(int argc, char **argv) {
 	auto playlist = playlistAssembler->getPlaylist();
 
 #ifdef PANSA_AIRSPACE_ENABLED
-	bool bailoutConfig = false;
-	bool bailoutCondition = false;
+	const bool bailout = bailoutCheck(configurationFile->isLogicalAndOnBailout(),
+										configurationFile->getAirspace(),
+										configurationFile->getEmailAnnonuncements(),
+										configurationFile->getSpeechSynthesis(),
+										playlistAssemblerAirspace->isHasSomethingToSay(),
+										ttsAnouncmtsFromEmails);
 
-	if (configurationFile->isLogicalAndOnBailout()) {
-		if (configurationFile->getAirspace().enabled && configurationFile->getAirspace().bailoutIfNothingToSay) {
-			bailoutCondition = !playlistAssemblerAirspace->isHasSomethingToSay();
-		}
-		if (configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().bailoutIfNoMailsToSay) {
-			bailoutCondition = bailoutCondition & (ttsAnouncmtsFromEmails == 0);
-		}
+	if (bailout) {
+		return 0;
 	}
-	else {
-		if (configurationFile->getAirspace().enabled && configurationFile->getAirspace().bailoutIfNothingToSay) {
-			bailoutCondition = !playlistAssemblerAirspace->isHasSomethingToSay();
-		}
-		if (bailoutCondition == false && configurationFile->getEmailAnnonuncements().enabled && configurationFile->getSpeechSynthesis().bailoutIfNoMailsToSay) {
-			bailoutCondition = (ttsAnouncmtsFromEmails == 0);
-		}
-	}
-
-//	if (configurationFile->getAirspace().enabled && configurationFile->getEmailAnnonuncements().enabled) {
-//		if (configurationFile->isLogicalAndOnBailout()) {
-//			bailoutCondition = (!playlistAssemblerAirspace->isHasSomethingToSay() && (ttsAnouncmtsFromEmails == 0));
-//		}
-//		else {
-//			bailoutCondition = (!playlistAssemblerAirspace->isHasSomethingToSay() || (ttsAnouncmtsFromEmails == 0));
-//		}
-//	}
-//	else {
-//
-//	}
-// TODO TODO TODO
-//	if (configurationFile->getAirspace().bailoutIfNothingToSay && !playlistAssemblerAirspace->isHasSomethingToSay()) {
-//		if (ttsAnouncmtsFromEmails == 0 && configurationFile->getSpeechSynthesis().bailoutIfNoMailsToSay) {
-//			SPDLOG_ERROR("No airspace restriction announcements have been generated, due to configuration");
-//			SPDLOG_ERROR("and/or because no reservations are currently active in todays AUP.");
-//			SPDLOG_ERROR("There is also no text-to-speech announcements from Emails.");
-//			SPDLOG_ERROR("Program will exit because BailoutIfNothingToSay is enabled for both Airspace and TTS.");
-//			return 0;
-//		}
-//		else {
-//
-//		}
-//
-//	}
 #else
 	if (ttsAnouncmtsFromEmails == 0 && configurationFile->getSpeechSynthesis().bailoutIfNoMailsToSay) {
 		SPDLOG_ERROR("There is nothing to say from email messages! Program will not continue!");
