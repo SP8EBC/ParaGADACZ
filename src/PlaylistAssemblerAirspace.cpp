@@ -544,6 +544,8 @@ void PlaylistAssemblerAirspace::reservationsForExplicitlyConfAirspace(
 		return;
 	}
 
+	SPDLOG_INFO("Adding anouncement for explicitly configured airspace designator {}", designator);
+
 	int anouncements = insertCommonAnnouncementAudioElems(designatorsAnouncementsDict, airspaceCfg, designator, type, activeReservations, localSayAltitudes, sayTimes);
 
 	this->designatorsAlreadyAdded.push_back(designator);
@@ -572,6 +574,8 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 		SPDLOG_WARN("Empty airspace reservations map was provided");
 		return;
 	}
+
+	SPDLOG_INFO("Adding reservations aroung {} meters around {}", radiusInMeters, anouncementAudioFilename);
 
 	const std::shared_ptr<std::vector<std::string>> playlistPtr = playlist.value();
 	const ConfigurationFile_Airspace & airspaceCfg = config->getAirspace();
@@ -639,7 +643,7 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 		if (alreadyAdded != this->designatorsAlreadyAdded.end()) {
 			// this has been added
 			SPDLOG_INFO("Anouncement for {} is skipped because it has been added as explicitly configured airspace", fullDesignatorString);
-			return;
+			continue;
 		}
 
 		// skip this reservation if this is not enabled

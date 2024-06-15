@@ -274,6 +274,7 @@ int PansaAirspace::downloadForDesginator(
 
 	c.disconnect();
 
+	singleResult->type = type;
 	reservationsForZones.push_back(singleResult);
 	//return std::make_pair(type, out);
 	return out;
