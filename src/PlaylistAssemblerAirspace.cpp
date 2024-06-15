@@ -535,7 +535,7 @@ void PlaylistAssemblerAirspace::reservationsForExplicitlyConfAirspace(
 	}
 
 	// check if this designator has been already added as a element of
-	// restrictions around the point
+	// another type of anouncement (like designator around the point)
 	const auto alreadyAdded = std::find(this->designatorsAlreadyAdded.begin(), this->designatorsAlreadyAdded.end(), designator);
 
 	if (alreadyAdded != this->designatorsAlreadyAdded.end()) {
@@ -545,6 +545,8 @@ void PlaylistAssemblerAirspace::reservationsForExplicitlyConfAirspace(
 	}
 
 	int anouncements = insertCommonAnnouncementAudioElems(designatorsAnouncementsDict, airspaceCfg, designator, type, activeReservations, localSayAltitudes, sayTimes);
+
+	this->designatorsAlreadyAdded.push_back(designator);
 
 	if (anouncements > 0) {
 		this->hasSomethingToSay = true;
@@ -628,6 +630,16 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 		if (filtered) {
 			SPDLOG_INFO("{} has been filtered out and will be skipped", it->first);
 			continue;
+		}
+
+		// check if this designator has been already added as a element of
+		// another type of anouncement (like explicitly configured airspace)
+		const auto alreadyAdded = std::find(this->designatorsAlreadyAdded.begin(), this->designatorsAlreadyAdded.end(), fullDesignatorString);
+
+		if (alreadyAdded != this->designatorsAlreadyAdded.end()) {
+			// this has been added
+			SPDLOG_INFO("Anouncement for {} is skipped because it has been added as explicitly configured airspace", fullDesignatorString);
+			return;
 		}
 
 		// skip this reservation if this is not enabled
