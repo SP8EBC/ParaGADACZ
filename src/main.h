@@ -9,7 +9,7 @@
 #define MAIN_H_
 
 #define MAIN_SOFTWARE_VERSION	"0.7"
-#define MAIN_SOFTWARE_DATE		"15-06-2024"
+#define MAIN_SOFTWARE_DATE		"21-06-2024"
 
 //!< Program will close if any current conditions data for configured source isn't find.
 //#define MAIN_FAIL_ON_MISSING_CURRENT_CONDITIONS

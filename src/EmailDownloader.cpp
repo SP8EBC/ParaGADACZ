@@ -46,6 +46,8 @@ public:
    }
 };
 
+const std::string EmailDownloader::prefixPl = "wiadomosc";
+
 const std::vector<std::locale> EmailDownloader::formats(
 	{
 	std::locale(std::locale::classic(),new boost::posix_time::time_input_facet("%m/%d/%Y %H:%M")),
@@ -150,6 +152,12 @@ int EmailDownloader::downloadAllEmailsImap() {
 			vmime::text emailSubject;
 			vmime::datetime emailDate;
 
+			std::string bodyString;
+			std::string qpDecodedBodyString;
+
+			// set to true if an attachment has been found and email body must be ignored
+			bool dontUseBodyContent = false;
+
 			// get sender address
 			std::shared_ptr<vmime::headerFieldValue> _from = msg->getHeader()->findField("From")->getValue();
 			emailAddr.copyFrom(*_from);
@@ -209,42 +217,88 @@ int EmailDownloader::downloadAllEmailsImap() {
 				// parse message data
 				vmime::shared_ptr<vmime::message> parsedMessage = msg->getParsedMessage();
 
+				// get all potential attachements from the message
+				std::vector <vmime::shared_ptr <const vmime::attachment> > attchs =
+					vmime::attachmentHelper::findAttachmentsInMessage(parsedMessage);
+
+				// check if message has an attachement (exactly one)
+				if (attchs.size() == 1) {
+					vmime::shared_ptr <const vmime::attachment> att = *attchs.begin();
+
+					// get it's name
+					const vmime::word attachementName = att->getName();
+
+					SPDLOG_DEBUG("Attachement {} has been found", attachementName.getBuffer());
+
+					// if file is long enought to contain hardcoded prefix
+					if (attachementName.getBuffer().size() >= 9) {
+						// extract first 9 letters
+						std::string subName = attachementName.getBuffer().substr(0, 9);
+
+						// convert to lowercase
+						boost::algorithm::to_lower(subName);
+
+						if (EmailDownloader::prefixPl.compare(subName) == 0) {
+							// extract it content
+							std::stringstream content;
+							vmime::utility::outputStreamAdapter stream(content);
+							att->getData()->extract(stream);
+
+							// and copy to the body string
+							bodyString = content.str();
+							qpDecodedBodyString = bodyString;
+
+							dontUseBodyContent = true;
+
+							SPDLOG_INFO("Single attachment with required prefix has been found. Discarding message body in favor of it's content");
+						}
+					}
+
+				}
+
 				// get message body
 				vmime::shared_ptr<vmime::body> body = parsedMessage->getBody();
 
-				// stringstream where content will be decoded and put
-				std::stringstream ss;
-
-				// adapter to wrap stringstream where decoded email body will be put into
-				vmime::utility::outputStreamAdapter stream(ss);
-
-				// extract email message body
-				body->getContents()->extract(stream);
-
 				// get encoding and charset for the body of this message
-				vmime::encoding encoding = body->getEncoding();//.getName();
-				vmime::charset charset = body->getCharset();//.getName();
+				vmime::encoding encoding = body->getEncoding();
+				vmime::charset charset = body->getCharset();
 
-				// create an instance of 'quoted-printable' format
-				vmime::shared_ptr<vmime::utility::encoder::encoder> enc =
-				vmime::utility::encoder::encoderFactory::getInstance()->create("quoted-printable");
+				if (!dontUseBodyContent) {
+					if (!found->onlyFromAttachement) {
+						// stringstream where content will be decoded and put
+						std::stringstream ss;
 
-				// get the email body as string
-				std::string bodyString = ss.str();
+						// adapter to wrap stringstream where decoded email body will be put into
+						vmime::utility::outputStreamAdapter stream(ss);
 
-				// wrap string inside an adapter used for qp decoding
-				vmime::utility::inputStreamStringAdapter in (bodyString);
+						// extract email message body
+						body->getContents()->extract(stream);
 
-				// string and adapter for output from quoted-printable encoding
-				std::string qpDecodedBodyString;
-				vmime::utility::outputStreamStringAdapter out (qpDecodedBodyString);
+						// create an instance of 'quoted-printable' format
+						vmime::shared_ptr<vmime::utility::encoder::encoder> enc =
+						vmime::utility::encoder::encoderFactory::getInstance()->create("quoted-printable");
 
-				// decode message body in case that for some reason the library
-				// will not decode 'quoted-printable' automatically and left raw output
-				// in the body
-				enc->decode(in, out);
+						// get the email body as string
+						bodyString = ss.str();
 
-				//SPDLOG_DEBUG(qpDecodedBodyString);
+						// wrap string inside an adapter used for qp decoding
+						vmime::utility::inputStreamStringAdapter in (bodyString);
+
+						// string and adapter for output from quoted-printable encoding
+						vmime::utility::outputStreamStringAdapter out (qpDecodedBodyString);
+
+						// decode message body in case that for some reason the library
+						// will not decode 'quoted-printable' automatically and left raw output
+						// in the body
+						enc->decode(in, out);
+
+						//SPDLOG_DEBUG(qpDecodedBodyString);
+					}
+					else {
+						SPDLOG_WARN("This sender is allowed only to create an announcement from an attachment, which is actually missing");
+						continue;
+					}
+				}
 
 				EmailDownloaderMessage message(
 						emailAddr.getEmail().toString(),

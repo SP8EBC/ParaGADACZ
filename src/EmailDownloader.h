@@ -22,6 +22,8 @@
  */
 class EmailDownloader {
 
+	static const std::string prefixPl;
+
 	static const std::vector<std::locale> formats;
 
 	const ConfigurationFile_Email &config;

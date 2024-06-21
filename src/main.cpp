@@ -135,6 +135,10 @@ bool bailoutCheck(	const bool isLogicalAndOnBailout,
 		if (airspace.enabled && airspace.bailoutIfNothingToSay) {
 			bailoutCondition = !playlistAssemblerAirspace->isHasSomethingToSay();
 		}
+		else {
+			bailoutCondition = true;
+		}
+
 		if (emailAnnonuncements.enabled && speechSynthesis.bailoutIfNoMailsToSay) {
 			bailoutCondition = bailoutCondition & (ttsAnouncmtsFromEmails == 0);
 		}

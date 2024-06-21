@@ -750,6 +750,10 @@ bool ConfigurationFile::parseEmailConfig(libconfig::Setting & root) {
 		for (size_t i = 0; i < allowedSendersSize; i++) {
 			ConfigurationFile_Email_AllowedSender sender;
 
+			sender.defaultAnnouncement = false;
+			sender.singleAnnouncement = true;
+			sender.timedAnnouncement = true;
+
 			if (!allowedSenders[i].lookupValue("EmailAddress", sender.emailAddress)) {
 				SPDLOG_ERROR("Email address in EmailSpecialAnnouncement::AllowedSenders must be specified for an announcement sender. Skipping this entry.");
 				continue;
@@ -760,6 +764,10 @@ bool ConfigurationFile::parseEmailConfig(libconfig::Setting & root) {
 			allowedSenders[i].lookupValue("DefaultAnnouncement", sender.defaultAnnouncement);
 			if (!allowedSenders[i].lookupValue("DefaultAnnouncementLn", sender.defaultAnnouncementLn)) {
 				sender.defaultAnnouncementLn = 240;
+			}
+			// onlyFromAttachement
+			if (!allowedSenders[i].lookupValue("OnlyFromAttachement", sender.onlyFromAttachement)) {
+				sender.onlyFromAttachement = 0;
 			}
 
 			try {
@@ -779,11 +787,12 @@ bool ConfigurationFile::parseEmailConfig(libconfig::Setting & root) {
 			// add parsed sender to list
 			emailAnnonuncements.allowedSendersList.push_back(sender);
 
-			SPDLOG_DEBUG("Configuration for sender {}, single: {}, eod: {}, timed: {}",
+			SPDLOG_DEBUG("Configuration for sender {}, single: {}, eod: {}, timed: {}, only attachement: {}",
 					sender.emailAddress,
 					sender.singleAnnouncement,
 					sender.eodAnnouncement,
-					sender.timedAnnouncement);
+					sender.timedAnnouncement,
+					sender.onlyFromAttachement);
 		}
 	}
 	catch (...) {

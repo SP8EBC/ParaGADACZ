@@ -206,6 +206,7 @@ struct ConfigurationFile_Email_AllowedSender {
 	bool timedAnnouncement;		//!< If this sender can send timed announcement, which will
 	bool defaultAnnouncement;	//!< If emails with non-specified subject should be allowed
 	int defaultAnnouncementLn;	//!< How long (in minutes) default announcement is valid since
+	bool onlyFromAttachement;	//!< If sender is allowed to only send a message with attachement content
 	ConfigurationFile_Email_AllowedSender_Preprocess preprocessing;
 };
 
