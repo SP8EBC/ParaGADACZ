@@ -1,0 +1,217 @@
+[2024-08-30 08:00:02.025] [info] [Player.cpp:29] Initializing player
+[2024-08-30 08:00:02.028] [info] [main.cpp:195] ============ ParaGADACZ is starting =============
+[2024-08-30 08:00:02.028] [info] [main.cpp:196] ===== Mateusz Lubecki, Bielsko - Biała 2024 =====
+[2024-08-30 08:00:02.028] [info] [main.cpp:197] =================================================
+[2024-08-30 08:00:02.028] [info] [main.cpp:198] Application version: 0.7, from: 21-06-2024
+[2024-08-30 08:00:02.028] [info] [main.cpp:201] Application startup UTC time: 2024-Aug-30 06:00:02
+[2024-08-30 08:00:02.028] [info] [main.cpp:211] Using configuration file: /etc/paragadacz/gadacz.conf
+[2024-08-30 08:00:02.028] [info] [ConfigurationFile.cpp:106] parsing configuration file: /etc/paragadacz/gadacz.conf
+[2024-08-30 08:00:02.029] [warning] [ConfigurationFile_Parsers.cpp:99] Configuration section for APRX log parser doesn't found. Using default values.
+[2024-08-30 08:00:02.029] [warning] [ConfigurationFile_Parsers.cpp:124] Configuration section for pogoda.cc backend doesn't found. Using default base URL, not ignoring quality factors
+[2024-08-30 08:00:02.029] [warning] [ConfigurationFile_Parsers.cpp:273] SettingNotFoundException during parsing 'CurrentWeather', e.getPath = .CurrentWeather
+[2024-08-30 08:00:02.029] [warning] [ConfigurationFile_Parsers.cpp:300] SettingNotFoundException during parsing 'Trend', e.getPath = .Trend
+[2024-08-30 08:00:02.029] [warning] [ConfigurationFile_Parsers.cpp:381] SettingNotFoundException during parsing 'ForecastMeteoblue', e.getPath = .ForecastMeteoblue
+[2024-08-30 08:00:02.029] [info] [ConfigurationFile_Parsers.cpp:403] Avalanche warning configuration not present or malformed
+[*** LOG ERROR #0001 ***] [2024-08-30 08:00:02] [] {argument not found [../src/ConfigurationFile_Parsers.cpp(428)]}
+[2024-08-30 08:00:02.029] [debug] [ConfigurationFile_Parsers.cpp:517] Designator filtering entry EPBA
+[2024-08-30 08:00:02.029] [debug] [ConfigurationFile_Parsers.cpp:531] 1 point-radius areas to check for active airspace reservations for
+[2024-08-30 08:00:02.029] [debug] [ConfigurationFile_Parsers.cpp:552] 2 airspaces to check for active reservations for
+[2024-08-30 08:00:02.029] [debug] [ConfigurationFile_Parsers.cpp:734] Email configuration, ImapAddress: poczta.interia.pl, ImapPort: 993, Username: beskidy.radio@interia.pl
+[2024-08-30 08:00:02.029] [debug] [ConfigurationFile_Parsers.cpp:790] Configuration for sender sp8ebc@gmail.com, single: true, eod: true, timed: true, only attachement: false
+[2024-08-30 08:00:02.029] [debug] [ConfigurationFile_Parsers.cpp:892] SpeechSynthesis, IgnoreOlderThan: 300, Pitch: 0.5, Rate: 0.5
+[2024-08-30 08:00:02.029] [debug] [ConfigurationFile_Parsers.cpp:893] SpeechSynthesis, MaximumTimeout: 48, MaximumTries: 6, DelayAfterFailTry: 64
+[2024-08-30 08:00:02.050] [info] [EmailDownloader.cpp:88] Downloading emails for beskidy.radio@interia.pl from IMAP server poczta.interia.pl:993
+[2024-08-30 08:00:02.581] [info] [EmailDownloader.cpp:119] Downloading emails from custom configured folder: comm
+[2024-08-30 08:00:03.234] [debug] [EmailDownloader.cpp:127] amount of emails in folder: 3
+[2024-08-30 08:00:03.521] [debug] [EmailDownloader.cpp:147] 3 emails was fetched
+[2024-08-30 08:00:03.522] [debug] [EmailDownloader.cpp:191] Email sent by: sp8ebc@gmail.com, at time: Sun, 23 Jun 2024 08:25:28 +0200, at UTC time: 2024-Jun-23 06:25:28, epoch: 1719123928, topic: "Re: until 07/05/2024 22:00"
+[2024-08-30 08:00:03.522] [info] [EmailDownloader.cpp:215] Found a message from allowed sender: sp8ebc@gmail.com
+[2024-08-30 08:00:03.934] [debug] [EmailDownloader.cpp:231] Attachement wiadomosc1234.txt has been found
+[2024-08-30 08:00:04.046] [info] [EmailDownloader.cpp:253] Single attachment with required prefix has been found. Discarding message body in favor of it's content
+[2024-08-30 08:00:04.046] [debug] [EmailDownloader.cpp:191] Email sent by: sp8ebc@gmail.com, at time: Mon, 24 Jun 2024 08:04:04 +0200, at UTC time: 2024-Jun-24 06:04:04, epoch: 1719209044, topic: "until 07/05/2024 22:00"
+[2024-08-30 08:00:04.046] [info] [EmailDownloader.cpp:215] Found a message from allowed sender: sp8ebc@gmail.com
+[2024-08-30 08:00:04.751] [debug] [EmailDownloader.cpp:231] Attachement wiadomosc1234.txt has been found
+[2024-08-30 08:00:04.879] [info] [EmailDownloader.cpp:253] Single attachment with required prefix has been found. Discarding message body in favor of it's content
+[2024-08-30 08:00:04.880] [debug] [EmailDownloader.cpp:191] Email sent by: sp8ebc@gmail.com, at time: Mon, 22 Jul 2024 05:44:18 +0200, at UTC time: 2024-Jul-22 03:44:18, epoch: 1721619858, topic: "until 07/26/2024 22:00"
+[2024-08-30 08:00:04.880] [info] [EmailDownloader.cpp:215] Found a message from allowed sender: sp8ebc@gmail.com
+[2024-08-30 08:00:05.313] [debug] [EmailDownloader.cpp:231] Attachement wiadomoscskoki.txt has been found
+[2024-08-30 08:00:05.415] [info] [EmailDownloader.cpp:253] Single attachment with required prefix has been found. Discarding message body in favor of it's content
+[2024-08-30 08:00:05.415] [debug] [EmailDownloader.cpp:534] Email sender sp8ebc@gmail.com found and validated
+[2024-08-30 08:00:05.416] [info] [EmailDownloader.cpp:436] Message sent by sp8ebc@gmail.com will be played until 2024-Jul-05 22:00:00 UTC
+[2024-08-30 08:00:05.416] [debug] [EmailDownloader.cpp:534] Email sender sp8ebc@gmail.com found and validated
+[2024-08-30 08:00:05.416] [info] [EmailDownloader.cpp:436] Message sent by sp8ebc@gmail.com will be played until 2024-Jul-26 22:00:00 UTC
+[2024-08-30 08:00:05.416] [debug] [EmailDownloader.cpp:534] Email sender sp8ebc@gmail.com found and validated
+[2024-08-30 08:00:05.416] [info] [EmailDownloader.cpp:544] 3 emails and theirs topics validated against configuration
+[2024-08-30 08:00:05.416] [info] [TrendDownloader.cpp:43] Trend data is disabled by configuration file
+[2024-08-30 08:00:05.416] [debug] [PansaAirspace.cpp:134] PostgreSQL used to download data from PANSA api 
+ INSERT INTO airspace(
+	 designator, airspace_element_type, centroid_lon, centroid_lat, st_distance, epoch_from, epoch_to, lower_altitude, upper_altitude, unit, remarks, geography, "json_body")
+SELECT
+	json_body->'properties'->>'designator'::text as designator,
+	json_body->'properties'->>'airspaceElementType' as airspaceElementType,
+	json_array_elements(json_body->'properties'->'centroid')->'x' as centroidLon,
+	json_array_elements(json_body->'properties'->'centroid')->'y' as centroidLat,
+	ST_Distance(geography,  ST_SetSRID(ST_MakePoint(19.0318, 49.6852), 4326)::geography),
+	extract (epoch from (airspaceReservation->>'startDate')::timestamp) as epochFrom,
+	extract (epoch from (airspaceReservation->>'endDate')::timestamp) as epochTo,
+	airspaceReservation->>'lowerAltitude' as lowerAltitude,
+	airspaceReservation->>'upperAltitude' as upperAltitude,
+	airspaceReservation->>'unit' as unit,
+	airspaceReservation->>'remarks' as remarks,
+	
+	geography,
+	json_body
+FROM (
+	select 
+		json_array_elements(json_body->'properties'->'airspaceReservations') as airspaceReservation,
+		geography,
+		json_body
+	from
+	(
+		select
+		ST_GeomFromGeoJSON(value->'geometry')::geography as geography,
+		value as json_body
+		from
+		json_array_elements((select content::json from http_get('https://airspace.pansa.pl/map-configuration/aup')))
+	) as cycki 
+) as dupa 
+WHERE
+ST_Distance(geography,  ST_SetSRID(ST_MakePoint(19.0318, 49.6852), 4326)::geography) < 5000 
+ORDER BY 
+st_distance
+RETURNING *;
+
+[2024-08-30 08:00:06.464] [info] [PansaAirspace.cpp:165] designator: ATZ EPBA, distanceInMeters: 0, lowerAltitudeStr: GND, upperAltitudeStr: A065, lowerAltitude: 0, upperAltitude: 1981
+[2024-08-30 08:00:06.464] [info] [PansaAirspace.cpp:165] designator: ATZ EPZR, distanceInMeters: 2707, lowerAltitudeStr: GND, upperAltitudeStr: A065, lowerAltitude: 0, upperAltitude: 1981
+[2024-08-30 08:00:06.467] [info] [PansaAirspace.cpp:238] Looking for active reservations for airspace designator ATZ EPZR
+[2024-08-30 08:00:06.467] [debug] [PansaAirspace.cpp:241] PostgreSQL used to download data from PANSA api 
+ select
+	json_body->'properties'->>'designator'::text as designator,
+	json_body->'properties'->>'airspaceElementType' as airspace_element_type,
+	extract (epoch from (airspaceReservation->>'startDate')::timestamp) as epoch_from,
+	extract (epoch from (airspaceReservation->>'endDate')::timestamp) as epoch_to,
+	airspaceReservation->>'lowerAltitude' as lower_altitude,
+	airspaceReservation->>'upperAltitude' as upper_altitude
+from (
+	select
+		json_body,
+		json_array_elements(json_body->'properties'->'airspaceReservations') as airspaceReservation
+	from
+	(
+		select
+		value as json_body
+		from
+		json_array_elements((select content::json from http_get('https://airspace.pansa.pl/map-configuration/aup')))
+	) as cycki 
+) as dupa
+WHERE json_body->'properties'->>'designator'::text = 'ATZ EPZR';
+
+
+[2024-08-30 08:00:07.077] [info] [PansaAirspace.cpp:264] airspaceType: ATZ, lowerAltitudeStr: GND, upperAltitudeStr: A065, lowerAltitude: 0, upperAltitude: 1981
+[2024-08-30 08:00:07.078] [info] [PansaAirspace.cpp:238] Looking for active reservations for airspace designator ATZ EPNT
+[2024-08-30 08:00:07.078] [debug] [PansaAirspace.cpp:241] PostgreSQL used to download data from PANSA api 
+ select
+	json_body->'properties'->>'designator'::text as designator,
+	json_body->'properties'->>'airspaceElementType' as airspace_element_type,
+	extract (epoch from (airspaceReservation->>'startDate')::timestamp) as epoch_from,
+	extract (epoch from (airspaceReservation->>'endDate')::timestamp) as epoch_to,
+	airspaceReservation->>'lowerAltitude' as lower_altitude,
+	airspaceReservation->>'upperAltitude' as upper_altitude
+from (
+	select
+		json_body,
+		json_array_elements(json_body->'properties'->'airspaceReservations') as airspaceReservation
+	from
+	(
+		select
+		value as json_body
+		from
+		json_array_elements((select content::json from http_get('https://airspace.pansa.pl/map-configuration/aup')))
+	) as cycki 
+) as dupa
+WHERE json_body->'properties'->>'designator'::text = 'ATZ EPNT';
+
+
+[2024-08-30 08:00:07.654] [info] [PlaylistAssembler.cpp:146] initializing new playlist->
+[2024-08-30 08:00:07.654] [info] [PlaylistAssembler.cpp:928] Creating text-to-speech announcements for 3 email messages
+[2024-08-30 08:00:07.654] [info] [SpeechSynthesis.cpp:120] Loading speech synthesis index file /var/cache/paragadacz/ttsIndexMain.json
+[2024-08-30 08:00:07.654] [debug] [SpeechSynthesis.cpp:474] Message from sp8ebc@gmail.com send at 2024-Jun-23 06:25:28 UTC is too old
+[2024-08-30 08:00:07.654] [debug] [SpeechSynthesis.cpp:474] Message from sp8ebc@gmail.com send at 2024-Jun-24 06:04:04 UTC is too old
+[2024-08-30 08:00:07.654] [debug] [SpeechSynthesis.cpp:474] Message from sp8ebc@gmail.com send at 2024-Jul-22 03:44:18 UTC is too old
+[2024-08-30 08:00:07.654] [info] [SpeechSynthesis.cpp:584] 0 messsages converted, 0 not valid, 3 too old, 0 singleshots read before
+[2024-08-30 08:00:07.654] [info] [PlaylistAssembler.cpp:959] text-to-speech index contains 0 messages which are converted
+[2024-08-30 08:00:07.654] [info] [PlaylistAssemblerAirspace.cpp:547] Adding anouncement for explicitly configured airspace designator ATZ EPZR
+[2024-08-30 08:00:07.654] [debug] [PlaylistSamplerPL.cpp:144] timestamp: 1724914816, hours: 7, minutes: 0
+[2024-08-30 08:00:07.654] [debug] [PlaylistSamplerPL.cpp:144] timestamp: 1724954368, hours: 17, minutes: 59
+[2024-08-30 08:00:07.654] [warning] [PlaylistAssemblerAirspace.cpp:517] There are no reservations for airspace ATZ EPNT
+[2024-08-30 08:00:07.654] [info] [PlaylistAssemblerAirspace.cpp:578] Adding reservations aroung 5000 meters around _skrzyczne.ogg
+[2024-08-30 08:00:07.654] [info] [PlaylistAssemblerAirspace.cpp:263] Airspace designator ATZ EPBA is filtered and won't be added to playlist
+[2024-08-30 08:00:07.654] [info] [PlaylistAssemblerAirspace.cpp:635] ATZ EPBA has been filtered out and will be skipped
+[2024-08-30 08:00:07.654] [info] [PlaylistAssemblerAirspace.cpp:645] Anouncement for ATZ EPZR is skipped because it has been added as explicitly configured airspace
+[2024-08-30 08:00:07.654] [info] [main.cpp:479] Generated playlist has 31 elements
+[2024-08-30 08:00:07.654] [info] [main.cpp:482] Element: intro.ogg
+[2024-08-30 08:00:07.654] [info] [main.cpp:482] Element: intro3.ogg
+[2024-08-30 08:00:07.654] [info] [main.cpp:482] Element: intro_pg_restrictions.ogg
+[2024-08-30 08:00:07.654] [info] [main.cpp:482] Element: atz_epzr.ogg
+[2024-08-30 08:00:07.654] [info] [main.cpp:482] Element: aktywna.ogg
+[2024-08-30 08:00:07.654] [info] [main.cpp:482] Element: od.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: siodma.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: zero.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: zero.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: czasu_uniwersalnego.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: do.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: siedemnasta.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: piecdziesiat.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: dziewiec.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: czasu_uniwersalnego.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: wysokosc.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: od.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: poziomu_gruntu.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: do.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: tysiac.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: dziewiecset.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: metrow.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: ograniczenia_lotow.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: w_promieniu.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: piec.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: kilometrow.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: od_lokalizacji.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: _skrzyczne.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: outro_disclarimer.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: outro_disclarimer_2.ogg
+[2024-08-30 08:00:07.655] [info] [main.cpp:482] Element: outro_listen_to_spn.ogg
+[2024-08-30 08:00:07.655] [info] [InhibitorAndPttControl.cpp:182] Parallel port is not used for PTT control.
+[2024-08-30 08:00:07.655] [info] [InhibitorAndPttControl.cpp:190] Checking serial port /dev/ttyUSB1
+[2024-08-30 08:00:07.856] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/intro.ogg
+[2024-08-30 08:00:11.268] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/intro3.ogg
+[2024-08-30 08:00:12.502] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/intro_pg_restrictions.ogg
+[2024-08-30 08:00:16.546] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/atz_epzr.ogg
+[2024-08-30 08:00:17.656] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/aktywna.ogg
+[2024-08-30 08:00:18.571] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/od.ogg
+[2024-08-30 08:00:19.184] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/siodma.ogg
+[2024-08-30 08:00:19.997] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/zero.ogg
+[2024-08-30 08:00:20.707] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/zero.ogg
+[2024-08-30 08:00:21.417] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/czasu_uniwersalnego.ogg
+[2024-08-30 08:00:23.035] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/do.ogg
+[2024-08-30 08:00:23.649] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/siedemnasta.ogg
+[2024-08-30 08:00:24.764] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/piecdziesiat.ogg
+[2024-08-30 08:00:25.779] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/dziewiec.ogg
+[2024-08-30 08:00:26.694] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/czasu_uniwersalnego.ogg
+[2024-08-30 08:00:28.313] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/wysokosc.ogg
+[2024-08-30 08:00:29.427] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/od.ogg
+[2024-08-30 08:00:30.040] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/poziomu_gruntu.ogg
+[2024-08-30 08:00:31.174] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/do.ogg
+[2024-08-30 08:00:31.785] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/tysiac.ogg
+[2024-08-30 08:00:32.701] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/dziewiecset.ogg
+[2024-08-30 08:00:33.714] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/metrow.ogg
+[2024-08-30 08:00:34.628] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/ograniczenia_lotow.ogg
+[2024-08-30 08:00:36.100] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/w_promieniu.ogg
+[2024-08-30 08:00:37.108] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/piec.ogg
+[2024-08-30 08:00:37.818] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/kilometrow.ogg
+[2024-08-30 08:00:38.929] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/od_lokalizacji.ogg
+[2024-08-30 08:00:40.236] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/_skrzyczne.ogg
+[2024-08-30 08:00:41.250] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/outro_disclarimer.ogg
+[2024-08-30 08:00:47.593] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/outro_disclarimer_2.ogg
+[2024-08-30 08:00:51.780] [info] [Player.cpp:117] Playling file file /usr/local/share/paragadacz/outro_listen_to_spn.ogg
+[2024-08-30 08:01:02.900] [info] [Player.cpp:73] Last file has been played
+[2024-08-30 08:01:02.909] [info] [Player.cpp:61] Deinitializing player

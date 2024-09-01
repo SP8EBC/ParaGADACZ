@@ -234,7 +234,8 @@ std::optional<std::string> PlaylistAssemblerAirspace::extractUsingRegexp(
 bool PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(
 		const std::map<std::string, PansaAirspace_Zone> &airspaceReservations,
 		const ConfigurationFile_Airspace_SayConfigPerElemType &config,
-		const std::vector<std::string> & filter){
+		const std::vector<std::string> & filter,
+		const std::vector<std::string> & designatorsAlreadyAdded){
 
 	bool output = false;
 
@@ -253,10 +254,17 @@ bool PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(
 		// go through configure filters and look for
 		const bool isFiltered = PlaylistAssemblerAirspace::checkIfFiltered(designator, filter);
 
+		const auto alreadyAdded = std::find(designatorsAlreadyAdded.begin(), designatorsAlreadyAdded.end(), designator);
+
 		if (!isFiltered) {
-			if (sayThis) {
-				output = true;
-				break;
+			if (alreadyAdded == designatorsAlreadyAdded.end()) {
+				if (sayThis) {
+					output = true;
+					break;
+				}
+			}
+			else {
+				SPDLOG_INFO("Anouncement for {} has been added before as a part of explicitly configured airspace", designator);
 			}
 		}
 		else {
@@ -581,7 +589,7 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 	const ConfigurationFile_Airspace & airspaceCfg = config->getAirspace();
 	const std::map<std::string, std::string> & designatorsAnouncementsDict = airspaceCfg.airspaceDesignatorsAnouncement;
 
-	const bool anythingToSay = PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(airspaceReservations, airspaceCfg.confPerElemType, airspaceCfg.designatorsFilter);
+	const bool anythingToSay = PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(airspaceReservations, airspaceCfg.confPerElemType, airspaceCfg.designatorsFilter, this->designatorsAlreadyAdded);
 
 	if (!anythingToSay) {
 		SPDLOG_INFO("There is nothing to say around this point, because types of all active airspaces are disabled by config");
