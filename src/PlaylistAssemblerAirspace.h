@@ -48,7 +48,8 @@ private:
 										const std::map<std::string, PansaAirspace_Zone>& airspaceReservations,
 										const ConfigurationFile_Airspace_SayConfigPerElemType &config,
 										const std::vector<std::string> & filter,
-										const std::vector<std::string> & designatorsAlreadyAdded);
+										const std::vector<std::string> & designatorsAlreadyAdded,
+										const std::string & point);
 
 	/**
 	 * Checks if a kind of airspace (like TRA, TSA etc) is currently enabled by user configuration

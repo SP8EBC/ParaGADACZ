@@ -235,12 +235,15 @@ bool PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(
 		const std::map<std::string, PansaAirspace_Zone> &airspaceReservations,
 		const ConfigurationFile_Airspace_SayConfigPerElemType &config,
 		const std::vector<std::string> & filter,
-		const std::vector<std::string> & designatorsAlreadyAdded){
+		const std::vector<std::string> & designatorsAlreadyAdded,
+		const std::string & point){
 
 	bool output = false;
 
 	// iterator to reservations map
 	std::map<std::string, PansaAirspace_Zone>::const_iterator it = airspaceReservations.begin();
+
+	SPDLOG_DEBUG("Checking if there is anything to say around point {}", point);
 
 	// iterate through all airspace, which has any reservation
 	do {
@@ -264,11 +267,11 @@ bool PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(
 				}
 			}
 			else {
-				SPDLOG_INFO("Anouncement for {} has been added before as a part of explicitly configured airspace", designator);
+				SPDLOG_DEBUG("Airspace designator {} detected as added before while checking if anything to say", designator);
 			}
 		}
 		else {
-			SPDLOG_INFO("Airspace designator {} is filtered and won't be added to playlist", designator);
+			SPDLOG_DEBUG("Airspace designator {} detected as filtered while checking if anything to say", designator);
 		}
 	} while (++it != airspaceReservations.end());
 
@@ -583,16 +586,16 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 		return;
 	}
 
-	SPDLOG_INFO("Adding reservations aroung {} meters around {}", radiusInMeters, anouncementAudioFilename);
+	SPDLOG_INFO("Adding reservations around {} meters around {}", radiusInMeters, anouncementAudioFilename);
 
 	const std::shared_ptr<std::vector<std::string>> playlistPtr = playlist.value();
 	const ConfigurationFile_Airspace & airspaceCfg = config->getAirspace();
 	const std::map<std::string, std::string> & designatorsAnouncementsDict = airspaceCfg.airspaceDesignatorsAnouncement;
 
-	const bool anythingToSay = PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(airspaceReservations, airspaceCfg.confPerElemType, airspaceCfg.designatorsFilter, this->designatorsAlreadyAdded);
+	const bool anythingToSay = PlaylistAssemblerAirspace::checkIfThereIsAnythingToSayAroundPoint(airspaceReservations, airspaceCfg.confPerElemType, airspaceCfg.designatorsFilter, this->designatorsAlreadyAdded, anouncementAudioFilename);
 
 	if (!anythingToSay) {
-		SPDLOG_INFO("There is nothing to say around this point, because types of all active airspaces are disabled by config");
+		SPDLOG_INFO("There is nothing to say around point {}, because active airspaces have been said or theirs types are disabled by config", anouncementAudioFilename);
 		return;
 	}
 
@@ -650,7 +653,7 @@ void PlaylistAssemblerAirspace::reservationsAroundPoint(
 
 		if (alreadyAdded != this->designatorsAlreadyAdded.end()) {
 			// this has been added
-			SPDLOG_INFO("Anouncement for {} is skipped because it has been added as explicitly configured airspace", fullDesignatorString);
+			SPDLOG_INFO("Anouncement for {} is skipped for area around {} because it has been added as explicitly configured airspace", fullDesignatorString, anouncementAudioFilename);
 			continue;
 		}
 
