@@ -1,0 +1,136 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make DebugPansaAirspace",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "all"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/DebugPansaAirspace"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make j6 DebugPansaAirspace",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j6",
+                "all"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/DebugPansaAirspace"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "clean DebugPansaAirspace",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/DebugPansaAirspace"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make Debug",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "all"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Debug"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make j6 Debug",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j6",
+                "all"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Debug"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "clean Debug",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Debug"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make Release",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "all"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Release"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make j6 Release",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j6",
+                "all"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Release"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "clean Release",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Release"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+    }

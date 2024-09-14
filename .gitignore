@@ -3,6 +3,7 @@ ParaGADACZ
 date_time_zonespec.csv
 paragadacz.conf
 aprx-rf.log
+big-test-aprx-rf.log
 EmailDownloader_test_secret.h
 secret.h
 secret*

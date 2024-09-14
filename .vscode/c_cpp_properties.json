@@ -1,0 +1,56 @@
+{
+    "configurations": [
+        {
+            "name": "DebugPansaAirspace",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/lib/lexborisov_myhtml/include",
+                "${workspaceFolder}/lib/kisli_vmime_c6b9ad3c",
+                "/usr/include/x86_64-linux-gnu/",
+                "/usr/include/boost",
+                "/usr/include/curl",
+                "/usr/include/spdlog"
+            ],
+            "defines": ["SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG", "PANSA_AIRSPACE_ENABLED"],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        },
+        {
+            "name": "Debug",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/lib/lexborisov_myhtml/include",
+                "${workspaceFolder}/lib/kisli_vmime_c6b9ad3c",
+                "/usr/include/x86_64-linux-gnu/",
+                "/usr/include/boost",
+                "/usr/include/curl",
+                "/usr/include/spdlog"
+            ],
+            "defines": ["SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG"],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        },
+        {
+            "name": "Release",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/lib/lexborisov_myhtml/include",
+                "${workspaceFolder}/lib/kisli_vmime_c6b9ad3c",
+                "/usr/include/x86_64-linux-gnu/",
+                "/usr/include/boost",
+                "/usr/include/curl",
+                "/usr/include/spdlog"
+            ],
+            "defines": ["SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG"],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
