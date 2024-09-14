@@ -40,6 +40,7 @@
 #include "EmailDownloader.h"
 #include "SpeechSynthesis.h"
 #include "TimeTools.h"
+#include "./exception/NoEmailsToSayEx.h"
 
 #ifdef PANSA_AIRSPACE_ENABLED
 #include "PansaAirspace.h"

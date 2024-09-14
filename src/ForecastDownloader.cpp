@@ -87,6 +87,11 @@ bool ForecastDownloader::downloadAllMeteoblue() {
 				// if forecast cannot be loaded from cache, download this from the API
 				downloadMeteoblue(location);
 			}
+			catch (web::json::json_exception &ex) {
+				SPDLOG_WARN("Redownloading forecast data");
+				// if forecast cannot be loaded from cache, download this from the API
+				downloadMeteoblue(location);				
+			}
 		}
 		else {
 			downloadMeteoblue(location);
@@ -208,11 +213,43 @@ std::shared_ptr<org::openapitools::client::model::Inline_response_200> ForecastD
 				// create output object
 				out = std::make_shared<org::openapitools::client::model::Inline_response_200>();
 
-				// convert a string containing JSON data in text to JSON object itself
-				web::json::value value = web::json::value::parse(buffer);
+				try {
+					// convert a string containing JSON data in text to JSON object itself
+					web::json::value value = web::json::value::parse (buffer);
 
-				out->fromJson(value);
+					out->fromJson (value);
+				}
 
+				catch (web::json::json_exception &ex) {
+					SPDLOG_ERROR ("web::json::json_exception has been thrown. Saving input buffer to disk for debugging");
+					SPDLOG_ERROR (ex.what ());
+
+					// path to temporary directory
+					boost::filesystem::path dir (
+						this->configurationFile->getForecast ().cacheDirectory);
+
+					// path to file with this forecast
+					boost::filesystem::path file (
+						this->configurationFile->getForecast ().cacheDirectory + "/error_" + name +
+						"_" + std::to_string (TimeTools::getEpoch ()) + ".json");
+
+					// open file from disk
+					std::fstream errorTrace;
+					errorTrace.open(file.generic_string(), std::ios::out | std::ios::trunc);
+
+					if (errorTrace.is_open()) {
+						// put JSON into file on disk
+						errorTrace << buffer;
+
+						errorTrace.close();
+					}
+					else {
+						// we are fucked up completely!!!
+						SPDLOG_ERROR("Hell yeah. I cannot even save trace log from an error! FUCK!!!");
+					}
+
+					throw ex;
+				}
 			}
 		}
 		else {
@@ -230,7 +267,7 @@ bool ForecastDownloader::saveInCache(std::string &data, std::string &name) {
 
 	bool output = false;
 
-	// path to remporary directory
+	// path to temporary directory
 	boost::filesystem::path dir(this->configurationFile->getForecast().cacheDirectory);
 
 	// path to file with this forecast
