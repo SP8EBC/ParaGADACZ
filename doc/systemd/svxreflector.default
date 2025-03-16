@@ -1,0 +1,17 @@
+#############################################################################
+#
+# Configuration file for the SvxReflector Systemd unit file
+#
+#############################################################################
+
+# The user to run the SvxReflector server as
+RUNASUSER=svxlink
+
+# Specify which configuration file to use
+CFGFILE=/etc/svxlink/svxreflector.conf
+
+# Where to place the log file
+LOGFILE=/var/log/svxreflector
+
+# Where to place the PID file
+PIDFILE=/run/svxreflector.pid

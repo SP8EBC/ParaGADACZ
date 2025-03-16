@@ -1,0 +1,63 @@
+In some cases the PTT control might hang just after the PC is started, and the transmitter might stay keyed for 
+indefinitely amount of time, probably until a TOT timer will expires and shutdown transmission forcefully. 
+This might be caused by FTDI USB to serial port adapter, which has all TTL output pins by default in logic
+high state. To fix this it is required to, so called "initialize serial ports". This process is simply
+opening the serial port and then closes it immediately. As a result all TTL outputs like RTS/DTR etc. will
+be flipped by to logic low state and the transmitter should stay unkeyed. 
+
+This can be done, by systemd service which will use a bash script during startup
+
+[Unit]
+Description=Opens and closes immediately all serial port used for PTT
+
+[Install]
+WantedBy=multi-user.target
+
+
+[Service]
+Type=oneshot
+ExecStart=/etc/rc.fixusbptt
+TimeoutStartSec=0
+root@magurka-aprs:/lib/systemd/system# 
+
+
+and then the script itself 
+
+root@magurka-aprs:/lib/systemd/system# cat /etc/rc.fixusbptt 
+#!/bin/bash
+
+/usr/bin/screen -dmS usb1 /dev/ttyUSB1 9600
+/usr/bin/screen -dmS usb2 /dev/ttyUSB2 9600
+screen -S usb1 -X quit
+screen -S usb2 -X quit
+
+
+root@magurka-aprs:/lib/systemd/system# 
+
+
+
+If You're using ParaGADACZ along with Svxlink You might get stuck with an issue that Svxlink doesn't see
+audio device 
+
+Sun Mar 16 13:53:00 2025: Starting logic: SimplexLogic
+Sun Mar 16 13:53:00 2025:       Found plugin: /usr/local/lib/svxlink/SimplexLogic.so
+Sun Mar 16 13:53:00 2025: SimplexLogic: Loading RX "Rx1"
+Sun Mar 16 13:53:00 2025: ALSA lib pcm_dmix.c:999:(snd_pcm_dmix_open) unable to open slave
+Sun Mar 16 13:53:00 2025: Rx1: Delay line (for DTMF muting etc) set to 40 ms
+Sun Mar 16 13:53:00 2025: ALSA lib pcm_dsnoop.c:566:(snd_pcm_dsnoop_open) unable to open slave
+Sun Mar 16 13:53:00 2025: *** ERROR: Open capture audio device failed: No such file or directory
+Sun Mar 16 13:53:00 2025: *** ERROR: Could not open audio device for receiver "Rx1"
+Sun Mar 16 13:53:00 2025: *** ERROR: Could not initialize RX "Rx1"
+Sun Mar 16 13:53:00 2025: *** ERROR: Could not load or initialize Logic object "SimplexLogic". Skipping...
+Sun Mar 16 13:53:00 2025: 
+Sun Mar 16 13:53:00 2025: Starting logic: ReflectorLogic
+Sun Mar 16 13:53:00 2025:       Found plugin: /usr/local/lib/svxlink/ReflectorLogic.so
+Sun Mar 16 13:53:00 2025: ReflectorLogic: Connecting to service 
+Sun Mar 16 13:53:00 2025: *** WARNING: Logic SimplexLogic has been specified in logic link LinkReflector but that logic is missing. Removing logic from link.
+
+
+This is caused by some weirs data races between pulse audio working as system wide service and Svxlink. Probably Pulse
+Audio isn't fully ready after startup. Maybe it does some work in background after startup, like configuring sinks 
+and sources, loading audio flow and stuff like that. To workaround this problem it is recommended to start Svxlink 
+from a systemd timer and delay it for few seconds.  
+

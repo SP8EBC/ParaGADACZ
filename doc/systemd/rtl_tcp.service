@@ -1,0 +1,23 @@
+[Unit]
+Description=SDR server
+After=network.target remote-fs.target nss-lookup.target
+#Documentation=https://httpd.apache.org/docs/2.4/
+
+[Service]
+Type=simple
+#Environment=APACHE_STARTED_BY_SYSTEMD=true
+ExecStart=/usr/bin/rtl_tcp -a 0.0.0.0 -p 1234 -f 123450000 -s 960000
+#ExecStop=/usr/sbin/apachectl graceful-stop
+#ExecReload=/usr/sbin/apachectl graceful
+RestartSec=15
+#KillMode=mixed
+#KillSignal=SIGKILL
+TimeoutStopSec=4
+PrivateTmp=true
+Restart=on-failure
+#OOMPolicy=continue
+User=sdr
+#StandardOutput=file:/dev/null
+
+[Install]
+WantedBy=multi-user.target

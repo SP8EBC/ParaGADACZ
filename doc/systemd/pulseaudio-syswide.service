@@ -1,0 +1,19 @@
+[Unit]
+Description=PulseAudio Daemon
+Requires=sound.target
+After=multi-user.target
+
+[Install]
+WantedBy=graphical.target
+
+[Service]
+Type=simple
+PIDFile=/run/pulseaudio.pid
+StandardOutput=file:/var/log/pulseaudio_stdout
+StandardError=file:/var/log/pulseaudio_stderr
+PrivateTmp=true
+RestartSec=2
+User=root
+Group=staff
+ExecStart=/usr/bin/pulseaudio --system --realtime --disallow-exit --no-cpu-limit 
+
