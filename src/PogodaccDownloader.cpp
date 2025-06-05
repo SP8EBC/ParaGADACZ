@@ -15,7 +15,7 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #pragma pop_macro("U")
 
-PogodaccDownloader::PogodaccDownloader(std::shared_ptr<ConfigurationFile> & config) : configurationFile(config) {
+PogodaccDownloader::PogodaccDownloader(std::shared_ptr<ConfigurationFile> & config) : configurationFile(config), apiHasFailed(false) {
 
 	const utility::string_t pogoda_base_url = "http://pogoda.cc:8080/meteo_backend_web/";
 
@@ -33,11 +33,24 @@ PogodaccDownloader::~PogodaccDownloader() {
 	// TODO Auto-generated destructor stub
 }
 
-void PogodaccDownloader::downloadAllStationsList() {
+bool PogodaccDownloader::downloadAllStationsList() {
 	try {
 		listOfAllStationsPogodacc = listofAllStationApi->listOfAllStationsGet().get();
+
+		return true;
 	}
 	catch (web::json::json_exception & ex) {
 		SPDLOG_ERROR(ex.what());
+
+		apiHasFailed = true;
+
+		return false;
+	}
+	catch (org::openapitools::client::api::ApiException & ex) {
+		SPDLOG_ERROR(ex.what());
+
+		apiHasFailed = true;
+
+		return false;
 	}
 }

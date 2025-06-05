@@ -23,7 +23,7 @@ root@magurka-aprs:/lib/systemd/system#
 
 and then the script itself 
 
-root@magurka-aprs:/lib/systemd/system# cat /etc/rc.fixusbptt 
+root@sucha-gora:~# cat /etc/rc.fixusbptt 
 #!/bin/bash
 
 /usr/bin/screen -dmS usb1 /dev/ttyUSB1 9600
@@ -32,7 +32,10 @@ screen -S usb1 -X quit
 screen -S usb2 -X quit
 
 
-root@magurka-aprs:/lib/systemd/system# 
+$(exit 0)
+
+root@sucha-gora:~# 
+
 
 
 

@@ -56,7 +56,7 @@ public:
 
 	static int downloadTrendData(std::vector<TrendDownloader_Data> & out,
 								const ConfigurationFile & config,
-								std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,
+								std::optional<std::reference_wrapper<std::shared_ptr<org::openapitools::client::api::StationApi>>> stationApi,
 								AprxLogParser & logParser,
 								int64_t currentEpoch);
 };

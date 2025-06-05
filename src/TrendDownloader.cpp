@@ -27,13 +27,15 @@ TrendDownloader::~TrendDownloader() {
 
 int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 		const ConfigurationFile &config,
-		std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,
+		std::optional<std::reference_wrapper<std::shared_ptr<org::openapitools::client::api::StationApi>>> stationApi,
 		AprxLogParser &logParser,
 		int64_t currentEpoch) {
 
 	int ret = 0;
 
 	bool goodData = false;
+
+	bool pogodaCcInop = false;
 
 	// get trend configuration
 	ConfigurationFile_Trend trendConfig = config.getTrend();
@@ -112,40 +114,57 @@ int TrendDownloader::downloadTrendData(std::vector<TrendDownloader_Data> &out,
 			break;
 		}
 		case POGODA_CC: {
-			// get trend data for currently processed station
-			std::shared_ptr<org::openapitools::client::model::Trend> trend = stationApi->stationStationNameTrendGet(current.name).get();
+			if (pogodaCcInop) {
+				break;
+			}
 
-			// extract data for temperature and windspeed
-			std::shared_ptr<org::openapitools::client::model::TrendData> temperatureTrend = trend->getTemperatureTrend();
-			std::shared_ptr<org::openapitools::client::model::TrendData> windspeedTrend = trend->getAverageWindSpeedTrend();
+			try {
+				std::shared_ptr<org::openapitools::client::api::StationApi> &api = stationApi.value();
 
-			goodData = true;
+				// get trend data for currently processed station
+				std::shared_ptr<org::openapitools::client::model::Trend> trend = api->stationStationNameTrendGet(current.name).get();
 
-			// pogoda.cc backend returns trend for certain time windows.
-			switch (trendConfig.trendLenghtInHours) {
-			case 2:
-				temperatureArchivalAverage = temperatureTrend->getTwoHoursValue();
-				windspeedArchivalAverage = windspeedTrend->getTwoHoursValue();
-				SPDLOG_DEBUG("Average from two hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
-				break;
-			case 4:
-				temperatureArchivalAverage = temperatureTrend->getFourHoursValue();
-				windspeedArchivalAverage = windspeedTrend->getFourHoursValue();
-				SPDLOG_DEBUG("Average from four hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
-				break;
-			case 6:
-				temperatureArchivalAverage = temperatureTrend->getSixHoursValue();
-				windspeedArchivalAverage = windspeedTrend->getSixHoursValue();
-				SPDLOG_DEBUG("Average from six hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
-				break;
-			case 8:
-				temperatureArchivalAverage = temperatureTrend->getEightHoursValue();
-				windspeedArchivalAverage = windspeedTrend->getEightHoursValue();
-				SPDLOG_DEBUG("Average from eight hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
-				break;
-			default:
-				goodData = false;
-				SPDLOG_ERROR("pogoda.cc meteo backend provide trend data only for 2, 4, 6 and 8 hours timeframe");
+				// extract data for temperature and windspeed
+				std::shared_ptr<org::openapitools::client::model::TrendData> temperatureTrend = trend->getTemperatureTrend();
+				std::shared_ptr<org::openapitools::client::model::TrendData> windspeedTrend = trend->getAverageWindSpeedTrend();
+
+				goodData = true;
+
+				// pogoda.cc backend returns trend for certain time windows.
+				switch (trendConfig.trendLenghtInHours) {
+				case 2:
+					temperatureArchivalAverage = temperatureTrend->getTwoHoursValue();
+					windspeedArchivalAverage = windspeedTrend->getTwoHoursValue();
+					SPDLOG_DEBUG("Average from two hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
+					break;
+				case 4:
+					temperatureArchivalAverage = temperatureTrend->getFourHoursValue();
+					windspeedArchivalAverage = windspeedTrend->getFourHoursValue();
+					SPDLOG_DEBUG("Average from four hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
+					break;
+				case 6:
+					temperatureArchivalAverage = temperatureTrend->getSixHoursValue();
+					windspeedArchivalAverage = windspeedTrend->getSixHoursValue();
+					SPDLOG_DEBUG("Average from six hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
+					break;
+				case 8:
+					temperatureArchivalAverage = temperatureTrend->getEightHoursValue();
+					windspeedArchivalAverage = windspeedTrend->getEightHoursValue();
+					SPDLOG_DEBUG("Average from eight hours ago for station {}, temperature: {}, wind: {}", current.name, temperatureArchivalAverage, windspeedArchivalAverage);
+					break;
+				default:
+					goodData = false;
+					SPDLOG_ERROR("pogoda.cc meteo backend provide trend data only for 2, 4, 6 and 8 hours timeframe");
+				}
+			}
+			catch (std::bad_optional_access & ex) {
+				SPDLOG_ERROR("meteo_backend api is not available. all further attempts to download trend data will be skipped");
+				pogodaCcInop = true;
+			}
+			catch (org::openapitools::client::api::ApiException & ex) {
+				SPDLOG_ERROR(ex.what());
+
+				pogodaCcInop = true;
 			}
 
 			break;

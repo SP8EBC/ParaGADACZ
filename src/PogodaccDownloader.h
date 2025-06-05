@@ -17,6 +17,8 @@
 #include "StationApi.h"
 
 #include <memory>
+#include <optional>
+#include <functional>
 
 class PogodaccDownloader {
 
@@ -35,20 +37,31 @@ class PogodaccDownloader {
 	//!< List of all station from pogoda.cc meteo_backend
 	std::vector<std::shared_ptr<org::openapitools::client::model::StationDefinitionModel>> listOfAllStationsPogodacc;
 
+	bool apiHasFailed;
+
 public:
 	PogodaccDownloader(std::shared_ptr<ConfigurationFile> & config);
 	virtual ~PogodaccDownloader();
 
-	void downloadAllStationsList();
+	bool downloadAllStationsList();
 
 	const std::vector<
-			std::shared_ptr<
-					org::openapitools::client::model::StationDefinitionModel> >& getListOfAllStationsPogodacc() const {
-		return listOfAllStationsPogodacc;
+					std::shared_ptr<
+							org::openapitools::client::model::StationDefinitionModel> >&  getListOfAllStationsPogodacc() const {
+
+			return listOfAllStationsPogodacc;
 	}
 
-	const std::shared_ptr<org::openapitools::client::api::StationApi>& getStationApi() const {
-		return stationApi;
+	std::optional<std::reference_wrapper<std::shared_ptr<org::openapitools::client::api::StationApi>>> getStationApi() {
+		if (apiHasFailed)
+		{
+			return {};
+		}
+		else
+		{
+			//return std::make_optional<std::reference_wrapper<std::shared_ptr<org::openapitools::client::api::StationApi>>>(stationApi);
+			return stationApi;
+		}
 	}
 };
 

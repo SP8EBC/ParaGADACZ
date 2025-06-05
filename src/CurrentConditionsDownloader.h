@@ -33,8 +33,8 @@ public:
 			std::vector<AprsWXData> & currentWeatherAprx,
 			std::vector<std::tuple<std::string, AprsWXData>> & currentWeatherDavisWeatherlink,
 			std::vector<std::pair<std::string, std::shared_ptr<org::openapitools::client::model::Summary>>> & currentWeatherMeteobackend,
-			std::vector<std::shared_ptr<org::openapitools::client::model::StationDefinitionModel>> listOfAllStationsPogodacc,
-			std::shared_ptr<org::openapitools::client::api::StationApi> stationApi,
+			const std::vector<std::shared_ptr<org::openapitools::client::model::StationDefinitionModel>> & listOfAllStationsPogodacc,
+			std::optional<std::reference_wrapper<std::shared_ptr<org::openapitools::client::api::StationApi>>> stationApi,
 			std::optional<float> regionalPressure,
 			AprxLogParser & logParser,
 			std::shared_ptr<WeatherlinkDownloader> weatherlink);
