@@ -80,7 +80,9 @@ public:
 	}
 
 	/**
-	 *
+	 * This method has a bug related to how TZ offset is calculated. It doesn't care about DST at the moment
+	 * pointed by ptime. It uses current date and time to check an offset, which result in different daylight
+	 * saving
 	 * @param in ptime to convert to epoch timestamp
 	 * @param universalOrLocal set to true if ptime contains time in local timezone instead of UTC
 	 */

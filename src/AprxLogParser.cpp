@@ -206,30 +206,36 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 			// get frame timestamp
 			boost::posix_time::ptime timestamp = AprxLogParser_StaticStuff::convertToFrameTimestamp(seprated.at(0), seprated.at(1));
 
-			// convert into epoch
-			const long epochFromLine = TimeTools::getEpochFromPtime(timestamp, timestampsAreInLocal);
+			if (!timestamp.is_special()) {
 
-			try {
-				// parse line read from aprx rf log
-				std::optional<AprsWXData> parsedFrame = AprxLogParser_StaticStuff::parseFrame(seprated, packet);
+				// convert into epoch
+				const long epochFromLine = TimeTools::getEpochFromPtime(timestamp, timestampsAreInLocal);
 
-				// check if this line contains valid WX data
-				if (parsedFrame.has_value()) {
-					// if yes return it
-					out = parsedFrame.value();
+				try {
+					// parse line read from aprx rf log
+					std::optional<AprsWXData> parsedFrame = AprxLogParser_StaticStuff::parseFrame(seprated, packet);
 
-					// store UTC timestamp inside output packet
-					out->packetUtcTimestamp = epochFromLine;
+					// check if this line contains valid WX data
+					if (parsedFrame.has_value()) {
+						// if yes return it
+						out = parsedFrame.value();
+
+						// store UTC timestamp inside output packet
+						out->packetUtcTimestamp = epochFromLine;
+					}
+					else {
+						// if not maybe this isn't
+						out = std::nullopt;
+						SPDLOG_WARN("APRX rf log doesn't contain any weather data for callsign {}", call);
+					}
 				}
-				else {
-					// if not maybe this isn't
-					out = std::nullopt;
-					SPDLOG_WARN("APRX rf log doesn't contain any weather data for callsign {}", call);
+				catch (std::runtime_error & ex) {
+					SPDLOG_WARN("Runtime error thrown during parsing APRX rf log entry");
+					SPDLOG_WARN(lastLine);
 				}
 			}
-			catch (std::runtime_error & ex) {
-				SPDLOG_WARN("Runtime error thrown during parsing APRX rf log entry");
-				SPDLOG_WARN(lastLine);
+			else {
+				SPDLOG_ERROR("Failet to get ptime timestamp from line: {} ", lastLine);
 			}
 		}
 
@@ -420,7 +426,7 @@ std::vector<AprsPacket> AprxLogParser::getAllPacketsInTimerange(
 
 	this->openFile();
 
-	this->rewindFile();
+	//this->rewindFile();
 
 	if (file.is_open()) {
 
@@ -435,6 +441,12 @@ std::vector<AprsPacket> AprxLogParser::getAllPacketsInTimerange(
 
 				// get frame timestamp
 				boost::posix_time::ptime timestamp = AprxLogParser_StaticStuff::convertToFrameTimestamp(separated.at(0), separated.at(1));
+
+				if (timestamp.is_special()) {
+					SPDLOG_ERROR("timestamp hasn't been parsed correctly from frame: {}", localBuffer);
+
+					continue;
+				}
 
 				// convert into epoch
 				epochFromLine = TimeTools::getEpochFromPtime(timestamp, timestampsAreInLocal);

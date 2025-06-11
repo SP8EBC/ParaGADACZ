@@ -1,26 +1,26 @@
-Running 22 test cases...
+Running 23 test cases...
 Entering test module "AprxLogParser_test"
 ../src/AprxLogParser_test.cpp(38): Entering test case "between_two_epoch_timestamps"
-../src/AprxLogParser_test.cpp(68): error: in "between_two_epoch_timestamps": check result.size() == 6 has failed
-../src/AprxLogParser_test.cpp(38): Leaving test case "between_two_epoch_timestamps"; testing time: 11767us
+../src/AprxLogParser_test.cpp(68): info: check result.size() == 6 has passed
+../src/AprxLogParser_test.cpp(38): Leaving test case "between_two_epoch_timestamps"; testing time: 23653us
 ../src/AprxLogParser_test.cpp(71): Entering test case "with_ssid_aprsrflog2"
 ../src/AprxLogParser_test.cpp(81): info: check result has passed
 ../src/AprxLogParser_test.cpp(82): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(71): Leaving test case "with_ssid_aprsrflog2"; testing time: 202us
+../src/AprxLogParser_test.cpp(71): Leaving test case "with_ssid_aprsrflog2"; testing time: 422us
 ../src/AprxLogParser_test.cpp(86): Entering test case "find_double_wx_frames"
 ../src/AprxLogParser_test.cpp(99): info: check result has passed
 ../src/AprxLogParser_test.cpp(100): info: check result.value() == first_expected has passed
 ../src/AprxLogParser_test.cpp(103): info: check result2 has passed
 ../src/AprxLogParser_test.cpp(104): info: check result2.value() == second_expected has passed
-../src/AprxLogParser_test.cpp(86): Leaving test case "find_double_wx_frames"; testing time: 161us
+../src/AprxLogParser_test.cpp(86): Leaving test case "find_double_wx_frames"; testing time: 293us
 ../src/AprxLogParser_test.cpp(108): Entering test case "cieszyn_find_first_no_wx_only_aprsrflog2"
 ../src/AprxLogParser_test.cpp(118): info: check result has passed
 ../src/AprxLogParser_test.cpp(119): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(108): Leaving test case "cieszyn_find_first_no_wx_only_aprsrflog2"; testing time: 125us
+../src/AprxLogParser_test.cpp(108): Leaving test case "cieszyn_find_first_no_wx_only_aprsrflog2"; testing time: 217us
 ../src/AprxLogParser_test.cpp(122): Entering test case "cieszyn_find_first_wx_only_aprsrflog2"
 ../src/AprxLogParser_test.cpp(132): info: check result has passed
 ../src/AprxLogParser_test.cpp(133): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(122): Leaving test case "cieszyn_find_first_wx_only_aprsrflog2"; testing time: 153us
+../src/AprxLogParser_test.cpp(122): Leaving test case "cieszyn_find_first_wx_only_aprsrflog2"; testing time: 414us
 ../src/AprxLogParser_test.cpp(136): Entering test case "cieszyn_convert_to_wxdata_aprsrflog2"
 2022-12-03 14:29:22.996 SR9NSK    R SR9NCI>AKLPRZ,SR9GM-2*,WIDE2*:!4944.22N/01838.20E_045/005g007t036r...p...P...b00000
 ../src/AprxLogParser_test.cpp(150): info: check result.has_value() has passed
@@ -32,8 +32,8 @@ Entering test module "AprxLogParser_test"
 ../src/AprxLogParser_test.cpp(160): info: check ptime.date().day() == 3 has passed
 ../src/AprxLogParser_test.cpp(162): info: check ptime.time_of_day().hours() == 14 has passed
 ../src/AprxLogParser_test.cpp(163): info: check ptime.time_of_day().minutes() == 29 has passed
-../src/AprxLogParser_test.cpp(165): info: check timestamp == 1670074162ULL has passed
-../src/AprxLogParser_test.cpp(136): Leaving test case "cieszyn_convert_to_wxdata_aprsrflog2"; testing time: 687us
+../src/AprxLogParser_test.cpp(165): error: in "cieszyn_convert_to_wxdata_aprsrflog2": check timestamp == 1670074162ULL has failed [1670070562 != 1670074162]
+../src/AprxLogParser_test.cpp(136): Leaving test case "cieszyn_convert_to_wxdata_aprsrflog2"; testing time: 1681us
 ../src/AprxLogParser_test.cpp(169): Entering test case "jezioro_zywieckie_convert_to_wxdata_aprxrf"
 2023-08-13 17:49:29.598 SR9NSK-4  R SR9WXZ>AKLPRZ:!4943.43N/01912.10E_296/002g003t065r...p...P...b00000h00
 ../src/AprxLogParser_test.cpp(183): info: check result.has_value() has passed
@@ -46,31 +46,31 @@ Entering test module "AprxLogParser_test"
 ../src/AprxLogParser_test.cpp(195): info: check ptime.time_of_day().hours() == 17 has passed
 ../src/AprxLogParser_test.cpp(196): info: check ptime.time_of_day().minutes() == 49 has passed
 ../src/AprxLogParser_test.cpp(200): info: check true == (timestamp == 1691941769ULL) || (timestamp == 1691945369) has passed
-../src/AprxLogParser_test.cpp(169): Leaving test case "jezioro_zywieckie_convert_to_wxdata_aprxrf"; testing time: 684us
+../src/AprxLogParser_test.cpp(169): Leaving test case "jezioro_zywieckie_convert_to_wxdata_aprxrf"; testing time: 1856us
 ../src/AprxLogParser_test.cpp(204): Entering test case "leskowiec_convert_to_wxdata_aprxrf"
 2023-08-13 17:51:48.846 SR9NSK-4  R SR9WXL>AKLPRZ,SP9UVG-13*,WIDE2*:!4947.70N/01926.80E_270/001g004t068r...p...P...b09218h75
 ../src/AprxLogParser_test.cpp(217): info: check result.has_value() has passed
 ../src/AprxLogParser_test.cpp(218): info: check result->valid has passed
 ../src/AprxLogParser_test.cpp(219): info: check result->call == "SR9WXL" has passed
 ../src/AprxLogParser_test.cpp(220): info: check result->wind_direction == 270 has passed
-../src/AprxLogParser_test.cpp(204): Leaving test case "leskowiec_convert_to_wxdata_aprxrf"; testing time: 650us
+../src/AprxLogParser_test.cpp(204): Leaving test case "leskowiec_convert_to_wxdata_aprxrf"; testing time: 1569us
 ../src/AprxLogParser_test.cpp(224): Entering test case "myslowice_convert_to_wxdata_aprxrf"
 2023-08-13 17:52:57.419 SR9NSK-4  R SP9UVG-13>APMI06,WIDE2-2:@131753z5010.48N/01913.46E_225/000g001t072r000p000P...h68b10306 WX Myslowice
 ../src/AprxLogParser_test.cpp(237): info: check result.has_value() has passed
 ../src/AprxLogParser_test.cpp(238): info: check result->valid has passed
 ../src/AprxLogParser_test.cpp(239): info: check result->call == "SP9UVG" has passed
 ../src/AprxLogParser_test.cpp(240): info: check result->wind_direction == 225 has passed
-../src/AprxLogParser_test.cpp(224): Leaving test case "myslowice_convert_to_wxdata_aprxrf"; testing time: 650us
+../src/AprxLogParser_test.cpp(224): Leaving test case "myslowice_convert_to_wxdata_aprxrf"; testing time: 1613us
 ../src/AprxLogParser_test.cpp(243): Entering test case "leskowiec_staticstuff_parseframe"
 2023-08-13 17:51:48.846 SR9NSK-4  R SR9WXL>AKLPRZ,SP9UVG-13*,WIDE2*:!4947.70N/01926.80E_270/001g004t068r...p...P...b09218h75
 ../src/AprxLogParser_test.cpp(256): info: check out.SrcAddr == "SR9WXL" has passed
 ../src/AprxLogParser_test.cpp(257): info: check out.SrcSSID == 0 has passed
-../src/AprxLogParser_test.cpp(243): Leaving test case "leskowiec_staticstuff_parseframe"; testing time: 507us
+../src/AprxLogParser_test.cpp(243): Leaving test case "leskowiec_staticstuff_parseframe"; testing time: 988us
 ../src/AprxLogParser_test.cpp(261): Entering test case "ok0dsk_get_next_line"
 2023-08-13 17:30:04.837 SR9NSK-4  d *OK0DSK-6>APDWX0,TCPIP,OK8UOF*:!4937.97N/01815.87E_.../...g...t076; 24,6C WX Kubankov, ASL 660m
 ../src/AprxLogParser_test.cpp(272): info: check packet.has_value() has passed
 ../src/AprxLogParser_test.cpp(273): info: check expected == *packet has passed
-../src/AprxLogParser_test.cpp(261): Leaving test case "ok0dsk_get_next_line"; testing time: 115us
+../src/AprxLogParser_test.cpp(261): Leaving test case "ok0dsk_get_next_line"; testing time: 284us
 ../src/AprxLogParser_test.cpp(277): Entering test case "ok0dsk_convert_to_wxdata"
 2023-08-13 17:30:04.837 SR9NSK-4  d *OK0DSK-6>APDWX0,TCPIP,OK8UOF*:!4937.97N/01815.87E_.../...g...t076; 24,6C WX Kubankov, ASL 660m
 ../src/AprxLogParser_test.cpp(288): info: check result.has_value() has passed
@@ -80,7 +80,7 @@ Entering test module "AprxLogParser_test"
 ../src/AprxLogParser_test.cpp(293): info: difference{} between result->temperature{24.4444447} and 24.4{24.399999999999999} doesn't exceed 5%
 ../src/AprxLogParser_test.cpp(295): info: check result->packetAgeInSecondsLocal != 0 has passed
 ../src/AprxLogParser_test.cpp(296): info: check result->packetAgeInSecondsUtc != 0 has passed
-../src/AprxLogParser_test.cpp(277): Leaving test case "ok0dsk_convert_to_wxdata"; testing time: 2022us
+../src/AprxLogParser_test.cpp(277): Leaving test case "ok0dsk_convert_to_wxdata"; testing time: 1052us
 ../src/AprxLogParser_test.cpp(300): Entering test case "myslowice_convert_to_wxdata"
 2022-12-03 14:27:29.321 SR9NSK    R SP9UVG-13>APMI06,SR9GM-2*,SP9DLM*,WIDE2*:@031427z5010.48N/01913.46E_000/007g007t030r000p000P...h91b10213 WX Myslowice
 ../src/AprxLogParser_test.cpp(311): info: check result.has_value() has passed
@@ -91,50 +91,53 @@ Entering test module "AprxLogParser_test"
 ../src/AprxLogParser_test.cpp(316): info: difference{} between result->temperature{-1.11111116} and -1.1{-1.1000000000000001} doesn't exceed 5%
 ../src/AprxLogParser_test.cpp(318): info: check result->packetAgeInSecondsLocal != 0 has passed
 ../src/AprxLogParser_test.cpp(319): info: check result->packetAgeInSecondsUtc != 0 has passed
-../src/AprxLogParser_test.cpp(300): Leaving test case "myslowice_convert_to_wxdata"; testing time: 2955us
+../src/AprxLogParser_test.cpp(300): Leaving test case "myslowice_convert_to_wxdata"; testing time: 1035us
 ../src/AprxLogParser_test.cpp(322): Entering test case "leskowiec_no_weather_in_aprxrfnowxdataleskowiec"
 ../src/AprxLogParser_test.cpp(335): info: check !result.has_value() has passed
-../src/AprxLogParser_test.cpp(322): Leaving test case "leskowiec_no_weather_in_aprxrfnowxdataleskowiec"; testing time: 1354us
+../src/AprxLogParser_test.cpp(322): Leaving test case "leskowiec_no_weather_in_aprxrfnowxdataleskowiec"; testing time: 432us
 ../src/AprxLogParser_test.cpp(338): Entering test case "nonexistent_aprsrflog2"
 ../src/AprxLogParser_test.cpp(347): info: check !result.has_value() has passed
-../src/AprxLogParser_test.cpp(338): Leaving test case "nonexistent_aprsrflog2"; testing time: 971us
+../src/AprxLogParser_test.cpp(338): Leaving test case "nonexistent_aprsrflog2"; testing time: 334us
 ../src/AprxLogParser_test.cpp(352): Entering test case "one_aprsrflog2"
 2022-12-03 14:05:08.760 SR9NSK    R SR9NWC>APMI03:=4939.19NL01959.53E#PHG2620 W3,SPn 80km Lubon W. alt=1040 Jerzy SP9FBT
 ../src/AprxLogParser_test.cpp(364): info: check result has passed
 ../src/AprxLogParser_test.cpp(365): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(352): Leaving test case "one_aprsrflog2"; testing time: 508us
+../src/AprxLogParser_test.cpp(352): Leaving test case "one_aprsrflog2"; testing time: 161us
 ../src/AprxLogParser_test.cpp(369): Entering test case "one_only_wx_aprsrflog2"
 ../src/AprxLogParser_test.cpp(377): info: check result.has_value() == false has passed
-../src/AprxLogParser_test.cpp(369): Leaving test case "one_only_wx_aprsrflog2"; testing time: 1536us
+../src/AprxLogParser_test.cpp(369): Leaving test case "one_only_wx_aprsrflog2"; testing time: 626us
 ../src/AprxLogParser_test.cpp(384): Entering test case "two_aprsrflog2"
 2022-12-03 14:05:28.139 SR9NSK    R SR3NZG>APMI06,SR6NWS*,WIDE1*:@292217z5156.05N/01531.88E#Digi/I-Gate Lubuskiego OT PZK nr 32
 ../src/AprxLogParser_test.cpp(396): info: check result has passed
 ../src/AprxLogParser_test.cpp(397): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(384): Leaving test case "two_aprsrflog2"; testing time: 512us
+../src/AprxLogParser_test.cpp(384): Leaving test case "two_aprsrflog2"; testing time: 223us
 ../src/AprxLogParser_test.cpp(403): Entering test case "fast_forwarded_aprsrflog2"
 2022-12-03 14:18:33.117 SR9NSK    R SR9WXM>AKLPRZ:!4946.58N/01907.84E_200/004g006t036r...p...P...b00000h00
 ../src/AprxLogParser_test.cpp(415): info: check result has passed
 ../src/AprxLogParser_test.cpp(416): info: check result.value() == expected has passed
-../src/AprxLogParser_test.cpp(403): Leaving test case "fast_forwarded_aprsrflog2"; testing time: 574us
+../src/AprxLogParser_test.cpp(403): Leaving test case "fast_forwarded_aprsrflog2"; testing time: 208us
 ../src/AprxLogParser_test.cpp(420): Entering test case "parse_aprsrflog2"
 Test case parse_aprsrflog2 did not check any assertions
-../src/AprxLogParser_test.cpp(420): Leaving test case "parse_aprsrflog2"; testing time: 2555us
+../src/AprxLogParser_test.cpp(420): Leaving test case "parse_aprsrflog2"; testing time: 2462us
 ../src/AprxLogParser_test.cpp(435): Entering test case "getallweatherpackets_epoch_aprsrflog2"
-../src/AprxLogParser_test.cpp(444): info: check result.size() >= 1 has passed
-../src/AprxLogParser_test.cpp(445): info: check "SR9WXM" == result[0].call has passed
-../src/AprxLogParser_test.cpp(446): info: check 172 == result[0].wind_direction has passed
-../src/AprxLogParser_test.cpp(435): Leaving test case "getallweatherpackets_epoch_aprsrflog2"; testing time: 82359us
-../src/AprxLogParser_test.cpp(452): Entering test case "getallpackets_epoch_aprsrflog2"
-../src/AprxLogParser_test.cpp(466): info: check result.size() == 103 has passed
-../src/AprxLogParser_test.cpp(474): info: check "SR9LC" == first.SrcAddr has passed
-../src/AprxLogParser_test.cpp(475): info: check 1 == first.SrcSSID has passed
-../src/AprxLogParser_test.cpp(476): info: check "APRX29" == first.DestAddr has passed
-../src/AprxLogParser_test.cpp(477): info: check 3 == first.Path.size() has passed
-../src/AprxLogParser_test.cpp(478): info: check first_data == first.DataAsStr has passed
-../src/AprxLogParser_test.cpp(480): info: check "SR9NDJ" == last.SrcAddr has passed
-../src/AprxLogParser_test.cpp(481): info: check 0 == last.SrcSSID has passed
-../src/AprxLogParser_test.cpp(482): info: check "APRX28" == last.DestAddr has passed
-../src/AprxLogParser_test.cpp(483): info: check 3 == last.Path.size() has passed
-../src/AprxLogParser_test.cpp(484): info: check second_data == last.DataAsStr has passed
-../src/AprxLogParser_test.cpp(452): Leaving test case "getallpackets_epoch_aprsrflog2"; testing time: 23969us
-Leaving test module "AprxLogParser_test"; testing time: 135815us
+../src/AprxLogParser_test.cpp(447): info: check result.size() >= 1 has passed
+../src/AprxLogParser_test.cpp(449): info: check "SR9WXM" == result[0].call has passed
+../src/AprxLogParser_test.cpp(450): info: check 172 == result[0].wind_direction has passed
+../src/AprxLogParser_test.cpp(435): Leaving test case "getallweatherpackets_epoch_aprsrflog2"; testing time: 93690us
+../src/AprxLogParser_test.cpp(457): Entering test case "getallpackets_epoch_aprsrflog2"
+../src/AprxLogParser_test.cpp(474): info: check result.size() == 103 has passed
+../src/AprxLogParser_test.cpp(482): info: check "SR9LC" == first.SrcAddr has passed
+../src/AprxLogParser_test.cpp(483): info: check 1 == first.SrcSSID has passed
+../src/AprxLogParser_test.cpp(484): info: check "APRX29" == first.DestAddr has passed
+../src/AprxLogParser_test.cpp(485): info: check 3 == first.Path.size() has passed
+../src/AprxLogParser_test.cpp(486): info: check first_data == first.DataAsStr has passed
+../src/AprxLogParser_test.cpp(488): info: check "SR9NDJ" == last.SrcAddr has passed
+../src/AprxLogParser_test.cpp(489): info: check 0 == last.SrcSSID has passed
+../src/AprxLogParser_test.cpp(490): info: check "APRX28" == last.DestAddr has passed
+../src/AprxLogParser_test.cpp(491): info: check 3 == last.Path.size() has passed
+../src/AprxLogParser_test.cpp(492): info: check second_data == last.DataAsStr has passed
+../src/AprxLogParser_test.cpp(457): Leaving test case "getallpackets_epoch_aprsrflog2"; testing time: 59633us
+../src/AprxLogParser_test.cpp(495): Entering test case "problematic_aprx_rf_log"
+../src/AprxLogParser_test.cpp(508): info: check result.size() > 1200 has passed
+../src/AprxLogParser_test.cpp(495): Leaving test case "problematic_aprx_rf_log"; testing time: 566107us
+Leaving test module "AprxLogParser_test"; testing time: 759794us
