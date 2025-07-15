@@ -73,7 +73,7 @@ public:
 	 * @param dumpSqlQuery
 	 * @return how many reservations were found
 	 */
-	int downloadAroundLocation(std::string name, float lat, float lon, int radius, bool dumpSqlQuery);
+	int downloadAroundLocation(std::string name, float lat, float lon, int radius, bool dumpSqlQuery, float maximumLowerAltitude);
 
 	/**
 	 * Download all reservation for explicitly given airspace designator

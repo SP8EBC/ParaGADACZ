@@ -372,7 +372,7 @@ int main(int argc, char **argv) {
 	if (configurationFile->getAirspace().enabled) {
 		// iterate through all configured points and download all active airspace activation for them
 		for (ConfigurationFile_Airspace_AroundPoint apoint : configurationFile->getAirspace().aroundPoint) {
-			pansa->downloadAroundLocation(apoint.audioFilename, apoint.latitude, apoint.longitude, apoint.radius, airspaceDumpSql);
+			pansa->downloadAroundLocation(apoint.audioFilename, apoint.latitude, apoint.longitude, apoint.radius, airspaceDumpSql, apoint.maximumLowerAltitude);
 		}
 
 		// iterate through all fixed-conigured airspaces and check if there are any reservations for them

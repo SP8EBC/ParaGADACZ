@@ -108,7 +108,7 @@ PansaAirspace::~PansaAirspace() {
 	// TODO Auto-generated destructor stub
 }
 
-int PansaAirspace::downloadAroundLocation(std::string name, float lat, float lon, int radius, bool dumpSqlQuery) {
+int PansaAirspace::downloadAroundLocation(std::string name, float lat, float lon, int radius, bool dumpSqlQuery, float maximumLowerAltitude) {
 
 	int results = 0;
 
@@ -162,6 +162,12 @@ int PansaAirspace::downloadAroundLocation(std::string name, float lat, float lon
 
 		  PansaAirspace_Type type = PansaAirspace_Type_FromString(airspaceType);
 
+		  if (lowerAltitude > maximumLowerAltitude) {
+			  SPDLOG_WARN("airspace with designator {} has too high lowerAltitude {} and will be ignored", lowerAltitude, maximumLowerAltitude);
+			  continue;
+		  }
+
+
 		  SPDLOG_INFO(	"designator: {}, distanceInMeters: {}, lowerAltitudeStr: {}, upperAltitudeStr: {}, lowerAltitude: {}, upperAltitude: {}",
 				  	    designator, (int)::roundf(distanceInMeters), lowerAltitudeStr, upperAltitudeStr, lowerAltitude, upperAltitude);
 
@@ -203,7 +209,9 @@ int PansaAirspace::downloadAroundLocation(std::string name, float lat, float lon
 
 	  txn.commit();
 
-	  c.disconnect();
+		// modification needed to have this compilable and working with libpqxx-7.8t64 in Xubuntu 24.10
+		// New version will disconnect a connection in the destructor. Not sure what the older one will do
+		//c.disconnect();
 
 	  if (singleResult->reservations.size() == 0) {
 		  SPDLOG_WARN("No airspace reservations have been found. It is really OK??");
@@ -272,7 +280,9 @@ int PansaAirspace::downloadForDesginator(
 
 	txn.commit();
 
-	c.disconnect();
+	// modification needed to have this compilable and working with libpqxx-7.8t64 in Xubuntu 24.10
+	// New version will disconnect a connection in the destructor. Not sure what the older one will do
+	//c.disconnect();
 
 	singleResult->type = type;
 	reservationsForZones.push_back(singleResult);

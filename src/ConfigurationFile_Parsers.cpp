@@ -538,6 +538,10 @@ bool ConfigurationFile::parseAirspace(libconfig::Setting & root) {
 				aroundPoint[i].lookupValue("Longitude", ar.longitude);
 				aroundPoint[i].lookupValue("Radius", ar.radius);
 
+				if (!aroundPoint[i].lookupValue("MaximumLowerAltitude", ar.maximumLowerAltitude)) {
+					ar.maximumLowerAltitude = 2800.0f;
+				}
+
 				this->airspace.aroundPoint.push_back(ar);
 			}
 		}

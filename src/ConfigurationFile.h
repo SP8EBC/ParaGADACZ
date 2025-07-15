@@ -221,6 +221,7 @@ struct ConfigurationFile_Airspace_AroundPoint {
 	int radius;					//!< Radius around the point to look for reservations for
 	float longitude;			//!<
 	float latitude;				//!<
+	float maximumLowerAltitude; //!< Upper limit of an altitude to take into consideration
 };
 
 /**
