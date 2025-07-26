@@ -87,7 +87,7 @@ std::vector<AprsWXData> AprxLogParser::getAllWeatherPacketsInTimerange(
 		while (std::getline(file, localBuffer)) {
 
 			// parse line
-			boost::split(separated, localBuffer, boost::is_any_of(" "));
+			boost::split(separated, localBuffer, boost::is_any_of(" "),	boost::token_compress_off);
 
 			// check if result has a meaningfull size
 			if (separated.size() > 4) {
@@ -199,7 +199,7 @@ std::optional<AprsWXData> AprxLogParser::getLastPacketForStation(std::string cal
 	// check if any line has been found
 	if (lastLine.length() > 1) {
 		// parse line
-		boost::split(seprated, lastLine, boost::is_any_of(" "));
+		boost::split(seprated, lastLine, boost::is_any_of(" "),	boost::token_compress_on);
 
 		if (seprated.size() > 4) {
 
@@ -434,7 +434,7 @@ std::vector<AprsPacket> AprxLogParser::getAllPacketsInTimerange(
 		while (std::getline(file, localBuffer)) {
 
 			// parse line
-			boost::split(separated, localBuffer, boost::is_any_of(" "));
+			boost::split(separated, localBuffer, boost::is_any_of(" "),	boost::token_compress_off);
 
 			// check if result has a meaningfull size
 			if (separated.size() > 4) {
@@ -472,8 +472,8 @@ std::vector<AprsPacket> AprxLogParser::getAllPacketsInTimerange(
 						hasBeenFound = true;
 					}
 					catch (std::runtime_error & ex) {
-						SPDLOG_WARN("Runtime error thrown during parsing APRX rf log entry");
-						SPDLOG_WARN(localBuffer);
+						//SPDLOG_WARN(ex.what());
+						SPDLOG_WARN(ex.what() + localBuffer);
 					}
 
 				}

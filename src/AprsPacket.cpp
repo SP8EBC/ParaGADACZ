@@ -26,7 +26,7 @@ AprsPacket::AprsPacket() {
 }
 
 bool AprsPacket::SeparateCallSsid(const std::string& input, std::string& call,
-		uint8_t& ssid, bool exception) {
+		uint8_t& ssid, bool exception, const uint8_t defaultSsid) {
 
 	// copying the input string to editable local object
 	std::string in = input;
@@ -57,7 +57,7 @@ bool AprsPacket::SeparateCallSsid(const std::string& input, std::string& call,
 				throw e;
 			else
 				// if an user rather prefer to receive only false return value
-				return false;
+				ssid = defaultSsid;
 		}
 	}
 	else {
@@ -167,11 +167,10 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 	separatingReturn = AprsPacket::SeparateCallSsid(sepratedBySource.at(0), cTarget->SrcAddr, cTarget->SrcSSID, false);
 
 	if (!separatingReturn)
-		return NOT_VALID_APRS_PACKET;
+		return CALL_AND_SSID_SEPARATION_FAILED;
 
 	// checking if the callsign match with regex
-	if (!boost::regex_match(cTarget->SrcAddr, callsignPattern))
-		return NOT_VALID_APRS_PACKET;
+	cTarget->IsSrcAddrValidationOk = boost::regex_match(cTarget->SrcAddr, callsignPattern);
 
 	// the 'sepratedBySource' vector may consist more than 2 elements if received frame consist
 	// status message which is identified by '>' character before it. All in all the APRS2RRD
@@ -186,11 +185,11 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 
 	// checking if after splitting there are enough elements to thread this as valid frame
 	if (pathElements.size() == 0)
-		return NOT_VALID_APRS_PACKET;
+		return APRS_IS_PATH_EMPTY;
 
 	// checking if source identifier is valid
 	if (pathElements.at(0).size() > 6)
-		return NOT_VALID_APRS_PACKET;
+		return DESTINATION_CALL_INVALID;
 
 	AprsPacket::SeparateCallSsid(pathElements.at(0), cTarget->DestAddr, cTarget->DstSSID, false);
 
@@ -207,7 +206,7 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 			PathElement pelem;
 
 			// separating callsign from the ssid or WIDEx from 'remaining hops' value
-			AprsPacket::SeparateCallSsid(e, pelem.Call, pelem.SSID, true);
+			AprsPacket::SeparateCallSsid(e, pelem.Call, pelem.SSID, false, 99);
 
 			// storing element in Path vector
 			cTarget->Path.push_back(pelem);
@@ -220,16 +219,6 @@ int AprsPacket::ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPack
 		}
 
 	}
-
-//	// if there is any additional part of frame, any remainder after separating source callsign
-//	// by '>' just append this to payload.
-//	if (sepratedBySource.size() > 2) {
-//		for (auto it = sepratedBySource.begin() + 2; it != sepratedBySource.end(); it++) {
-//			payload.append(">");
-//
-//			payload.append(*it);
-//		}
-//	}
 
 	// copying the payload to the output object. There is no need to check the lenght of
 	// payload due to 'buff_len > 1000' check done just at the begining of this method

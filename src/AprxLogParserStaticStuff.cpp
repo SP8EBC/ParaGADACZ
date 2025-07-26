@@ -94,9 +94,6 @@ std::optional<AprsWXData>  AprxLogParser_StaticStuff::parseFrame(std::vector<std
 		}
 	}
 
-	// last element should consist frame
-	lastLine = std::move(separatedLines.at(separatedLines.size() - 1));
-
 	// try convert this do APRSpacket
 	const int result = AprsPacket::ParseAPRSISData(aprsFrame.c_str(), aprsFrame.size(), &out);
 
@@ -128,6 +125,7 @@ std::optional<AprsWXData>  AprxLogParser_StaticStuff::parseFrame(std::vector<std
 		}
 	}
 	else {
-		throw std::runtime_error("This isn't valid APRX rf log entry!");
+		const char * parsingResultStr = returnValues_toString((enum returnValues)result);
+		throw std::runtime_error(parsingResultStr);
 	}
 }

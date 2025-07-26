@@ -33,6 +33,7 @@ class AprsPacket
         std::string SrcAddr;    // Source address
         uint8_t SrcSSID;  // SSID of Source
         uint8_t DstSSID;
+        bool IsSrcAddrValidationOk;
         std::vector<PathElement> Path;        // Routing Path
         std::string qOrigin;        // APRS-IS originator
         PathElement ToISOriginator;     // APRS-IS originator. It might be Igate callsign or APRS server name, if packet
@@ -63,7 +64,7 @@ class AprsPacket
 
 		static int ParseAPRSISData(const char* tInputBuffer, int buff_len, AprsPacket* cTarget);
         static int ParseAprxRfLogData(const char* tInputBuffer, int buff_len, AprsPacket* cTarget);
-		static bool SeparateCallSsid(const std::string& input, std::string& call, uint8_t& ssid, bool exception);
+		static bool SeparateCallSsid(const std::string& input, std::string& call, uint8_t& ssid, bool exception, const uint8_t defaultSsid = 99);
 		static bool SeparateCallSsid(const std::string& input, char (&call)[7], uint8_t& ssid, bool exception);
 
 		void clear();
