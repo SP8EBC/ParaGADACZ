@@ -11,10 +11,14 @@
 enum returnValues {
 	OK = 0,
 	NOT_VALID_APRS_PACKET = -10,
-	CORRUPTED_APRS_PACKET = -11
+	CORRUPTED_APRS_PACKET = -11,
+	CALL_AND_SSID_SEPARATION_FAILED = -12,
+	SOURCE_CALLSIGN_REGEXP_DOESNT_MATCH = -13,
+	APRS_IS_PATH_EMPTY		= -14,
+	DESTINATION_CALL_INVALID	= -15,
 };
 
-
+const char * returnValues_toString(returnValues in);
 
 
 #endif /* RETURNVALUES_H_ */
