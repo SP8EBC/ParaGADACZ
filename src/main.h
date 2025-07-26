@@ -8,8 +8,8 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#define MAIN_SOFTWARE_VERSION	"0.12"
-#define MAIN_SOFTWARE_DATE		"15-07-2025"
+#define MAIN_SOFTWARE_VERSION	"0.13"
+#define MAIN_SOFTWARE_DATE		"26-07-2025"
 
 //!< Program will close if any current conditions data for configured source isn't find.
 //#define MAIN_FAIL_ON_MISSING_CURRENT_CONDITIONS
