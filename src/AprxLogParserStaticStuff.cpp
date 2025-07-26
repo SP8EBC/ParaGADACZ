@@ -51,12 +51,17 @@ boost::posix_time::ptime AprxLogParser_StaticStuff::convertToFrameTimestamp(
 
 }
 
+/**
+ * Function takes APRX rf-log entry separated by spaces, and converts it to @link{AprsPacket}.
+ * If this deserialization is successful it checks if packet in @link{AprsPacket} is
+ * a wx frame. If yes, it try to extract this weather data
+ * @param separatedLines from single APRX rf-log entry
+ * @param out deserialized APRS packet
+ * @return copy of an instance of @link{AprsWXData} holding weather data or std::nullopt if this isn't wx frame
+ */
 std::optional<AprsWXData>  AprxLogParser_StaticStuff::parseFrame(std::vector<std::string> & separatedLines, AprsPacket & out) {
 
 	std::string aprsFrame;
-
-	// packet data created from an entry
-	//AprsPacket aprsPacket;
 
 	// value to be returned from this method
 	AprsWXData ret;

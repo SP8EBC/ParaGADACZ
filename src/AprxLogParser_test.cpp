@@ -520,7 +520,7 @@ BOOST_AUTO_TEST_CASE (problematic_aprx_rf_log) {
 // 2025-06-24 18:42:24.403 SR9NSK-4  R SP9EP-9>APAT81-1,SR9GM-2*,WIDE1*,WIDE2-1:!4943.11N/01846.09E>/A=000000op. Pawel QRG SR9US TS2 TG260998 FM 145.500
 // 2025-06-24 18:11:51.879 SR9NSK-4  R SP9TSW-9>APAT81-9,SR9NH-1*,WIDE2-2:!3412.00N710849.:0E7062/000/A=000000Grzegorz Mobile
 BOOST_AUTO_TEST_CASE (problematic_aprx_rf_log_issue5) {
-	AprxLogParser parser("./test_input/problematic-aprx-rf-log-issue5/aprx-rf-full.log", true);
+	AprxLogParser parser("./test_input/problematic-aprx-rf-log-issue5/aprx-rf.log", true);
 
 	try {
 

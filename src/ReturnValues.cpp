@@ -18,6 +18,7 @@ const char * returnValues_toString(returnValues in)
 	case SOURCE_CALLSIGN_REGEXP_DOESNT_MATCH:	return "[SOURCE_CALLSIGN_REGEXP_DOESNT_MATCH] "; break;
 	case APRS_IS_PATH_EMPTY:					return "[APRS_IS_PATH_EMPTY]                  "; break;
 	case DESTINATION_CALL_INVALID:				return "[DESTINATION_CALL_INVALID]            "; break;
+	case SOURCE_CALL_OR_SSID_INVALID:			return "[SOURCE_CALL_OR_SSID_INVALID]         "; break;
 	}
 
 	return "?UNKNOWN?";

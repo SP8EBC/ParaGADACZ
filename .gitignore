@@ -7,6 +7,7 @@ big-test-aprx-rf.log
 EmailDownloader_test_secret.h
 secret.h
 secret*
+*.bz2
 
 *.tpl
 

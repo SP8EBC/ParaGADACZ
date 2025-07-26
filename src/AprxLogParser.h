@@ -38,6 +38,14 @@ public:
 
 	void rewindFile();
 
+	/**
+	 * This goes through APRX rf-log file and return next line with a frame sent by a station with given call and SSID.
+	 * For obvious reason this has side effects and moves @link{file}
+	 * @param call this function looks for
+	 * @param ssid this function looks for
+	 * @param wxOnly if set to true it ignores any non weather frames
+	 * @return an entry with
+	 */
 	std::optional<std::string> getNextLine(std::string call, uint8_t ssid, bool wxOnly);
 
 	std::optional<AprsWXData> getLastPacketForStation(std::string call, uint8_t ssid);

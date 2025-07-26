@@ -295,7 +295,7 @@ std::optional<std::string> AprxLogParser::getNextLine(std::string call,
 					continue;
 				}
 
-				// get iterator to beginning of string
+				// get iterator to beginning of the string
 				auto it = buffer.begin();
 
 				// rewind to beginning of a callsign
@@ -306,6 +306,12 @@ std::optional<std::string> AprxLogParser::getNextLine(std::string call,
 					bufCallsign.append(1, *it);
 
 					it++;
+				}
+
+				if (bufCallsign.size() == 0)
+				{
+					SPDLOG_WARN(returnValues_toString(CORRUPTED_APRS_PACKET) + buffer);
+					continue;
 				}
 
 				// check SSID
@@ -324,8 +330,7 @@ std::optional<std::string> AprxLogParser::getNextLine(std::string call,
 						_ssid = std::stoi(bufSSID);
 					}
 					catch(std::invalid_argument & ex) {
-						SPDLOG_ERROR("std::invalid_argument thrown while pasing source SSID");
-						SPDLOG_ERROR(buffer);
+						SPDLOG_WARN(returnValues_toString(SOURCE_CALL_OR_SSID_INVALID) + buffer);
 						continue;
 					}
 				}
@@ -456,7 +461,9 @@ std::vector<AprsPacket> AprxLogParser::getAllPacketsInTimerange(
 					try {
 						AprsPacket aprsPacket;
 
-						std::optional<AprsWXData> weatherFrame = AprxLogParser_StaticStuff::parseFrame(separated, aprsPacket);
+						// parse frame content itself. Everything what is after 'R ' in an example aprx rf-log entry below
+						// 2025-07-02 01:04:50.160 SR9NSK-4  R SQ3DAB-1>APAT81-1,SR7NSI*,WIDE1*,SR9KFZ*,WIDE2*:!5207.57N/01851.37E-/A=000000Anytone D578UV  DMR
+						(void)AprxLogParser_StaticStuff::parseFrame(separated, aprsPacket);
 
 						// store epoch timestamp
 						aprsPacket.packetUtcTimestamp = epochFromLine;

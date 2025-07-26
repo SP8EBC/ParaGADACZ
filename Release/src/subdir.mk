@@ -26,6 +26,7 @@ CPP_SRCS += \
 ../src/PlaylistAssemblerAirspace.cpp \
 ../src/PlaylistSamplerPL.cpp \
 ../src/PogodaccDownloader.cpp \
+../src/ReturnValues.cpp \
 ../src/SpeechSynthesis.cpp \
 ../src/SpeechSynthesisResponsivevoice.cpp \
 ../src/SpeechSynthesisStaticStuff.cpp \
@@ -57,6 +58,7 @@ CPP_DEPS += \
 ./src/PlaylistAssemblerAirspace.d \
 ./src/PlaylistSamplerPL.d \
 ./src/PogodaccDownloader.d \
+./src/ReturnValues.d \
 ./src/SpeechSynthesis.d \
 ./src/SpeechSynthesisResponsivevoice.d \
 ./src/SpeechSynthesisStaticStuff.d \
@@ -88,6 +90,7 @@ OBJS += \
 ./src/PlaylistAssemblerAirspace.o \
 ./src/PlaylistSamplerPL.o \
 ./src/PogodaccDownloader.o \
+./src/ReturnValues.o \
 ./src/SpeechSynthesis.o \
 ./src/SpeechSynthesisResponsivevoice.o \
 ./src/SpeechSynthesisStaticStuff.o \
@@ -109,7 +112,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AprxLogParserStaticStuff.d ./src/AprxLogParserStaticStuff.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/ConfigurationFile_Parsers.d ./src/ConfigurationFile_Parsers.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/EmailDownloader.d ./src/EmailDownloader.o ./src/EmailDownloaderMessage.d ./src/EmailDownloaderMessage.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/MeteobluePictocode.d ./src/MeteobluePictocode.o ./src/MeteoblueRainParser.d ./src/MeteoblueRainParser.o ./src/PansaAirspace.d ./src/PansaAirspace.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistAssemblerAirspace.d ./src/PlaylistAssemblerAirspace.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/SpeechSynthesis.d ./src/SpeechSynthesis.o ./src/SpeechSynthesisResponsivevoice.d ./src/SpeechSynthesisResponsivevoice.o ./src/SpeechSynthesisStaticStuff.d ./src/SpeechSynthesisStaticStuff.o ./src/TimeTools.d ./src/TimeTools.o ./src/TrendDownloader.d ./src/TrendDownloader.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o ./src/main.d ./src/main.o
+	-$(RM) ./src/AprsPacket.d ./src/AprsPacket.o ./src/AprsWXData.d ./src/AprsWXData.o ./src/AprsWXDataFactory.d ./src/AprsWXDataFactory.o ./src/AprxLogParser.d ./src/AprxLogParser.o ./src/AprxLogParserStaticStuff.d ./src/AprxLogParserStaticStuff.o ./src/AvalancheWarnings.d ./src/AvalancheWarnings.o ./src/ConfigurationFile.d ./src/ConfigurationFile.o ./src/ConfigurationFile_Parsers.d ./src/ConfigurationFile_Parsers.o ./src/CurrentConditionsDownloader.d ./src/CurrentConditionsDownloader.o ./src/EmailDownloader.d ./src/EmailDownloader.o ./src/EmailDownloaderMessage.d ./src/EmailDownloaderMessage.o ./src/ForecastDownloader.d ./src/ForecastDownloader.o ./src/ForecastFinder.d ./src/ForecastFinder.o ./src/InhibitorAndPttControl.d ./src/InhibitorAndPttControl.o ./src/MeteobluePictocode.d ./src/MeteobluePictocode.o ./src/MeteoblueRainParser.d ./src/MeteoblueRainParser.o ./src/PansaAirspace.d ./src/PansaAirspace.o ./src/Player.d ./src/Player.o ./src/PlaylistAssembler.d ./src/PlaylistAssembler.o ./src/PlaylistAssemblerAirspace.d ./src/PlaylistAssemblerAirspace.o ./src/PlaylistSamplerPL.d ./src/PlaylistSamplerPL.o ./src/PogodaccDownloader.d ./src/PogodaccDownloader.o ./src/ReturnValues.d ./src/ReturnValues.o ./src/SpeechSynthesis.d ./src/SpeechSynthesis.o ./src/SpeechSynthesisResponsivevoice.d ./src/SpeechSynthesisResponsivevoice.o ./src/SpeechSynthesisStaticStuff.d ./src/SpeechSynthesisStaticStuff.o ./src/TimeTools.d ./src/TimeTools.o ./src/TrendDownloader.d ./src/TrendDownloader.o ./src/WeatherlinkDownloader.d ./src/WeatherlinkDownloader.o ./src/main.d ./src/main.o
 
 .PHONY: clean-src
 
